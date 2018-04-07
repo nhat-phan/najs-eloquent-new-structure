@@ -57,4 +57,9 @@ typings/
 # dotenv environment variables file
 .env
 
-integration/dist
+.vscode
+lib
+test
+.travis.yml
+tsconfig.json
+tslint.json
