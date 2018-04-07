@@ -1,9 +1,11 @@
-"use strict";
 /// <reference path="contracts/ModelComponent.ts" />
-Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path="model/interfaces/IModel.ts" />
+/// <reference path="model/interfaces/IModelQuery.ts" />
+/// <reference path="model/interfaces/IModelFillable.ts" />
 // import { Fillable as FillableClass } from './model/components/Fillable'
-var NajsEloquent;
-(function (NajsEloquent) {
-    NajsEloquent.classes = {};
-    // export const Fillable: typeof FillableClass = FillableClass
-})(NajsEloquent = exports.NajsEloquent || (exports.NajsEloquent = {}));
+// export interface BuiltinClasses {
+//   Fillable: typeof FillableClass
+// }
+// export const Builtin: BuiltinClasses = {
+//   Fillable: FillableClass
+// }
