@@ -12,3 +12,5 @@
 // export const Builtin: BuiltinClasses = {
 //   Fillable: FillableClass
 // }
+
+export const Builtin = {}

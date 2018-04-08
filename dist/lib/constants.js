@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NajsEloquentBuiltinClasses = {
+exports.NajsEloquent = {
     Model: {
-        Components: {
+        Component: {
             Fillable: 'NajsEloquent.Model.Component.Fillable'
         }
     }

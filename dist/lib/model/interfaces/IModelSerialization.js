@@ -1,10 +1,9 @@
-/// <reference path="IModelFillable.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var Model;
     (function (Model) {
-        class IModelMembers {
+        class IModelSerializationMembers {
         }
-        Model.IModelMembers = IModelMembers;
+        Model.IModelSerializationMembers = IModelSerializationMembers;
     })(Model = NajsEloquent.Model || (NajsEloquent.Model = {}));
 })(NajsEloquent || (NajsEloquent = {}));

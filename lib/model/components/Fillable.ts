@@ -2,13 +2,14 @@
 
 import { register } from 'najs-binding'
 import { in_array } from '../../util/in_array'
+import { NajsEloquent } from '../../constants'
 
 const VARIABLES = ['fillable', 'guarded']
 const METHODS = ['fill', 'forceFill']
 
 export class Fillable implements Najs.Contracts.Eloquent.ModelComponent {
   getClassName(): string {
-    return 'NajsEloquent.Model.Component.Fillable'
+    return NajsEloquent.Model.Component.Fillable
   }
 
   isGetter(key: string | symbol, model: any): boolean {

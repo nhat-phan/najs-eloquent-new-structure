@@ -4,5 +4,6 @@ declare namespace NajsEloquent.Model {
         protected attributes: A;
     }
     interface IModel<A> extends IModelMembers<A>, IModelFillable {
+        getClassName(): string;
     }
 }

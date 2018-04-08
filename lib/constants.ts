@@ -1,6 +1,6 @@
-export const NajsEloquentBuiltinClasses = {
+export const NajsEloquent = {
   Model: {
-    Components: {
+    Component: {
       Fillable: 'NajsEloquent.Model.Component.Fillable'
     }
   }

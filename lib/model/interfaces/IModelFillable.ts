@@ -12,5 +12,9 @@ namespace NajsEloquent.Model {
     isFillable(key: string): boolean
 
     isGuarded(key: string): boolean
+
+    fill(data: Object): this
+
+    forceFill(data: Object): this
   }
 }

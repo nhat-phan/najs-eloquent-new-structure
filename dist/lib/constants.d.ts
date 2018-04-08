@@ -1,6 +1,6 @@
-export declare const NajsEloquentBuiltinClasses: {
+export declare const NajsEloquent: {
     Model: {
-        Components: {
+        Component: {
             Fillable: string;
         };
     };
