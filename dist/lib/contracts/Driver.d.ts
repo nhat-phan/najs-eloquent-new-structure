@@ -1,11 +1,17 @@
 declare namespace Najs.Contracts.Eloquent {
-    interface Driver<T> {
-        getRecord(): T;
-        getAttribute(name: string): T;
-        setAttribute(name: string): T;
+    interface Driver<NativeRecord> {
+        initialize(data?: NativeRecord | Object): void;
+        getRecord(): any;
+        getAttribute<T>(name: string): T;
+        setAttribute<T>(name: string, value: T): this;
+        getPrimaryKeyName(): string;
         toObject(): Object;
-        toJSON(): Object;
-        is(model: Object): T;
         newQuery(): any;
+        delete(softDeletes: boolean): Promise<boolean>;
+        restore(): Promise<any>;
+        save(): Promise<any>;
+        markModified(name: string): void;
+        getModelComponentName(): string | undefined;
+        getModelComponentOrder(components: string[]): string[];
     }
 }

@@ -1,20 +1,32 @@
 /// <reference path="ModelComponent" />
 
 namespace Najs.Contracts.Eloquent {
-  export interface Driver<T> {
-    getRecord(): T
+  export interface Driver<NativeRecord> {
+    initialize(data?: NativeRecord | Object): void
 
-    getAttribute(name: string): T
+    getRecord(): any
 
-    setAttribute(name: string): T
+    getAttribute<T>(name: string): T
+
+    setAttribute<T>(name: string, value: T): this
+
+    getPrimaryKeyName(): string
 
     toObject(): Object
 
-    toJSON(): Object
-
-    is(model: Object): T
-
     newQuery(): any
+
+    delete(softDeletes: boolean): Promise<boolean>
+
+    restore(): Promise<any>
+
+    save(): Promise<any>
+
+    markModified(name: string): void
+
+    getModelComponentName(): string | undefined
+
+    getModelComponentOrder(components: string[]): string[]
 
     // proxify(target: Object): any
     // getProxies(): ModelComponent[]
