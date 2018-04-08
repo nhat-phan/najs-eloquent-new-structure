@@ -5,6 +5,6 @@ export interface IEloquent<A> {
   new (): NajsEloquent.Model.IModel<A> & NajsEloquent.Model.IModelQuery<A> & A
 }
 
-export const Model: IEloquent<any> = <any>function<A>() {
+export const Model: IEloquent<any> = <any>function() {
   return {}
 }
