@@ -1,18 +1,21 @@
+/// <reference path="interfaces/ISettingReader.d.ts" />
 import { IAutoload } from 'najs-binding';
 export declare const CREATE_SAMPLE = "create-sample";
 export declare class ClassSetting {
-    protected model: Object;
+    protected sample: Object;
     protected definition: Function;
+    protected instance: Object;
     private constructor();
-    read<T>(property: string, merger: (staticVersion?: T, memberVersion?: T) => T): T;
-    static arrayUnique<T>(initializeValue: T[], defaultValue: T[]): any;
+    private constructor();
+    read<T>(property: string, reader: NajsEloquent.Util.ISettingReader<T>): T;
+    private clone(instance);
     /**
-     * store ModelMetadata instance with "sample" model
+     * store ClassSetting instance with "sample"
      */
     protected static samples: Object;
     /**
-     * get metadata of Model class
+     * get ClassSetting Reader of an instance with instance's value
      */
-    static of(model: IAutoload): ClassSetting;
-    static of(model: IAutoload, cache: boolean): ClassSetting;
+    static of(instance: IAutoload): ClassSetting;
+    static of(instance: IAutoload, cache: boolean): ClassSetting;
 }

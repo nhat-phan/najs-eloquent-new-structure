@@ -1,41 +1,35 @@
 "use strict";
+/// <reference path="./interfaces/ISettingReader.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 exports.CREATE_SAMPLE = 'create-sample';
 class ClassSetting {
-    constructor(model) {
-        this.model = model;
-        this.definition = Object.getPrototypeOf(model).constructor;
+    constructor(sample) {
+        if (sample) {
+            this.sample = sample;
+            this.definition = Object.getPrototypeOf(sample).constructor;
+        }
     }
-    read(property, merger) {
-        return merger(this.definition[property] ? this.definition[property] : undefined, this.model[property] ? this.model[property] : undefined);
+    read(property, reader) {
+        return reader(this.definition[property] ? this.definition[property] : undefined, this.sample[property] ? this.sample[property] : undefined, this.instance[property] ? this.instance[property] : undefined);
     }
-    static arrayUnique(initializeValue, defaultValue) {
-        return function (staticVersion, memberVersion) {
-            if (!staticVersion && !memberVersion) {
-                return defaultValue;
-            }
-            const values = initializeValue
-                .concat(staticVersion ? staticVersion : [])
-                .concat(memberVersion ? memberVersion : []);
-            const result = Array.from(new Set(values));
-            if (result.length === 0) {
-                return defaultValue;
-            }
-            return result;
-        };
+    clone(instance) {
+        const replicated = new ClassSetting();
+        replicated.sample = this.sample;
+        replicated.definition = this.definition;
+        replicated.instance = instance;
+        return replicated;
     }
-    static of(model, cache = true) {
-        const className = model.getClassName();
+    static of(instance, cache = true) {
+        const className = instance.getClassName();
         if (!this.samples[className] || !cache) {
             this.samples[className] = new ClassSetting(najs_binding_1.make(className, [exports.CREATE_SAMPLE]));
         }
-        return this.samples[className];
+        return this.samples[className].clone(instance);
     }
 }
 /**
- * store ModelMetadata instance with "sample" model
+ * store ClassSetting instance with "sample"
  */
 ClassSetting.samples = {};
 exports.ClassSetting = ClassSetting;
-ClassSetting.of({}).read('fillable', ClassSetting.arrayUnique([], []));
