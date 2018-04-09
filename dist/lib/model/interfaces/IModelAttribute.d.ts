@@ -1,5 +1,5 @@
 declare namespace NajsEloquent.Model {
-    interface IModelAttribute<RecordType> {
+    interface IModelAttribute {
         id?: any;
         getAttribute(name: string): any;
         setAttribute(name: string): void;

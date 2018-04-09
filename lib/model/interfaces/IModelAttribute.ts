@@ -1,5 +1,5 @@
 namespace NajsEloquent.Model {
-  export interface IModelAttribute<RecordType> {
+  export interface IModelAttribute {
     id?: any
 
     getAttribute(name: string): any

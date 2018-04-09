@@ -1,5 +1,7 @@
 namespace Najs.Contracts.Eloquent {
   export interface Driver<NativeRecord> {
+    getClassName(): string
+
     initialize(data?: NativeRecord | Object): void
 
     getRecord(): any
