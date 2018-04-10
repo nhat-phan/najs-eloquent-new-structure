@@ -21,6 +21,7 @@ export declare const NajsEloquent: {
         FlipFlopQueryLog: string;
     };
     Provider: {
+        ComponentProvider: string;
         DriverProvider: string;
         MongooseProvider: string;
     };

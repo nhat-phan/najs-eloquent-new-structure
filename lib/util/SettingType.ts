@@ -3,7 +3,7 @@
 export class SettingType {
   static arrayUnique<T>(initializeValue: T[], defaultValue: T[]): NajsEloquent.Util.ISettingReader<T[]> {
     return function(staticValue?: T[], sampleValue?: T[], instanceValue?: T[]): T[] {
-      if (!sampleValue && !sampleValue) {
+      if (!staticValue && !sampleValue && !instanceValue) {
         return defaultValue
       }
 

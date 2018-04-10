@@ -1,9 +1,21 @@
+/// <reference path="Driver.ts" />
+
 namespace Najs.Contracts.Eloquent {
-  export interface ModelComponent {
+  export interface Component extends Najs.Contracts.Autoload {
     /**
-     * Get class name of the proxy
+     * The model instance
      */
-    getClassName(): string
+    model: any
+
+    /**
+     * Driver instance of the model
+     */
+    driver: Driver<any>
+
+    /**
+     * Create an Component instance which wrap the model and driver
+     */
+    constructor(model: any, driver: any): void
 
     /**
      * Determine given key is a getter

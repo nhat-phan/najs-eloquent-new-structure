@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class SettingType {
     static arrayUnique(initializeValue, defaultValue) {
         return function (staticValue, sampleValue, instanceValue) {
-            if (!sampleValue && !sampleValue) {
+            if (!staticValue && !sampleValue && !instanceValue) {
                 return defaultValue;
             }
             const values = initializeValue

@@ -6,7 +6,7 @@ import { Facade, IFacade, IFacadeBase } from 'najs-facade'
 import { container } from '../container'
 import { NajsEloquent } from '../../constants'
 
-const facade = Facade.create<Najs.Contracts.Eloquent.DriverProvider>(container, 'DriverManager', function() {
+const facade = Facade.create<Najs.Contracts.Eloquent.DriverProvider>(container, 'DriverProvider', function() {
   return make<Najs.Contracts.Eloquent.DriverProvider>(NajsEloquent.Provider.DriverProvider)
 })
 

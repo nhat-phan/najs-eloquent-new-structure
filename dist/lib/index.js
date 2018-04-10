@@ -1,7 +1,8 @@
 "use strict";
 /// <reference path="contracts/Driver.ts" />
-/// <reference path="contracts/ModelComponent.ts" />
-/// <reference path="contracts/ModelProxy.ts" />
+/// <reference path="contracts/DriverProvider.ts" />
+/// <reference path="contracts/Component.ts" />
+/// <reference path="contracts/ComponentProvider.ts" />
 /// <reference path="model/interfaces/IModel.ts" />
 /// <reference path="model/interfaces/IModelQuery.ts" />
 /// <reference path="model/interfaces/IModelFillable.ts" />
