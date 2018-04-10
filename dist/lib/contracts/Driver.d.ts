@@ -1,10 +1,9 @@
 declare namespace Najs.Contracts.Eloquent {
-    interface Driver<NativeRecord> {
-        getClassName(): string;
+    interface Driver<NativeRecord> extends Najs.Contracts.Autoload {
         initialize(data?: NativeRecord | Object): void;
-        getRecord(): any;
+        getRecord(): NativeRecord;
         getAttribute<T>(name: string): T;
-        setAttribute<T>(name: string, value: T): this;
+        setAttribute<T>(name: string, value: T): boolean;
         getPrimaryKeyName(): string;
         toObject(): Object;
         newQuery(): any;
