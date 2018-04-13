@@ -12,8 +12,9 @@ describe('ComponentProvider', function() {
       class Test {
         static className = 'Test'
       }
-      EloquentComponentProvider.register(Test, 'test')
+      const chainable = EloquentComponentProvider.register(Test, 'test')
 
+      expect(chainable === EloquentComponentProvider).toBe(true)
       expect(EloquentComponentProvider['components']).toEqual({
         test: {
           className: 'Test',
@@ -46,7 +47,9 @@ describe('ComponentProvider', function() {
   describe('.bind()', function() {
     it('auto creates an array for model if the there is no key in "binding"', function() {
       expect(EloquentComponentProvider['binding']).toEqual({})
-      EloquentComponentProvider.bind('Model', 'test')
+      const chainable = EloquentComponentProvider.bind('Model', 'test')
+
+      expect(chainable === EloquentComponentProvider).toBe(true)
       expect(EloquentComponentProvider['binding']).toEqual({
         Model: ['test']
       })
@@ -78,7 +81,7 @@ describe('ComponentProvider', function() {
   describe('.resolve()', function() {
     it('throws ReferenceError if the component name is not register yet', function() {
       try {
-        EloquentComponentProvider.resolve('not-found', <any>{}, <any>{})
+        EloquentComponentProvider.resolve('not-found')
       } catch (error) {
         expect(error).toBeInstanceOf(ReferenceError)
         expect(error.message).toEqual('Component "not-found" is not found.')
@@ -91,7 +94,7 @@ describe('ComponentProvider', function() {
       const makeSpy = Sinon.spy(NajsBinding, 'make')
       const model = {}
       const driver = {}
-      EloquentComponentProvider.resolve('test', <any>model, <any>driver)
+      EloquentComponentProvider.resolve('test')
       expect(makeSpy.calledWith('Test', [model, driver]))
       makeSpy.restore()
     })
@@ -132,9 +135,121 @@ describe('ComponentProvider', function() {
     })
   })
 
-  describe('.proxify()', function() {
-    it('calls .getComponents(), calls .getModelComponentName() and merge them together', function() {
-      EloquentComponentProvider.proxify(<any>{}, <any>{})
+  describe('.extend()', function() {
+    it('calls .resolveComponents() then loops and calls Component.extend()', function() {
+      const componentA = {
+        getClassName() {
+          return 'ComponentA'
+        },
+        extend() {}
+      }
+      const componentB = {
+        getClassName() {
+          return 'ComponentB'
+        },
+        extend() {}
+      }
+      const extendComponentASpy = Sinon.spy(componentA, 'extend')
+      const extendComponentBSpy = Sinon.spy(componentB, 'extend')
+
+      const resolveComponentsStub = Sinon.stub(EloquentComponentProvider, <any>'resolveComponents')
+      resolveComponentsStub.returns([componentA, componentB])
+
+      const model = {
+        getClassName() {
+          return 'Test'
+        }
+      }
+
+      EloquentComponentProvider.extend(model, <any>{})
+      expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(true)
+      expect(extendComponentBSpy.calledWith(Object.getPrototypeOf(model))).toBe(true)
+      expect(EloquentComponentProvider['extended']['Test']).toEqual(['ComponentA', 'ComponentB'])
+
+      resolveComponentsStub.restore()
+    })
+
+    it('only calls Component.extend() once', function() {
+      const componentA = {
+        getClassName() {
+          return 'ComponentA'
+        },
+        extend() {}
+      }
+      const extendComponentASpy = Sinon.spy(componentA, 'extend')
+      const resolveComponentsStub = Sinon.stub(EloquentComponentProvider, <any>'resolveComponents')
+      resolveComponentsStub.returns([componentA])
+
+      const model = {
+        getClassName() {
+          return 'Test'
+        }
+      }
+      EloquentComponentProvider.extend(model, <any>{})
+      expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(false)
+
+      resolveComponentsStub.restore()
+    })
+  })
+
+  describe('private .resolveComponents()', function() {
+    it('merges components from .getComponents() and driver.getModelComponentName()', function() {
+      const model = {
+        getClassName() {
+          return 'Model'
+        }
+      }
+      const driver = {
+        getModelComponentName() {
+          return 'DriverComponent'
+        },
+        getModelComponentOrder(components: string[]) {
+          return components
+        }
+      }
+
+      const getComponentsStub = Sinon.stub(EloquentComponentProvider, 'getComponents')
+      getComponentsStub.returns(['A'])
+
+      const resolveStub = Sinon.stub(EloquentComponentProvider, 'resolve')
+      resolveStub.callsFake(function(component: string) {
+        return 'resolved:' + component
+      })
+
+      const result = EloquentComponentProvider['resolveComponents'](model, <any>driver)
+      expect(result).toEqual(['resolved:A', 'resolved:DriverComponent'])
+
+      resolveStub.restore()
+      getComponentsStub.restore()
+    })
+
+    it('skips the driver component if not found, apply driver.getModelComponentOrder(), use .resolve()', function() {
+      const model = {
+        getClassName() {
+          return 'Model'
+        }
+      }
+      const driver = {
+        getModelComponentName() {},
+        getModelComponentOrder(components: string[]) {
+          return components.reverse()
+        }
+      }
+
+      const getComponentsStub = Sinon.stub(EloquentComponentProvider, 'getComponents')
+      getComponentsStub.returns(['A', 'B'])
+
+      const resolveStub = Sinon.stub(EloquentComponentProvider, 'resolve')
+      resolveStub.callsFake(function(component: string) {
+        return 'resolved:' + component
+      })
+
+      const result = EloquentComponentProvider['resolveComponents'](model, <any>driver)
+      expect(result).toEqual(['resolved:B', 'resolved:A'])
+
+      expect(resolveStub.callCount).toEqual(2)
+      resolveStub.restore()
+      getComponentsStub.restore()
     })
   })
 })

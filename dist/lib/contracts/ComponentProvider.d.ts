@@ -2,13 +2,12 @@
 declare namespace Najs.Contracts.Eloquent {
     interface ComponentProvider extends Najs.Contracts.Autoload {
         /**
-         * Proxify the model and driver.
-         * The driver can add it's components and reorder components.
+         * Extend and apply components to Model
          *
          * @param model model instance
          * @param driver driver instance
          */
-        proxify(model: Najs.Contracts.Autoload, driver: Driver<any>): any;
+        extend(model: Najs.Contracts.Autoload, driver: Driver<any>): void;
         /**
          * Get default components list for all models.
          */
@@ -23,10 +22,8 @@ declare namespace Najs.Contracts.Eloquent {
          * Resolve an instance of Component
          *
          * @param {string} component component name
-         * @param {Model} model model instance
-         * @param {Driver} driver driver instance
          */
-        resolve(component: string, model: Najs.Contracts.Autoload, driver: Driver<any>): Component;
+        resolve(component: string): Component;
         /**
          * Register a component with specific name
          *

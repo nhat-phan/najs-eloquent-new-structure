@@ -12,7 +12,8 @@ describe('ComponentProvider', function () {
             class Test {
             }
             Test.className = 'Test';
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.register(Test, 'test');
+            const chainable = EloquentComponentProviderFacade_1.EloquentComponentProvider.register(Test, 'test');
+            expect(chainable === EloquentComponentProviderFacade_1.EloquentComponentProvider).toBe(true);
             expect(EloquentComponentProviderFacade_1.EloquentComponentProvider['components']).toEqual({
                 test: {
                     className: 'Test',
@@ -42,7 +43,8 @@ describe('ComponentProvider', function () {
     describe('.bind()', function () {
         it('auto creates an array for model if the there is no key in "binding"', function () {
             expect(EloquentComponentProviderFacade_1.EloquentComponentProvider['binding']).toEqual({});
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.bind('Model', 'test');
+            const chainable = EloquentComponentProviderFacade_1.EloquentComponentProvider.bind('Model', 'test');
+            expect(chainable === EloquentComponentProviderFacade_1.EloquentComponentProvider).toBe(true);
             expect(EloquentComponentProviderFacade_1.EloquentComponentProvider['binding']).toEqual({
                 Model: ['test']
             });
@@ -71,7 +73,7 @@ describe('ComponentProvider', function () {
     describe('.resolve()', function () {
         it('throws ReferenceError if the component name is not register yet', function () {
             try {
-                EloquentComponentProviderFacade_1.EloquentComponentProvider.resolve('not-found', {}, {});
+                EloquentComponentProviderFacade_1.EloquentComponentProvider.resolve('not-found');
             }
             catch (error) {
                 expect(error).toBeInstanceOf(ReferenceError);
@@ -84,7 +86,7 @@ describe('ComponentProvider', function () {
             const makeSpy = Sinon.spy(NajsBinding, 'make');
             const model = {};
             const driver = {};
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.resolve('test', model, driver);
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.resolve('test');
             expect(makeSpy.calledWith('Test', [model, driver]));
             makeSpy.restore();
         });
@@ -121,9 +123,104 @@ describe('ComponentProvider', function () {
             expect(EloquentComponentProviderFacade_1.EloquentComponentProvider.getComponents()).toEqual(['b', 'c', 'a', 'd']);
         });
     });
-    describe('.proxify()', function () {
-        it('calls .getComponents(), calls .getModelComponentName() and merge them together', function () {
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.proxify({}, {});
+    describe('.extend()', function () {
+        it('calls .resolveComponents() then loops and calls Component.extend()', function () {
+            const componentA = {
+                getClassName() {
+                    return 'ComponentA';
+                },
+                extend() { }
+            };
+            const componentB = {
+                getClassName() {
+                    return 'ComponentB';
+                },
+                extend() { }
+            };
+            const extendComponentASpy = Sinon.spy(componentA, 'extend');
+            const extendComponentBSpy = Sinon.spy(componentB, 'extend');
+            const resolveComponentsStub = Sinon.stub(EloquentComponentProviderFacade_1.EloquentComponentProvider, 'resolveComponents');
+            resolveComponentsStub.returns([componentA, componentB]);
+            const model = {
+                getClassName() {
+                    return 'Test';
+                }
+            };
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(model, {});
+            expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(true);
+            expect(extendComponentBSpy.calledWith(Object.getPrototypeOf(model))).toBe(true);
+            expect(EloquentComponentProviderFacade_1.EloquentComponentProvider['extended']['Test']).toEqual(['ComponentA', 'ComponentB']);
+            resolveComponentsStub.restore();
+        });
+        it('only calls Component.extend() once', function () {
+            const componentA = {
+                getClassName() {
+                    return 'ComponentA';
+                },
+                extend() { }
+            };
+            const extendComponentASpy = Sinon.spy(componentA, 'extend');
+            const resolveComponentsStub = Sinon.stub(EloquentComponentProviderFacade_1.EloquentComponentProvider, 'resolveComponents');
+            resolveComponentsStub.returns([componentA]);
+            const model = {
+                getClassName() {
+                    return 'Test';
+                }
+            };
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(model, {});
+            expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(false);
+            resolveComponentsStub.restore();
+        });
+    });
+    describe('private .resolveComponents()', function () {
+        it('merges components from .getComponents() and driver.getModelComponentName()', function () {
+            const model = {
+                getClassName() {
+                    return 'Model';
+                }
+            };
+            const driver = {
+                getModelComponentName() {
+                    return 'DriverComponent';
+                },
+                getModelComponentOrder(components) {
+                    return components;
+                }
+            };
+            const getComponentsStub = Sinon.stub(EloquentComponentProviderFacade_1.EloquentComponentProvider, 'getComponents');
+            getComponentsStub.returns(['A']);
+            const resolveStub = Sinon.stub(EloquentComponentProviderFacade_1.EloquentComponentProvider, 'resolve');
+            resolveStub.callsFake(function (component) {
+                return 'resolved:' + component;
+            });
+            const result = EloquentComponentProviderFacade_1.EloquentComponentProvider['resolveComponents'](model, driver);
+            expect(result).toEqual(['resolved:A', 'resolved:DriverComponent']);
+            resolveStub.restore();
+            getComponentsStub.restore();
+        });
+        it('skips the driver component if not found, apply driver.getModelComponentOrder(), use .resolve()', function () {
+            const model = {
+                getClassName() {
+                    return 'Model';
+                }
+            };
+            const driver = {
+                getModelComponentName() { },
+                getModelComponentOrder(components) {
+                    return components.reverse();
+                }
+            };
+            const getComponentsStub = Sinon.stub(EloquentComponentProviderFacade_1.EloquentComponentProvider, 'getComponents');
+            getComponentsStub.returns(['A', 'B']);
+            const resolveStub = Sinon.stub(EloquentComponentProviderFacade_1.EloquentComponentProvider, 'resolve');
+            resolveStub.callsFake(function (component) {
+                return 'resolved:' + component;
+            });
+            const result = EloquentComponentProviderFacade_1.EloquentComponentProvider['resolveComponents'](model, driver);
+            expect(result).toEqual(['resolved:B', 'resolved:A']);
+            expect(resolveStub.callCount).toEqual(2);
+            resolveStub.restore();
+            getComponentsStub.restore();
         });
     });
 });

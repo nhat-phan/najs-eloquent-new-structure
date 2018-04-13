@@ -35,7 +35,7 @@ namespace Najs.Contracts.Eloquent {
      * @param {string} driver Driver class name
      * @param {string} name
      */
-    register(driver: string, name: string): void
+    register(driver: string, name: string): this
     /**
      * Register a driver with specific name
      *
@@ -43,14 +43,14 @@ namespace Najs.Contracts.Eloquent {
      * @param {string} name
      * @param {boolean} isDefault
      */
-    register(driver: string, name: string, isDefault: boolean): void
+    register(driver: string, name: string, isDefault: boolean): this
     /**
      * Register a driver with specific name
      *
      * @param {Function} driver Driver's constructor
      * @param {string} name
      */
-    register(driver: Function, name: string): void
+    register(driver: Function, name: string): this
     /**
      * Register a driver with specific name
      *
@@ -58,7 +58,7 @@ namespace Najs.Contracts.Eloquent {
      * @param {string} name
      * @param {boolean} isDefault
      */
-    register(driver: Function, name: string, isDefault: boolean): void
+    register(driver: Function, name: string, isDefault: boolean): this
 
     /**
      * Bind a model to specific driver
@@ -66,6 +66,6 @@ namespace Najs.Contracts.Eloquent {
      * @param {string} model Model's name
      * @param {string} name Driver's name
      */
-    bind(model: string, name: string): void
+    bind(model: string, name: string): this
   }
 }

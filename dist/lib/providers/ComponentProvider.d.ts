@@ -11,10 +11,14 @@ export declare class ComponentProvider implements Najs.Contracts.Eloquent.Compon
     protected binding: {
         [key: string]: string[];
     };
+    protected extended: {
+        [key: string]: string[];
+    };
     getClassName(): string;
-    proxify(model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): any;
+    extend(model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): any;
+    private resolveComponents(model, driver);
     getComponents(model?: string): string[];
-    resolve(component: string, model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): Najs.Contracts.Eloquent.Component;
+    resolve(component: string): Najs.Contracts.Eloquent.Component;
     register(component: string | Function, name: string, isDefault?: boolean): this;
     bind(model: string, component: string): this;
 }

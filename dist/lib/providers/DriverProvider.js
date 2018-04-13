@@ -41,14 +41,18 @@ class DriverProvider extends najs_facade_1.Facade {
         return this.drivers[this.binding[modelName]].driverClassName;
     }
     register(driver, name, isDefault = false) {
-        najs_binding_1.register(driver);
+        if (typeof driver === 'function') {
+            najs_binding_1.register(driver);
+        }
         this.drivers[name] = {
             driverClassName: najs_binding_1.getClassName(driver),
             isDefault: isDefault
         };
+        return this;
     }
     bind(model, driver) {
         this.binding[model] = driver;
+        return this;
     }
 }
 DriverProvider.className = constants_1.NajsEloquent.Provider.DriverProvider;

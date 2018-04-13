@@ -7,18 +7,32 @@ class ComponentProvider {
     constructor() {
         this.components = {};
         this.binding = {};
+        this.extended = {};
     }
     getClassName() {
         return constants_1.NajsEloquent.Provider.ComponentProvider;
     }
-    proxify(model, driver) {
-        // const modelComponents = this.getComponents(model.getClassName())
-        // const driverComponents = driver.getModelComponentName()
-        // const combinedComponents = modelComponents.concat(driverComponents ? [driverComponents] : [])
-        // const components = driver.getModelComponentOrder(combinedComponents).map((name: string) => {
-        //   return this.resolve(name, model, driver)
-        // })
-        // return components
+    extend(model, driver) {
+        const prototype = Object.getPrototypeOf(model);
+        const components = this.resolveComponents(model, driver);
+        for (const component of components) {
+            if (typeof this.extended[model.getClassName()] === 'undefined') {
+                this.extended[model.getClassName()] = [];
+            }
+            if (this.extended[model.getClassName()].indexOf(component.getClassName()) !== -1) {
+                continue;
+            }
+            this.extended[model.getClassName()].push(component.getClassName());
+            component.extend(prototype);
+        }
+    }
+    resolveComponents(model, driver) {
+        const modelComponents = this.getComponents(model.getClassName());
+        const driverComponents = driver.getModelComponentName();
+        const combinedComponents = modelComponents.concat(driverComponents ? [driverComponents] : []);
+        return driver.getModelComponentOrder(combinedComponents).map((name) => {
+            return this.resolve(name);
+        });
     }
     getComponents(model) {
         const defaultComponents = Object.keys(this.components).filter((name) => {
@@ -29,11 +43,11 @@ class ComponentProvider {
             return this.components[a].index - this.components[b].index;
         });
     }
-    resolve(component, model, driver) {
+    resolve(component) {
         if (typeof this.components[component] === 'undefined') {
             throw new ReferenceError('Component "' + component + '" is not found.');
         }
-        return najs_binding_1.make(this.components[component].className, [model, driver]);
+        return najs_binding_1.make(this.components[component].className);
     }
     register(component, name, isDefault = false) {
         if (typeof component === 'function') {

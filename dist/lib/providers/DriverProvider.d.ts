@@ -17,6 +17,6 @@ export declare class DriverProvider extends Facade implements Najs.Contracts.Elo
     protected createDriver<T>(model: IAutoload, driverClass: string, isGuarded: boolean): Najs.Contracts.Eloquent.Driver<T>;
     create<T extends Object = {}>(model: IAutoload, isGuarded?: boolean): Najs.Contracts.Eloquent.Driver<T>;
     findDriverClassName(model: IAutoload | string): string;
-    register(driver: any, name: string, isDefault?: boolean): void;
-    bind(model: string, driver: string): void;
+    register(driver: string | Function, name: string, isDefault?: boolean): this;
+    bind(model: string, driver: string): this;
 }

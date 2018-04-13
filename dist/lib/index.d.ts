@@ -7,4 +7,5 @@
 /// <reference path="model/interfaces/IModelFillable.d.ts" />
 import { BuiltinClasses } from './builtin';
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade';
+export { EloquentComponentProviderFacade, EloquentComponentProvider } from './facades/global/EloquentComponentProviderFacade';
 export declare const NajsEloquent: BuiltinClasses;

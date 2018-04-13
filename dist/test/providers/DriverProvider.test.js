@@ -10,9 +10,10 @@ class FakeDriver {
 FakeDriver.className = 'FakeDriver';
 describe('DriverProvider', function () {
     describe('.register()', function () {
-        it('registers class to ClassRegistry by using najs-binding', function () {
+        it('registers class to ClassRegistry by using najs-binding if the driver is a function', function () {
             const registerSpy = Sinon.spy(NajsBinding, 'register');
-            EloquentDriverProviderFacade_1.EloquentDriverProvider.register(FakeDriver, 'fake');
+            const chainable = EloquentDriverProviderFacade_1.EloquentDriverProvider.register(FakeDriver, 'fake');
+            expect(chainable === EloquentDriverProviderFacade_1.EloquentDriverProvider).toBe(true);
             expect(registerSpy.calledWith(FakeDriver)).toBe(true);
             expect(NajsBinding.ClassRegistry.has(FakeDriver.className)).toBe(true);
             expect(EloquentDriverProviderFacade_1.EloquentDriverProvider['drivers']['fake']).toEqual({
@@ -24,6 +25,12 @@ describe('DriverProvider', function () {
                 driverClassName: 'FakeDriver',
                 isDefault: true
             });
+            registerSpy.restore();
+        });
+        it('registers class to ClassRegistry by using najs-binding if the driver is a function', function () {
+            const registerSpy = Sinon.spy(NajsBinding, 'register');
+            EloquentDriverProviderFacade_1.EloquentDriverProvider.register('FakeDriver', 'fake');
+            expect(registerSpy.calledWith(FakeDriver)).toBe(false);
             registerSpy.restore();
         });
     });
@@ -102,7 +109,8 @@ describe('DriverProvider', function () {
         it('simply assigns driver and model to private binding variable', function () {
             EloquentDriverProviderFacade_1.EloquentDriverProvider['binding'] = {};
             expect(EloquentDriverProviderFacade_1.EloquentDriverProvider['binding']).toEqual({});
-            EloquentDriverProviderFacade_1.EloquentDriverProvider.bind('model', 'driver');
+            const chainable = EloquentDriverProviderFacade_1.EloquentDriverProvider.bind('model', 'driver');
+            expect(chainable === EloquentDriverProviderFacade_1.EloquentDriverProvider).toBe(true);
             expect(EloquentDriverProviderFacade_1.EloquentDriverProvider['binding']).toEqual({ model: 'driver' });
             EloquentDriverProviderFacade_1.EloquentDriverProvider.bind('model', 'driver-override');
             expect(EloquentDriverProviderFacade_1.EloquentDriverProvider['binding']).toEqual({ model: 'driver-override' });

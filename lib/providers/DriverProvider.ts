@@ -57,16 +57,20 @@ export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.Dr
     return this.drivers[this.binding[modelName]].driverClassName
   }
 
-  register(driver: any, name: string, isDefault: boolean = false): void {
-    register(driver)
+  register(driver: string | Function, name: string, isDefault: boolean = false): this {
+    if (typeof driver === 'function') {
+      register(driver)
+    }
     this.drivers[name] = {
       driverClassName: getClassName(driver),
       isDefault: isDefault
     }
+    return this
   }
 
-  bind(model: string, driver: string) {
+  bind(model: string, driver: string): this {
     this.binding[model] = driver
+    return this
   }
 }
 register(DriverProvider)

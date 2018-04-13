@@ -11,10 +11,12 @@ class FakeDriver {
 
 describe('DriverProvider', function() {
   describe('.register()', function() {
-    it('registers class to ClassRegistry by using najs-binding', function() {
+    it('registers class to ClassRegistry by using najs-binding if the driver is a function', function() {
       const registerSpy = Sinon.spy(NajsBinding, 'register')
 
-      EloquentDriverProvider.register(FakeDriver, 'fake')
+      const chainable = EloquentDriverProvider.register(FakeDriver, 'fake')
+
+      expect(chainable === EloquentDriverProvider).toBe(true)
       expect(registerSpy.calledWith(FakeDriver)).toBe(true)
       expect(NajsBinding.ClassRegistry.has(FakeDriver.className)).toBe(true)
       expect(EloquentDriverProvider['drivers']['fake']).toEqual({
@@ -27,6 +29,15 @@ describe('DriverProvider', function() {
         driverClassName: 'FakeDriver',
         isDefault: true
       })
+
+      registerSpy.restore()
+    })
+
+    it('registers class to ClassRegistry by using najs-binding if the driver is a function', function() {
+      const registerSpy = Sinon.spy(NajsBinding, 'register')
+
+      EloquentDriverProvider.register('FakeDriver', 'fake')
+      expect(registerSpy.calledWith(FakeDriver)).toBe(false)
 
       registerSpy.restore()
     })
@@ -119,7 +130,9 @@ describe('DriverProvider', function() {
       EloquentDriverProvider['binding'] = {}
       expect(EloquentDriverProvider['binding']).toEqual({})
 
-      EloquentDriverProvider.bind('model', 'driver')
+      const chainable = EloquentDriverProvider.bind('model', 'driver')
+
+      expect(chainable === EloquentDriverProvider).toBe(true)
       expect(EloquentDriverProvider['binding']).toEqual({ model: 'driver' })
 
       EloquentDriverProvider.bind('model', 'driver-override')

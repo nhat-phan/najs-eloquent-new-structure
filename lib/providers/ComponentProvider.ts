@@ -18,18 +18,40 @@ export class ComponentProvider implements Najs.Contracts.Eloquent.ComponentProvi
     [key: string]: string[]
   } = {}
 
+  protected extended: {
+    [key: string]: string[]
+  } = {}
+
   getClassName() {
     return NajsEloquent.Provider.ComponentProvider
   }
 
-  proxify(model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): any {
-    // const modelComponents = this.getComponents(model.getClassName())
-    // const driverComponents = driver.getModelComponentName()
-    // const combinedComponents = modelComponents.concat(driverComponents ? [driverComponents] : [])
-    // const components = driver.getModelComponentOrder(combinedComponents).map((name: string) => {
-    //   return this.resolve(name, model, driver)
-    // })
-    // return components
+  extend(model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): any {
+    const prototype = Object.getPrototypeOf(model)
+    const components = this.resolveComponents(model, driver)
+    for (const component of components) {
+      if (typeof this.extended[model.getClassName()] === 'undefined') {
+        this.extended[model.getClassName()] = []
+      }
+
+      if (this.extended[model.getClassName()].indexOf(component.getClassName()) !== -1) {
+        continue
+      }
+      this.extended[model.getClassName()].push(component.getClassName())
+      component.extend(prototype)
+    }
+  }
+
+  private resolveComponents(
+    model: Najs.Contracts.Autoload,
+    driver: Najs.Contracts.Eloquent.Driver<any>
+  ): Najs.Contracts.Eloquent.Component[] {
+    const modelComponents = this.getComponents(model.getClassName())
+    const driverComponents = driver.getModelComponentName()
+    const combinedComponents = modelComponents.concat(driverComponents ? [driverComponents] : [])
+    return driver.getModelComponentOrder(combinedComponents).map((name: string) => {
+      return this.resolve(name)
+    })
   }
 
   getComponents(model?: string): string[] {
@@ -42,15 +64,11 @@ export class ComponentProvider implements Najs.Contracts.Eloquent.ComponentProvi
     })
   }
 
-  resolve(
-    component: string,
-    model: Najs.Contracts.Autoload,
-    driver: Najs.Contracts.Eloquent.Driver<any>
-  ): Najs.Contracts.Eloquent.Component {
+  resolve(component: string): Najs.Contracts.Eloquent.Component {
     if (typeof this.components[component] === 'undefined') {
       throw new ReferenceError('Component "' + component + '" is not found.')
     }
-    return make(this.components[component].className, [model, driver])
+    return make(this.components[component].className)
   }
 
   register(component: string | Function, name: string, isDefault: boolean = false): this {

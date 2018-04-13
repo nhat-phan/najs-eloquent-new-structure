@@ -9,8 +9,13 @@
 import { BuiltinClasses } from './builtin'
 import { container as FacadeContainer } from './facades/container'
 import { DriverProvider } from './providers/DriverProvider'
+import { ComponentProvider } from './providers/ComponentProvider'
 
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
+export {
+  EloquentComponentProviderFacade,
+  EloquentComponentProvider
+} from './facades/global/EloquentComponentProviderFacade'
 
 // import { Fillable as FillableClass } from './model/components/Fillable'
 
@@ -25,6 +30,7 @@ export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/
 export const NajsEloquent: BuiltinClasses = {
   FacadeContainer: FacadeContainer,
   Provider: {
-    DriverProvider: DriverProvider
+    DriverProvider: DriverProvider,
+    ComponentProvider: ComponentProvider
   }
 }
