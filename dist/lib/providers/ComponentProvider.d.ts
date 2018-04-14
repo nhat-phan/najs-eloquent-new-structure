@@ -15,7 +15,7 @@ export declare class ComponentProvider implements Najs.Contracts.Eloquent.Compon
         [key: string]: string[];
     };
     getClassName(): string;
-    extend(model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): any;
+    extend(model: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any;
     private resolveComponents(model, driver);
     getComponents(model?: string): string[];
     resolve(component: string): Najs.Contracts.Eloquent.Component;

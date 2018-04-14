@@ -8,13 +8,13 @@ namespace Najs.Contracts.Eloquent {
      *
      * @param {Model} model
      */
-    create<T>(model: Najs.Contracts.Autoload): Driver<T>
+    create<T>(model: Object): Driver<T>
     /**
      * Create a driver instance without guarding
      *
      * @param {Model} model
      */
-    create<T>(model: Najs.Contracts.Autoload, isGuarded: boolean): Driver<T>
+    create<T>(model: Object, isGuarded: boolean): Driver<T>
 
     /**
      * Find driver for given model's name
@@ -27,7 +27,7 @@ namespace Najs.Contracts.Eloquent {
      *
      * @param {Model} model
      */
-    findDriverClassName(model: Najs.Contracts.Autoload): string
+    findDriverClassName(model: Object): string
 
     /**
      * Register a driver with specific name

@@ -1,7 +1,7 @@
 /// <reference path="../contracts/DriverProvider.ts" />
 
 import { Facade } from 'najs-facade'
-import { register, make, getClassName, IAutoload } from 'najs-binding'
+import { register, make, getClassName } from 'najs-binding'
 import { NajsEloquent } from '../constants'
 
 export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.DriverProvider {
@@ -35,22 +35,18 @@ export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.Dr
     return first
   }
 
-  protected createDriver<T>(
-    model: IAutoload,
-    driverClass: string,
-    isGuarded: boolean
-  ): Najs.Contracts.Eloquent.Driver<T> {
+  protected createDriver<T>(model: Object, driverClass: string, isGuarded: boolean): Najs.Contracts.Eloquent.Driver<T> {
     const driver = make<Najs.Contracts.Eloquent.Driver<T>>(driverClass, [model, isGuarded])
     // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
     return driver
   }
 
-  create<T extends Object = {}>(model: IAutoload, isGuarded: boolean = true): Najs.Contracts.Eloquent.Driver<T> {
+  create<T extends Object = {}>(model: Object, isGuarded: boolean = true): Najs.Contracts.Eloquent.Driver<T> {
     return this.createDriver(model, this.findDriverClassName(model), isGuarded)
   }
 
-  findDriverClassName(model: IAutoload | string): string {
-    const modelName = typeof model === 'string' ? model : model.getClassName()
+  findDriverClassName(model: Object | string): string {
+    const modelName = typeof model === 'string' ? model : getClassName(model)
     if (this.binding[modelName] === 'undefined' || typeof this.drivers[this.binding[modelName]] === 'undefined') {
       return this.findDefaultDriver()
     }

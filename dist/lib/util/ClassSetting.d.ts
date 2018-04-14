@@ -1,5 +1,4 @@
 /// <reference path="interfaces/ISettingReader.d.ts" />
-import { IAutoload } from 'najs-binding';
 export declare const CREATE_SAMPLE = "create-sample";
 export declare class ClassSetting {
     protected sample: Object;
@@ -16,6 +15,6 @@ export declare class ClassSetting {
     /**
      * get ClassSetting Reader of an instance with instance's value
      */
-    static of(instance: IAutoload): ClassSetting;
-    static of(instance: IAutoload, cache: boolean): ClassSetting;
+    static of(instance: Object): ClassSetting;
+    static of(instance: Object, cache: boolean): ClassSetting;
 }

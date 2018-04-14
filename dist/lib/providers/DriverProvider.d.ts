@@ -1,6 +1,5 @@
 /// <reference path="../contracts/DriverProvider.d.ts" />
 import { Facade } from 'najs-facade';
-import { IAutoload } from 'najs-binding';
 export declare class DriverProvider extends Facade implements Najs.Contracts.Eloquent.DriverProvider {
     static className: string;
     protected drivers: {
@@ -14,9 +13,9 @@ export declare class DriverProvider extends Facade implements Najs.Contracts.Elo
     };
     getClassName(): string;
     protected findDefaultDriver(): string;
-    protected createDriver<T>(model: IAutoload, driverClass: string, isGuarded: boolean): Najs.Contracts.Eloquent.Driver<T>;
-    create<T extends Object = {}>(model: IAutoload, isGuarded?: boolean): Najs.Contracts.Eloquent.Driver<T>;
-    findDriverClassName(model: IAutoload | string): string;
+    protected createDriver<T>(model: Object, driverClass: string, isGuarded: boolean): Najs.Contracts.Eloquent.Driver<T>;
+    create<T extends Object = {}>(model: Object, isGuarded?: boolean): Najs.Contracts.Eloquent.Driver<T>;
+    findDriverClassName(model: Object | string): string;
     register(driver: string | Function, name: string, isDefault?: boolean): this;
     bind(model: string, driver: string): this;
 }

@@ -144,11 +144,10 @@ describe('DriverProvider', function() {
     it('creates a driver instance with class name provided by .findDriverClassName()', function() {
       const createDriverSpy = Sinon.spy(EloquentDriverProvider, <any>'createDriver')
       const findDriverClassNameSpy = Sinon.spy(EloquentDriverProvider, 'findDriverClassName')
-      const model = {
-        getClassName() {
-          return 'test'
-        }
+      class Model {
+        static className = 'Test'
       }
+      const model = new Model()
       const instance = EloquentDriverProvider.create(<any>model)
 
       expect(findDriverClassNameSpy.calledWith(model)).toBe(true)

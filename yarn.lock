@@ -2398,9 +2398,9 @@ mysql@^2.15.0:
     safe-buffer "5.1.1"
     sqlstring "2.3.0"
 
-najs-binding@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/najs-binding/-/najs-binding-1.7.0.tgz#6cd5fe1c3b5d34f4c8c85ec1053e323cd8ad943d"
+najs-binding@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/najs-binding/-/najs-binding-1.8.0.tgz#e130a57cf6a9000cc5e6cec1306042ed2f549ae9"
   dependencies:
     lodash "^4.17.4"
 

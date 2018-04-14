@@ -1,6 +1,6 @@
 /// <reference path="./interfaces/ISettingReader.ts" />
 
-import { IAutoload, make } from 'najs-binding'
+import { make, getClassName } from 'najs-binding'
 
 export const CREATE_SAMPLE = 'create-sample'
 
@@ -42,10 +42,10 @@ export class ClassSetting {
   /**
    * get ClassSetting Reader of an instance with instance's value
    */
-  static of(instance: IAutoload): ClassSetting
-  static of(instance: IAutoload, cache: boolean): ClassSetting
-  static of(instance: IAutoload, cache: boolean = true): ClassSetting {
-    const className = instance.getClassName()
+  static of(instance: Object): ClassSetting
+  static of(instance: Object, cache: boolean): ClassSetting
+  static of(instance: Object, cache: boolean = true): ClassSetting {
+    const className = getClassName(instance)
     if (!this.samples[className] || !cache) {
       this.samples[className] = new ClassSetting(make(className, [CREATE_SAMPLE]))
     }

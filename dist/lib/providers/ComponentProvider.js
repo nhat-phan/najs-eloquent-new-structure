@@ -16,18 +16,19 @@ class ComponentProvider {
         const prototype = Object.getPrototypeOf(model);
         const components = this.resolveComponents(model, driver);
         for (const component of components) {
-            if (typeof this.extended[model.getClassName()] === 'undefined') {
-                this.extended[model.getClassName()] = [];
+            const className = najs_binding_1.getClassName(model);
+            if (typeof this.extended[className] === 'undefined') {
+                this.extended[className] = [];
             }
-            if (this.extended[model.getClassName()].indexOf(component.getClassName()) !== -1) {
+            if (this.extended[className].indexOf(component.getClassName()) !== -1) {
                 continue;
             }
-            this.extended[model.getClassName()].push(component.getClassName());
+            this.extended[className].push(component.getClassName());
             component.extend(prototype);
         }
     }
     resolveComponents(model, driver) {
-        const modelComponents = this.getComponents(model.getClassName());
+        const modelComponents = this.getComponents(najs_binding_1.getClassName(model));
         const driverComponents = driver.getModelComponentName();
         const combinedComponents = modelComponents.concat(driverComponents ? [driverComponents] : []);
         return driver.getModelComponentOrder(combinedComponents).map((name) => {

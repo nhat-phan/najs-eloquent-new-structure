@@ -14,6 +14,7 @@ describe('Model/Fillable', function() {
 
   // describe('Integration', function() {
   //   class User extends Eloquent {
+  //     static className = 'User'
   //     static fillable = ['first_name', 'last_name']
   //   }
 

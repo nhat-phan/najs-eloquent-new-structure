@@ -26,27 +26,28 @@ export class ComponentProvider implements Najs.Contracts.Eloquent.ComponentProvi
     return NajsEloquent.Provider.ComponentProvider
   }
 
-  extend(model: Najs.Contracts.Autoload, driver: Najs.Contracts.Eloquent.Driver<any>): any {
+  extend(model: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any {
     const prototype = Object.getPrototypeOf(model)
     const components = this.resolveComponents(model, driver)
     for (const component of components) {
-      if (typeof this.extended[model.getClassName()] === 'undefined') {
-        this.extended[model.getClassName()] = []
+      const className = getClassName(model)
+      if (typeof this.extended[className] === 'undefined') {
+        this.extended[className] = []
       }
 
-      if (this.extended[model.getClassName()].indexOf(component.getClassName()) !== -1) {
+      if (this.extended[className].indexOf(component.getClassName()) !== -1) {
         continue
       }
-      this.extended[model.getClassName()].push(component.getClassName())
+      this.extended[className].push(component.getClassName())
       component.extend(prototype)
     }
   }
 
   private resolveComponents(
-    model: Najs.Contracts.Autoload,
+    model: Object,
     driver: Najs.Contracts.Eloquent.Driver<any>
   ): Najs.Contracts.Eloquent.Component[] {
-    const modelComponents = this.getComponents(model.getClassName())
+    const modelComponents = this.getComponents(getClassName(model))
     const driverComponents = driver.getModelComponentName()
     const combinedComponents = modelComponents.concat(driverComponents ? [driverComponents] : [])
     return driver.getModelComponentOrder(combinedComponents).map((name: string) => {

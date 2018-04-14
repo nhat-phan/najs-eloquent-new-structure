@@ -137,29 +137,33 @@ describe('ComponentProvider', function() {
 
   describe('.extend()', function() {
     it('calls .resolveComponents() then loops and calls Component.extend()', function() {
-      const componentA = {
+      class ComponentA {
         getClassName() {
           return 'ComponentA'
-        },
+        }
+
         extend() {}
       }
-      const componentB = {
+      class ComponentB {
         getClassName() {
           return 'ComponentB'
-        },
+        }
+
         extend() {}
       }
+      const componentA = new ComponentA()
+      const componentB = new ComponentB()
+
       const extendComponentASpy = Sinon.spy(componentA, 'extend')
       const extendComponentBSpy = Sinon.spy(componentB, 'extend')
 
       const resolveComponentsStub = Sinon.stub(EloquentComponentProvider, <any>'resolveComponents')
       resolveComponentsStub.returns([componentA, componentB])
 
-      const model = {
-        getClassName() {
-          return 'Test'
-        }
+      class Model {
+        static className = 'Test'
       }
+      const model = new Model()
 
       EloquentComponentProvider.extend(model, <any>{})
       expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(true)
@@ -170,21 +174,23 @@ describe('ComponentProvider', function() {
     })
 
     it('only calls Component.extend() once', function() {
-      const componentA = {
+      class ComponentA {
         getClassName() {
           return 'ComponentA'
-        },
+        }
         extend() {}
       }
+      const componentA = new ComponentA()
+
       const extendComponentASpy = Sinon.spy(componentA, 'extend')
       const resolveComponentsStub = Sinon.stub(EloquentComponentProvider, <any>'resolveComponents')
       resolveComponentsStub.returns([componentA])
 
-      const model = {
-        getClassName() {
-          return 'Test'
-        }
+      class Model {
+        static className = 'Test'
       }
+      const model = new Model()
+
       EloquentComponentProvider.extend(model, <any>{})
       expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(false)
 
@@ -194,11 +200,10 @@ describe('ComponentProvider', function() {
 
   describe('private .resolveComponents()', function() {
     it('merges components from .getComponents() and driver.getModelComponentName()', function() {
-      const model = {
-        getClassName() {
-          return 'Model'
-        }
+      class Model {
+        static className = 'Test'
       }
+      const model = new Model()
       const driver = {
         getModelComponentName() {
           return 'DriverComponent'
@@ -224,11 +229,11 @@ describe('ComponentProvider', function() {
     })
 
     it('skips the driver component if not found, apply driver.getModelComponentOrder(), use .resolve()', function() {
-      const model = {
-        getClassName() {
-          return 'Model'
-        }
+      class Model {
+        static className = 'Test'
       }
+      const model = new Model()
+
       const driver = {
         getModelComponentName() {},
         getModelComponentOrder(components: string[]) {

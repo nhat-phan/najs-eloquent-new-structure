@@ -5,10 +5,10 @@ namespace Najs.Contracts.Eloquent {
     /**
      * Extend and apply components to Model
      *
-     * @param model model instance
+     * @param {Model} model model instance
      * @param driver driver instance
      */
-    extend(model: Najs.Contracts.Autoload, driver: Driver<any>): void
+    extend(model: Object, driver: Driver<any>): void
 
     /**
      * Get default components list for all models.

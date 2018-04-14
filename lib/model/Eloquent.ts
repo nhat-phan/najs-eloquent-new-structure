@@ -5,11 +5,10 @@ import { ClassRegistry, register, getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
 import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
 
-function eloquent<T>(this: NajsEloquent.Model.IModel<T>, data?: Object | T) {
-  const definition = Object.getPrototypeOf(this).constructor
-  const className = getClassName(definition)
+function EloquentClass<T>(this: NajsEloquent.Model.IModel<T>, data?: Object | T) {
+  const className = getClassName(this)
   if (!ClassRegistry.has(className)) {
-    register(definition)
+    register(Object.getPrototypeOf(this).constructor, className)
   }
 
   if (data !== CREATE_SAMPLE) {
@@ -18,4 +17,4 @@ function eloquent<T>(this: NajsEloquent.Model.IModel<T>, data?: Object | T) {
   }
 }
 
-export const Eloquent: NajsEloquent.Model.IEloquent<{}> = <any>eloquent
+export const Eloquent: NajsEloquent.Model.IEloquent<{}> = <any>EloquentClass

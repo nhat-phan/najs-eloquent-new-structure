@@ -21,7 +21,7 @@ class ClassSetting {
         return replicated;
     }
     static of(instance, cache = true) {
-        const className = instance.getClassName();
+        const className = najs_binding_1.getClassName(instance);
         if (!this.samples[className] || !cache) {
             this.samples[className] = new ClassSetting(najs_binding_1.make(className, [exports.CREATE_SAMPLE]));
         }

@@ -34,7 +34,7 @@ class DriverProvider extends najs_facade_1.Facade {
         return this.createDriver(model, this.findDriverClassName(model), isGuarded);
     }
     findDriverClassName(model) {
-        const modelName = typeof model === 'string' ? model : model.getClassName();
+        const modelName = typeof model === 'string' ? model : najs_binding_1.getClassName(model);
         if (this.binding[modelName] === 'undefined' || typeof this.drivers[this.binding[modelName]] === 'undefined') {
             return this.findDefaultDriver();
         }
