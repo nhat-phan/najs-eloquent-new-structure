@@ -9,6 +9,8 @@ namespace NajsEloquent.Model {
 
     getGuarded(): string[]
 
+    markFillable(...keys: string[]): this
+
     isFillable(key: string): boolean
 
     isGuarded(key: string): boolean

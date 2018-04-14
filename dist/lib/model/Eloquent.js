@@ -3,16 +3,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ClassSetting_1 = require("../util/ClassSetting");
 const najs_binding_1 = require("najs-binding");
-// import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
-// import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
-// import { Fillable } from './components/Fillable'
+const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
+const EloquentComponentProviderFacade_1 = require("../facades/global/EloquentComponentProviderFacade");
 function eloquent(data) {
-    if (!najs_binding_1.ClassRegistry.has(this.getClassName())) {
-        najs_binding_1.register(Object.getPrototypeOf(this).constructor, this.getClassName(), false);
+    const definition = Object.getPrototypeOf(this).constructor;
+    const className = najs_binding_1.getClassName(definition);
+    if (!najs_binding_1.ClassRegistry.has(className)) {
+        najs_binding_1.register(definition);
     }
     if (data !== ClassSetting_1.CREATE_SAMPLE) {
-        // return EloquentComponentProvider.proxify(this, EloquentDriverProvider.create(this))
+        const driver = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
+        return EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, driver);
     }
 }
-// eloquent.prototype = Object.assign({}, Fillable)
 exports.Eloquent = eloquent;
