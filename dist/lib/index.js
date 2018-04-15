@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="collect.js/index.d.ts" />
 /// <reference path="contracts/Driver.ts" />
 /// <reference path="contracts/DriverProvider.ts" />
 /// <reference path="contracts/Component.ts" />

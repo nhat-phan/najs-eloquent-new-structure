@@ -1,3 +1,4 @@
+/// <reference path="../../lib/collect.js/index.d.ts" />
 /// <reference path="contracts/Driver.d.ts" />
 /// <reference path="contracts/DriverProvider.d.ts" />
 /// <reference path="contracts/Component.d.ts" />
