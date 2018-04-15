@@ -1,10 +1,11 @@
 declare namespace NajsEloquent.Model {
     interface IModelAttribute {
         id?: any;
-        getAttribute(name: string): any;
-        setAttribute(name: string): void;
+        hasAttribute(key: string): boolean;
+        getAttribute(key: string): any;
+        setAttribute(key: string, value: any): this;
         getPrimaryKey(): any;
-        setPrimaryKey(id: any): void;
+        setPrimaryKey(id: any): this;
         getPrimaryKeyName(): string;
     }
 }

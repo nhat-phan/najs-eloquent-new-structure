@@ -6,6 +6,8 @@ namespace Najs.Contracts.Eloquent {
 
     getRecord(): NativeRecord
 
+    hasAttribute(name: string): boolean
+
     getAttribute<T>(name: string): T
 
     setAttribute<T>(name: string, value: T): boolean

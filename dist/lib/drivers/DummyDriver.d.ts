@@ -5,6 +5,7 @@ export declare class DummyDriver implements Najs.Contracts.Eloquent.Driver<Objec
     getClassName(): string;
     initialize(data?: Object): void;
     getRecord(): Object;
+    hasAttribute(name: string): boolean;
     getAttribute<T>(name: string): T;
     setAttribute<T>(name: string, value: T): boolean;
     getPrimaryKeyName(): string;

@@ -1,15 +1,58 @@
 declare namespace NajsEloquent.Model {
     class IModelFillableMembers {
+        /**
+         * The attributes that are mass assignable.
+         */
         protected fillable?: string[];
+        /**
+         * The attributes that aren't mass assignable.
+         */
         protected guarded?: string[];
     }
     interface IModelFillable extends IModelFillableMembers {
+        /**
+         * Get the fillable attributes for the model.
+         */
         getFillable(): string[];
+        /**
+         * Get the guarded attributes for the model.
+         */
         getGuarded(): string[];
+        /**
+         * Add temporary fillable attributes for current instance.
+         *
+         * @param {string|string[]} keys
+         */
         markFillable(...keys: string[]): this;
+        /**
+         * Add temporary guarded attributes for current instance.
+         *
+         * @param {string|string[]} keys
+         */
+        markGuarded(...keys: string[]): this;
+        /**
+         * Determine if the given attribute may be mass assigned.
+         *
+         * @param {string} key
+         */
         isFillable(key: string): boolean;
+        /**
+         * Determine if the given key is guarded.
+         *
+         * @param {string} key
+         */
         isGuarded(key: string): boolean;
+        /**
+         * Fill the model with an array of attributes.
+         *
+         * @param {Object} data
+         */
         fill(data: Object): this;
+        /**
+         * Fill the model with an array of attributes. Force mass assignment.
+         *
+         * @param {Object} data
+         */
         forceFill(data: Object): this;
     }
 }

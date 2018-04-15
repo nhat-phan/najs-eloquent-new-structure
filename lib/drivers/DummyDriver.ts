@@ -19,6 +19,10 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
     return this.attributes
   }
 
+  hasAttribute(name: string): boolean {
+    return true
+  }
+
   getAttribute<T>(name: string): T {
     return this.attributes[name]
   }

@@ -2,13 +2,15 @@ namespace NajsEloquent.Model {
   export interface IModelAttribute {
     id?: any
 
-    getAttribute(name: string): any
+    hasAttribute(key: string): boolean
 
-    setAttribute(name: string): void
+    getAttribute(key: string): any
+
+    setAttribute(key: string, value: any): this
 
     getPrimaryKey(): any
 
-    setPrimaryKey(id: any): void
+    setPrimaryKey(id: any): this
 
     getPrimaryKeyName(): string
   }

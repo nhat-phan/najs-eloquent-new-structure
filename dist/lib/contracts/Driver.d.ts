@@ -2,6 +2,7 @@ declare namespace Najs.Contracts.Eloquent {
     interface Driver<NativeRecord> extends Najs.Contracts.Autoload {
         initialize(data?: NativeRecord | Object): void;
         getRecord(): NativeRecord;
+        hasAttribute(name: string): boolean;
         getAttribute<T>(name: string): T;
         setAttribute<T>(name: string, value: T): boolean;
         getPrimaryKeyName(): string;

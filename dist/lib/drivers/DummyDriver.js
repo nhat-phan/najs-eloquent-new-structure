@@ -13,6 +13,9 @@ class DummyDriver {
     getRecord() {
         return this.attributes;
     }
+    hasAttribute(name) {
+        return true;
+    }
     getAttribute(name) {
         return this.attributes[name];
     }

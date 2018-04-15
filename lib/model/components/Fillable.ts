@@ -6,17 +6,9 @@ import { NajsEloquent } from '../../constants'
 import { ClassSetting } from '../../util/ClassSetting'
 import { SettingType } from '../../util/SettingType'
 import { ModelUtilities } from '../../util/ModelUtilities'
+import { pick } from 'lodash'
 
 export class Fillable implements Najs.Contracts.Eloquent.Component {
-  model: NajsEloquent.Model.IModel<any>
-  driver: Najs.Contracts.Eloquent.Driver<any>
-
-  // prettier-ignore
-  "constructor"(model: NajsEloquent.Model.IModel<any>, driver: Najs.Contracts.Eloquent.Driver<any>) {
-    this.model = model
-    this.driver = driver
-  }
-
   getClassName(): string {
     return NajsEloquent.Model.Component.Fillable
   }
@@ -26,6 +18,10 @@ export class Fillable implements Najs.Contracts.Eloquent.Component {
     prototype['getGuarded'] = Fillable.getGuarded
     prototype['markFillable'] = Fillable.markFillable
     prototype['markGuarded'] = Fillable.markGuarded
+    prototype['isFillable'] = Fillable.isFillable
+    prototype['isGuarded'] = Fillable.isGuarded
+    prototype['fill'] = Fillable.fill
+    prototype['forceFill'] = Fillable.forceFill
   }
 
   static getFillable(this: NajsEloquent.Model.IModel<any>): string[] {
@@ -46,12 +42,34 @@ export class Fillable implements Najs.Contracts.Eloquent.Component {
     return this
   }
 
-  // isFillable(key: string): boolean {
-  //   // return this.isInWhiteList(key, this.getFillable(), this.getGuarded())
-  // }
+  static isFillable(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
+    return ModelUtilities.isInWhiteList(this, key, this.getFillable(), this.getGuarded())
+  }
 
-  // isGuarded(key: string): boolean {
-  //   // return this.isInBlackList(key, this.getGuarded())
-  // }
+  static isGuarded(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
+    return ModelUtilities.isInBlackList(this, key, this.getGuarded())
+  }
+
+  static fill(this: NajsEloquent.Model.IModel<any>, data: Object) {
+    const fillable = this.getFillable()
+    const guarded = this.getGuarded()
+
+    const attributes = fillable.length > 0 ? pick(data, fillable) : data
+    for (const key in attributes) {
+      if (ModelUtilities.isInWhiteList(this, key, fillable, guarded)) {
+        this.setAttribute(key, attributes[key])
+      }
+    }
+
+    return this
+  }
+
+  static forceFill(this: NajsEloquent.Model.IModel<any>, data: Object) {
+    for (const key in data) {
+      this.setAttribute(key, data[key])
+    }
+
+    return this
+  }
 }
 register(Fillable)
