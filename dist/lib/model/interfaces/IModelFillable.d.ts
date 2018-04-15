@@ -23,13 +23,13 @@ declare namespace NajsEloquent.Model {
          *
          * @param {string|string[]} keys
          */
-        markFillable(...keys: string[]): this;
+        markFillable(...keys: Array<string | string[]>): this;
         /**
          * Add temporary guarded attributes for current instance.
          *
          * @param {string|string[]} keys
          */
-        markGuarded(...keys: string[]): this;
+        markGuarded(...keys: Array<string | string[]>): this;
         /**
          * Determine if the given attribute may be mass assigned.
          *

@@ -11,7 +11,7 @@ declare namespace NajsEloquent.Model {
          */
         protected driver: Najs.Contracts.Eloquent.Driver<A>;
     }
-    interface IModel<A> extends IModelMembers<A>, IModelAttribute, IModelFillable {
+    interface IModel<A> extends IModelMembers<A>, IModelAttribute, IModelFillable, IModelSerialization {
         getClassName(): string;
     }
 }

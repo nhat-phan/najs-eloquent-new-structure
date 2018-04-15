@@ -14,7 +14,7 @@ namespace NajsEloquent.Model {
     protected driver: Najs.Contracts.Eloquent.Driver<A>
   }
 
-  export interface IModel<A> extends IModelMembers<A>, IModelAttribute, IModelFillable {
+  export interface IModel<A> extends IModelMembers<A>, IModelAttribute, IModelFillable, IModelSerialization {
     getClassName(): string
   }
 }
