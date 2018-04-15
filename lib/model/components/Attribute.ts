@@ -18,7 +18,19 @@ export class Attribute implements Najs.Contracts.Eloquent.Component {
   }
 
   static hasAttribute(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
+    if (typeof this['knownAttributes'] === 'undefined') {
+      Attribute.buildKnownAttributes(this)
+    }
+    if (this['knownAttributes'].indexOf(key) !== -1) {
+      return true
+    }
     return this['driver'].hasAttribute(key)
+  }
+
+  static buildKnownAttributes(model: NajsEloquent.Model.IModel<any>) {
+    model['knownAttributes'] = Array.from(
+      new Set(Object.getOwnPropertyNames(model).concat(Object.getOwnPropertyNames(Object.getPrototypeOf(model))))
+    )
   }
 
   static getAttribute(this: NajsEloquent.Model.IModel<any>, key: string): any {

@@ -2,9 +2,11 @@
 /// <reference path="../contracts/ComponentProvider.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
+const najs_facade_1 = require("najs-facade");
 const constants_1 = require("../constants");
-class ComponentProvider {
+class ComponentProvider extends najs_facade_1.Facade {
     constructor() {
+        super(...arguments);
         this.components = {};
         this.binding = {};
         this.extended = {};

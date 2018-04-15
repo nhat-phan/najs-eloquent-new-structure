@@ -12,8 +12,10 @@ function EloquentClass<T>(this: NajsEloquent.Model.IModel<T>, data?: Object | T)
   }
 
   if (data !== CREATE_SAMPLE) {
-    const driver = EloquentDriverProvider.create(this)
-    return EloquentComponentProvider.extend(this, driver)
+    this['driver'] = EloquentDriverProvider.create(this)
+    this['attributes'] = this['driver'].getRecord()
+
+    return EloquentComponentProvider.extend(this, this['driver'])
   }
 }
 

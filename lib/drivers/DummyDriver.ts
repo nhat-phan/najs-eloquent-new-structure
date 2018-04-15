@@ -5,7 +5,7 @@ import { NajsEloquent } from '../constants'
 
 export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
   static className: string = NajsEloquent.Driver.DummyDriver
-  attributes: Object
+  attributes: Object = {}
 
   getClassName(): string {
     return NajsEloquent.Driver.DummyDriver
@@ -20,7 +20,7 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
   }
 
   hasAttribute(name: string): boolean {
-    return true
+    return false
   }
 
   getAttribute<T>(name: string): T {

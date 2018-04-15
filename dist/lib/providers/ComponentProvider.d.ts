@@ -1,5 +1,6 @@
 /// <reference path="../contracts/ComponentProvider.d.ts" />
-export declare class ComponentProvider implements Najs.Contracts.Eloquent.ComponentProvider {
+import { Facade } from 'najs-facade';
+export declare class ComponentProvider extends Facade implements Najs.Contracts.Eloquent.ComponentProvider {
     static className: string;
     protected components: {
         [key: string]: {

@@ -4,6 +4,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
 class DummyDriver {
+    constructor() {
+        this.attributes = {};
+    }
     getClassName() {
         return constants_1.NajsEloquent.Driver.DummyDriver;
     }
@@ -14,7 +17,7 @@ class DummyDriver {
         return this.attributes;
     }
     hasAttribute(name) {
-        return true;
+        return false;
     }
     getAttribute(name) {
         return this.attributes[name];

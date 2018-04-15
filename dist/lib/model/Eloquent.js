@@ -11,8 +11,9 @@ function EloquentClass(data) {
         najs_binding_1.register(Object.getPrototypeOf(this).constructor, className);
     }
     if (data !== ClassSetting_1.CREATE_SAMPLE) {
-        const driver = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
-        return EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, driver);
+        this['driver'] = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
+        this['attributes'] = this['driver'].getRecord();
+        return EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this['driver']);
     }
 }
 exports.Eloquent = EloquentClass;

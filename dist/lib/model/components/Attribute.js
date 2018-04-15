@@ -16,7 +16,16 @@ class Attribute {
         prototype['getPrimaryKeyName'] = Attribute.getPrimaryKeyName;
     }
     static hasAttribute(key) {
+        if (typeof this['knownAttributes'] === 'undefined') {
+            Attribute.buildKnownAttributes(this);
+        }
+        if (this['knownAttributes'].indexOf(key) !== -1) {
+            return true;
+        }
         return this['driver'].hasAttribute(key);
+    }
+    static buildKnownAttributes(model) {
+        model['knownAttributes'] = Array.from(new Set(Object.getOwnPropertyNames(model).concat(Object.getOwnPropertyNames(Object.getPrototypeOf(model)))));
     }
     static getAttribute(key) {
         return this['driver'].getAttribute(key);

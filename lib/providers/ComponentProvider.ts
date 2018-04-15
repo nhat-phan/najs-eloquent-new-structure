@@ -1,9 +1,10 @@
 /// <reference path="../contracts/ComponentProvider.ts" />
 
 import { make, register, getClassName } from 'najs-binding'
+import { Facade } from 'najs-facade'
 import { NajsEloquent } from '../constants'
 
-export class ComponentProvider implements Najs.Contracts.Eloquent.ComponentProvider {
+export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent.ComponentProvider {
   static className: string = NajsEloquent.Provider.ComponentProvider
 
   protected components: {
