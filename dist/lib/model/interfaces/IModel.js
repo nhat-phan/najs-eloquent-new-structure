@@ -1,12 +1,11 @@
 /// <reference path="../../contracts/Driver.ts" />
+/// <reference path="IModelAttribute.ts" />
 /// <reference path="IModelFillable.ts" />
+/// <reference path="IModelSerialization.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var Model;
     (function (Model) {
-        class IModelMembers {
-        }
-        Model.IModelMembers = IModelMembers;
         class IModel {
         }
         Model.IModel = IModel;

@@ -2,8 +2,8 @@ var NajsEloquent;
 (function (NajsEloquent) {
     var Model;
     (function (Model) {
-        class IModelFillableMembers {
+        class IModelFillable {
         }
-        Model.IModelFillableMembers = IModelFillableMembers;
+        Model.IModelFillable = IModelFillable;
     })(Model = NajsEloquent.Model || (NajsEloquent.Model = {}));
 })(NajsEloquent || (NajsEloquent = {}));

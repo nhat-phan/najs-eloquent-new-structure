@@ -1,2 +1,3 @@
-/// <reference path="interfaces/IEloquent.d.ts" />
-export declare const Eloquent: NajsEloquent.Model.IEloquent<{}>;
+import { Model } from './Model';
+export declare class Eloquent<T extends Object = {}> extends Model<T> {
+}

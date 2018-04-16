@@ -1,5 +1,5 @@
 declare namespace NajsEloquent.Model {
-    class IModelFillableMembers {
+    class IModelFillable {
         /**
          * The attributes that are mass assignable.
          */
@@ -9,7 +9,7 @@ declare namespace NajsEloquent.Model {
          */
         protected guarded?: string[];
     }
-    interface IModelFillable extends IModelFillableMembers {
+    interface IModelFillable {
         /**
          * Get the fillable attributes for the model.
          */
