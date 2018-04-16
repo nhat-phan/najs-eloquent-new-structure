@@ -3,6 +3,7 @@
 /// <reference path="../interfaces/IModel.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../../constants");
+const functions_1 = require("../../util/functions");
 class Attribute {
     getClassName() {
         return constants_1.NajsEloquent.Model.Component.Attribute;
@@ -25,7 +26,7 @@ class Attribute {
         return this['driver'].hasAttribute(key);
     }
     static buildKnownAttributes(model) {
-        model['knownAttributes'] = Array.from(new Set(Object.getOwnPropertyNames(model).concat(Object.getOwnPropertyNames(Object.getPrototypeOf(model)))));
+        model['knownAttributes'] = functions_1.array_unique(Object.getOwnPropertyNames(model), Object.getOwnPropertyNames(Object.getPrototypeOf(model)));
     }
     static getAttribute(key) {
         return this['driver'].getAttribute(key);

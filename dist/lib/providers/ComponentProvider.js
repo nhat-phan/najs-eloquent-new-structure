@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const najs_facade_1 = require("najs-facade");
 const constants_1 = require("../constants");
+const functions_1 = require("../util/functions");
 class ComponentProvider extends najs_facade_1.Facade {
     constructor() {
         super(...arguments);
@@ -69,7 +70,7 @@ class ComponentProvider extends najs_facade_1.Facade {
             this.binding[model] = [];
         }
         this.binding[model].push(component);
-        this.binding[model] = Array.from(new Set(this.binding[model]));
+        this.binding[model] = functions_1.array_unique(this.binding[model]);
         return this;
     }
 }

@@ -1,11 +1,12 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 
 import { flatten } from 'lodash'
+import { array_unique } from '../util/functions'
 
 export class ModelUtilities {
   static pushToUniqueArraySetting(model: Object, key: string, args: ArrayLike<any>) {
     const setting: string[] = model[key] || []
-    model[key] = Array.from(new Set(setting.concat(flatten(args))))
+    model[key] = array_unique(setting, flatten(args))
     return model[key]
   }
 

@@ -5,6 +5,7 @@
 
 import { GenericQueryCondition } from './GenericQueryCondition'
 import { flatten } from 'lodash'
+import { array_unique } from '../util/functions'
 
 export type QueryBuilderSoftDelete = {
   deletedAt: string
@@ -62,7 +63,7 @@ export class GenericQueryBuilder
 
   protected flattenFieldNames(type: string, fields: ArrayLike<any>) {
     this.isUsed = true
-    this.fields[type] = Array.from(new Set(flatten(fields))).map(this.convention.formatFieldName)
+    this.fields[type] = array_unique(flatten(fields)).map(this.convention.formatFieldName)
     return this
   }
 

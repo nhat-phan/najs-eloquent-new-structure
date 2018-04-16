@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const GenericQueryCondition_1 = require("./GenericQueryCondition");
 const lodash_1 = require("lodash");
+const functions_1 = require("../util/functions");
 class GenericQueryBuilder {
     constructor(softDelete) {
         this.fields = {};
@@ -35,7 +36,7 @@ class GenericQueryBuilder {
     }
     flattenFieldNames(type, fields) {
         this.isUsed = true;
-        this.fields[type] = Array.from(new Set(lodash_1.flatten(fields))).map(this.convention.formatFieldName);
+        this.fields[type] = functions_1.array_unique(lodash_1.flatten(fields)).map(this.convention.formatFieldName);
         return this;
     }
     queryName(name) {

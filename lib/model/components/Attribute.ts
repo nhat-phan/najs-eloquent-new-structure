@@ -2,6 +2,7 @@
 /// <reference path="../interfaces/IModel.ts" />
 
 import { NajsEloquent } from '../../constants'
+import { array_unique } from '../../util/functions'
 
 export class Attribute implements Najs.Contracts.Eloquent.Component {
   getClassName(): string {
@@ -28,8 +29,9 @@ export class Attribute implements Najs.Contracts.Eloquent.Component {
   }
 
   static buildKnownAttributes(model: NajsEloquent.Model.IModel<any>) {
-    model['knownAttributes'] = Array.from(
-      new Set(Object.getOwnPropertyNames(model).concat(Object.getOwnPropertyNames(Object.getPrototypeOf(model))))
+    model['knownAttributes'] = array_unique(
+      Object.getOwnPropertyNames(model),
+      Object.getOwnPropertyNames(Object.getPrototypeOf(model))
     )
   }
 

@@ -1,5 +1,5 @@
 import 'jest'
-import { in_array } from '../../lib/util/in_array'
+import { in_array } from '../../lib/util/functions'
 
 describe('in_array()', function() {
   it('returns false if haystack is not found', function() {

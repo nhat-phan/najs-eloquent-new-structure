@@ -3,6 +3,7 @@
 import { make, register, getClassName } from 'najs-binding'
 import { Facade } from 'najs-facade'
 import { NajsEloquent } from '../constants'
+import { array_unique } from '../util/functions'
 
 export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent.ComponentProvider {
   static className: string = NajsEloquent.Provider.ComponentProvider
@@ -91,7 +92,7 @@ export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent
       this.binding[model] = []
     }
     this.binding[model].push(component)
-    this.binding[model] = Array.from(new Set(this.binding[model]))
+    this.binding[model] = array_unique(this.binding[model])
     return this
   }
 }

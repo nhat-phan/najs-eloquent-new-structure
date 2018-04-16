@@ -2,10 +2,11 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
+const functions_1 = require("../util/functions");
 class ModelUtilities {
     static pushToUniqueArraySetting(model, key, args) {
         const setting = model[key] || [];
-        model[key] = Array.from(new Set(setting.concat(lodash_1.flatten(args))));
+        model[key] = functions_1.array_unique(setting, lodash_1.flatten(args));
         return model[key];
     }
     static isInWhiteList(model, key, whiteList, blackList) {
