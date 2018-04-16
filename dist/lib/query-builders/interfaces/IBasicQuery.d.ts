@@ -2,6 +2,22 @@
 declare namespace NajsEloquent.QueryBuilder {
     interface IBasicQuery {
         /**
+         * Set the query with given name
+         *
+         * @param {string} name
+         */
+        queryName(name: string): this;
+        /**
+         * Set the query log group name
+         *
+         * @param {string} group QueryLog group
+         */
+        setLogGroup(group: string): this;
+        /**
+         * Get the primary key name
+         */
+        getPrimaryKeyName(): string;
+        /**
          * Set the columns or fields to be selected.
          *
          * @param {string|string[]} fields
