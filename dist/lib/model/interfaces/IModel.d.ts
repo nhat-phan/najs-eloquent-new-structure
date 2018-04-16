@@ -14,4 +14,6 @@ declare namespace NajsEloquent.Model {
     interface IModel<A> extends IModelMembers<A>, IModelAttribute, IModelFillable, IModelSerialization {
         getClassName(): string;
     }
+    class IModel<A> {
+    }
 }

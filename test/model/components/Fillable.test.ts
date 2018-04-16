@@ -1,15 +1,11 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { Eloquent } from '../../../lib/model/Eloquent'
-import { Attribute } from '../../../lib/model/components/Attribute'
 import { Fillable } from '../../../lib/model/components/Fillable'
 import { ModelUtilities } from '../../../lib/util/ModelUtilities'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
-import { EloquentComponentProvider } from '../../../lib/facades/global/EloquentComponentProviderFacade'
 
-EloquentComponentProvider.register(Attribute, 'attribute', true)
-EloquentComponentProvider.register(Fillable, 'fillable', true)
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
 describe('Model/Fillable', function() {

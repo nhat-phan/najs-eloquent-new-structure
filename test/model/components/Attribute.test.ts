@@ -4,9 +4,7 @@ import { Eloquent } from '../../../lib/model/Eloquent'
 import { Attribute } from '../../../lib/model/components/Attribute'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
-import { EloquentComponentProvider } from '../../../lib/facades/global/EloquentComponentProviderFacade'
 
-EloquentComponentProvider.register(Attribute, 'attribute', true)
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
 describe('Model/Attribute', function() {

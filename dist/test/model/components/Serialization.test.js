@@ -3,15 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const Eloquent_1 = require("../../../lib/model/Eloquent");
-const Attribute_1 = require("../../../lib/model/components/Attribute");
-const Fillable_1 = require("../../../lib/model/components/Fillable");
 const Serialization_1 = require("../../../lib/model/components/Serialization");
 const ModelUtilities_1 = require("../../../lib/util/ModelUtilities");
 const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
 const EloquentComponentProviderFacade_1 = require("../../../lib/facades/global/EloquentComponentProviderFacade");
-EloquentComponentProviderFacade_1.EloquentComponentProvider.register(Attribute_1.Attribute, 'attribute', true);
-EloquentComponentProviderFacade_1.EloquentComponentProvider.register(Fillable_1.Fillable, 'fillable', true);
 EloquentComponentProviderFacade_1.EloquentComponentProvider.register(Serialization_1.Serialization, 'serialization', true);
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
 describe('Model/Serialization', function () {
