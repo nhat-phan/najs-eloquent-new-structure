@@ -36,6 +36,7 @@ describe('Model/Serialization', function() {
         const serialization = new Serialization()
         serialization.extend(prototype, prototype)
         for (const name in functions) {
+          expect(typeof prototype[name] === 'function').toBe(true)
           expect(prototype[name] === Serialization[functions[name]]).toBe(true)
         }
       })
