@@ -3,7 +3,6 @@
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { ClassRegistry, register, getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
-import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
 import { Fillable } from './components/Fillable'
 import { Attribute } from './components/Attribute'
 import { Serialization } from './components/Serialization'
@@ -24,13 +23,11 @@ export class Model<T = any> {
     if (data !== CREATE_SAMPLE) {
       this['driver'] = EloquentDriverProvider.create(this)
       this['attributes'] = this['driver'].getRecord()
-
-      EloquentComponentProvider.extend(this, this['driver'])
     }
   }
 }
 
 const defaultComponents: Najs.Contracts.Eloquent.Component[] = [new Attribute(), new Fillable(), new Serialization()]
 for (const component of defaultComponents) {
-  component.extend(Model.prototype)
+  component.extend(Model.prototype, Model.prototype)
 }

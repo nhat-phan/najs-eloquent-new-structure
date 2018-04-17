@@ -11,7 +11,7 @@ class Serialization {
     getClassName() {
         return constants_1.NajsEloquent.Model.Component.Serialization;
     }
-    extend(prototype) {
+    extend(prototype, eloquentPrototype) {
         prototype['getVisible'] = Serialization.getVisible;
         prototype['getHidden'] = Serialization.getHidden;
         prototype['markVisible'] = Serialization.markVisible;

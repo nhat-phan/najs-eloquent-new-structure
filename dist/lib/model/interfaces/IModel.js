@@ -1,5 +1,6 @@
 /// <reference path="../../contracts/Driver.ts" />
 /// <reference path="IModelAttribute.ts" />
+/// <reference path="IModelDynamicAttribute.ts" />
 /// <reference path="IModelFillable.ts" />
 /// <reference path="IModelSerialization.ts" />
 var NajsEloquent;

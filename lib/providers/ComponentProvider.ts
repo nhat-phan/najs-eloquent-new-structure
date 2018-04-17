@@ -28,7 +28,7 @@ export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent
     return NajsEloquent.Provider.ComponentProvider
   }
 
-  extend(model: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any {
+  extend(model: Object, eloquentPrototype: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any {
     const prototype = Object.getPrototypeOf(model)
     const components = this.resolveComponents(model, driver)
     for (const component of components) {
@@ -41,7 +41,7 @@ export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent
         continue
       }
       this.extended[className].push(component.getClassName())
-      component.extend(prototype)
+      component.extend(prototype, eloquentPrototype)
     }
   }
 

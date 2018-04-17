@@ -2,7 +2,7 @@
 /// <reference path="../interfaces/IModel.d.ts" />
 export declare class Serialization implements Najs.Contracts.Eloquent.Component {
     getClassName(): string;
-    extend(prototype: Object): void;
+    extend(prototype: Object, eloquentPrototype: Object): void;
     static getVisible(this: NajsEloquent.Model.IModel<any>): string[];
     static getHidden(this: NajsEloquent.Model.IModel<any>): string[];
     static markVisible(this: NajsEloquent.Model.IModel<any>): NajsEloquent.Model.IModel<any>;

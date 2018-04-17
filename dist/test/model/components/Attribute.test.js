@@ -27,7 +27,7 @@ describe('Model/Attribute', function () {
                 ];
                 const prototype = {};
                 const attribute = new Attribute_1.Attribute();
-                attribute.extend(prototype);
+                attribute.extend(prototype, prototype);
                 for (const name in functions) {
                     expect(prototype[name] === Attribute_1.Attribute[name]).toBe(true);
                 }

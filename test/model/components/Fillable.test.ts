@@ -31,7 +31,7 @@ describe('Model/Fillable', function() {
         ]
         const prototype = {}
         const fillable = new Fillable()
-        fillable.extend(prototype)
+        fillable.extend(prototype, prototype)
         for (const name in functions) {
           expect(prototype[name] === Fillable[name]).toBe(true)
         }

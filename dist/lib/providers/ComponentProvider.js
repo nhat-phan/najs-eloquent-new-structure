@@ -15,7 +15,7 @@ class ComponentProvider extends najs_facade_1.Facade {
     getClassName() {
         return constants_1.NajsEloquent.Provider.ComponentProvider;
     }
-    extend(model, driver) {
+    extend(model, eloquentPrototype, driver) {
         const prototype = Object.getPrototypeOf(model);
         const components = this.resolveComponents(model, driver);
         for (const component of components) {
@@ -27,7 +27,7 @@ class ComponentProvider extends najs_facade_1.Facade {
                 continue;
             }
             this.extended[className].push(component.getClassName());
-            component.extend(prototype);
+            component.extend(prototype, eloquentPrototype);
         }
     }
     resolveComponents(model, driver) {

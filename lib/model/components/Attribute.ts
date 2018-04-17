@@ -2,37 +2,18 @@
 /// <reference path="../interfaces/IModel.ts" />
 
 import { NajsEloquent } from '../../constants'
-import { array_unique } from '../../util/functions'
 
 export class Attribute implements Najs.Contracts.Eloquent.Component {
   getClassName(): string {
     return NajsEloquent.Model.Component.Attribute
   }
 
-  extend(prototype: Object): void {
-    prototype['hasAttribute'] = Attribute.hasAttribute
+  extend(prototype: Object, eloquentPrototype: Object): void {
     prototype['getAttribute'] = Attribute.getAttribute
     prototype['setAttribute'] = Attribute.setAttribute
     prototype['getPrimaryKey'] = Attribute.getPrimaryKey
     prototype['setPrimaryKey'] = Attribute.setPrimaryKey
     prototype['getPrimaryKeyName'] = Attribute.getPrimaryKeyName
-  }
-
-  static hasAttribute(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    if (typeof this['knownAttributes'] === 'undefined') {
-      Attribute.buildKnownAttributes(this)
-    }
-    if (this['knownAttributes'].indexOf(key) !== -1) {
-      return true
-    }
-    return this['driver'].hasAttribute(key)
-  }
-
-  static buildKnownAttributes(model: NajsEloquent.Model.IModel<any>) {
-    model['knownAttributes'] = array_unique(
-      Object.getOwnPropertyNames(model),
-      Object.getOwnPropertyNames(Object.getPrototypeOf(model))
-    )
   }
 
   static getAttribute(this: NajsEloquent.Model.IModel<any>, key: string): any {

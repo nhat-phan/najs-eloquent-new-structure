@@ -1,10 +1,11 @@
 namespace Najs.Contracts.Eloquent {
   export interface Component extends Najs.Contracts.Autoload {
     /**
-     * Extend a prototype of model
+     * Extend a prototype of current model class
      *
-     * @param {Object} prototype Model prototype
+     * @param {Object} prototype model class prototype
+     * @param {Object} eloquentPrototype Eloquent prototype
      */
-    extend(prototype: Object): void
+    extend(prototype: Object, eloquentPrototype: Object): void
   }
 }

@@ -147,7 +147,7 @@ describe('ComponentProvider', function () {
             }
             Model.className = 'Test';
             const model = new Model();
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(model, {});
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(model, {}, {});
             expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(true);
             expect(extendComponentBSpy.calledWith(Object.getPrototypeOf(model))).toBe(true);
             expect(EloquentComponentProviderFacade_1.EloquentComponentProvider['extended']['Test']).toEqual(['ComponentA', 'ComponentB']);
@@ -168,7 +168,7 @@ describe('ComponentProvider', function () {
             }
             Model.className = 'Test';
             const model = new Model();
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(model, {});
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(model, {}, {});
             expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(false);
             resolveComponentsStub.restore();
         });

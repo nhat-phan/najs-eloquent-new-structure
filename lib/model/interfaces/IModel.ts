@@ -1,5 +1,6 @@
 /// <reference path="../../contracts/Driver.ts" />
 /// <reference path="IModelAttribute.ts" />
+/// <reference path="IModelDynamicAttribute.ts" />
 /// <reference path="IModelFillable.ts" />
 /// <reference path="IModelSerialization.ts" />
 
@@ -16,7 +17,7 @@ namespace NajsEloquent.Model {
     protected driver: Najs.Contracts.Eloquent.Driver<A>
   }
 
-  export interface IModel<A> extends IModelAttribute, IModelFillable, IModelSerialization {
+  export interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization {
     getClassName(): string
   }
 }

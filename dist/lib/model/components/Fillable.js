@@ -12,7 +12,7 @@ class Fillable {
     getClassName() {
         return constants_1.NajsEloquent.Model.Component.Fillable;
     }
-    extend(prototype) {
+    extend(prototype, eloquentPrototype) {
         prototype['getFillable'] = Fillable.getFillable;
         prototype['getGuarded'] = Fillable.getGuarded;
         prototype['markFillable'] = Fillable.markFillable;

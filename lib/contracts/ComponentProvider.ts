@@ -6,9 +6,10 @@ namespace Najs.Contracts.Eloquent {
      * Extend and apply components to Model
      *
      * @param {Model} model model instance
+     * @param {Object} eloquentPrototype Eloquent prototype
      * @param driver driver instance
      */
-    extend(model: Object, driver: Driver<any>): void
+    extend(model: Object, eloquentPrototype: Object, driver: Driver<any>): void
 
     /**
      * Get default components list for all models.
