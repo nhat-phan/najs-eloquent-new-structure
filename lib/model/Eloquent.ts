@@ -13,7 +13,7 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
   constructor(data?: Object) {
     super(data)
     if (data !== CREATE_SAMPLE) {
-      EloquentComponentProvider.extend(this, Eloquent.prototype, this['driver'])
+      EloquentComponentProvider.extend(this, this['driver'])
     }
   }
 

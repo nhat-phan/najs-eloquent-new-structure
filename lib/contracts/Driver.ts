@@ -26,6 +26,8 @@ namespace Najs.Contracts.Eloquent {
 
     markModified(name: string): void
 
+    formatAttributeName(name: string): string
+
     getModelComponentName(): string | undefined
 
     getModelComponentOrder(components: string[]): string[]

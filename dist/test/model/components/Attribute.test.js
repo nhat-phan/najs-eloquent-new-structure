@@ -20,7 +20,7 @@ describe('Model/Attribute', function () {
             it('extends the given prototype with 5 functions', function () {
                 const prototype = {};
                 const attribute = new Attribute_1.Attribute();
-                attribute.extend(prototype, prototype);
+                attribute.extend(prototype, [], {});
                 for (const name of FUNCTIONS) {
                     expect(typeof prototype[name] === 'function').toBe(true);
                     expect(prototype[name] === Attribute_1.Attribute[name]).toBe(true);

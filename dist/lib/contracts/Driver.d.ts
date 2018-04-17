@@ -12,6 +12,7 @@ declare namespace Najs.Contracts.Eloquent {
         restore(): Promise<any>;
         save(): Promise<any>;
         markModified(name: string): void;
+        formatAttributeName(name: string): string;
         getModelComponentName(): string | undefined;
         getModelComponentOrder(components: string[]): string[];
     }

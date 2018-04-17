@@ -27,5 +27,5 @@ class Model {
 exports.Model = Model;
 const defaultComponents = [new Attribute_1.Attribute(), new Fillable_1.Fillable(), new Serialization_1.Serialization()];
 for (const component of defaultComponents) {
-    component.extend(Model.prototype, Model.prototype);
+    component.extend(Model.prototype, [], {});
 }

@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
+const lodash_1 = require("lodash");
 class DummyDriver {
     constructor() {
         this.attributes = {};
@@ -50,6 +51,9 @@ class DummyDriver {
     }
     getModelComponentOrder(components) {
         return components;
+    }
+    formatAttributeName(name) {
+        return lodash_1.snakeCase(name);
     }
 }
 DummyDriver.className = constants_1.NajsEloquent.Driver.DummyDriver;

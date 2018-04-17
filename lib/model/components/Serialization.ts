@@ -12,7 +12,7 @@ export class Serialization implements Najs.Contracts.Eloquent.Component {
     return NajsEloquent.Model.Component.Serialization
   }
 
-  extend(prototype: Object, eloquentPrototype: Object): void {
+  extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['getVisible'] = Serialization.getVisible
     prototype['getHidden'] = Serialization.getHidden
     prototype['markVisible'] = Serialization.markVisible

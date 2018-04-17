@@ -29,5 +29,5 @@ export class Model<T = any> {
 
 const defaultComponents: Najs.Contracts.Eloquent.Component[] = [new Attribute(), new Fillable(), new Serialization()]
 for (const component of defaultComponents) {
-  component.extend(Model.prototype, Model.prototype)
+  component.extend(Model.prototype, [], <any>{})
 }

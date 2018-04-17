@@ -16,7 +16,8 @@ export declare class ComponentProvider extends Facade implements Najs.Contracts.
         [key: string]: string[];
     };
     getClassName(): string;
-    extend(model: Object, eloquentPrototype: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any;
+    extend(model: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any;
+    private findBasePrototypes(prototype);
     private resolveComponents(model, driver);
     getComponents(model?: string): string[];
     resolve(component: string): Najs.Contracts.Eloquent.Component;

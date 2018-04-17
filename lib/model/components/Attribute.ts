@@ -8,7 +8,7 @@ export class Attribute implements Najs.Contracts.Eloquent.Component {
     return NajsEloquent.Model.Component.Attribute
   }
 
-  extend(prototype: Object, eloquentPrototype: Object): void {
+  extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['getAttribute'] = Attribute.getAttribute
     prototype['setAttribute'] = Attribute.setAttribute
     prototype['getPrimaryKey'] = Attribute.getPrimaryKey

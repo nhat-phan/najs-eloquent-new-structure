@@ -106,4 +106,11 @@ describe('DummyDriver', function() {
       driver.getModelComponentOrder([])
     })
   })
+
+  describe('.formatAttributeName()', function() {
+    it('should work', function() {
+      const driver = new DummyDriver()
+      driver.formatAttributeName('test')
+    })
+  })
 })

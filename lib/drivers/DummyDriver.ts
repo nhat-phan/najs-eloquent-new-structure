@@ -2,6 +2,7 @@
 
 import { register } from 'najs-binding'
 import { NajsEloquent } from '../constants'
+import { snakeCase } from 'lodash'
 
 export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
   static className: string = NajsEloquent.Driver.DummyDriver
@@ -64,6 +65,10 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
 
   getModelComponentOrder(components: string[]): string[] {
     return components
+  }
+
+  formatAttributeName(name: string): string {
+    return snakeCase(name)
   }
 }
 register(DummyDriver)

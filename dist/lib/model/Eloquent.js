@@ -13,7 +13,7 @@ class Eloquent extends Model_1.Model {
     constructor(data) {
         super(data);
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, Eloquent.prototype, this['driver']);
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this['driver']);
         }
     }
     getAttribute(key) {

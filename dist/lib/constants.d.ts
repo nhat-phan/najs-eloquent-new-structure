@@ -7,6 +7,7 @@ export declare const NajsEloquent: {
     Model: {
         Component: {
             Attribute: string;
+            DynamicAttribute: string;
             Fillable: string;
             Timestamps: string;
             Serialization: string;

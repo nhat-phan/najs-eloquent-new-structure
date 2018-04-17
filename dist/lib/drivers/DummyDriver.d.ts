@@ -17,4 +17,5 @@ export declare class DummyDriver implements Najs.Contracts.Eloquent.Driver<Objec
     markModified(name: string): void;
     getModelComponentName(): string | undefined;
     getModelComponentOrder(components: string[]): string[];
+    formatAttributeName(name: string): string;
 }

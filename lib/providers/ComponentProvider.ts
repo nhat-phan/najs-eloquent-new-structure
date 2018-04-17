@@ -28,7 +28,7 @@ export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent
     return NajsEloquent.Provider.ComponentProvider
   }
 
-  extend(model: Object, eloquentPrototype: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any {
+  extend(model: Object, driver: Najs.Contracts.Eloquent.Driver<any>): any {
     const prototype = Object.getPrototypeOf(model)
     const components = this.resolveComponents(model, driver)
     for (const component of components) {
@@ -41,8 +41,19 @@ export class ComponentProvider extends Facade implements Najs.Contracts.Eloquent
         continue
       }
       this.extended[className].push(component.getClassName())
-      component.extend(prototype, eloquentPrototype)
+      component.extend(prototype, this.findBasePrototypes(prototype), driver)
     }
+  }
+
+  private findBasePrototypes(prototype: Object): Object[] {
+    const bases: Object[] = []
+    let count = 0
+    do {
+      prototype = Object.getPrototypeOf(prototype)
+      bases.push(prototype)
+      count++
+    } while (count < 100 && (typeof prototype === 'undefined' || prototype !== Object.prototype))
+    return bases
   }
 
   private resolveComponents(

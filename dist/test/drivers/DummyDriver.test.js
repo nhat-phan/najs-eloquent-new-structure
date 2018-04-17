@@ -93,4 +93,10 @@ describe('DummyDriver', function () {
             driver.getModelComponentOrder([]);
         });
     });
+    describe('.formatAttributeName()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.formatAttributeName('test');
+        });
+    });
 });

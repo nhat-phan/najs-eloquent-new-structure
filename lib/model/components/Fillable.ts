@@ -13,7 +13,7 @@ export class Fillable implements Najs.Contracts.Eloquent.Component {
     return NajsEloquent.Model.Component.Fillable
   }
 
-  extend(prototype: Object, eloquentPrototype: Object): void {
+  extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['getFillable'] = Fillable.getFillable
     prototype['getGuarded'] = Fillable.getGuarded
     prototype['markFillable'] = Fillable.markFillable

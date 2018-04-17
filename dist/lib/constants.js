@@ -9,6 +9,7 @@ exports.NajsEloquent = {
     Model: {
         Component: {
             Attribute: 'NajsEloquent.Model.Component.Attribute',
+            DynamicAttribute: 'NajsEloquent.Model.Component.DynamicAttribute',
             Fillable: 'NajsEloquent.Model.Component.Fillable',
             Timestamps: 'NajsEloquent.Model.Component.Timestamps',
             Serialization: 'NajsEloquent.Model.Component.Serialization',

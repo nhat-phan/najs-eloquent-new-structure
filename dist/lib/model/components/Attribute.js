@@ -7,7 +7,7 @@ class Attribute {
     getClassName() {
         return constants_1.NajsEloquent.Model.Component.Attribute;
     }
-    extend(prototype, eloquentPrototype) {
+    extend(prototype, bases, driver) {
         prototype['getAttribute'] = Attribute.getAttribute;
         prototype['setAttribute'] = Attribute.setAttribute;
         prototype['getPrimaryKey'] = Attribute.getPrimaryKey;

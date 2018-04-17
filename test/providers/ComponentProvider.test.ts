@@ -165,7 +165,7 @@ describe('ComponentProvider', function() {
       }
       const model = new Model()
 
-      EloquentComponentProvider.extend(model, {}, <any>{})
+      EloquentComponentProvider.extend(model, <any>{})
       expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(true)
       expect(extendComponentBSpy.calledWith(Object.getPrototypeOf(model))).toBe(true)
       expect(EloquentComponentProvider['extended']['Test']).toEqual(['ComponentA', 'ComponentB'])
@@ -191,7 +191,7 @@ describe('ComponentProvider', function() {
       }
       const model = new Model()
 
-      EloquentComponentProvider.extend(model, {}, <any>{})
+      EloquentComponentProvider.extend(model, <any>{})
       expect(extendComponentASpy.calledWith(Object.getPrototypeOf(model))).toBe(false)
 
       resolveComponentsStub.restore()
