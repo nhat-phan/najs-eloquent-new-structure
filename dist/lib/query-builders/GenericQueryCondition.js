@@ -75,14 +75,32 @@ class GenericQueryCondition {
     orWhere(arg0, arg1, arg2) {
         return this.buildQuery('or', arg0, arg1, arg2);
     }
+    andWhere(arg0, arg1, arg2) {
+        return this.where(arg0, arg1, arg2);
+    }
+    whereNot(field, values) {
+        return this.buildQuery('and', field, '<>', values);
+    }
+    andWhereNot(field, values) {
+        return this.whereNot(field, values);
+    }
+    orWhereNot(field, values) {
+        return this.buildQuery('or', field, '<>', values);
+    }
     whereIn(field, values) {
         return this.buildQuery('and', field, 'in', values);
+    }
+    andWhereIn(field, values) {
+        return this.whereIn(field, values);
+    }
+    orWhereIn(field, values) {
+        return this.buildQuery('or', field, 'in', values);
     }
     whereNotIn(field, values) {
         return this.buildQuery('and', field, 'not-in', values);
     }
-    orWhereIn(field, values) {
-        return this.buildQuery('or', field, 'in', values);
+    andWhereNotIn(field, values) {
+        return this.whereNotIn(field, values);
     }
     orWhereNotIn(field, values) {
         return this.buildQuery('or', field, 'not-in', values);
@@ -90,11 +108,17 @@ class GenericQueryCondition {
     whereNull(field) {
         return this.buildQuery('and', field, '=', this.convention.getNullValueFor(field));
     }
-    whereNotNull(field) {
-        return this.buildQuery('and', field, '<>', this.convention.getNullValueFor(field));
+    andWhereNull(field) {
+        return this.whereNull(field);
     }
     orWhereNull(field) {
         return this.buildQuery('or', field, '=', this.convention.getNullValueFor(field));
+    }
+    whereNotNull(field) {
+        return this.buildQuery('and', field, '<>', this.convention.getNullValueFor(field));
+    }
+    andWhereNotNull(field) {
+        return this.whereNotNull(field);
     }
     orWhereNotNull(field) {
         return this.buildQuery('or', field, '<>', this.convention.getNullValueFor(field));

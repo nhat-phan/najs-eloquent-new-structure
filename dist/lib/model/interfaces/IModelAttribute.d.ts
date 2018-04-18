@@ -1,6 +1,10 @@
 declare namespace NajsEloquent.Model {
     interface IModelAttribute {
         /**
+         * Primary key of the model
+         */
+        id?: any;
+        /**
          * Get value for given key.
          *
          * @param {string} key

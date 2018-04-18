@@ -133,16 +133,43 @@ export class GenericQueryBuilder
     return this.createConditionQuery('or', arg0, arg1, arg2)
   }
 
+  andWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this
+  andWhere(field: string, value: any): this
+  andWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this
+  andWhere(arg0: any, arg1?: any, arg2?: any): this {
+    return this.where(arg0, arg1, arg2)
+  }
+
+  whereNot(field: string, values: any): this {
+    return this.where(field, '<>', values)
+  }
+
+  andWhereNot(field: string, values: any): this {
+    return this.whereNot(field, values)
+  }
+
+  orWhereNot(field: string, values: any): this {
+    return this.orWhere(field, '<>', values)
+  }
+
   whereIn(field: string, values: Array<any>): this {
     return this.where(field, 'in', values)
+  }
+
+  andWhereIn(field: string, values: Array<any>): this {
+    return this.whereIn(field, values)
+  }
+
+  orWhereIn(field: string, values: Array<any>): this {
+    return this.orWhere(field, 'in', values)
   }
 
   whereNotIn(field: string, values: Array<any>): this {
     return this.where(field, 'not-in', values)
   }
 
-  orWhereIn(field: string, values: Array<any>): this {
-    return this.orWhere(field, 'in', values)
+  andWhereNotIn(field: string, values: Array<any>): this {
+    return this.whereNotIn(field, values)
   }
 
   orWhereNotIn(field: string, values: Array<any>): this {
@@ -153,12 +180,20 @@ export class GenericQueryBuilder
     return this.where(field, this.convention.getNullValueFor(field))
   }
 
-  whereNotNull(field: string) {
-    return this.where(field, '<>', this.convention.getNullValueFor(field))
+  andWhereNull(field: string) {
+    return this.whereNull(field)
   }
 
   orWhereNull(field: string) {
     return this.orWhere(field, this.convention.getNullValueFor(field))
+  }
+
+  whereNotNull(field: string) {
+    return this.where(field, '<>', this.convention.getNullValueFor(field))
+  }
+
+  andWhereNotNull(field: string) {
+    return this.whereNotNull(field)
   }
 
   orWhereNotNull(field: string) {

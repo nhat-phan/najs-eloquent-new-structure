@@ -7,7 +7,7 @@ declare namespace Najs.Contracts.Eloquent {
         setAttribute<T>(name: string, value: T): boolean;
         getPrimaryKeyName(): string;
         toObject(): Object;
-        newQuery(): any;
+        newQuery<T>(): NajsEloquent.QueryBuilder.IQueryBuilder<T>;
         delete(softDeletes: boolean): Promise<boolean>;
         restore(): Promise<any>;
         save(): Promise<any>;

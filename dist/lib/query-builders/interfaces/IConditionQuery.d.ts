@@ -24,6 +24,27 @@ declare namespace NajsEloquent.QueryBuilder {
          */
         where(field: string, operator: Operator, value: any): this;
         /**
+         * Add a basic where clause to the query.
+         *
+         * @param {Function} conditionBuilder sub-query builder
+         */
+        andWhere(conditionBuilder: SubCondition): this;
+        /**
+         * Add a basic where clause to the query.
+         *
+         * @param {string} field
+         * @param {mixed} value
+         */
+        andWhere(field: string, value: any): this;
+        /**
+         * Add a basic where clause to the query.
+         *
+         * @param {string} field
+         * @param {string} operator
+         * @param {mixed} value
+         */
+        andWhere(field: string, operator: Operator, value: any): this;
+        /**
          * Add an "or where" clause to the query.
          *
          * @param {Function} conditionBuilder
@@ -45,12 +66,47 @@ declare namespace NajsEloquent.QueryBuilder {
          */
         orWhere(field: string, operator: Operator, value: any): this;
         /**
+         * Add a "where not" clause to the query.
+         *
+         * @param {string} field
+         * @param {mixed} value
+         */
+        whereNot(field: string, value: any): this;
+        /**
+         * Add a "where not" clause to the query.
+         *
+         * @param {string} field
+         * @param {mixed} value
+         */
+        andWhereNot(field: string, value: any): this;
+        /**
+         * Add an "or where not" clause to the query.
+         *
+         * @param {string} field
+         * @param {mixed} value
+         */
+        orWhereNot(field: string, value: any): this;
+        /**
          * Add a "where in" clause to the query.
          *
          * @param {string} field
          * @param {any[]} values
          */
         whereIn(field: string, values: Array<any>): this;
+        /**
+         * Add a "where in" clause to the query.
+         *
+         * @param {string} field
+         * @param {any[]} values
+         */
+        andWhereIn(field: string, values: Array<any>): this;
+        /**
+         * Add an "or where in" clause to the query.
+         *
+         * @param {string} field
+         * @param {any[]} values
+         */
+        orWhereIn(field: string, values: Array<any>): this;
         /**
          * Add a "where not in" clause to the query.
          *
@@ -59,12 +115,12 @@ declare namespace NajsEloquent.QueryBuilder {
          */
         whereNotIn(field: string, values: Array<any>): this;
         /**
-         * Add an "or where in" clause to the query.
+         * Add a "where not in" clause to the query.
          *
          * @param {string} field
          * @param {any[]} values
          */
-        orWhereIn(field: string, values: Array<any>): this;
+        andWhereNotIn(field: string, values: Array<any>): this;
         /**
          * Add an "or where in" clause to the query.
          *
@@ -83,13 +139,25 @@ declare namespace NajsEloquent.QueryBuilder {
          *
          * @param {string} field
          */
-        whereNotNull(field: string): this;
+        andWhereNull(field: string): this;
         /**
          * Add an "or where null" clause to the query.
          *
          * @param {string} field
          */
         orWhereNull(field: string): this;
+        /**
+         * Add a "where null" clause to the query.
+         *
+         * @param {string} field
+         */
+        whereNotNull(field: string): this;
+        /**
+         * Add a "where null" clause to the query.
+         *
+         * @param {string} field
+         */
+        andWhereNotNull(field: string): this;
         /**
          * Add an "or where not null" clause to the query.
          *

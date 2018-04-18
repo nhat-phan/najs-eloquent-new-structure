@@ -17,9 +17,34 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
     }
   }
 
-  getAttribute(key: string) {
-    return super.getAttribute(key)
-  }
+  // /**
+  //  * Set the query with given name
+  //  *
+  //  * @param {string} name
+  //  */
+  // queryName(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<Model<T> & T> {
+  //   return <any>{}
+  // }
 }
 
 EloquentComponentProvider.register(DynamicAttribute, 'dynamic-attribute', true)
+
+// async function run() {
+//   interface IUser {
+//     first_name: string
+//     last_name: string
+//   }
+
+//   interface UserMethods {
+//     doSomething(): void
+//   }
+
+//   class User extends Eloquent<IUser & UserMethods> implements UserMethods {
+//     doSomething() {}
+//   }
+
+//   const test = new User()
+//   const result = await test.queryName('test').first()
+//   result.
+// }
+// run()

@@ -16,9 +16,22 @@ class Eloquent extends Model_1.Model {
             EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this['driver']);
         }
     }
-    getAttribute(key) {
-        return super.getAttribute(key);
-    }
 }
 exports.Eloquent = Eloquent;
 EloquentComponentProviderFacade_1.EloquentComponentProvider.register(DynamicAttribute_1.DynamicAttribute, 'dynamic-attribute', true);
+// async function run() {
+//   interface IUser {
+//     first_name: string
+//     last_name: string
+//   }
+//   interface UserMethods {
+//     doSomething(): void
+//   }
+//   class User extends Eloquent<IUser & UserMethods> implements UserMethods {
+//     doSomething() {}
+//   }
+//   const test = new User()
+//   const result = await test.queryName('test').first()
+//   result.
+// }
+// run()
