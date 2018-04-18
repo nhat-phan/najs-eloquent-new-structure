@@ -3,6 +3,9 @@ import * as Sinon from 'sinon'
 import { Eloquent } from '../../../lib/model/Eloquent'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { DynamicAttribute } from '../../../lib/model/components/DynamicAttribute'
+import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
+
+EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
 describe('Model/DynamicAttribute', function() {
   describe('Unit', function() {
@@ -199,6 +202,145 @@ describe('Model/DynamicAttribute', function() {
           }
         })
       })
+    })
+  })
+
+  describe('Integration', function() {
+    class Model extends Eloquent {
+      readonly accessor: any
+      mutator: any
+      accessor_and_mutator: any
+
+      static className = 'Model'
+
+      get first_name() {
+        return 'first_name'
+      }
+
+      set last_name(value: string) {
+        this.attributes['last_name'] = value
+      }
+
+      get both() {
+        return this.attributes['both']
+      }
+
+      set both(value: string) {
+        this.attributes['both'] = value
+      }
+
+      getAccessorAttribute() {
+        return 'accessor'
+      }
+
+      setMutatorAttribute(value: string) {
+        this.attributes['mutator'] = value
+      }
+
+      getAccessorAndMutatorAttribute() {
+        return this.attributes['accessor_and_mutator']
+      }
+
+      setAccessorAndMutatorAttribute(value: string) {
+        this.attributes['accessor_and_mutator'] = value
+      }
+
+      getFirstNameAttribute() {
+        return 'first_name_accessor'
+      }
+
+      setFirstNameAttribute(value: string) {
+        this.attributes['first_name'] = value
+      }
+
+      getLastNameAttribute() {
+        return this.attributes['last_name']
+      }
+
+      setLastNameAttribute(value: string) {
+        this.attributes['last_name'] = value
+      }
+    }
+
+    it('returns the value of getter, never calls .getAttribute()', function() {
+      const model = new Model()
+      const getAttributeSpy = Sinon.spy(model, 'getAttribute')
+      expect(model.first_name).toEqual('first_name')
+      expect(getAttributeSpy.called).toBe(false)
+    })
+
+    it('calls setter, never calls .setAttribute()', function() {
+      const model = new Model()
+      const setAttributeSpy = Sinon.spy(model, 'setAttribute')
+      model.last_name = 'test'
+      expect(model.getAttribute('last_name')).toEqual('test')
+      expect(setAttributeSpy.called).toBe(false)
+    })
+
+    it('calls getter & setter, never calls .getAttribute()/.setAttribute()', function() {
+      const model = new Model()
+      const getAttributeSpy = Sinon.spy(model, 'getAttribute')
+      const setAttributeSpy = Sinon.spy(model, 'setAttribute')
+      model.both = 'test'
+      expect(model.both).toEqual('test')
+      expect(getAttributeSpy.called).toBe(false)
+      expect(setAttributeSpy.called).toBe(false)
+    })
+
+    it('calls Accessor function if it is defined', function() {
+      const model = new Model()
+      const getAccessorAttributeSpy = Sinon.spy(model, 'getAccessorAttribute')
+      const getAttributeSpy = Sinon.spy(model, 'getAttribute')
+      expect(model.accessor).toEqual('accessor')
+      expect(getAccessorAttributeSpy.called).toBe(true)
+      expect(getAttributeSpy.called).toBe(false)
+    })
+
+    it('calls Mutator function if it is defined', function() {
+      const model = new Model()
+      const setMutatorAttributeSpy = Sinon.spy(model, 'setMutatorAttribute')
+      const setAttributeSpy = Sinon.spy(model, 'setAttribute')
+      model.mutator = 'test'
+      expect(model.getAttribute('mutator')).toEqual('test')
+      expect(setMutatorAttributeSpy.called).toBe(true)
+      expect(setAttributeSpy.called).toBe(false)
+    })
+
+    it('calls Accessor/Mutator function if it is defined', function() {
+      const model = new Model()
+      const getAccessorAndMutatorAttributeSpy = Sinon.spy(model, 'getAccessorAndMutatorAttribute')
+      const setAccessorAndMutatorAttributeSpy = Sinon.spy(model, 'setAccessorAndMutatorAttribute')
+      const getAttributeSpy = Sinon.spy(model, 'getAttribute')
+      const setAttributeSpy = Sinon.spy(model, 'setAttribute')
+      model.accessor_and_mutator = 'test'
+      expect(model.accessor_and_mutator).toEqual('test')
+      expect(getAccessorAndMutatorAttributeSpy.called).toBe(true)
+      expect(setAccessorAndMutatorAttributeSpy.called).toBe(true)
+      expect(getAttributeSpy.called).toBe(false)
+      expect(setAttributeSpy.called).toBe(false)
+    })
+
+    it('never calls accessor if there is a getter with the same name', function() {
+      const model = new Model()
+      const getFirstNameAttributeSpy = Sinon.spy(model, 'getFirstNameAttribute')
+      expect(model.first_name).toEqual('first_name')
+      expect(getFirstNameAttributeSpy.called).toBe(false)
+    })
+
+    it('never calls mutator if there is a setter with the same name', function() {
+      const model = new Model()
+      const setLastNameAttributeSpy = Sinon.spy(model, 'setLastNameAttribute')
+      model.last_name = 'test'
+      expect(model.getAttribute('last_name')).toEqual('test')
+      expect(setLastNameAttributeSpy.called).toBe(false)
+    })
+
+    it('can be use mutator and getter together', function() {
+      const model = new Model()
+      const setLastNameAttributeSpy = Sinon.spy(model, 'setLastNameAttribute')
+      model.last_name = 'test'
+      expect(model.last_name).toEqual('test')
+      expect(setLastNameAttributeSpy.called).toBe(false)
     })
   })
 })

@@ -1,5 +1,6 @@
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
+/// <reference path="../interfaces/IModelDynamicAttribute.ts" />
 
 import { NajsEloquent } from '../../constants'
 import { array_unique } from '../../util/functions'
@@ -12,20 +13,64 @@ export class DynamicAttribute implements Najs.Contracts.Eloquent.Component {
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['hasAttribute'] = DynamicAttribute.hasAttribute
+    const knownAttributes = DynamicAttribute.buildKnownAttributes(prototype, bases)
+    const dynamicAttributes = DynamicAttribute.buildDynamicAttributes(prototype, bases, driver)
+
     Object.defineProperties(prototype, {
       knownAttributes: {
-        value: DynamicAttribute.buildKnownAttributes(prototype, bases),
-        writable: false
+        value: knownAttributes,
+        writable: false,
+        configurable: true
       },
       dynamicAttributes: {
-        value: DynamicAttribute.buildDynamicAttributes(prototype, bases, driver),
-        writable: false
+        value: dynamicAttributes,
+        writable: false,
+        configurable: true
       }
     })
+    DynamicAttribute.bindAccessorsAndMutators(prototype, knownAttributes, dynamicAttributes)
   }
 
   static hasAttribute(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
     return this['knownAttributes'].indexOf(key) !== -1 || this['driver'].hasAttribute(key)
+  }
+
+  static bindAccessorsAndMutators(prototype: Object, knownAttributes: string[], dynamicAttributes: Object) {
+    for (const name in dynamicAttributes) {
+      const descriptor: Object | undefined = this.buildAccessorAndMutatorDescriptor(
+        prototype,
+        name,
+        dynamicAttributes[name]
+      )
+      if (descriptor) {
+        Object.defineProperty(prototype, name, descriptor)
+      }
+    }
+  }
+
+  static buildAccessorAndMutatorDescriptor(
+    prototype: Object,
+    name: string,
+    settings: NajsEloquent.Model.DynamicAttributeSettings
+  ): Object | undefined {
+    // does nothing if there is a setter and a getter in there
+    if (settings.getter && settings.setter) {
+      return undefined
+    }
+
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, name) || { configurable: true }
+    if (settings.accessor && !descriptor.get) {
+      descriptor.get = function() {
+        return this[this['dynamicAttributes'][name].accessor].call(this)
+      }
+    }
+
+    if (settings.mutator && !descriptor.set) {
+      descriptor.set = function(value: any) {
+        this[this['dynamicAttributes'][name].mutator].call(this, value)
+      }
+    }
+    return descriptor
   }
 
   static buildDynamicAttributes(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>) {

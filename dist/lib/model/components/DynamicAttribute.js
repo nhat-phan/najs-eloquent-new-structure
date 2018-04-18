@@ -1,6 +1,7 @@
 "use strict";
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
+/// <reference path="../interfaces/IModelDynamicAttribute.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../../constants");
 const functions_1 = require("../../util/functions");
@@ -11,19 +12,50 @@ class DynamicAttribute {
     }
     extend(prototype, bases, driver) {
         prototype['hasAttribute'] = DynamicAttribute.hasAttribute;
+        const knownAttributes = DynamicAttribute.buildKnownAttributes(prototype, bases);
+        const dynamicAttributes = DynamicAttribute.buildDynamicAttributes(prototype, bases, driver);
         Object.defineProperties(prototype, {
             knownAttributes: {
-                value: DynamicAttribute.buildKnownAttributes(prototype, bases),
-                writable: false
+                value: knownAttributes,
+                writable: false,
+                configurable: true
             },
             dynamicAttributes: {
-                value: DynamicAttribute.buildDynamicAttributes(prototype, bases, driver),
-                writable: false
+                value: dynamicAttributes,
+                writable: false,
+                configurable: true
             }
         });
+        DynamicAttribute.bindAccessorsAndMutators(prototype, knownAttributes, dynamicAttributes);
     }
     static hasAttribute(key) {
         return this['knownAttributes'].indexOf(key) !== -1 || this['driver'].hasAttribute(key);
+    }
+    static bindAccessorsAndMutators(prototype, knownAttributes, dynamicAttributes) {
+        for (const name in dynamicAttributes) {
+            const descriptor = this.buildAccessorAndMutatorDescriptor(prototype, name, dynamicAttributes[name]);
+            if (descriptor) {
+                Object.defineProperty(prototype, name, descriptor);
+            }
+        }
+    }
+    static buildAccessorAndMutatorDescriptor(prototype, name, settings) {
+        // does nothing if there is a setter and a getter in there
+        if (settings.getter && settings.setter) {
+            return undefined;
+        }
+        const descriptor = Object.getOwnPropertyDescriptor(prototype, name) || { configurable: true };
+        if (settings.accessor && !descriptor.get) {
+            descriptor.get = function () {
+                return this[this['dynamicAttributes'][name].accessor].call(this);
+            };
+        }
+        if (settings.mutator && !descriptor.set) {
+            descriptor.set = function (value) {
+                this[this['dynamicAttributes'][name].mutator].call(this, value);
+            };
+        }
+        return descriptor;
     }
     static buildDynamicAttributes(prototype, bases, driver) {
         const dynamicAttributes = {};

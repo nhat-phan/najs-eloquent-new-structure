@@ -1,4 +1,12 @@
 namespace NajsEloquent.Model {
+  export type DynamicAttributeSettings = {
+    name: string
+    getter: boolean
+    setter: boolean
+    accessor?: string
+    mutator?: string
+  }
+
   export class IModelDynamicAttribute {
     /**
      * Contains list of known attributes, included Eloquent members and current class members
@@ -9,13 +17,7 @@ namespace NajsEloquent.Model {
      * Contains dynamic attributes (AKA accessors and mutators)
      */
     protected dynamicAttributes: {
-      [key: string]: {
-        name: string
-        getter: boolean
-        setter: boolean
-        accessor?: string
-        mutator?: string
-      }
+      [key: string]: DynamicAttributeSettings
     }
   }
 
