@@ -18,7 +18,7 @@ export declare const NajsEloquent: {
     Database: {
         Seeder: string;
     };
-    Log: {
+    QueryLog: {
         FlipFlopQueryLog: string;
     };
     Provider: {

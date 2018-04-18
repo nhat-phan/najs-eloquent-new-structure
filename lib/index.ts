@@ -3,9 +3,9 @@
 /// <reference path="contracts/DriverProvider.ts" />
 /// <reference path="contracts/Component.ts" />
 /// <reference path="contracts/ComponentProvider.ts" />
+/// <reference path="contracts/QueryLog.ts" />
 /// <reference path="model/interfaces/IModel.ts" />
 /// <reference path="model/interfaces/IModelQuery.ts" />
-/// <reference path="model/interfaces/IModelFillable.ts" />
 
 import { BuiltinClasses } from './builtin'
 import { container as FacadeContainer } from './facades/container'

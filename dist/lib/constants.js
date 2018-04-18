@@ -20,8 +20,8 @@ exports.NajsEloquent = {
     Database: {
         Seeder: 'NajsEloquent.Database.Seeder'
     },
-    Log: {
-        FlipFlopQueryLog: 'NajsEloquent.Log.FlipFlopQueryLog'
+    QueryLog: {
+        FlipFlopQueryLog: 'NajsEloquent.QueryLog.FlipFlopQueryLog'
     },
     Provider: {
         ComponentProvider: 'NajsEloquent.Provider.ComponentProvider',
