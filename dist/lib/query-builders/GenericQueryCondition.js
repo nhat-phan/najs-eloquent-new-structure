@@ -123,5 +123,16 @@ class GenericQueryCondition {
     orWhereNotNull(field) {
         return this.buildQuery('or', field, '<>', this.convention.getNullValueFor(field));
     }
+    whereBetween(field, range) {
+        return this.where(field, '>=', range[0]).where(field, '<=', range[1]);
+    }
+    andWhereBetween(field, range) {
+        return this.whereBetween(field, range);
+    }
+    orWhereBetween(field, range) {
+        return this.orWhere(function (subQuery) {
+            subQuery.where(field, '>=', range[0]).where(field, '<=', range[1]);
+        });
+    }
 }
 exports.GenericQueryCondition = GenericQueryCondition;

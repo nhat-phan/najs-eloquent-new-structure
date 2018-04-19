@@ -229,6 +229,15 @@ describe('MongodbConditionConverter', function () {
                     a: 1
                 }
             },
+            'case "query.where(a).where(a)': {
+                input: [
+                    { bool: 'and', field: 'a', operator: '>=', value: 1 },
+                    { bool: 'and', field: 'a', operator: '<=', value: 10 }
+                ],
+                expected: {
+                    $and: [{ a: { $gte: 1 } }, { a: { $lte: 10 } }]
+                }
+            },
             'case "query.orWhere(a).where(b)': {
                 input: [
                     { bool: 'or', field: 'a', operator: '=', value: 1 },

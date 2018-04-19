@@ -84,6 +84,27 @@ namespace NajsEloquent.Model {
     ): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
 
     /**
+     * Add a basic where clause to the query.
+     *
+     * @param {string} field
+     * @param {string} operator
+     * @param {mixed} value
+     */
+    where(
+      field: string,
+      operator: NajsEloquent.QueryBuilder.Operator,
+      value: any
+    ): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+
+    /**
+     * Add a "where not" clause to the query.
+     *
+     * @param {string} field
+     * @param {mixed} value
+     */
+    whereNot(field: string, value: any): this
+
+    /**
      * Add a "where in" clause to the query.
      *
      * @param {string} field
@@ -112,6 +133,20 @@ namespace NajsEloquent.Model {
      * @param {string} field
      */
     whereNotNull(field: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+
+    /**
+     * Add a "where between" clause to the query.
+     *
+     * @param {string} field
+     */
+    whereBetween(field: string, range: [any, any]): this
+
+    /**
+     * Add a "where not between" clause to the query.
+     *
+     * @param {string} field
+     */
+    whereNotBetween(field: string, range: [any, any]): this
 
     /**
      * Consider all soft-deleted or not-deleted items.

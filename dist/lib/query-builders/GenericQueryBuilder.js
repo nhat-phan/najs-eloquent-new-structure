@@ -128,6 +128,17 @@ class GenericQueryBuilder {
     orWhereNotNull(field) {
         return this.orWhere(field, '<>', this.convention.getNullValueFor(field));
     }
+    whereBetween(field, range) {
+        return this.where(field, '>=', range[0]).where(field, '<=', range[1]);
+    }
+    andWhereBetween(field, range) {
+        return this.whereBetween(field, range);
+    }
+    orWhereBetween(field, range) {
+        return this.orWhere(function (subQuery) {
+            subQuery.where(field, '>=', range[0]).where(field, '<=', range[1]);
+        });
+    }
     withTrashed() {
         if (this.softDelete) {
             this.addSoftDeleteCondition = false;

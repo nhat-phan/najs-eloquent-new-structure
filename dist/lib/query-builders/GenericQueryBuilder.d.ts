@@ -61,6 +61,9 @@ export declare class GenericQueryBuilder implements NajsEloquent.QueryBuilder.IB
     whereNotNull(field: string): this;
     andWhereNotNull(field: string): this;
     orWhereNotNull(field: string): this;
+    whereBetween(field: string, range: [any, any]): this;
+    andWhereBetween(field: string, range: [any, any]): this;
+    orWhereBetween(field: string, range: [any, any]): this;
     withTrashed(): this;
     onlyTrashed(): this;
 }

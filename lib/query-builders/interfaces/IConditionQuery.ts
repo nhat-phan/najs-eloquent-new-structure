@@ -183,26 +183,26 @@ namespace NajsEloquent.QueryBuilder {
      */
     orWhereNotNull(field: string): this
 
-    // /**
-    //  * Add a "where between" clause to the query.
-    //  *
-    //  * @param {string} field
-    //  */
-    // whereBetween(field: string, range: [any, any]): this
+    /**
+     * Add a "where between" clause to the query.
+     *
+     * @param {string} field
+     */
+    whereBetween(field: string, range: [any, any]): this
 
-    // /**
-    //  * Add a "where between" clause to the query.
-    //  *
-    //  * @param {string} field
-    //  */
-    // andWhereBetween(field: string, range: [any, any]): this
+    /**
+     * Add a "where between" clause to the query.
+     *
+     * @param {string} field
+     */
+    andWhereBetween(field: string, range: [any, any]): this
 
-    // /**
-    //  * Add an "or where between" clause to the query.
-    //  *
-    //  * @param {string} field
-    //  */
-    // orWhereBetween(field: string, range: [any, any]): this
+    /**
+     * Add an "or where between" clause to the query.
+     *
+     * @param {string} field
+     */
+    orWhereBetween(field: string, range: [any, any]): this
 
     // /**
     //  * Add a "where not between" clause to the query.

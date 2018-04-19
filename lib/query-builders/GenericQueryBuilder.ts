@@ -200,6 +200,20 @@ export class GenericQueryBuilder
     return this.orWhere(field, '<>', this.convention.getNullValueFor(field))
   }
 
+  whereBetween(field: string, range: [any, any]): this {
+    return this.where(field, '>=', range[0]).where(field, '<=', range[1])
+  }
+
+  andWhereBetween(field: string, range: [any, any]): this {
+    return this.whereBetween(field, range)
+  }
+
+  orWhereBetween(field: string, range: [any, any]): this {
+    return this.orWhere(function(subQuery) {
+      subQuery.where(field, '>=', range[0]).where(field, '<=', range[1])
+    })
+  }
+
   withTrashed() {
     if (this.softDelete) {
       this.addSoftDeleteCondition = false

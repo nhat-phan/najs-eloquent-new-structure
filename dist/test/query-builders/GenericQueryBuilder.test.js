@@ -737,6 +737,109 @@ describe('GenericQueryBuilder', function () {
                 ]);
             });
         });
+        describe('.whereBetween()', function () {
+            it('is chain-able', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                expect(query['isUsed']).toBe(false);
+                expect(query.whereBetween('a', [1, 10])).toEqual(query);
+                expect(query['isUsed']).toBe(true);
+            });
+            it('calls where() twice with operator ">=" & "<="', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                const whereSpy = Sinon.spy(query, 'where');
+                query.whereBetween('a', [1, 10]);
+                expect(whereSpy.calledTwice).toBe(true);
+                expect(whereSpy.firstCall.calledWith('a', '>=', 1)).toBe(true);
+                expect(whereSpy.secondCall.calledWith('a', '<=', 10)).toBe(true);
+            });
+            it('can be used in sub-query', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                query.where('a', true).where(function (query) {
+                    query.whereBetween('b', [1, 10]);
+                });
+                expect(query['getConditions']()).toEqual([
+                    { bool: 'and', field: 'a', operator: '=', value: true },
+                    {
+                        bool: 'and',
+                        queries: [
+                            { bool: 'and', field: 'b', operator: '>=', value: 1 },
+                            { bool: 'and', field: 'b', operator: '<=', value: 10 }
+                        ]
+                    }
+                ]);
+            });
+        });
+        describe('.andWhereBetween()', function () {
+            it('is an alias of .whereBetween()', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                const whereBetweenStub = Sinon.stub(query, 'whereBetween');
+                whereBetweenStub.returns('anything');
+                expect(query.andWhereBetween('a', [1, 10])).toEqual('anything');
+                expect(whereBetweenStub.calledWith('a', [1, 10])).toBe(true);
+            });
+            it('can be used in sub query', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                query.where('a', 1).where(function (subQuery) {
+                    subQuery.where('b', 2).andWhereBetween('c', [3, 30]);
+                });
+                expect(query['getConditions']()).toEqual([
+                    { bool: 'and', field: 'a', operator: '=', value: 1 },
+                    {
+                        bool: 'and',
+                        queries: [
+                            { bool: 'and', field: 'b', operator: '=', value: 2 },
+                            { bool: 'and', field: 'c', operator: '>=', value: 3 },
+                            { bool: 'and', field: 'c', operator: '<=', value: 30 }
+                        ]
+                    }
+                ]);
+            });
+        });
+        describe('.orWhereBetween()', function () {
+            it('is chain-able', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                expect(query['isUsed']).toBe(false);
+                expect(query.orWhereBetween('a', [1, 10])).toEqual(query);
+                expect(query['isUsed']).toBe(true);
+            });
+            it('calls orWhere() with sub-query which calls .where() twice with operator ">=" & "<="', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                const orWhereSpy = Sinon.spy(query, 'orWhere');
+                query.orWhereBetween('a', [1, 10]);
+                expect(orWhereSpy.calledOnce).toBe(true);
+                expect(query['getConditions']()).toEqual([
+                    {
+                        bool: 'or',
+                        queries: [
+                            { bool: 'and', field: 'a', operator: '>=', value: 1 },
+                            { bool: 'and', field: 'a', operator: '<=', value: 10 }
+                        ]
+                    }
+                ]);
+            });
+            it('can be used in sub-query', function () {
+                const query = new GenericQueryBuilder_1.GenericQueryBuilder();
+                query.where('a', true).where(function (subQuery) {
+                    subQuery.where('b', 1).orWhereBetween('c', [1, 10]);
+                });
+                expect(query['getConditions']()).toEqual([
+                    { bool: 'and', field: 'a', operator: '=', value: true },
+                    {
+                        bool: 'and',
+                        queries: [
+                            { bool: 'and', field: 'b', operator: '=', value: 1 },
+                            {
+                                bool: 'or',
+                                queries: [
+                                    { bool: 'and', field: 'c', operator: '>=', value: 1 },
+                                    { bool: 'and', field: 'c', operator: '<=', value: 10 }
+                                ]
+                            }
+                        ]
+                    }
+                ]);
+            });
+        });
     });
     describe('implements ISoftDeletesQuery', function () {
         it('has optional softDelete param in constructor', function () {
