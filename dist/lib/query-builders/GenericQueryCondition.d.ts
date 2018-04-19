@@ -40,4 +40,7 @@ export declare class GenericQueryCondition implements NajsEloquent.QueryBuilder.
     whereBetween(field: string, range: [any, any]): this;
     andWhereBetween(field: string, range: [any, any]): this;
     orWhereBetween(field: string, range: [any, any]): this;
+    whereNotBetween(field: string, range: [any, any]): this;
+    andWhereNotBetween(field: string, range: [any, any]): this;
+    orWhereNotBetween(field: string, range: [any, any]): this;
 }

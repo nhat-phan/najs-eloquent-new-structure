@@ -186,4 +186,20 @@ export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditi
       subQuery.where(field, '>=', range[0]).where(field, '<=', range[1])
     })
   }
+
+  whereNotBetween(field: string, range: [any, any]): this {
+    return this.where(function(subQuery) {
+      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
+    })
+  }
+
+  andWhereNotBetween(field: string, range: [any, any]): this {
+    return this.whereNotBetween(field, range)
+  }
+
+  orWhereNotBetween(field: string, range: [any, any]): this {
+    return this.orWhere(function(subQuery) {
+      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
+    })
+  }
 }

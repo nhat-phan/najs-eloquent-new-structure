@@ -921,6 +921,137 @@ describe('GenericQueryBuilder', function() {
     })
   })
 
+  describe('.whereNotBetween()', function() {
+    it('is chain-able', function() {
+      const query = new GenericQueryBuilder()
+      expect(query['isUsed']).toBe(false)
+      expect(query.whereNotBetween('a', [1, 10])).toEqual(query)
+      expect(query['isUsed']).toBe(true)
+    })
+
+    it('calls where() with sub-query which calls .where() + .orWhere() with operator "<" || ">"', function() {
+      const query = new GenericQueryBuilder()
+      const whereSpy = Sinon.spy(query, 'where')
+      query.whereNotBetween('a', [1, 10]).andWhere('b', 2)
+      expect(whereSpy.called).toBe(true)
+      expect(query['getConditions']()).toEqual([
+        {
+          bool: 'and',
+          queries: [
+            { bool: 'and', field: 'a', operator: '<', value: 1 },
+            { bool: 'or', field: 'a', operator: '>', value: 10 }
+          ]
+        },
+        { bool: 'and', field: 'b', operator: '=', value: 2 }
+      ])
+    })
+
+    it('can be used in sub-query', function() {
+      const query = new GenericQueryBuilder()
+      query.where('a', true).where(function(subQuery) {
+        subQuery.where('b', 1).whereNotBetween('c', [1, 10])
+      })
+      expect(query['getConditions']()).toEqual([
+        { bool: 'and', field: 'a', operator: '=', value: true },
+        {
+          bool: 'and',
+          queries: [
+            { bool: 'and', field: 'b', operator: '=', value: 1 },
+            {
+              bool: 'and',
+              queries: [
+                { bool: 'and', field: 'c', operator: '<', value: 1 },
+                { bool: 'or', field: 'c', operator: '>', value: 10 }
+              ]
+            }
+          ]
+        }
+      ])
+    })
+  })
+
+  describe('.andWhereNotBetween()', function() {
+    it('is an alias of .whereNotBetween()', function() {
+      const query = new GenericQueryBuilder()
+      const whereNotBetweenStub = Sinon.stub(query, 'whereNotBetween')
+      whereNotBetweenStub.returns('anything')
+      expect(query.andWhereNotBetween('a', [1, 10])).toEqual('anything')
+      expect(whereNotBetweenStub.calledWith('a', [1, 10])).toBe(true)
+    })
+
+    it('can be used in sub query', function() {
+      const query = new GenericQueryBuilder()
+      query.where('a', 1).where(function(subQuery) {
+        subQuery.where('b', 2).andWhereNotBetween('c', [3, 30])
+      })
+      expect(query['getConditions']()).toEqual([
+        { bool: 'and', field: 'a', operator: '=', value: 1 },
+        {
+          bool: 'and',
+          queries: [
+            { bool: 'and', field: 'b', operator: '=', value: 2 },
+            {
+              bool: 'and',
+              queries: [
+                { bool: 'and', field: 'c', operator: '<', value: 3 },
+                { bool: 'or', field: 'c', operator: '>', value: 30 }
+              ]
+            }
+          ]
+        }
+      ])
+    })
+  })
+
+  describe('.orWhereNotBetween()', function() {
+    it('is chain-able', function() {
+      const query = new GenericQueryBuilder()
+      expect(query['isUsed']).toBe(false)
+      expect(query.orWhereNotBetween('a', [1, 10])).toEqual(query)
+      expect(query['isUsed']).toBe(true)
+    })
+
+    it('calls orWhere() with sub-query which calls .where() + .orWhere() with operator "<" || ">"', function() {
+      const query = new GenericQueryBuilder()
+      const whereSpy = Sinon.spy(query, 'where')
+      query.where('b', 2).orWhereNotBetween('a', [1, 10])
+      expect(whereSpy.called).toBe(true)
+      expect(query['getConditions']()).toEqual([
+        { bool: 'and', field: 'b', operator: '=', value: 2 },
+        {
+          bool: 'or',
+          queries: [
+            { bool: 'and', field: 'a', operator: '<', value: 1 },
+            { bool: 'or', field: 'a', operator: '>', value: 10 }
+          ]
+        }
+      ])
+    })
+
+    it('can be used in sub-query', function() {
+      const query = new GenericQueryBuilder()
+      query.where('a', true).where(function(subQuery) {
+        subQuery.where('b', 1).orWhereNotBetween('c', [1, 10])
+      })
+      expect(query['getConditions']()).toEqual([
+        { bool: 'and', field: 'a', operator: '=', value: true },
+        {
+          bool: 'and',
+          queries: [
+            { bool: 'and', field: 'b', operator: '=', value: 1 },
+            {
+              bool: 'or',
+              queries: [
+                { bool: 'and', field: 'c', operator: '<', value: 1 },
+                { bool: 'or', field: 'c', operator: '>', value: 10 }
+              ]
+            }
+          ]
+        }
+      ])
+    })
+  })
+
   describe('implements ISoftDeletesQuery', function() {
     it('has optional softDelete param in constructor', function() {
       const queryNoSoftDelete = new GenericQueryBuilder()

@@ -214,6 +214,22 @@ export class GenericQueryBuilder
     })
   }
 
+  whereNotBetween(field: string, range: [any, any]): this {
+    return this.where(function(subQuery) {
+      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
+    })
+  }
+
+  andWhereNotBetween(field: string, range: [any, any]): this {
+    return this.whereNotBetween(field, range)
+  }
+
+  orWhereNotBetween(field: string, range: [any, any]): this {
+    return this.orWhere(function(subQuery) {
+      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
+    })
+  }
+
   withTrashed() {
     if (this.softDelete) {
       this.addSoftDeleteCondition = false

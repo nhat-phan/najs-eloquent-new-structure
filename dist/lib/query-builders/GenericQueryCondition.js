@@ -134,5 +134,18 @@ class GenericQueryCondition {
             subQuery.where(field, '>=', range[0]).where(field, '<=', range[1]);
         });
     }
+    whereNotBetween(field, range) {
+        return this.where(function (subQuery) {
+            subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1]);
+        });
+    }
+    andWhereNotBetween(field, range) {
+        return this.whereNotBetween(field, range);
+    }
+    orWhereNotBetween(field, range) {
+        return this.orWhere(function (subQuery) {
+            subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1]);
+        });
+    }
 }
 exports.GenericQueryCondition = GenericQueryCondition;
