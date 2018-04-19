@@ -7,6 +7,7 @@ const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriver
 const Fillable_1 = require("./components/Fillable");
 const Attribute_1 = require("./components/Attribute");
 const Serialization_1 = require("./components/Serialization");
+const collect = require('collect.js');
 class Model {
     /**
      * Model constructor.
@@ -19,9 +20,16 @@ class Model {
             najs_binding_1.register(Object.getPrototypeOf(this).constructor, className);
         }
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
-            this['driver'] = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
-            this['attributes'] = this['driver'].getRecord();
+            this.driver = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
+            this.driver.initialize(data);
+            this.attributes = this.driver.getRecord();
         }
+    }
+    newCollection(dataset) {
+        return collect(dataset.map(item => this.newInstance(item)));
+    }
+    newInstance(data) {
+        return najs_binding_1.make(najs_binding_1.getClassName(this), [data]);
     }
 }
 exports.Model = Model;

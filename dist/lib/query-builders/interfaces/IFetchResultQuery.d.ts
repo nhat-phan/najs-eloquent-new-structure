@@ -6,13 +6,13 @@ declare namespace NajsEloquent.QueryBuilder {
          */
         get(): Promise<CollectJs.Collection<T>>;
         /**
+         * Execute query and returns the first record.
+         */
+        first(): Promise<T | null>;
+        /**
          * Execute query and returns count of records.
          */
         count(): Promise<number>;
-        /**
-         * Execute query and returns the first record.
-         */
-        first(): Promise<T>;
         /**
          * Update records which match the query with data.
          *
@@ -23,6 +23,10 @@ declare namespace NajsEloquent.QueryBuilder {
          * Delete all records which match the query.
          */
         delete(): Promise<any>;
+        /**
+         * Restore all records which match the query.
+         */
+        restore(): Promise<any>;
         /**
          * Execute query and returns raw result.
          */

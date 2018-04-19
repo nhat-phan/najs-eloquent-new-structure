@@ -19,5 +19,9 @@ namespace NajsEloquent.Model {
 
   export interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization {
     getClassName(): string
+
+    newCollection(collection: any[]): any
+
+    newInstance(data: Object | A): any
   }
 }
