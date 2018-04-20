@@ -1,11 +1,11 @@
 /// <reference path="../../collect.js/index.d.ts" />
 
 namespace NajsEloquent.QueryBuilder {
-  export interface IFetchResultQuery<T> {
+  export interface IFetchResultQuery<T extends Object = {}> {
     /**
      * Execute query and return the records as a Collection.
      */
-    get(): Promise<CollectJs.Collection<T>>
+    get(): Promise<T[]>
 
     /**
      * Execute query and returns the first record.
@@ -22,17 +22,17 @@ namespace NajsEloquent.QueryBuilder {
      *
      * @param {Object} data
      */
-    update(data: Object): Promise<any>
+    update(data: Object): Promise<Object>
 
     /**
      * Delete all records which match the query.
      */
-    delete(): Promise<any>
+    delete(): Promise<Object>
 
     /**
      * Restore all records which match the query.
      */
-    restore(): Promise<any>
+    restore(): Promise<Object>
 
     /**
      * Execute query and returns raw result.

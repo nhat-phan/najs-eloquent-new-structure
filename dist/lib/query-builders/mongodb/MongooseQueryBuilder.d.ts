@@ -26,7 +26,7 @@ export declare class MongooseQueryBuilder<T> extends GenericQueryBuilder impleme
     getPrimaryKey(): string;
     toObject(): Object;
     native(handler: (native: Model<Document & T> | MongooseQuery<T>) => MongooseQuery<T>): NajsEloquent.QueryBuilder.IFetchResultQuery<T>;
-    get(): Promise<CollectJs.Collection<T>>;
+    get(): Promise<Array<Document & T>>;
     first(): Promise<T | null>;
     count(): Promise<number>;
     update(data: Object): Promise<Object>;

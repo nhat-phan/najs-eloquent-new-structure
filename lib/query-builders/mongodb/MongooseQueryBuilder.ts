@@ -11,7 +11,6 @@ import { MongodbConditionConverter } from './MongodbConditionConverter'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { register, make } from 'najs-binding'
 import { isEmpty } from 'lodash'
-const collect = require('collect.js')
 
 export type MongooseQuery<T> =
   | DocumentQuery<Document & T | null, Document & T>
@@ -147,20 +146,14 @@ export class MongooseQueryBuilder<T> extends GenericQueryBuilder
     return this
   }
 
-  async get(): Promise<CollectJs.Collection<T>> {
+  async get(): Promise<Array<Document & T>> {
     const logger = this.resolveMongooseQueryLog()
     const query = this.createQuery(false, logger)
     logger
       .raw('.exec()')
       .action('get')
       .end()
-    const result = await query.exec()
-
-    if (result && !isEmpty(result)) {
-      const eloquent = make<NajsEloquent.Model.IModel<any>>(this.mongooseModel.modelName)
-      return eloquent.newCollection(result)
-    }
-    return collect([])
+    return (await query.exec()) as Array<Document & T>
   }
 
   async first(): Promise<T | null> {
@@ -176,12 +169,8 @@ export class MongooseQueryBuilder<T> extends GenericQueryBuilder
       .raw('.exec()')
       .action('find')
       .end()
-    const result = await (query as DocumentQuery<(Document & T) | null, Document & T>).exec()
-    if (result) {
-      return make<NajsEloquent.Model.IModel<any>>(this.mongooseModel.modelName).newInstance(result)
-    }
-    // tslint:disable-next-line
-    return null
+
+    return await (query as DocumentQuery<(Document & T) | null, Document & T>).exec()
   }
 
   async count(): Promise<number> {

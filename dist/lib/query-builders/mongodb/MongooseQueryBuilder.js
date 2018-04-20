@@ -11,7 +11,6 @@ const MongodbConditionConverter_1 = require("./MongodbConditionConverter");
 const constants_1 = require("../../constants");
 const najs_binding_1 = require("najs-binding");
 const lodash_1 = require("lodash");
-const collect = require('collect.js');
 class MongooseQueryBuilder extends GenericQueryBuilder_1.GenericQueryBuilder {
     constructor(modelName, softDelete, primaryKey = '_id') {
         super(softDelete);
@@ -118,12 +117,7 @@ class MongooseQueryBuilder extends GenericQueryBuilder_1.GenericQueryBuilder {
             .raw('.exec()')
             .action('get')
             .end();
-        const result = await query.exec();
-        if (result && !lodash_1.isEmpty(result)) {
-            const eloquent = najs_binding_1.make(this.mongooseModel.modelName);
-            return eloquent.newCollection(result);
-        }
-        return collect([]);
+        return (await query.exec());
     }
     async first() {
         const logger = this.resolveMongooseQueryLog();
@@ -137,12 +131,7 @@ class MongooseQueryBuilder extends GenericQueryBuilder_1.GenericQueryBuilder {
             .raw('.exec()')
             .action('find')
             .end();
-        const result = await query.exec();
-        if (result) {
-            return najs_binding_1.make(this.mongooseModel.modelName).newInstance(result);
-        }
-        // tslint:disable-next-line
-        return null;
+        return await query.exec();
     }
     async count() {
         const logger = this.resolveMongooseQueryLog().action('count');

@@ -8,6 +8,4 @@ export declare class Model<T = any> {
      * @param {Object|undefined} data
      */
     constructor(data?: Object);
-    newCollection(dataset: any[]): any;
-    newInstance(data?: Object | T): this;
 }

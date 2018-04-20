@@ -31,24 +31,6 @@ const RoleSchema = new mongoose_1.Schema({
 RoleSchema.plugin(SoftDelete_1.SoftDelete, { overrideMethods: true });
 const RoleModel = mongoose_1.model('Role', RoleSchema);
 class User extends Eloquent_1.Eloquent {
-    get first_name() {
-        return this.attributes['first_name'];
-    }
-    set first_name(value) {
-        this.attributes['first_name'] = value;
-    }
-    get last_name() {
-        return this.attributes['last_name'];
-    }
-    set last_name(value) {
-        this.attributes['last_name'] = value;
-    }
-    get age() {
-        return this.attributes['age'];
-    }
-    set age(value) {
-        this.attributes['age'] = value;
-    }
     getClassName() {
         return 'User';
     }
@@ -318,7 +300,6 @@ describe('MongooseQueryBuilder', function () {
             util_1.delete_collection(mongoose, 'roles');
         });
         function expect_match_user(result, expected) {
-            expect(result).toBeInstanceOf(User);
             for (const name in expected) {
                 expect(result[name]).toEqual(expected[name]);
             }
@@ -327,29 +308,28 @@ describe('MongooseQueryBuilder', function () {
             it('gets all data of collection and return an instance of Collection<Eloquent<T>>', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
                 const result = await query.get();
-                expect(result.count()).toEqual(7);
-                const resultArray = result.all();
+                expect(result.length).toEqual(7);
                 for (let i = 0; i < 7; i++) {
-                    expect_match_user(resultArray[i], dataset[i]);
+                    expect_match_user(result[i], dataset[i]);
                 }
             });
             it('returns an empty collection if no result', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
                 const result = await query.where('first_name', 'no-one').get();
-                expect(result.isEmpty()).toBe(true);
+                expect(result.length === 0).toBe(true);
             });
             it('can get data by query builder, case 1', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
                 const result = await query.where('age', 1000).get();
-                expect(result.count()).toEqual(1);
-                expect_match_user(result.first(), dataset[3]);
+                expect(result.length).toEqual(1);
+                expect_match_user(result[0], dataset[3]);
             });
             it('can get data by query builder, case 2', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
                 const result = await query.where('age', 40).get();
-                expect(result.count()).toEqual(2);
-                expect_match_user(result.items[0], dataset[2]);
-                expect_match_user(result.items[1], dataset[5]);
+                expect(result.length).toEqual(2);
+                expect_match_user(result[0], dataset[2]);
+                expect_match_user(result[1], dataset[5]);
             });
             it('can get data by query builder, case 3', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
@@ -357,8 +337,8 @@ describe('MongooseQueryBuilder', function () {
                     .where('age', 40)
                     .where('last_name', 'stark')
                     .get();
-                expect(result.count()).toEqual(1);
-                expect_match_user(result.items[0], dataset[2]);
+                expect(result.length).toEqual(1);
+                expect_match_user(result[0], dataset[2]);
             });
             it('can get data by query builder, case 4', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
@@ -366,10 +346,10 @@ describe('MongooseQueryBuilder', function () {
                     .where('age', 40)
                     .orWhere('first_name', 'peter')
                     .get();
-                expect(result.count()).toEqual(3);
-                expect_match_user(result.items[0], dataset[2]);
-                expect_match_user(result.items[1], dataset[5]);
-                expect_match_user(result.items[2], dataset[6]);
+                expect(result.length).toEqual(3);
+                expect_match_user(result[0], dataset[2]);
+                expect_match_user(result[1], dataset[5]);
+                expect_match_user(result[2], dataset[6]);
             });
         });
         describe('.first()', function () {
@@ -504,9 +484,9 @@ describe('MongooseQueryBuilder', function () {
                     .where('first_name', 'tony')
                     .orWhere('first_name', 'jane')
                     .get();
-                expect_match_user(updatedResults.items[0], Object.assign({}, dataset[1], { age: 26 }));
-                expect_match_user(updatedResults.items[1], Object.assign({}, dataset[2], { age: 41 }));
-                expect_match_user(updatedResults.items[2], Object.assign({}, dataset[5], { age: 41 }));
+                expect_match_user(updatedResults[0], Object.assign({}, dataset[1], { age: 26 }));
+                expect_match_user(updatedResults[1], Object.assign({}, dataset[2], { age: 41 }));
+                expect_match_user(updatedResults[2], Object.assign({}, dataset[5], { age: 41 }));
             });
             it('can update data by query builder, case 3', async function () {
                 const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');

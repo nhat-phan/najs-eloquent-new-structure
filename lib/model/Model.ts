@@ -1,12 +1,11 @@
 /// <reference path="interfaces/IModel.ts" />
 
 import { CREATE_SAMPLE } from '../util/ClassSetting'
-import { ClassRegistry, register, make, getClassName } from 'najs-binding'
+import { ClassRegistry, register, getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
 import { Fillable } from './components/Fillable'
 import { Attribute } from './components/Attribute'
 import { Serialization } from './components/Serialization'
-const collect = require('collect.js')
 
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {}
 export class Model<T = any> {
@@ -28,13 +27,13 @@ export class Model<T = any> {
     }
   }
 
-  newCollection(dataset: any[]): any {
-    return collect(dataset.map(item => this.newInstance(item)))
-  }
+  // newCollection(dataset: any[]): any {
+  //   return collect(dataset.map(item => this.newInstance(item)))
+  // }
 
-  newInstance(data?: Object | T): this {
-    return <any>make(getClassName(this), [data])
-  }
+  // newInstance(data?: Object | T): this {
+  //   return <any>make(getClassName(this), [data])
+  // }
 }
 
 const defaultComponents: Najs.Contracts.Eloquent.Component[] = [new Attribute(), new Fillable(), new Serialization()]
