@@ -16,15 +16,6 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
       EloquentComponentProvider.extend(this, this['driver'])
     }
   }
-
-  // /**
-  //  * Set the query with given name
-  //  *
-  //  * @param {string} name
-  //  */
-  // queryName(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<Model<T> & T> {
-  //   return <any>{}
-  // }
 }
 
 EloquentComponentProvider.register(DynamicAttribute, 'dynamic-attribute', true)
@@ -44,7 +35,7 @@ EloquentComponentProvider.register(DynamicAttribute, 'dynamic-attribute', true)
 //   }
 
 //   const test = new User()
-//   const result = await test.queryName('test').first()
-//   result.
+//   const result = await test.select(['id', 'created_at']).orderBy('id').where('id', 1).first()
+
 // }
 // run()

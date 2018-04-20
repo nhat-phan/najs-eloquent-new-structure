@@ -3,6 +3,7 @@
 /// <reference path="IModelDynamicAttribute.ts" />
 /// <reference path="IModelFillable.ts" />
 /// <reference path="IModelSerialization.ts" />
+/// <reference path="IModelQuery.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var Model;

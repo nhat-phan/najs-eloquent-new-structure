@@ -3,6 +3,7 @@
 /// <reference path="IModelDynamicAttribute.d.ts" />
 /// <reference path="IModelFillable.d.ts" />
 /// <reference path="IModelSerialization.d.ts" />
+/// <reference path="IModelQuery.d.ts" />
 declare namespace NajsEloquent.Model {
     class IModel<A> {
         /**
@@ -14,7 +15,7 @@ declare namespace NajsEloquent.Model {
          */
         protected driver: Najs.Contracts.Eloquent.Driver<A>;
     }
-    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization {
+    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelQuery<A> {
         getClassName(): string;
         newCollection(collection: any[]): any;
         newInstance(data: Object | A): any;

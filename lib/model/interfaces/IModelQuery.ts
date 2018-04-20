@@ -1,8 +1,14 @@
 /// <reference path="IModel.ts" />
 /// <reference path="../../query-builders/interfaces/IQueryBuilder.ts" />
+/// <reference path="../../collect.js/index.d.ts" />
 
 namespace NajsEloquent.Model {
   export interface IModelQuery<T> {
+    /**
+     * Create new query builder for model
+     */
+    newQuery(): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+
     /**
      * Set the query with given name
      *
@@ -84,19 +90,6 @@ namespace NajsEloquent.Model {
     ): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
 
     /**
-     * Add a basic where clause to the query.
-     *
-     * @param {string} field
-     * @param {string} operator
-     * @param {mixed} value
-     */
-    where(
-      field: string,
-      operator: NajsEloquent.QueryBuilder.Operator,
-      value: any
-    ): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
-
-    /**
      * Add a "where not" clause to the query.
      *
      * @param {string} field
@@ -161,31 +154,36 @@ namespace NajsEloquent.Model {
     /**
      * Execute query and returns the first record.
      */
-    find(): Promise<IModel<T> & T>
-
-    /**
-     * Execute query and returns the first record.
-     */
-    first(): Promise<IModel<T> & T>
+    first(): Promise<(IModel<T> & T) | null>
 
     /**
      * Execute query and return the records as a Collection.
      */
-    get(): Promise<IModel<T> & T>
-
-    /**
-     * Execute query and return the records as a Collection.
-     */
-    all(): Promise<IModel<T> & T>
+    get(): Promise<CollectJs.Collection<IModel<T> & T>>
 
     /**
      * Execute query and returns count of records.
      */
     count(): Promise<number>
 
+    // Helpers & aliases functions -------------------------------------------------------------------------------------
+    /**
+     * Execute query and returns the first record.
+     */
+    find(): Promise<IModel<T> & T>
+
+    /**
+     * Execute query and return the records as a Collection.
+     */
+    all(): Promise<CollectJs.Collection<IModel<T> & T>>
+
     /**
      * Execute query and returns "pluck" result.
      */
-    pluck(): Promise<Object>
+    pluck(valueKey: string): Promise<Object>
+    /**
+     * Execute query and returns "pluck" result.
+     */
+    pluck(valueKey: string, indexKey: string): Promise<Object>
   }
 }

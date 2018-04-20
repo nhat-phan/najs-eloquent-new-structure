@@ -31,7 +31,6 @@ EloquentComponentProviderFacade_1.EloquentComponentProvider.register(DynamicAttr
 //     doSomething() {}
 //   }
 //   const test = new User()
-//   const result = await test.queryName('test').first()
-//   result.
+//   const result = await test.select(['id', 'created_at']).orderBy('id').where('id', 1).first()
 // }
 // run()
