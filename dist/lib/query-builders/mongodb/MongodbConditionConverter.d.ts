@@ -1,4 +1,5 @@
 /// <reference path="../interfaces/IConditionQuery.d.ts" />
+import { IAutoload } from 'najs-binding';
 export declare type SimpleCondition = {
     bool: 'and' | 'or';
     field: string;
@@ -10,9 +11,11 @@ export declare type GroupOfCondition = {
     queries: Condition[];
 };
 export declare type Condition = SimpleCondition | GroupOfCondition;
-export declare class MongodbConditionConverter {
+export declare class MongodbConditionConverter implements IAutoload {
+    static className: string;
     queryConditions: Object[];
     constructor(queryConditions: Object[]);
+    getClassName(): string;
     convert(): Object;
     protected convertConditions(conditions: Condition[]): any;
     protected hasAnyIntersectKey(a: Object, b: Object): boolean;

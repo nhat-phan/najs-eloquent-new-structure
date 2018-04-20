@@ -14,7 +14,11 @@ export declare const NajsEloquent: {
             SoftDeletes: string;
         };
     };
-    QueryBuilder: {};
+    QueryBuilder: {
+        MongooseQueryBuilder: string;
+        MongodbConditionConverter: string;
+        MongooseQueryLog: string;
+    };
     Database: {
         Seeder: string;
     };

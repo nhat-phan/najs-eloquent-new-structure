@@ -62,6 +62,10 @@ class Role extends Eloquent_1.Eloquent {
 najs_binding_1.register(Role);
 // ---------------------------------------------------------------------------------------------------------------------
 describe('MongooseQueryBuilder', function () {
+    it('implements IAutoload and returns "NajsEloquent.QueryBuilder.Mongodb.MongooseQueryBuilder" as className', function () {
+        const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
+        expect(query.getClassName()).toEqual('NajsEloquent.QueryBuilder.Mongodb.MongooseQueryBuilder');
+    });
     it('extends GenericQueryBuilder', function () {
         const query = new MongooseQueryBuilder_1.MongooseQueryBuilder('User');
         expect(query).toBeInstanceOf(GenericQueryBuilder_1.GenericQueryBuilder);

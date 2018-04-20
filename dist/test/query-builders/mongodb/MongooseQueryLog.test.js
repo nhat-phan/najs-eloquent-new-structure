@@ -15,6 +15,7 @@ const UserSchema = new mongoose_1.Schema({
 });
 MongooseProviderFacade_1.MongooseProvider.createModelFromSchema('User', UserSchema);
 describe('MongooseQueryLog', function () {
+    // TODO: write test
     beforeEach(function () {
         QueryLogFacade_1.QueryLog.clear().enable();
     });

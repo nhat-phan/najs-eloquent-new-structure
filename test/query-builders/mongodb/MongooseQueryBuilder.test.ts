@@ -86,6 +86,11 @@ register(Role)
 // ---------------------------------------------------------------------------------------------------------------------
 
 describe('MongooseQueryBuilder', function() {
+  it('implements IAutoload and returns "NajsEloquent.QueryBuilder.Mongodb.MongooseQueryBuilder" as className', function() {
+    const query = new MongooseQueryBuilder('User')
+    expect(query.getClassName()).toEqual('NajsEloquent.QueryBuilder.Mongodb.MongooseQueryBuilder')
+  })
+
   it('extends GenericQueryBuilder', function() {
     const query = new MongooseQueryBuilder('User')
     expect(query).toBeInstanceOf(GenericQueryBuilder)

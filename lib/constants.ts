@@ -14,7 +14,11 @@ export const NajsEloquent = {
       SoftDeletes: 'NajsEloquent.Model.Component.SoftDeletes'
     }
   },
-  QueryBuilder: {},
+  QueryBuilder: {
+    MongooseQueryBuilder: 'NajsEloquent.QueryBuilder.Mongodb.MongooseQueryBuilder',
+    MongodbConditionConverter: 'NajsEloquent.QueryBuilder.Mongodb.MongodbConditionConverter',
+    MongooseQueryLog: 'NajsEloquent.QueryBuilder.Mongodb.MongooseQueryLog'
+  },
   Database: {
     Seeder: 'NajsEloquent.Database.Seeder'
   },

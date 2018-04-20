@@ -2,6 +2,11 @@ import 'jest'
 import { MongodbConditionConverter } from '../../../lib/query-builders/mongodb/MongodbConditionConverter'
 
 describe('MongodbConditionConverter', function() {
+  it('implements IAutoload and returns "NajsEloquent.QueryBuilder.Mongodb.MongodbConditionConverter" as className', function() {
+    const query = new MongodbConditionConverter([])
+    expect(query.getClassName()).toEqual('NajsEloquent.QueryBuilder.Mongodb.MongodbConditionConverter')
+  })
+
   describe('protected convertSimpleCondition()', function() {
     const equalsOperatorDataset = {
       'equals case #1': {

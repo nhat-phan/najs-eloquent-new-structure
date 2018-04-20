@@ -15,6 +15,7 @@ export declare class MongooseQueryBuilder<T> extends GenericQueryBuilder impleme
     constructor(modelName: string);
     constructor(modelName: string, softDelete: NajsEloquent.Model.ISoftDeletesSetting | undefined);
     constructor(modelName: string, softDelete: NajsEloquent.Model.ISoftDeletesSetting | undefined, primaryKey: string);
+    getClassName(): string;
     protected getQuery(isFindOne?: boolean, logger?: MongooseQueryLog): MongooseQuery<T>;
     protected passFieldsToQuery(query: MongooseQuery<T>, logger?: MongooseQueryLog): void;
     protected passLimitToQuery(query: MongooseQuery<T>, logger?: MongooseQueryLog): void;
@@ -33,4 +34,6 @@ export declare class MongooseQueryBuilder<T> extends GenericQueryBuilder impleme
     restore(): Promise<Object>;
     execute(): Promise<any>;
     private isNotUsedOrEmptyCondition();
+    private resolveMongodbConditionConverter();
+    private resolveMongooseQueryLog();
 }

@@ -18,6 +18,8 @@ const UserSchema: Schema = new Schema(
 MongooseProvider.createModelFromSchema('User', UserSchema)
 
 describe('MongooseQueryLog', function() {
+  // TODO: write test
+
   beforeEach(function() {
     QueryLog.clear().enable()
   })

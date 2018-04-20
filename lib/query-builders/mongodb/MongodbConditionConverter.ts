@@ -1,5 +1,7 @@
 /// <reference path="../interfaces/IConditionQuery.ts" />
 
+import { IAutoload, register } from 'najs-binding'
+import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { set } from 'lodash'
 
 export type SimpleCondition = {
@@ -16,11 +18,16 @@ export type GroupOfCondition = {
 
 export type Condition = SimpleCondition | GroupOfCondition
 
-export class MongodbConditionConverter {
+export class MongodbConditionConverter implements IAutoload {
+  static className: string = NajsEloquentClasses.QueryBuilder.MongodbConditionConverter
   queryConditions: Object[]
 
   constructor(queryConditions: Object[]) {
     this.queryConditions = queryConditions
+  }
+
+  getClassName() {
+    return NajsEloquentClasses.QueryBuilder.MongodbConditionConverter
   }
 
   convert(): Object {
@@ -168,3 +175,4 @@ export class MongodbConditionConverter {
     }
   }
 }
+register(MongodbConditionConverter)
