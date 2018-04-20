@@ -7,41 +7,41 @@ namespace NajsEloquent.Model {
     /**
      * Create new query builder for model
      */
-    newQuery(): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    newQuery(): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Set the query with given name
      *
      * @param {string} name
      */
-    queryName(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    queryName(name: string): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Set the columns or fields to be selected.
      *
      * @param {string|string[]} fields
      */
-    select(...fields: Array<string | string[]>): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    select(...fields: Array<string | string[]>): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Set the "limit" value of the query.
      * @param {number} records
      */
-    limit(record: number): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    limit(record: number): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add an "order by" clause to the query.
      *
      * @param {string} field
      */
-    orderBy(field: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    orderBy(field: string): IQueryBuilderWrapper<IModel<T> & T>
     /**
      * Add an "order by" clause to the query.
      *
      * @param {string} field
      * @param {string} direction
      */
-    orderBy(field: string, direction: 'asc' | 'desc'): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    orderBy(field: string, direction: 'asc' | 'desc'): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add an "order by" clause to the query with direction ASC.
@@ -49,7 +49,7 @@ namespace NajsEloquent.Model {
      * @param {string} field
      * @param {string} direction
      */
-    orderByAsc(field: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    orderByAsc(field: string): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add an "order by" clause to the query with direction DESC.
@@ -57,16 +57,14 @@ namespace NajsEloquent.Model {
      * @param {string} field
      * @param {string} direction
      */
-    orderByDesc(field: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    orderByDesc(field: string): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a basic where clause to the query.
      *
      * @param {Function} conditionBuilder sub-query builder
      */
-    where(
-      conditionBuilder: NajsEloquent.QueryBuilder.SubCondition
-    ): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    where(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a basic where clause to the query.
@@ -74,7 +72,7 @@ namespace NajsEloquent.Model {
      * @param {string} field
      * @param {mixed} value
      */
-    where(field: string, value: any): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    where(field: string, value: any): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a basic where clause to the query.
@@ -83,11 +81,7 @@ namespace NajsEloquent.Model {
      * @param {string} operator
      * @param {mixed} value
      */
-    where(
-      field: string,
-      operator: NajsEloquent.QueryBuilder.Operator,
-      value: any
-    ): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    where(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a "where not" clause to the query.
@@ -103,7 +97,7 @@ namespace NajsEloquent.Model {
      * @param {string} field
      * @param {any[]} values
      */
-    whereIn(field: string, values: Array<any>): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    whereIn(field: string, values: Array<any>): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a "where not in" clause to the query.
@@ -111,21 +105,21 @@ namespace NajsEloquent.Model {
      * @param {string} field
      * @param {any[]} values
      */
-    whereNotIn(field: string, values: Array<any>): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    whereNotIn(field: string, values: Array<any>): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a "where null" clause to the query.
      *
      * @param {string} field
      */
-    whereNull(field: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    whereNull(field: string): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a "where null" clause to the query.
      *
      * @param {string} field
      */
-    whereNotNull(field: string): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    whereNotNull(field: string): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Add a "where between" clause to the query.
@@ -144,12 +138,12 @@ namespace NajsEloquent.Model {
     /**
      * Consider all soft-deleted or not-deleted items.
      */
-    withTrashed(): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    withTrashed(): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Consider soft-deleted items only.
      */
-    onlyTrashed(): NajsEloquent.QueryBuilder.IQueryBuilder<IModel<T> & T>
+    onlyTrashed(): IQueryBuilderWrapper<IModel<T> & T>
 
     /**
      * Execute query and returns the first record.
@@ -165,25 +159,5 @@ namespace NajsEloquent.Model {
      * Execute query and returns count of records.
      */
     count(): Promise<number>
-
-    // Helpers & aliases functions -------------------------------------------------------------------------------------
-    /**
-     * Execute query and returns the first record.
-     */
-    find(): Promise<IModel<T> & T>
-
-    /**
-     * Execute query and return the records as a Collection.
-     */
-    all(): Promise<CollectJs.Collection<IModel<T> & T>>
-
-    /**
-     * Execute query and returns "pluck" result.
-     */
-    pluck(valueKey: string): Promise<Object>
-    /**
-     * Execute query and returns "pluck" result.
-     */
-    pluck(valueKey: string, indexKey: string): Promise<Object>
   }
 }

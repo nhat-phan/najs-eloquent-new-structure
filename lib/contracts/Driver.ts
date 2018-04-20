@@ -16,7 +16,7 @@ namespace Najs.Contracts.Eloquent {
 
     toObject(): Object
 
-    newQuery<T>(): NajsEloquent.QueryBuilder.IQueryBuilder<T>
+    newQuery<T>(): NajsEloquent.Model.IQueryBuilderWrapper<T>
 
     delete(softDeletes: boolean): Promise<boolean>
 

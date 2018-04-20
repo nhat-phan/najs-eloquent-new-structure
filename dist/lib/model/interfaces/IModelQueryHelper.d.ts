@@ -1,5 +1,6 @@
 /// <reference path="IModel.d.ts" />
 /// <reference path="../../query-builders/interfaces/IQueryBuilder.d.ts" />
+/// <reference path="../../../../lib/collect.js/index.d.ts" />
 declare namespace NajsEloquent.Model {
     interface IModelQueryHelper<T> {
         /**
@@ -13,7 +14,7 @@ declare namespace NajsEloquent.Model {
         /**
          * Select some fields and get the result as Collection
          */
-        get(...fields: Array<string | string[]>): Promise<(IModel<T> & T) | null>;
+        get(...fields: Array<string | string[]>): Promise<CollectJs.Collection<IModel<T> & T>>;
         /**
          * Execute query and returns "pluck" result.
          */
