@@ -110,9 +110,10 @@ class FlipFlopQueryLog extends najs_facade_1.Facade {
             this[this.circle].push(item); // put not matched item back to the other pipe
         });
         this[pullingPipe] = [];
-        return result.sort(function (a, b) {
-            return a.when.toDate().getTime() - b.when.toDate().getTime();
-        });
+        return result.sort(FlipFlopQueryLog.sortByWhenAsc);
+    }
+    static sortByWhenAsc(a, b) {
+        return a.when.toDate().getTime() - b.when.toDate().getTime();
     }
 }
 FlipFlopQueryLog.className = constants_1.NajsEloquent.QueryLog.FlipFlopQueryLog;

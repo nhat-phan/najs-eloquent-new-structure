@@ -3,7 +3,7 @@
 /// <reference path="interfaces/ISoftDeleteQuery.ts" />
 /// <reference path="interfaces/IQueryConvention.ts" />
 
-import { GenericQueryCondition } from './GenericQueryCondition'
+import { QueryConditionHelpers, GenericQueryCondition } from './GenericQueryCondition'
 import { flatten } from 'lodash'
 import { array_unique } from '../util/functions'
 
@@ -201,7 +201,7 @@ export class GenericQueryBuilder
   }
 
   whereBetween(field: string, range: [any, any]): this {
-    return this.where(field, '>=', range[0]).where(field, '<=', range[1])
+    return QueryConditionHelpers.whereBetween(this, field, range)
   }
 
   andWhereBetween(field: string, range: [any, any]): this {
@@ -209,15 +209,11 @@ export class GenericQueryBuilder
   }
 
   orWhereBetween(field: string, range: [any, any]): this {
-    return this.orWhere(function(subQuery) {
-      subQuery.where(field, '>=', range[0]).where(field, '<=', range[1])
-    })
+    return this.orWhere(QueryConditionHelpers.subQueryWhereBetween(field, range))
   }
 
   whereNotBetween(field: string, range: [any, any]): this {
-    return this.where(function(subQuery) {
-      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
-    })
+    return this.where(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
   }
 
   andWhereNotBetween(field: string, range: [any, any]): this {
@@ -225,9 +221,7 @@ export class GenericQueryBuilder
   }
 
   orWhereNotBetween(field: string, range: [any, any]): this {
-    return this.orWhere(function(subQuery) {
-      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
-    })
+    return this.orWhere(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
   }
 
   withTrashed() {

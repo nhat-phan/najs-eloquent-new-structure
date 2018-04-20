@@ -129,28 +129,22 @@ class GenericQueryBuilder {
         return this.orWhere(field, '<>', this.convention.getNullValueFor(field));
     }
     whereBetween(field, range) {
-        return this.where(field, '>=', range[0]).where(field, '<=', range[1]);
+        return GenericQueryCondition_1.QueryConditionHelpers.whereBetween(this, field, range);
     }
     andWhereBetween(field, range) {
         return this.whereBetween(field, range);
     }
     orWhereBetween(field, range) {
-        return this.orWhere(function (subQuery) {
-            subQuery.where(field, '>=', range[0]).where(field, '<=', range[1]);
-        });
+        return this.orWhere(GenericQueryCondition_1.QueryConditionHelpers.subQueryWhereBetween(field, range));
     }
     whereNotBetween(field, range) {
-        return this.where(function (subQuery) {
-            subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1]);
-        });
+        return this.where(GenericQueryCondition_1.QueryConditionHelpers.subQueryWhereNotBetween(field, range));
     }
     andWhereNotBetween(field, range) {
         return this.whereNotBetween(field, range);
     }
     orWhereNotBetween(field, range) {
-        return this.orWhere(function (subQuery) {
-            subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1]);
-        });
+        return this.orWhere(GenericQueryCondition_1.QueryConditionHelpers.subQueryWhereNotBetween(field, range));
     }
     withTrashed() {
         if (this.softDelete) {

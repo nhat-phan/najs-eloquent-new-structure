@@ -1,5 +1,11 @@
 /// <reference path="interfaces/IQueryConvention.d.ts" />
 /// <reference path="interfaces/IConditionQuery.d.ts" />
+export declare const QueryConditionHelpers: {
+    whereBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any;
+    subQueryWhereBetween(field: string, range: [any, any]): any;
+    whereNotBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any;
+    subQueryWhereNotBetween(field: string, range: [any, any]): any;
+};
 export declare class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditionQuery {
     convention: NajsEloquent.QueryBuilder.IQueryConvention;
     isSubQuery: boolean;

@@ -128,12 +128,11 @@ export class FlipFlopQueryLog extends Facade implements Najs.Contracts.Eloquent.
       this[this.circle].push(item) // put not matched item back to the other pipe
     })
     this[pullingPipe] = []
-    return result.sort(function(
-      a: Najs.Contracts.Eloquent.QueryLogItem<any>,
-      b: Najs.Contracts.Eloquent.QueryLogItem<any>
-    ) {
-      return (a.when as Moment.Moment).toDate().getTime() - (b.when as Moment.Moment).toDate().getTime()
-    })
+    return result.sort(FlipFlopQueryLog.sortByWhenAsc)
+  }
+
+  static sortByWhenAsc(a: Najs.Contracts.Eloquent.QueryLogItem<any>, b: Najs.Contracts.Eloquent.QueryLogItem<any>) {
+    return (a.when as Moment.Moment).toDate().getTime() - (b.when as Moment.Moment).toDate().getTime()
   }
 }
 register(FlipFlopQueryLog)

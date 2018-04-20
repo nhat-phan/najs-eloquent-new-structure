@@ -3,6 +3,24 @@
 /// <reference path="interfaces/IConditionQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
+exports.QueryConditionHelpers = {
+    whereBetween(query, field, range) {
+        return query.where(field, '>=', range[0]).where(field, '<=', range[1]);
+    },
+    subQueryWhereBetween(field, range) {
+        return function (subQuery) {
+            exports.QueryConditionHelpers.whereBetween(subQuery, field, range);
+        };
+    },
+    whereNotBetween(query, field, range) {
+        return query.where(field, '<', range[0]).orWhere(field, '>', range[1]);
+    },
+    subQueryWhereNotBetween(field, range) {
+        return function (subQuery) {
+            exports.QueryConditionHelpers.whereNotBetween(subQuery, field, range);
+        };
+    }
+};
 class GenericQueryCondition {
     constructor() {
         this.isSubQuery = false;
@@ -124,28 +142,22 @@ class GenericQueryCondition {
         return this.buildQuery('or', field, '<>', this.convention.getNullValueFor(field));
     }
     whereBetween(field, range) {
-        return this.where(field, '>=', range[0]).where(field, '<=', range[1]);
+        return exports.QueryConditionHelpers.whereBetween(this, field, range);
     }
     andWhereBetween(field, range) {
         return this.whereBetween(field, range);
     }
     orWhereBetween(field, range) {
-        return this.orWhere(function (subQuery) {
-            subQuery.where(field, '>=', range[0]).where(field, '<=', range[1]);
-        });
+        return this.orWhere(exports.QueryConditionHelpers.subQueryWhereBetween(field, range));
     }
     whereNotBetween(field, range) {
-        return this.where(function (subQuery) {
-            subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1]);
-        });
+        return this.where(exports.QueryConditionHelpers.subQueryWhereNotBetween(field, range));
     }
     andWhereNotBetween(field, range) {
         return this.whereNotBetween(field, range);
     }
     orWhereNotBetween(field, range) {
-        return this.orWhere(function (subQuery) {
-            subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1]);
-        });
+        return this.orWhere(exports.QueryConditionHelpers.subQueryWhereNotBetween(field, range));
     }
 }
 exports.GenericQueryCondition = GenericQueryCondition;

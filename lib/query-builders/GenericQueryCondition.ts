@@ -3,6 +3,28 @@
 
 import { isFunction } from 'lodash'
 
+export const QueryConditionHelpers = {
+  whereBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any {
+    return query.where(field, '>=', range[0]).where(field, '<=', range[1])
+  },
+
+  subQueryWhereBetween(field: string, range: [any, any]): any {
+    return function(subQuery: NajsEloquent.QueryBuilder.IConditionQuery) {
+      QueryConditionHelpers.whereBetween(subQuery, field, range)
+    }
+  },
+
+  whereNotBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any {
+    return query.where(field, '<', range[0]).orWhere(field, '>', range[1])
+  },
+
+  subQueryWhereNotBetween(field: string, range: [any, any]): any {
+    return function(subQuery: NajsEloquent.QueryBuilder.IConditionQuery) {
+      QueryConditionHelpers.whereNotBetween(subQuery, field, range)
+    }
+  }
+}
+
 export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditionQuery {
   convention: NajsEloquent.QueryBuilder.IQueryConvention
   isSubQuery: boolean
@@ -174,7 +196,7 @@ export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditi
   }
 
   whereBetween(field: string, range: [any, any]): this {
-    return this.where(field, '>=', range[0]).where(field, '<=', range[1])
+    return QueryConditionHelpers.whereBetween(this, field, range)
   }
 
   andWhereBetween(field: string, range: [any, any]): this {
@@ -182,15 +204,11 @@ export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditi
   }
 
   orWhereBetween(field: string, range: [any, any]): this {
-    return this.orWhere(function(subQuery) {
-      subQuery.where(field, '>=', range[0]).where(field, '<=', range[1])
-    })
+    return this.orWhere(QueryConditionHelpers.subQueryWhereBetween(field, range))
   }
 
   whereNotBetween(field: string, range: [any, any]): this {
-    return this.where(function(subQuery) {
-      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
-    })
+    return this.where(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
   }
 
   andWhereNotBetween(field: string, range: [any, any]): this {
@@ -198,8 +216,6 @@ export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditi
   }
 
   orWhereNotBetween(field: string, range: [any, any]): this {
-    return this.orWhere(function(subQuery) {
-      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
-    })
+    return this.orWhere(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
   }
 }
