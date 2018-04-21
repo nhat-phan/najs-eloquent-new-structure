@@ -25,6 +25,9 @@ exports.NajsEloquent = {
     Database: {
         Seeder: 'NajsEloquent.Database.Seeder'
     },
+    Factory: {
+        FactoryManager: 'NajsEloquent.Factory.FactoryManager'
+    },
     QueryLog: {
         FlipFlopQueryLog: 'NajsEloquent.QueryLog.FlipFlopQueryLog'
     },

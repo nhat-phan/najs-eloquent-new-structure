@@ -23,6 +23,9 @@ export declare const NajsEloquent: {
     Database: {
         Seeder: string;
     };
+    Factory: {
+        FactoryManager: string;
+    };
     QueryLog: {
         FlipFlopQueryLog: string;
     };

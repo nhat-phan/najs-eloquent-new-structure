@@ -1,5 +1,5 @@
+import { register } from 'najs-binding'
 import { Model } from './Model'
-
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { DynamicAttribute } from './components/DynamicAttribute'
 import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
@@ -15,6 +15,12 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
     if (data !== CREATE_SAMPLE) {
       EloquentComponentProvider.extend(this, this['driver'])
     }
+  }
+
+  static register(model: typeof Eloquent) {
+    // just create new instance, it's auto register and bind static Queries
+    register(model)
+    Reflect.construct(model, [])
   }
 }
 

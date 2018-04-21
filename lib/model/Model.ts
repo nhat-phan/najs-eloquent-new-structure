@@ -7,6 +7,7 @@ import { EloquentDriverProvider } from '../facades/global/EloquentDriverProvider
 import { ModelAttribute } from './components/ModelAttribute'
 import { ModelFillable } from './components/ModelFillable'
 import { ModelSerialization } from './components/ModelSerialization'
+const collect = require('collect.js')
 
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {}
 export class Model<T = any> {
@@ -28,13 +29,13 @@ export class Model<T = any> {
     }
   }
 
-  // newCollection(dataset: any[]): any {
-  //   return collect(dataset.map(item => this.newInstance(item)))
-  // }
+  newCollection(dataset: any[]): any {
+    return collect(dataset.map(item => this.newInstance(item)))
+  }
 
-  // newInstance(data?: Object | T): this {
-  //   return <any>make(getClassName(this), [data])
-  // }
+  newInstance(data?: Object | T): this {
+    return <any>make(getClassName(this), [data])
+  }
 }
 
 const defaultComponents: Najs.Contracts.Eloquent.Component[] = [

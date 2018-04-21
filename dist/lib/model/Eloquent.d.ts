@@ -6,4 +6,5 @@ export declare class Eloquent<T extends Object = {}> extends Model<T> {
      * @param {Object|undefined} data
      */
     constructor(data?: Object);
+    static register(model: typeof Eloquent): void;
 }

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const najs_binding_1 = require("najs-binding");
 const Model_1 = require("./Model");
 const ClassSetting_1 = require("../util/ClassSetting");
 const DynamicAttribute_1 = require("./components/DynamicAttribute");
@@ -15,6 +16,11 @@ class Eloquent extends Model_1.Model {
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
             EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this['driver']);
         }
+    }
+    static register(model) {
+        // just create new instance, it's auto register and bind static Queries
+        najs_binding_1.register(model);
+        Reflect.construct(model, []);
     }
 }
 exports.Eloquent = Eloquent;

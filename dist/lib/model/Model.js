@@ -8,6 +8,7 @@ const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriver
 const ModelAttribute_1 = require("./components/ModelAttribute");
 const ModelFillable_1 = require("./components/ModelFillable");
 const ModelSerialization_1 = require("./components/ModelSerialization");
+const collect = require('collect.js');
 class Model {
     /**
      * Model constructor.
@@ -24,6 +25,12 @@ class Model {
             this.driver.initialize(data);
             this.attributes = this.driver.getRecord();
         }
+    }
+    newCollection(dataset) {
+        return collect(dataset.map(item => this.newInstance(item)));
+    }
+    newInstance(data) {
+        return najs_binding_1.make(najs_binding_2.getClassName(this), [data]);
     }
 }
 exports.Model = Model;
