@@ -35,3 +35,13 @@ export interface IFactoryManager<Faker> {
   rawOf<T = any>(className: string | ModelClass, name: string): T
   rawOf<T = any>(className: string | ModelClass, name: string, attributes: Object): T
 }
+
+// interface Test {
+//   <T>(test: { new(): T }): T
+// }
+// const test: Test = <any>function() {}
+
+// class User {
+//   doSomething() {}
+// }
+// test(User).doSomething()

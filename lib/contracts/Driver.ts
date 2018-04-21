@@ -1,4 +1,5 @@
 /// <reference types="najs-binding" />
+/// <reference path="../wrappers/interfaces/IQueryBuilderWrapper.ts" />
 
 namespace Najs.Contracts.Eloquent {
   export interface Driver<NativeRecord> extends Najs.Contracts.Autoload {
@@ -16,7 +17,7 @@ namespace Najs.Contracts.Eloquent {
 
     toObject(): Object
 
-    newQuery<T>(): NajsEloquent.Model.IQueryBuilderWrapper<T>
+    newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T>
 
     delete(softDeletes: boolean): Promise<boolean>
 

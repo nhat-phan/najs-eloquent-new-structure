@@ -1,3 +1,4 @@
+/// <reference path="../wrappers/interfaces/IQueryBuilderWrapper.d.ts" />
 declare namespace Najs.Contracts.Eloquent {
     interface Driver<NativeRecord> extends Najs.Contracts.Autoload {
         initialize(data?: NativeRecord | Object): void;
@@ -7,7 +8,7 @@ declare namespace Najs.Contracts.Eloquent {
         setAttribute<T>(name: string, value: T): boolean;
         getPrimaryKeyName(): string;
         toObject(): Object;
-        newQuery<T>(): NajsEloquent.Model.IQueryBuilderWrapper<T>;
+        newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T>;
         delete(softDeletes: boolean): Promise<boolean>;
         restore(): Promise<any>;
         save(): Promise<any>;

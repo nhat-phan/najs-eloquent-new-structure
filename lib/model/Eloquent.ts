@@ -1,9 +1,13 @@
-import { register } from 'najs-binding'
+/// <reference path="interfaces/IModelQuery.ts" />
+
+import { make, register } from 'najs-binding'
 import { Model } from './Model'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { DynamicAttribute } from './components/DynamicAttribute'
+import { ModelQuery } from './components/ModelQuery'
 import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
 
+export interface Eloquent<T extends Object = {}> extends NajsEloquent.Model.IModelQuery<T> {}
 export class Eloquent<T extends Object = {}> extends Model<T> {
   /**
    * Model constructor.
@@ -18,10 +22,14 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
   }
 
   static register(model: typeof Eloquent) {
-    // just create new instance, it's auto register and bind static Queries
     register(model)
     Reflect.construct(model, [])
   }
+}
+
+const defaultComponents: Najs.Contracts.Eloquent.Component[] = [make(ModelQuery.className)]
+for (const component of defaultComponents) {
+  component.extend(Eloquent.prototype, [], <any>{})
 }
 
 EloquentComponentProvider.register(DynamicAttribute, 'dynamic-attribute', true)
