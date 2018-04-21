@@ -7,17 +7,12 @@ import { container } from '../container'
 import { Mongoose, Model, Schema, Document } from 'mongoose'
 import { NajsEloquent } from '../../constants'
 
-const facade = Facade.create<Najs.Contracts.Eloquent.MongooseProvider<Mongoose, Schema, Model<Document>>>(
-  container,
-  'MongooseProvider',
-  function() {
-    return make<Najs.Contracts.Eloquent.MongooseProvider<Mongoose, Schema, Model<Document>>>(
-      NajsEloquent.Provider.MongooseProvider
-    )
-  }
-)
+export interface IMongooseProviderFacade
+  extends Najs.Contracts.Eloquent.MongooseProvider<Mongoose, Schema, Model<Document>> {}
 
-export const MongooseProviderFacade: Najs.Contracts.Eloquent.MongooseProvider<Mongoose, Schema, Model<Document>> &
-  IFacade = facade
-export const MongooseProvider: Najs.Contracts.Eloquent.MongooseProvider<Mongoose, Schema, Model<Document>> &
-  IFacadeBase = facade
+const facade = Facade.create<IMongooseProviderFacade>(container, 'MongooseProvider', function() {
+  return make<IMongooseProviderFacade>(NajsEloquent.Provider.MongooseProvider)
+})
+
+export const MongooseProviderFacade: IMongooseProviderFacade & IFacade = facade
+export const MongooseProvider: IMongooseProviderFacade & IFacadeBase = facade

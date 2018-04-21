@@ -35,11 +35,11 @@ checks:
   similar-code:
     enabled: true
     config:
-      threshold: 3
+      threshold: #language-specific defaults. overrides affect all languages.
   identical-code:
     enabled: true
     config:
-      threshold: 3
+      threshold: #language-specific defaults. overrides affect all languages.
 exclude_patterns:
 - "config/"
 - "db/"

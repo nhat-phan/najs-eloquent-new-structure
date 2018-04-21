@@ -9,8 +9,14 @@
 
 import { BuiltinClasses } from './builtin'
 import { container as FacadeContainer } from './facades/container'
+import { ModelAttribute } from './model/components/ModelAttribute'
+import { ModelFillable } from './model/components/ModelFillable'
+import { ModelSerialization } from './model/components/ModelSerialization'
+import { ModelQuery } from './model/components/ModelQuery'
+import { DynamicAttribute } from './model/components/DynamicAttribute'
 import { DriverProvider } from './providers/DriverProvider'
 import { ComponentProvider } from './providers/ComponentProvider'
+import { MongooseProvider } from './providers/MongooseProvider'
 
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
 export {
@@ -30,8 +36,18 @@ export {
 
 export const NajsEloquent: BuiltinClasses = {
   FacadeContainer: FacadeContainer,
+  Model: {
+    Component: {
+      ModelAttribute: ModelAttribute,
+      ModelFillable: ModelFillable,
+      ModelSerialization: ModelSerialization,
+      ModelQuery: ModelQuery,
+      DynamicAttribute: DynamicAttribute
+    }
+  },
   Provider: {
     DriverProvider: DriverProvider,
-    ComponentProvider: ComponentProvider
+    ComponentProvider: ComponentProvider,
+    MongooseProvider: MongooseProvider
   }
 }
