@@ -1,8 +1,12 @@
 /// <reference path="IModel.d.ts" />
-/// <reference path="../../query-builders/interfaces/IQueryBuilder.d.ts" />
-/// <reference path="../../../../lib/collect.js/index.d.ts" />
+/// <reference path="IModelQueryAdvanced.d.ts" />
 declare namespace NajsEloquent.Model {
-    interface IModelQuery<T> {
+    /**
+     * Interface contains query functions which attached to the model.
+     *
+     * This interface based on QueryBuilder, but remove not "start" query functions such as .orWhere() .andWhere()
+     */
+    interface IModelQuery<T> extends IModelQueryAdvanced<T> {
         /**
          * Create new query builder for model
          */
@@ -110,13 +114,13 @@ declare namespace NajsEloquent.Model {
          *
          * @param {string} field
          */
-        whereBetween(field: string, range: [any, any]): this;
+        whereBetween(field: string, range: [any, any]): IQueryBuilderWrapper<IModel<T> & T>;
         /**
          * Add a "where not between" clause to the query.
          *
          * @param {string} field
          */
-        whereNotBetween(field: string, range: [any, any]): this;
+        whereNotBetween(field: string, range: [any, any]): IQueryBuilderWrapper<IModel<T> & T>;
         /**
          * Consider all soft-deleted or not-deleted items.
          */
@@ -125,17 +129,5 @@ declare namespace NajsEloquent.Model {
          * Consider soft-deleted items only.
          */
         onlyTrashed(): IQueryBuilderWrapper<IModel<T> & T>;
-        /**
-         * Execute query and returns the first record.
-         */
-        first(): Promise<(IModel<T> & T) | null>;
-        /**
-         * Execute query and return the records as a Collection.
-         */
-        get(): Promise<CollectJs.Collection<IModel<T> & T>>;
-        /**
-         * Execute query and returns count of records.
-         */
-        count(): Promise<number>;
     }
 }

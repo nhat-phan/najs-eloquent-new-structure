@@ -3,19 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const Eloquent_1 = require("../../../lib/model/Eloquent");
-const Serialization_1 = require("../../../lib/model/components/Serialization");
+const ModelSerialization_1 = require("../../../lib/model/components/ModelSerialization");
 const ModelUtilities_1 = require("../../../lib/util/ModelUtilities");
 const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
 const EloquentComponentProviderFacade_1 = require("../../../lib/facades/global/EloquentComponentProviderFacade");
-EloquentComponentProviderFacade_1.EloquentComponentProvider.register(Serialization_1.Serialization, 'serialization', true);
+EloquentComponentProviderFacade_1.EloquentComponentProvider.register(ModelSerialization_1.ModelSerialization, 'serialization', true);
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
 describe('Model/Serialization', function () {
     describe('Unit', function () {
         describe('.getClassName()', function () {
-            it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.Serialization" as class name', function () {
-                const serialization = new Serialization_1.Serialization();
-                expect(serialization.getClassName()).toEqual('NajsEloquent.Model.Component.Serialization');
+            it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelSerialization" as class name', function () {
+                const serialization = new ModelSerialization_1.ModelSerialization();
+                expect(serialization.getClassName()).toEqual('NajsEloquent.Model.Component.ModelSerialization');
             });
         });
         describe('.extend()', function () {
@@ -32,11 +32,11 @@ describe('Model/Serialization', function () {
                     toJson: 'toJSON'
                 };
                 const prototype = {};
-                const serialization = new Serialization_1.Serialization();
+                const serialization = new ModelSerialization_1.ModelSerialization();
                 serialization.extend(prototype, [], {});
                 for (const name in functions) {
                     expect(typeof prototype[name] === 'function').toBe(true);
-                    expect(prototype[name] === Serialization_1.Serialization[functions[name]]).toBe(true);
+                    expect(prototype[name] === ModelSerialization_1.ModelSerialization[functions[name]]).toBe(true);
                 }
             });
         });
@@ -52,7 +52,7 @@ describe('Model/Serialization', function () {
                         return 'hidden';
                     }
                 };
-                expect(Serialization_1.Serialization.isVisible.call(user, 'test')).toEqual('anything');
+                expect(ModelSerialization_1.ModelSerialization.isVisible.call(user, 'test')).toEqual('anything');
                 expect(isInWhiteListStub.calledWith(user, 'test', 'visible', 'hidden')).toBe(true);
                 isInWhiteListStub.restore();
             });
@@ -66,8 +66,8 @@ describe('Model/Serialization', function () {
                         return 'hidden';
                     }
                 };
-                expect(Serialization_1.Serialization.isHidden.call(user, 'test')).toEqual('anything');
-                expect(isInBlackListStub.calledWith(user, 'test', 'hidden')).toBe(true);
+                expect(ModelSerialization_1.ModelSerialization.isHidden.call(user, 'test')).toEqual('anything');
+                expect(isInBlackListStub.calledWith('test', 'hidden')).toBe(true);
                 isInBlackListStub.restore();
             });
         });

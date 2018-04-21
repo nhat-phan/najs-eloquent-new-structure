@@ -1,21 +1,21 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { Eloquent } from '../../../lib/model/Eloquent'
-import { Serialization } from '../../../lib/model/components/Serialization'
+import { ModelSerialization } from '../../../lib/model/components/ModelSerialization'
 import { ModelUtilities } from '../../../lib/util/ModelUtilities'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
 import { EloquentComponentProvider } from '../../../lib/facades/global/EloquentComponentProviderFacade'
 
-EloquentComponentProvider.register(Serialization, 'serialization', true)
+EloquentComponentProvider.register(ModelSerialization, 'serialization', true)
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
 describe('Model/Serialization', function() {
   describe('Unit', function() {
     describe('.getClassName()', function() {
-      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.Serialization" as class name', function() {
-        const serialization = new Serialization()
-        expect(serialization.getClassName()).toEqual('NajsEloquent.Model.Component.Serialization')
+      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelSerialization" as class name', function() {
+        const serialization = new ModelSerialization()
+        expect(serialization.getClassName()).toEqual('NajsEloquent.Model.Component.ModelSerialization')
       })
     })
 
@@ -33,11 +33,11 @@ describe('Model/Serialization', function() {
           toJson: 'toJSON'
         }
         const prototype = {}
-        const serialization = new Serialization()
+        const serialization = new ModelSerialization()
         serialization.extend(prototype, [], <any>{})
         for (const name in functions) {
           expect(typeof prototype[name] === 'function').toBe(true)
-          expect(prototype[name] === Serialization[functions[name]]).toBe(true)
+          expect(prototype[name] === ModelSerialization[functions[name]]).toBe(true)
         }
       })
     })
@@ -56,7 +56,7 @@ describe('Model/Serialization', function() {
           }
         }
 
-        expect(Serialization.isVisible.call(user, 'test')).toEqual('anything')
+        expect(ModelSerialization.isVisible.call(user, 'test')).toEqual('anything')
         expect(isInWhiteListStub.calledWith(user, 'test', 'visible', 'hidden')).toBe(true)
         isInWhiteListStub.restore()
       })
@@ -73,8 +73,8 @@ describe('Model/Serialization', function() {
           }
         }
 
-        expect(Serialization.isHidden.call(user, 'test')).toEqual('anything')
-        expect(isInBlackListStub.calledWith(user, 'test', 'hidden')).toBe(true)
+        expect(ModelSerialization.isHidden.call(user, 'test')).toEqual('anything')
+        expect(isInBlackListStub.calledWith('test', 'hidden')).toBe(true)
         isInBlackListStub.restore()
       })
     })

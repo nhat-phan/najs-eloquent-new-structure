@@ -1,4 +1,4 @@
-/// <reference path="./IModelQueryHelper.ts" />
+/// <reference path="./IModelQueryAdvanced.ts" />
 /// <reference path="../../query-builders/interfaces/IQueryBuilder.ts" />
 /// <reference path="../../query-builders/interfaces/IFetchResultQuery.ts" />
 /// <reference path="../../collect.js/index.d.ts" />

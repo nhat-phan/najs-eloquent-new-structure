@@ -20,23 +20,26 @@ const FORWARD_TO_QUERY_BUILDERS = [
   'whereNotBetween',
   'withTrashed',
   'onlyTrashed',
-  'count'
+  'first',
+  'find',
+  'get',
+  'count',
+  'pluck',
+  'findById',
+  'findOrFail',
+  'firstOrFail'
 ]
 
-export class Query implements Najs.Contracts.Eloquent.Component {
+export class ModelQuery implements Najs.Contracts.Eloquent.Component {
   getClassName(): string {
-    return NajsEloquent.Model.Component.Fillable
+    return NajsEloquent.Model.Component.ModelQuery
   }
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    prototype['newQuery'] = Query.newQuery
+    prototype['newQuery'] = ModelQuery.newQuery
     for (const name of FORWARD_TO_QUERY_BUILDERS) {
-      prototype[name] = Query.forwardToQueryBuilder(name)
+      prototype[name] = ModelQuery.forwardToQueryBuilder(name)
     }
-    prototype['first'] = Query.first
-    prototype['find'] = Query.first
-    prototype['get'] = Query.get
-    prototype['all'] = Query.get
   }
 
   static newQuery(this: NajsEloquent.Model.IModel<any>): any {
@@ -47,13 +50,5 @@ export class Query implements Najs.Contracts.Eloquent.Component {
     return function(this: NajsEloquent.Model.IModel<any>): any {
       return this['driver'].newQuery()[name](...arguments)
     }
-  }
-
-  static async first(this: NajsEloquent.Model.IModel<any>) {
-    return this['driver'].newQuery().first()
-  }
-
-  static async get(this: NajsEloquent.Model.IModel<any>) {
-    return await this['driver'].newQuery().get()
   }
 }

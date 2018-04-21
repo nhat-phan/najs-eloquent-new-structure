@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const Eloquent_1 = require("../../../lib/model/Eloquent");
-const Fillable_1 = require("../../../lib/model/components/Fillable");
+const ModelFillable_1 = require("../../../lib/model/components/ModelFillable");
 const ModelUtilities_1 = require("../../../lib/util/ModelUtilities");
 const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
@@ -11,9 +11,9 @@ EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.Dum
 describe('Model/Fillable', function () {
     describe('Unit', function () {
         describe('.getClassName()', function () {
-            it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.Fillable" as class name', function () {
-                const fillable = new Fillable_1.Fillable();
-                expect(fillable.getClassName()).toEqual('NajsEloquent.Model.Component.Fillable');
+            it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelFillable" as class name', function () {
+                const fillable = new ModelFillable_1.ModelFillable();
+                expect(fillable.getClassName()).toEqual('NajsEloquent.Model.Component.ModelFillable');
             });
         });
         describe('.extend()', function () {
@@ -29,11 +29,11 @@ describe('Model/Fillable', function () {
                     'forceFill'
                 ];
                 const prototype = {};
-                const fillable = new Fillable_1.Fillable();
+                const fillable = new ModelFillable_1.ModelFillable();
                 fillable.extend(prototype, [], {});
                 for (const name of functions) {
                     expect(typeof prototype[name] === 'function').toBe(true);
-                    expect(prototype[name] === Fillable_1.Fillable[name]).toBe(true);
+                    expect(prototype[name] === ModelFillable_1.ModelFillable[name]).toBe(true);
                 }
             });
         });
@@ -49,7 +49,7 @@ describe('Model/Fillable', function () {
                         return 'guarded';
                     }
                 };
-                expect(Fillable_1.Fillable.isFillable.call(user, 'test')).toEqual('anything');
+                expect(ModelFillable_1.ModelFillable.isFillable.call(user, 'test')).toEqual('anything');
                 expect(isInWhiteListStub.calledWith(user, 'test', 'fillable', 'guarded')).toBe(true);
                 isInWhiteListStub.restore();
             });
@@ -63,8 +63,8 @@ describe('Model/Fillable', function () {
                         return 'guarded';
                     }
                 };
-                expect(Fillable_1.Fillable.isGuarded.call(user, 'test')).toEqual('anything');
-                expect(isInBlackListStub.calledWith(user, 'test', 'guarded')).toBe(true);
+                expect(ModelFillable_1.ModelFillable.isGuarded.call(user, 'test')).toEqual('anything');
+                expect(isInBlackListStub.calledWith('test', 'guarded')).toBe(true);
                 isInBlackListStub.restore();
             });
         });

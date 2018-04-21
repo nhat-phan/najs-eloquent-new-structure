@@ -1,7 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { Eloquent } from '../../../lib/model/Eloquent'
-import { Fillable } from '../../../lib/model/components/Fillable'
+import { ModelFillable } from '../../../lib/model/components/ModelFillable'
 import { ModelUtilities } from '../../../lib/util/ModelUtilities'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
@@ -11,9 +11,9 @@ EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 describe('Model/Fillable', function() {
   describe('Unit', function() {
     describe('.getClassName()', function() {
-      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.Fillable" as class name', function() {
-        const fillable = new Fillable()
-        expect(fillable.getClassName()).toEqual('NajsEloquent.Model.Component.Fillable')
+      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelFillable" as class name', function() {
+        const fillable = new ModelFillable()
+        expect(fillable.getClassName()).toEqual('NajsEloquent.Model.Component.ModelFillable')
       })
     })
 
@@ -30,11 +30,11 @@ describe('Model/Fillable', function() {
           'forceFill'
         ]
         const prototype = {}
-        const fillable = new Fillable()
+        const fillable = new ModelFillable()
         fillable.extend(prototype, [], <any>{})
         for (const name of functions) {
           expect(typeof prototype[name] === 'function').toBe(true)
-          expect(prototype[name] === Fillable[name]).toBe(true)
+          expect(prototype[name] === ModelFillable[name]).toBe(true)
         }
       })
     })
@@ -53,7 +53,7 @@ describe('Model/Fillable', function() {
           }
         }
 
-        expect(Fillable.isFillable.call(user, 'test')).toEqual('anything')
+        expect(ModelFillable.isFillable.call(user, 'test')).toEqual('anything')
         expect(isInWhiteListStub.calledWith(user, 'test', 'fillable', 'guarded')).toBe(true)
         isInWhiteListStub.restore()
       })
@@ -70,8 +70,8 @@ describe('Model/Fillable', function() {
           }
         }
 
-        expect(Fillable.isGuarded.call(user, 'test')).toEqual('anything')
-        expect(isInBlackListStub.calledWith(user, 'test', 'guarded')).toBe(true)
+        expect(ModelFillable.isGuarded.call(user, 'test')).toEqual('anything')
+        expect(isInBlackListStub.calledWith('test', 'guarded')).toBe(true)
         isInBlackListStub.restore()
       })
     })

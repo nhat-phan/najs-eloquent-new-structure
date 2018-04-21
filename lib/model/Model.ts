@@ -1,11 +1,12 @@
 /// <reference path="interfaces/IModel.ts" />
 
+import { make } from 'najs-binding'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { ClassRegistry, register, getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
-import { Fillable } from './components/Fillable'
-import { Attribute } from './components/Attribute'
-import { Serialization } from './components/Serialization'
+import { ModelAttribute } from './components/ModelAttribute'
+import { ModelFillable } from './components/ModelFillable'
+import { ModelSerialization } from './components/ModelSerialization'
 
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {}
 export class Model<T = any> {
@@ -36,7 +37,11 @@ export class Model<T = any> {
   // }
 }
 
-const defaultComponents: Najs.Contracts.Eloquent.Component[] = [new Attribute(), new Fillable(), new Serialization()]
+const defaultComponents: Najs.Contracts.Eloquent.Component[] = [
+  make(ModelAttribute.className),
+  make(ModelFillable.className),
+  make(ModelSerialization.className)
+]
 for (const component of defaultComponents) {
   component.extend(Model.prototype, [], <any>{})
 }

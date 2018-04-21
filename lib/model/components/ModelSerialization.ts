@@ -3,33 +3,32 @@
 
 import { register } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
-import { ClassSetting } from '../../util/ClassSetting'
-import { SettingType } from '../../util/SettingType'
 import { ModelUtilities } from '../../util/ModelUtilities'
 
-export class Serialization implements Najs.Contracts.Eloquent.Component {
+export class ModelSerialization implements Najs.Contracts.Eloquent.Component {
+  static className = NajsEloquent.Model.Component.ModelSerialization
   getClassName(): string {
-    return NajsEloquent.Model.Component.Serialization
+    return NajsEloquent.Model.Component.ModelSerialization
   }
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    prototype['getVisible'] = Serialization.getVisible
-    prototype['getHidden'] = Serialization.getHidden
-    prototype['markVisible'] = Serialization.markVisible
-    prototype['markHidden'] = Serialization.markHidden
-    prototype['isVisible'] = Serialization.isVisible
-    prototype['isHidden'] = Serialization.isHidden
-    prototype['toObject'] = Serialization.toObject
-    prototype['toJSON'] = Serialization.toJSON
-    prototype['toJson'] = Serialization.toJSON
+    prototype['getVisible'] = ModelSerialization.getVisible
+    prototype['getHidden'] = ModelSerialization.getHidden
+    prototype['markVisible'] = ModelSerialization.markVisible
+    prototype['markHidden'] = ModelSerialization.markHidden
+    prototype['isVisible'] = ModelSerialization.isVisible
+    prototype['isHidden'] = ModelSerialization.isHidden
+    prototype['toObject'] = ModelSerialization.toObject
+    prototype['toJSON'] = ModelSerialization.toJSON
+    prototype['toJson'] = ModelSerialization.toJSON
   }
 
   static getVisible(this: NajsEloquent.Model.IModel<any>): string[] {
-    return ClassSetting.of(this).read('visible', SettingType.arrayUnique([], []))
+    return ModelUtilities.readArrayUniqueSetting(this, 'visible', [])
   }
 
   static getHidden(this: NajsEloquent.Model.IModel<any>): string[] {
-    return ClassSetting.of(this).read('hidden', SettingType.arrayUnique([], []))
+    return ModelUtilities.readArrayUniqueSetting(this, 'hidden', [])
   }
 
   static markVisible(this: NajsEloquent.Model.IModel<any>) {
@@ -43,11 +42,11 @@ export class Serialization implements Najs.Contracts.Eloquent.Component {
   }
 
   static isVisible(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    return ModelUtilities.isInWhiteList(this, key, this.getVisible(), this.getHidden())
+    return ModelUtilities.isVisible(this, key)
   }
 
   static isHidden(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    return ModelUtilities.isInBlackList(this, key, this.getHidden())
+    return ModelUtilities.isInBlackList(key, this.getHidden())
   }
 
   static toObject(this: NajsEloquent.Model.IModel<any>, data: Object): Object {
@@ -67,4 +66,4 @@ export class Serialization implements Najs.Contracts.Eloquent.Component {
     }, {})
   }
 }
-register(Serialization)
+register(ModelSerialization)

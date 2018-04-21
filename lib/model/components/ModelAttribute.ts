@@ -1,19 +1,21 @@
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
 
+import { register } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
 
-export class Attribute implements Najs.Contracts.Eloquent.Component {
+export class ModelAttribute implements Najs.Contracts.Eloquent.Component {
+  static className = NajsEloquent.Model.Component.ModelAttribute
   getClassName(): string {
-    return NajsEloquent.Model.Component.Attribute
+    return NajsEloquent.Model.Component.ModelAttribute
   }
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    prototype['getAttribute'] = Attribute.getAttribute
-    prototype['setAttribute'] = Attribute.setAttribute
-    prototype['getPrimaryKey'] = Attribute.getPrimaryKey
-    prototype['setPrimaryKey'] = Attribute.setPrimaryKey
-    prototype['getPrimaryKeyName'] = Attribute.getPrimaryKeyName
+    prototype['getAttribute'] = ModelAttribute.getAttribute
+    prototype['setAttribute'] = ModelAttribute.setAttribute
+    prototype['getPrimaryKey'] = ModelAttribute.getPrimaryKey
+    prototype['setPrimaryKey'] = ModelAttribute.setPrimaryKey
+    prototype['getPrimaryKeyName'] = ModelAttribute.getPrimaryKeyName
   }
 
   static getAttribute(this: NajsEloquent.Model.IModel<any>, key: string): any {
@@ -40,3 +42,4 @@ export class Attribute implements Najs.Contracts.Eloquent.Component {
     return this['driver'].getPrimaryKeyName()
   }
 }
+register(ModelAttribute)

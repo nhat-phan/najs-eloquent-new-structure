@@ -6,11 +6,12 @@ export declare const NajsEloquent: {
     };
     Model: {
         Component: {
-            Attribute: string;
+            ModelAttribute: string;
             DynamicAttribute: string;
-            Fillable: string;
+            ModelFillable: string;
+            ModelQuery: string;
             Timestamps: string;
-            Serialization: string;
+            ModelSerialization: string;
             SoftDeletes: string;
         };
     };

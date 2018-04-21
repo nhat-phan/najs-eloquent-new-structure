@@ -1,7 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { Eloquent } from '../../../lib/model/Eloquent'
-import { Attribute } from '../../../lib/model/components/Attribute'
+import { ModelAttribute } from '../../../lib/model/components/ModelAttribute'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
 
@@ -12,20 +12,20 @@ const FUNCTIONS = ['getAttribute', 'setAttribute', 'getPrimaryKey', 'setPrimaryK
 describe('Model/Attribute', function() {
   describe('Unit', function() {
     describe('.getClassName()', function() {
-      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.Attribute" as class name', function() {
-        const attribute = new Attribute()
-        expect(attribute.getClassName()).toEqual('NajsEloquent.Model.Component.Attribute')
+      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelAttribute" as class name', function() {
+        const attribute = new ModelAttribute()
+        expect(attribute.getClassName()).toEqual('NajsEloquent.Model.Component.ModelAttribute')
       })
     })
 
     describe('.extend()', function() {
       it('extends the given prototype with 5 functions', function() {
         const prototype = {}
-        const attribute = new Attribute()
+        const attribute = new ModelAttribute()
         attribute.extend(prototype, [], <any>{})
         for (const name of FUNCTIONS) {
           expect(typeof prototype[name] === 'function').toBe(true)
-          expect(prototype[name] === Attribute[name]).toBe(true)
+          expect(prototype[name] === ModelAttribute[name]).toBe(true)
         }
       })
     })

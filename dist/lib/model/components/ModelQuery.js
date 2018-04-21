@@ -20,21 +20,24 @@ const FORWARD_TO_QUERY_BUILDERS = [
     'whereNotBetween',
     'withTrashed',
     'onlyTrashed',
-    'count'
+    'first',
+    'find',
+    'get',
+    'count',
+    'pluck',
+    'findById',
+    'findOrFail',
+    'firstOrFail'
 ];
-class Query {
+class ModelQuery {
     getClassName() {
-        return constants_1.NajsEloquent.Model.Component.Fillable;
+        return constants_1.NajsEloquent.Model.Component.ModelQuery;
     }
     extend(prototype, bases, driver) {
-        prototype['newQuery'] = Query.newQuery;
+        prototype['newQuery'] = ModelQuery.newQuery;
         for (const name of FORWARD_TO_QUERY_BUILDERS) {
-            prototype[name] = Query.forwardToQueryBuilder(name);
+            prototype[name] = ModelQuery.forwardToQueryBuilder(name);
         }
-        prototype['first'] = Query.first;
-        prototype['find'] = Query.first;
-        prototype['get'] = Query.get;
-        prototype['all'] = Query.get;
     }
     static newQuery() {
         return this['driver'].newQuery();
@@ -44,11 +47,5 @@ class Query {
             return this['driver'].newQuery()[name](...arguments);
         };
     }
-    static async first() {
-        return this['driver'].newQuery().first();
-    }
-    static async get() {
-        return await this['driver'].newQuery().get();
-    }
 }
-exports.Query = Query;
+exports.ModelQuery = ModelQuery;

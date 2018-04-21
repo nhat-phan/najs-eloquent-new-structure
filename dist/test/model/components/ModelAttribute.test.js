@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const Eloquent_1 = require("../../../lib/model/Eloquent");
-const Attribute_1 = require("../../../lib/model/components/Attribute");
+const ModelAttribute_1 = require("../../../lib/model/components/ModelAttribute");
 const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
@@ -11,19 +11,19 @@ const FUNCTIONS = ['getAttribute', 'setAttribute', 'getPrimaryKey', 'setPrimaryK
 describe('Model/Attribute', function () {
     describe('Unit', function () {
         describe('.getClassName()', function () {
-            it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.Attribute" as class name', function () {
-                const attribute = new Attribute_1.Attribute();
-                expect(attribute.getClassName()).toEqual('NajsEloquent.Model.Component.Attribute');
+            it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelAttribute" as class name', function () {
+                const attribute = new ModelAttribute_1.ModelAttribute();
+                expect(attribute.getClassName()).toEqual('NajsEloquent.Model.Component.ModelAttribute');
             });
         });
         describe('.extend()', function () {
             it('extends the given prototype with 5 functions', function () {
                 const prototype = {};
-                const attribute = new Attribute_1.Attribute();
+                const attribute = new ModelAttribute_1.ModelAttribute();
                 attribute.extend(prototype, [], {});
                 for (const name of FUNCTIONS) {
                     expect(typeof prototype[name] === 'function').toBe(true);
-                    expect(prototype[name] === Attribute_1.Attribute[name]).toBe(true);
+                    expect(prototype[name] === ModelAttribute_1.ModelAttribute[name]).toBe(true);
                 }
             });
         });

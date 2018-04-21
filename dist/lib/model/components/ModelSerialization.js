@@ -4,29 +4,27 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
-const ClassSetting_1 = require("../../util/ClassSetting");
-const SettingType_1 = require("../../util/SettingType");
 const ModelUtilities_1 = require("../../util/ModelUtilities");
-class Serialization {
+class ModelSerialization {
     getClassName() {
-        return constants_1.NajsEloquent.Model.Component.Serialization;
+        return constants_1.NajsEloquent.Model.Component.ModelSerialization;
     }
     extend(prototype, bases, driver) {
-        prototype['getVisible'] = Serialization.getVisible;
-        prototype['getHidden'] = Serialization.getHidden;
-        prototype['markVisible'] = Serialization.markVisible;
-        prototype['markHidden'] = Serialization.markHidden;
-        prototype['isVisible'] = Serialization.isVisible;
-        prototype['isHidden'] = Serialization.isHidden;
-        prototype['toObject'] = Serialization.toObject;
-        prototype['toJSON'] = Serialization.toJSON;
-        prototype['toJson'] = Serialization.toJSON;
+        prototype['getVisible'] = ModelSerialization.getVisible;
+        prototype['getHidden'] = ModelSerialization.getHidden;
+        prototype['markVisible'] = ModelSerialization.markVisible;
+        prototype['markHidden'] = ModelSerialization.markHidden;
+        prototype['isVisible'] = ModelSerialization.isVisible;
+        prototype['isHidden'] = ModelSerialization.isHidden;
+        prototype['toObject'] = ModelSerialization.toObject;
+        prototype['toJSON'] = ModelSerialization.toJSON;
+        prototype['toJson'] = ModelSerialization.toJSON;
     }
     static getVisible() {
-        return ClassSetting_1.ClassSetting.of(this).read('visible', SettingType_1.SettingType.arrayUnique([], []));
+        return ModelUtilities_1.ModelUtilities.readArrayUniqueSetting(this, 'visible', []);
     }
     static getHidden() {
-        return ClassSetting_1.ClassSetting.of(this).read('hidden', SettingType_1.SettingType.arrayUnique([], []));
+        return ModelUtilities_1.ModelUtilities.readArrayUniqueSetting(this, 'hidden', []);
     }
     static markVisible() {
         ModelUtilities_1.ModelUtilities.pushToUniqueArraySetting(this, 'visible', arguments);
@@ -37,10 +35,10 @@ class Serialization {
         return this;
     }
     static isVisible(key) {
-        return ModelUtilities_1.ModelUtilities.isInWhiteList(this, key, this.getVisible(), this.getHidden());
+        return ModelUtilities_1.ModelUtilities.isVisible(this, key);
     }
     static isHidden(key) {
-        return ModelUtilities_1.ModelUtilities.isInBlackList(this, key, this.getHidden());
+        return ModelUtilities_1.ModelUtilities.isInBlackList(key, this.getHidden());
     }
     static toObject(data) {
         return this['driver'].toObject();
@@ -55,5 +53,6 @@ class Serialization {
         }, {});
     }
 }
-exports.Serialization = Serialization;
-najs_binding_1.register(Serialization);
+ModelSerialization.className = constants_1.NajsEloquent.Model.Component.ModelSerialization;
+exports.ModelSerialization = ModelSerialization;
+najs_binding_1.register(ModelSerialization);
