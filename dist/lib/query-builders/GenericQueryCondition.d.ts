@@ -1,11 +1,7 @@
 /// <reference path="interfaces/IQueryConvention.d.ts" />
 /// <reference path="interfaces/IConditionQuery.d.ts" />
-export declare const QueryConditionHelpers: {
-    whereBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any;
-    subQueryWhereBetween(field: string, range: [any, any]): any;
-    whereNotBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any;
-    subQueryWhereNotBetween(field: string, range: [any, any]): any;
-};
+export interface GenericQueryCondition extends NajsEloquent.QueryBuilder.IConditionQuery {
+}
 export declare class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditionQuery {
     convention: NajsEloquent.QueryBuilder.IQueryConvention;
     isSubQuery: boolean;
@@ -25,28 +21,4 @@ export declare class GenericQueryCondition implements NajsEloquent.QueryBuilder.
     orWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this;
     orWhere(field: string, value: any): this;
     orWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this;
-    andWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this;
-    andWhere(field: string, value: any): this;
-    andWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this;
-    whereNot(field: string, values: any): this;
-    andWhereNot(field: string, values: any): this;
-    orWhereNot(field: string, values: any): this;
-    whereIn(field: string, values: Array<any>): this;
-    andWhereIn(field: string, values: Array<any>): this;
-    orWhereIn(field: string, values: Array<any>): this;
-    whereNotIn(field: string, values: Array<any>): this;
-    andWhereNotIn(field: string, values: Array<any>): this;
-    orWhereNotIn(field: string, values: Array<any>): this;
-    whereNull(field: string): this;
-    andWhereNull(field: string): this;
-    orWhereNull(field: string): this;
-    whereNotNull(field: string): this;
-    andWhereNotNull(field: string): this;
-    orWhereNotNull(field: string): this;
-    whereBetween(field: string, range: [any, any]): this;
-    andWhereBetween(field: string, range: [any, any]): this;
-    orWhereBetween(field: string, range: [any, any]): this;
-    whereNotBetween(field: string, range: [any, any]): this;
-    andWhereNotBetween(field: string, range: [any, any]): this;
-    orWhereNotBetween(field: string, range: [any, any]): this;
 }

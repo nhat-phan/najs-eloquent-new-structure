@@ -1,4 +1,5 @@
 namespace NajsEloquent.QueryBuilder {
+  export type Range<T = any> = [any, any]
   export type Operator = '=' | '==' | '!=' | '<>' | '<' | '<=' | '=<' | '>' | '>=' | '=>' | 'in' | 'not-in'
   export type SubCondition = (query: IConditionQuery) => any
 
@@ -188,41 +189,41 @@ namespace NajsEloquent.QueryBuilder {
      *
      * @param {string} field
      */
-    whereBetween(field: string, range: [any, any]): this
+    whereBetween(field: string, range: Range): this
 
     /**
      * Add a "where between" clause to the query.
      *
      * @param {string} field
      */
-    andWhereBetween(field: string, range: [any, any]): this
+    andWhereBetween(field: string, range: Range): this
 
     /**
      * Add an "or where between" clause to the query.
      *
      * @param {string} field
      */
-    orWhereBetween(field: string, range: [any, any]): this
+    orWhereBetween(field: string, range: Range): this
 
     /**
      * Add a "where not between" clause to the query.
      *
      * @param {string} field
      */
-    whereNotBetween(field: string, range: [any, any]): this
+    whereNotBetween(field: string, range: Range): this
 
     /**
      * Add a "where not between" clause to the query.
      *
      * @param {string} field
      */
-    andWhereNotBetween(field: string, range: [any, any]): this
+    andWhereNotBetween(field: string, range: Range): this
 
     /**
      * Add an "or where not between" clause to the query.
      *
      * @param {string} field
      */
-    orWhereNotBetween(field: string, range: [any, any]): this
+    orWhereNotBetween(field: string, range: Range): this
   }
 }

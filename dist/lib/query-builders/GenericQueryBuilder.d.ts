@@ -6,7 +6,9 @@ import { GenericQueryCondition } from './GenericQueryCondition';
 export declare type QueryBuilderSoftDelete = {
     deletedAt: string;
 };
-export declare class GenericQueryBuilder implements NajsEloquent.QueryBuilder.IBasicQuery, NajsEloquent.QueryBuilder.IConditionQuery, NajsEloquent.QueryBuilder.ISoftDeleteQuery {
+export interface GenericQueryBuilder extends NajsEloquent.QueryBuilder.IConditionQuery {
+}
+export declare class GenericQueryBuilder implements NajsEloquent.QueryBuilder.IBasicQuery, NajsEloquent.QueryBuilder.ISoftDeleteQuery {
     protected isUsed: boolean;
     protected name: string;
     protected fields: {
@@ -43,30 +45,6 @@ export declare class GenericQueryBuilder implements NajsEloquent.QueryBuilder.IB
     orWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this;
     orWhere(field: string, value: any): this;
     orWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this;
-    andWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this;
-    andWhere(field: string, value: any): this;
-    andWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this;
-    whereNot(field: string, values: any): this;
-    andWhereNot(field: string, values: any): this;
-    orWhereNot(field: string, values: any): this;
-    whereIn(field: string, values: Array<any>): this;
-    andWhereIn(field: string, values: Array<any>): this;
-    orWhereIn(field: string, values: Array<any>): this;
-    whereNotIn(field: string, values: Array<any>): this;
-    andWhereNotIn(field: string, values: Array<any>): this;
-    orWhereNotIn(field: string, values: Array<any>): this;
-    whereNull(field: string): this;
-    andWhereNull(field: string): this;
-    orWhereNull(field: string): this;
-    whereNotNull(field: string): this;
-    andWhereNotNull(field: string): this;
-    orWhereNotNull(field: string): this;
-    whereBetween(field: string, range: [any, any]): this;
-    andWhereBetween(field: string, range: [any, any]): this;
-    orWhereBetween(field: string, range: [any, any]): this;
-    whereNotBetween(field: string, range: [any, any]): this;
-    andWhereNotBetween(field: string, range: [any, any]): this;
-    orWhereNotBetween(field: string, range: [any, any]): this;
     withTrashed(): this;
     onlyTrashed(): this;
 }

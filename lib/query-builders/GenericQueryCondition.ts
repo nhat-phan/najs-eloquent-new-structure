@@ -2,29 +2,9 @@
 /// <reference path="interfaces/IConditionQuery.ts" />
 
 import { isFunction } from 'lodash'
+import { GenericQueryConditionHelpers } from './GenericQueryConditionHelpers'
 
-export const QueryConditionHelpers = {
-  whereBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any {
-    return query.where(field, '>=', range[0]).where(field, '<=', range[1])
-  },
-
-  subQueryWhereBetween(field: string, range: [any, any]): any {
-    return function(subQuery: NajsEloquent.QueryBuilder.IConditionQuery) {
-      QueryConditionHelpers.whereBetween(subQuery, field, range)
-    }
-  },
-
-  whereNotBetween(query: NajsEloquent.QueryBuilder.IConditionQuery, field: string, range: [any, any]): any {
-    return query.where(field, '<', range[0]).orWhere(field, '>', range[1])
-  },
-
-  subQueryWhereNotBetween(field: string, range: [any, any]): any {
-    return function(subQuery: NajsEloquent.QueryBuilder.IConditionQuery) {
-      QueryConditionHelpers.whereNotBetween(subQuery, field, range)
-    }
-  }
-}
-
+export interface GenericQueryCondition extends NajsEloquent.QueryBuilder.IConditionQuery {}
 export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditionQuery {
   convention: NajsEloquent.QueryBuilder.IQueryConvention
   isSubQuery: boolean
@@ -127,95 +107,9 @@ export class GenericQueryCondition implements NajsEloquent.QueryBuilder.IConditi
   orWhere(arg0: any, arg1?: any, arg2?: any): this {
     return this.buildQuery('or', arg0, arg1, arg2)
   }
+}
 
-  andWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this
-  andWhere(field: string, value: any): this
-  andWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this
-  andWhere(arg0: any, arg1?: any, arg2?: any): this {
-    return this.where(arg0, arg1, arg2)
-  }
-
-  whereNot(field: string, values: any): this {
-    return this.buildQuery('and', field, '<>', values)
-  }
-
-  andWhereNot(field: string, values: any): this {
-    return this.whereNot(field, values)
-  }
-
-  orWhereNot(field: string, values: any): this {
-    return this.buildQuery('or', field, '<>', values)
-  }
-
-  whereIn(field: string, values: Array<any>): this {
-    return this.buildQuery('and', field, 'in', values)
-  }
-
-  andWhereIn(field: string, values: Array<any>): this {
-    return this.whereIn(field, values)
-  }
-
-  orWhereIn(field: string, values: Array<any>): this {
-    return this.buildQuery('or', field, 'in', values)
-  }
-
-  whereNotIn(field: string, values: Array<any>): this {
-    return this.buildQuery('and', field, 'not-in', values)
-  }
-
-  andWhereNotIn(field: string, values: Array<any>): this {
-    return this.whereNotIn(field, values)
-  }
-
-  orWhereNotIn(field: string, values: Array<any>): this {
-    return this.buildQuery('or', field, 'not-in', values)
-  }
-
-  whereNull(field: string) {
-    return this.buildQuery('and', field, '=', this.convention.getNullValueFor(field))
-  }
-
-  andWhereNull(field: string) {
-    return this.whereNull(field)
-  }
-
-  orWhereNull(field: string) {
-    return this.buildQuery('or', field, '=', this.convention.getNullValueFor(field))
-  }
-
-  whereNotNull(field: string) {
-    return this.buildQuery('and', field, '<>', this.convention.getNullValueFor(field))
-  }
-
-  andWhereNotNull(field: string) {
-    return this.whereNotNull(field)
-  }
-
-  orWhereNotNull(field: string) {
-    return this.buildQuery('or', field, '<>', this.convention.getNullValueFor(field))
-  }
-
-  whereBetween(field: string, range: [any, any]): this {
-    return QueryConditionHelpers.whereBetween(this, field, range)
-  }
-
-  andWhereBetween(field: string, range: [any, any]): this {
-    return this.whereBetween(field, range)
-  }
-
-  orWhereBetween(field: string, range: [any, any]): this {
-    return this.orWhere(QueryConditionHelpers.subQueryWhereBetween(field, range))
-  }
-
-  whereNotBetween(field: string, range: [any, any]): this {
-    return this.where(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
-  }
-
-  andWhereNotBetween(field: string, range: [any, any]): this {
-    return this.whereNotBetween(field, range)
-  }
-
-  orWhereNotBetween(field: string, range: [any, any]): this {
-    return this.orWhere(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
-  }
+// implicit implements the other .where... condition
+for (const fn of GenericQueryConditionHelpers.FUNCTIONS) {
+  GenericQueryCondition.prototype[fn] = GenericQueryConditionHelpers.prototype[fn]
 }

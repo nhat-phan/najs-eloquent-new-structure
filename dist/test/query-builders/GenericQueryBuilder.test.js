@@ -568,13 +568,13 @@ describe('GenericQueryBuilder', function () {
                 expect(query.whereNull('a')).toEqual(query);
                 expect(query['isUsed']).toBe(true);
             });
-            it('calls where() with operator "=" and value from "convention.getNullValue()"', function () {
+            it('calls where() with operator "=" and value from "convention.getNullValueFor)"', function () {
                 const query = new GenericQueryBuilder_1.GenericQueryBuilder();
                 const whereSpy = Sinon.spy(query, 'where');
                 const getNullValueForSpy = Sinon.spy(query['convention'], 'getNullValueFor');
                 query.whereNull('a');
                 // tslint:disable-next-line
-                expect(whereSpy.calledWith('a', null)).toBe(true);
+                expect(whereSpy.calledWith('a', '=', null)).toBe(true);
                 expect(getNullValueForSpy.calledWith('a')).toBe(true);
             });
             it('calls QueryCondition.buildQuery with "and" + operator "=" and value from convention', function () {
@@ -631,7 +631,7 @@ describe('GenericQueryBuilder', function () {
                 const getNullValueForSpy = Sinon.spy(query['convention'], 'getNullValueFor');
                 query.orWhereNull('a');
                 // tslint:disable-next-line
-                expect(orWhereSpy.calledWith('a', null)).toBe(true);
+                expect(orWhereSpy.calledWith('a', '=', null)).toBe(true);
                 expect(getNullValueForSpy.calledWith('a')).toBe(true);
             });
             it('calls QueryCondition.buildQuery with "or" + operator "=" and value from convention', function () {

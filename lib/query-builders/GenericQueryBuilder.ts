@@ -3,7 +3,8 @@
 /// <reference path="interfaces/ISoftDeleteQuery.ts" />
 /// <reference path="interfaces/IQueryConvention.ts" />
 
-import { QueryConditionHelpers, GenericQueryCondition } from './GenericQueryCondition'
+import { GenericQueryCondition } from './GenericQueryCondition'
+import { GenericQueryConditionHelpers } from './GenericQueryConditionHelpers'
 import { flatten } from 'lodash'
 import { array_unique } from '../util/functions'
 
@@ -11,11 +12,9 @@ export type QueryBuilderSoftDelete = {
   deletedAt: string
 }
 
+export interface GenericQueryBuilder extends NajsEloquent.QueryBuilder.IConditionQuery {}
 export class GenericQueryBuilder
-  implements
-    NajsEloquent.QueryBuilder.IBasicQuery,
-    NajsEloquent.QueryBuilder.IConditionQuery,
-    NajsEloquent.QueryBuilder.ISoftDeleteQuery {
+  implements NajsEloquent.QueryBuilder.IBasicQuery, NajsEloquent.QueryBuilder.ISoftDeleteQuery {
   protected isUsed: boolean
   protected name: string
   protected fields: {
@@ -133,97 +132,6 @@ export class GenericQueryBuilder
     return this.createConditionQuery('or', arg0, arg1, arg2)
   }
 
-  andWhere(conditionBuilder: NajsEloquent.QueryBuilder.SubCondition): this
-  andWhere(field: string, value: any): this
-  andWhere(field: string, operator: NajsEloquent.QueryBuilder.Operator, value: any): this
-  andWhere(arg0: any, arg1?: any, arg2?: any): this {
-    return this.where(arg0, arg1, arg2)
-  }
-
-  whereNot(field: string, values: any): this {
-    return this.where(field, '<>', values)
-  }
-
-  andWhereNot(field: string, values: any): this {
-    return this.whereNot(field, values)
-  }
-
-  orWhereNot(field: string, values: any): this {
-    return this.orWhere(field, '<>', values)
-  }
-
-  whereIn(field: string, values: Array<any>): this {
-    return this.where(field, 'in', values)
-  }
-
-  andWhereIn(field: string, values: Array<any>): this {
-    return this.whereIn(field, values)
-  }
-
-  orWhereIn(field: string, values: Array<any>): this {
-    return this.orWhere(field, 'in', values)
-  }
-
-  whereNotIn(field: string, values: Array<any>): this {
-    return this.where(field, 'not-in', values)
-  }
-
-  andWhereNotIn(field: string, values: Array<any>): this {
-    return this.whereNotIn(field, values)
-  }
-
-  orWhereNotIn(field: string, values: Array<any>): this {
-    return this.orWhere(field, 'not-in', values)
-  }
-
-  whereNull(field: string) {
-    return this.where(field, this.convention.getNullValueFor(field))
-  }
-
-  andWhereNull(field: string) {
-    return this.whereNull(field)
-  }
-
-  orWhereNull(field: string) {
-    return this.orWhere(field, this.convention.getNullValueFor(field))
-  }
-
-  whereNotNull(field: string) {
-    return this.where(field, '<>', this.convention.getNullValueFor(field))
-  }
-
-  andWhereNotNull(field: string) {
-    return this.whereNotNull(field)
-  }
-
-  orWhereNotNull(field: string) {
-    return this.orWhere(field, '<>', this.convention.getNullValueFor(field))
-  }
-
-  whereBetween(field: string, range: [any, any]): this {
-    return QueryConditionHelpers.whereBetween(this, field, range)
-  }
-
-  andWhereBetween(field: string, range: [any, any]): this {
-    return this.whereBetween(field, range)
-  }
-
-  orWhereBetween(field: string, range: [any, any]): this {
-    return this.orWhere(QueryConditionHelpers.subQueryWhereBetween(field, range))
-  }
-
-  whereNotBetween(field: string, range: [any, any]): this {
-    return this.where(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
-  }
-
-  andWhereNotBetween(field: string, range: [any, any]): this {
-    return this.whereNotBetween(field, range)
-  }
-
-  orWhereNotBetween(field: string, range: [any, any]): this {
-    return this.orWhere(QueryConditionHelpers.subQueryWhereNotBetween(field, range))
-  }
-
   withTrashed() {
     if (this.softDelete) {
       this.addSoftDeleteCondition = false
@@ -240,4 +148,9 @@ export class GenericQueryBuilder
     }
     return this
   }
+}
+
+// implicit implements the other .where... condition
+for (const fn of GenericQueryConditionHelpers.FUNCTIONS) {
+  GenericQueryBuilder.prototype[fn] = GenericQueryConditionHelpers.prototype[fn]
 }

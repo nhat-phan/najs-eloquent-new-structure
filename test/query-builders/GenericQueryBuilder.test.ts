@@ -625,13 +625,13 @@ describe('GenericQueryBuilder', function() {
         expect(query['isUsed']).toBe(true)
       })
 
-      it('calls where() with operator "=" and value from "convention.getNullValue()"', function() {
+      it('calls where() with operator "=" and value from "convention.getNullValueFor)"', function() {
         const query = new GenericQueryBuilder()
         const whereSpy = Sinon.spy(query, 'where')
         const getNullValueForSpy = Sinon.spy(query['convention'], <any>'getNullValueFor')
         query.whereNull('a')
         // tslint:disable-next-line
-        expect(whereSpy.calledWith('a', null)).toBe(true)
+        expect(whereSpy.calledWith('a', '=', null)).toBe(true)
         expect(getNullValueForSpy.calledWith('a')).toBe(true)
       })
 
@@ -693,7 +693,7 @@ describe('GenericQueryBuilder', function() {
         const getNullValueForSpy = Sinon.spy(query['convention'], <any>'getNullValueFor')
         query.orWhereNull('a')
         // tslint:disable-next-line
-        expect(orWhereSpy.calledWith('a', null)).toBe(true)
+        expect(orWhereSpy.calledWith('a', '=', null)).toBe(true)
         expect(getNullValueForSpy.calledWith('a')).toBe(true)
       })
 

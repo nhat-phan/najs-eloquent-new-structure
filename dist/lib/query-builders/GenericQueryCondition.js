@@ -3,24 +3,7 @@
 /// <reference path="interfaces/IConditionQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
-exports.QueryConditionHelpers = {
-    whereBetween(query, field, range) {
-        return query.where(field, '>=', range[0]).where(field, '<=', range[1]);
-    },
-    subQueryWhereBetween(field, range) {
-        return function (subQuery) {
-            exports.QueryConditionHelpers.whereBetween(subQuery, field, range);
-        };
-    },
-    whereNotBetween(query, field, range) {
-        return query.where(field, '<', range[0]).orWhere(field, '>', range[1]);
-    },
-    subQueryWhereNotBetween(field, range) {
-        return function (subQuery) {
-            exports.QueryConditionHelpers.whereNotBetween(subQuery, field, range);
-        };
-    }
-};
+const GenericQueryConditionHelpers_1 = require("./GenericQueryConditionHelpers");
 class GenericQueryCondition {
     constructor() {
         this.isSubQuery = false;
@@ -93,71 +76,9 @@ class GenericQueryCondition {
     orWhere(arg0, arg1, arg2) {
         return this.buildQuery('or', arg0, arg1, arg2);
     }
-    andWhere(arg0, arg1, arg2) {
-        return this.where(arg0, arg1, arg2);
-    }
-    whereNot(field, values) {
-        return this.buildQuery('and', field, '<>', values);
-    }
-    andWhereNot(field, values) {
-        return this.whereNot(field, values);
-    }
-    orWhereNot(field, values) {
-        return this.buildQuery('or', field, '<>', values);
-    }
-    whereIn(field, values) {
-        return this.buildQuery('and', field, 'in', values);
-    }
-    andWhereIn(field, values) {
-        return this.whereIn(field, values);
-    }
-    orWhereIn(field, values) {
-        return this.buildQuery('or', field, 'in', values);
-    }
-    whereNotIn(field, values) {
-        return this.buildQuery('and', field, 'not-in', values);
-    }
-    andWhereNotIn(field, values) {
-        return this.whereNotIn(field, values);
-    }
-    orWhereNotIn(field, values) {
-        return this.buildQuery('or', field, 'not-in', values);
-    }
-    whereNull(field) {
-        return this.buildQuery('and', field, '=', this.convention.getNullValueFor(field));
-    }
-    andWhereNull(field) {
-        return this.whereNull(field);
-    }
-    orWhereNull(field) {
-        return this.buildQuery('or', field, '=', this.convention.getNullValueFor(field));
-    }
-    whereNotNull(field) {
-        return this.buildQuery('and', field, '<>', this.convention.getNullValueFor(field));
-    }
-    andWhereNotNull(field) {
-        return this.whereNotNull(field);
-    }
-    orWhereNotNull(field) {
-        return this.buildQuery('or', field, '<>', this.convention.getNullValueFor(field));
-    }
-    whereBetween(field, range) {
-        return exports.QueryConditionHelpers.whereBetween(this, field, range);
-    }
-    andWhereBetween(field, range) {
-        return this.whereBetween(field, range);
-    }
-    orWhereBetween(field, range) {
-        return this.orWhere(exports.QueryConditionHelpers.subQueryWhereBetween(field, range));
-    }
-    whereNotBetween(field, range) {
-        return this.where(exports.QueryConditionHelpers.subQueryWhereNotBetween(field, range));
-    }
-    andWhereNotBetween(field, range) {
-        return this.whereNotBetween(field, range);
-    }
-    orWhereNotBetween(field, range) {
-        return this.orWhere(exports.QueryConditionHelpers.subQueryWhereNotBetween(field, range));
-    }
 }
 exports.GenericQueryCondition = GenericQueryCondition;
+// implicit implements the other .where... condition
+for (const fn of GenericQueryConditionHelpers_1.GenericQueryConditionHelpers.FUNCTIONS) {
+    GenericQueryCondition.prototype[fn] = GenericQueryConditionHelpers_1.GenericQueryConditionHelpers.prototype[fn];
+}
