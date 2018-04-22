@@ -4,6 +4,7 @@
 /// <reference path="IModelFillable.ts" />
 /// <reference path="IModelSerialization.ts" />
 /// <reference path="IModelQuery.ts" />
+/// <reference path="IModelTimestamps.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var Model;

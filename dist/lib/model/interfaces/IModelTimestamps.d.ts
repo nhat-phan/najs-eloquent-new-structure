@@ -3,6 +3,9 @@ declare namespace NajsEloquent.Model {
         createdAt: string;
         updatedAt: string;
     }
+    class IModelTimestamps {
+        protected timestamps?: ITimestampsSetting;
+    }
     interface IModelTimestamps {
         touch(): this;
         hasTimestamps(): boolean;

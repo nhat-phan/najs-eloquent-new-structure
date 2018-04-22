@@ -3,7 +3,6 @@
 
 import { register } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
-import { ModelUtilities } from '../../util/ModelUtilities'
 import { pick } from 'lodash'
 
 export class ModelFillable implements Najs.Contracts.Eloquent.Component {
@@ -24,29 +23,29 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
   }
 
   static getFillable(this: NajsEloquent.Model.IModel<any>): string[] {
-    return ModelUtilities.readArrayUniqueSetting(this, 'fillable', [])
+    return this['settings']['fillable']()
   }
 
   static getGuarded(this: NajsEloquent.Model.IModel<any>): string[] {
-    return ModelUtilities.readArrayUniqueSetting(this, 'guarded', ['*'])
+    return this['settings']['guarded']()
   }
 
   static markFillable(this: NajsEloquent.Model.IModel<any>) {
-    ModelUtilities.pushToUniqueArraySetting(this, 'fillable', arguments)
+    this['settings']['pushToUniqueArraySetting']('fillable', arguments)
     return this
   }
 
   static markGuarded(this: NajsEloquent.Model.IModel<any>) {
-    ModelUtilities.pushToUniqueArraySetting(this, 'guarded', arguments)
+    this['settings']['pushToUniqueArraySetting']('guarded', arguments)
     return this
   }
 
   static isFillable(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    return ModelUtilities.isFillable(this, key)
+    return this['settings']['isInWhiteList'](key, this.getFillable(), this.getGuarded())
   }
 
   static isGuarded(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    return ModelUtilities.isInBlackList(key, this.getGuarded())
+    return this['settings']['isInBlackList'](key, this.getGuarded())
   }
 
   static fill(this: NajsEloquent.Model.IModel<any>, data: Object) {
@@ -55,7 +54,7 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
 
     const attributes = fillable.length > 0 ? pick(data, fillable) : data
     for (const key in attributes) {
-      if (ModelUtilities.isInWhiteList(this, key, fillable, guarded)) {
+      if (this['settings']['isInWhiteList'](key, fillable, guarded)) {
         this.setAttribute(key, attributes[key])
       }
     }

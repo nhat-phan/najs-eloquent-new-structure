@@ -4,6 +4,7 @@ import { make } from 'najs-binding'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { ClassRegistry, register, getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
+import { ModelSetting } from './ModelSetting'
 import { ModelAttribute } from './components/ModelAttribute'
 import { ModelFillable } from './components/ModelFillable'
 import { ModelSerialization } from './components/ModelSerialization'
@@ -23,6 +24,7 @@ export class Model<T = any> {
     }
 
     if (data !== CREATE_SAMPLE) {
+      this.settings = new ModelSetting(this)
       this.driver = EloquentDriverProvider.create(this)
       this.driver.initialize(data)
       this.attributes = this.driver.getRecord()

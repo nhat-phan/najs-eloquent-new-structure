@@ -4,6 +4,9 @@ namespace NajsEloquent.Model {
     updatedAt: string
   }
 
+  export class IModelTimestamps {
+    protected timestamps?: ITimestampsSetting
+  }
   export interface IModelTimestamps {
     touch(): this
 

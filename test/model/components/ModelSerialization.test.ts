@@ -1,8 +1,9 @@
 import 'jest'
 import * as Sinon from 'sinon'
+import { register } from 'najs-binding'
 import { Eloquent } from '../../../lib/model/Eloquent'
 import { ModelSerialization } from '../../../lib/model/components/ModelSerialization'
-import { ModelUtilities } from '../../../lib/util/ModelUtilities'
+import { ModelSetting } from '../../../lib/model/ModelSetting'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
 import { EloquentComponentProvider } from '../../../lib/facades/global/EloquentComponentProviderFacade'
@@ -44,7 +45,7 @@ describe('Model/Serialization', function() {
 
     describe('static .isVisible()', function() {
       it('uses ModelUtilities.isInWhiteList() with whiteList = .getVisible(), blackList = this.getHidden()', function() {
-        const isInWhiteListStub = Sinon.stub(ModelUtilities, 'isInWhiteList')
+        const isInWhiteListStub = Sinon.stub(ModelSetting.prototype, 'isInWhiteList')
         isInWhiteListStub.returns('anything')
 
         const user = {
@@ -55,16 +56,21 @@ describe('Model/Serialization', function() {
             return 'hidden'
           }
         }
+        class Test {
+          static className = 'Test'
+        }
+        register(Test)
+        user['settings'] = new ModelSetting(<any>new Test())
 
         expect(ModelSerialization.isVisible.call(user, 'test')).toEqual('anything')
-        expect(isInWhiteListStub.calledWith(user, 'test', 'visible', 'hidden')).toBe(true)
+        expect(isInWhiteListStub.calledWith('test', 'visible', 'hidden')).toBe(true)
         isInWhiteListStub.restore()
       })
     })
 
     describe('static .isGuarded()', function() {
       it('uses ModelUtilities.isInBlackList() with blackList = this.getHidden()', function() {
-        const isInBlackListStub = Sinon.stub(ModelUtilities, 'isInBlackList')
+        const isInBlackListStub = Sinon.stub(ModelSetting.prototype, 'isInBlackList')
         isInBlackListStub.returns('anything')
 
         const user = {
@@ -72,6 +78,11 @@ describe('Model/Serialization', function() {
             return 'hidden'
           }
         }
+        class Test {
+          static className = 'Test'
+        }
+        register(Test)
+        user['settings'] = new ModelSetting(<any>new Test())
 
         expect(ModelSerialization.isHidden.call(user, 'test')).toEqual('anything')
         expect(isInBlackListStub.calledWith('test', 'hidden')).toBe(true)

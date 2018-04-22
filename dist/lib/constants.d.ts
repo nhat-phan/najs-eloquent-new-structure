@@ -10,7 +10,7 @@ export declare const NajsEloquent: {
             DynamicAttribute: string;
             ModelFillable: string;
             ModelQuery: string;
-            Timestamps: string;
+            ModelTimestamps: string;
             ModelSerialization: string;
             SoftDeletes: string;
         };

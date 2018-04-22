@@ -4,7 +4,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
-const ModelUtilities_1 = require("../../util/ModelUtilities");
 const lodash_1 = require("lodash");
 class ModelFillable {
     getClassName() {
@@ -21,31 +20,31 @@ class ModelFillable {
         prototype['forceFill'] = ModelFillable.forceFill;
     }
     static getFillable() {
-        return ModelUtilities_1.ModelUtilities.readArrayUniqueSetting(this, 'fillable', []);
+        return this['settings']['fillable']();
     }
     static getGuarded() {
-        return ModelUtilities_1.ModelUtilities.readArrayUniqueSetting(this, 'guarded', ['*']);
+        return this['settings']['guarded']();
     }
     static markFillable() {
-        ModelUtilities_1.ModelUtilities.pushToUniqueArraySetting(this, 'fillable', arguments);
+        this['settings']['pushToUniqueArraySetting']('fillable', arguments);
         return this;
     }
     static markGuarded() {
-        ModelUtilities_1.ModelUtilities.pushToUniqueArraySetting(this, 'guarded', arguments);
+        this['settings']['pushToUniqueArraySetting']('guarded', arguments);
         return this;
     }
     static isFillable(key) {
-        return ModelUtilities_1.ModelUtilities.isFillable(this, key);
+        return this['settings']['isInWhiteList'](key, this.getFillable(), this.getGuarded());
     }
     static isGuarded(key) {
-        return ModelUtilities_1.ModelUtilities.isInBlackList(key, this.getGuarded());
+        return this['settings']['isInBlackList'](key, this.getGuarded());
     }
     static fill(data) {
         const fillable = this.getFillable();
         const guarded = this.getGuarded();
         const attributes = fillable.length > 0 ? lodash_1.pick(data, fillable) : data;
         for (const key in attributes) {
-            if (ModelUtilities_1.ModelUtilities.isInWhiteList(this, key, fillable, guarded)) {
+            if (this['settings']['isInWhiteList'](key, fillable, guarded)) {
                 this.setAttribute(key, attributes[key]);
             }
         }

@@ -12,7 +12,7 @@ export const NajsEloquent = {
       DynamicAttribute: 'NajsEloquent.Model.Component.DynamicAttribute',
       ModelFillable: 'NajsEloquent.Model.Component.ModelFillable',
       ModelQuery: 'NajsEloquent.Model.Component.ModelQuery',
-      Timestamps: 'NajsEloquent.Model.Component.Timestamps',
+      ModelTimestamps: 'NajsEloquent.Model.Component.ModelTimestamps',
       ModelSerialization: 'NajsEloquent.Model.Component.ModelSerialization',
       SoftDeletes: 'NajsEloquent.Model.Component.SoftDeletes'
     }

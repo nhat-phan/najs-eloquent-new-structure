@@ -4,7 +4,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
-const ModelUtilities_1 = require("../../util/ModelUtilities");
 class ModelSerialization {
     getClassName() {
         return constants_1.NajsEloquent.Model.Component.ModelSerialization;
@@ -21,24 +20,24 @@ class ModelSerialization {
         prototype['toJson'] = ModelSerialization.toJSON;
     }
     static getVisible() {
-        return ModelUtilities_1.ModelUtilities.readArrayUniqueSetting(this, 'visible', []);
+        return this['settings']['visible']();
     }
     static getHidden() {
-        return ModelUtilities_1.ModelUtilities.readArrayUniqueSetting(this, 'hidden', []);
+        return this['settings']['hidden']();
     }
     static markVisible() {
-        ModelUtilities_1.ModelUtilities.pushToUniqueArraySetting(this, 'visible', arguments);
+        this['settings']['pushToUniqueArraySetting']('visible', arguments);
         return this;
     }
     static markHidden() {
-        ModelUtilities_1.ModelUtilities.pushToUniqueArraySetting(this, 'hidden', arguments);
+        this['settings']['pushToUniqueArraySetting']('hidden', arguments);
         return this;
     }
     static isVisible(key) {
-        return ModelUtilities_1.ModelUtilities.isVisible(this, key);
+        return this['settings']['isInWhiteList'](key, this.getVisible(), this.getHidden());
     }
     static isHidden(key) {
-        return ModelUtilities_1.ModelUtilities.isInBlackList(key, this.getHidden());
+        return this['settings']['isInBlackList'](key, this.getHidden());
     }
     static toObject(data) {
         return this['driver'].toObject();
@@ -46,7 +45,7 @@ class ModelSerialization {
     static toJSON() {
         const data = this.toObject(), visible = this.getVisible(), hidden = this.getHidden();
         return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-            if (ModelUtilities_1.ModelUtilities.isInWhiteList(this, name, visible, hidden)) {
+            if (this['settings']['isInWhiteList'](name, visible, hidden)) {
                 memo[name] = data[name];
             }
             return memo;
