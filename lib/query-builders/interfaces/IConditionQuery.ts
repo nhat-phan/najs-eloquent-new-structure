@@ -1,5 +1,5 @@
 namespace NajsEloquent.QueryBuilder {
-  export type Range<T = any> = [any, any]
+  export type Range<T = any> = [T, T]
   export type Operator = '=' | '==' | '!=' | '<>' | '<' | '<=' | '=<' | '>' | '>=' | '=>' | 'in' | 'not-in'
   export type SubCondition = (query: IConditionQuery) => any
 

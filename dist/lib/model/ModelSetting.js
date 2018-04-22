@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ClassSetting_1 = require("../util/ClassSetting");
-const SettingType_1 = require("../util/SettingType");
 const functions_1 = require("../util/functions");
 const lodash_1 = require("lodash");
 class ModelSetting {
@@ -17,21 +16,6 @@ class ModelSetting {
     //     return sampleVersion ? sampleVersion : defaultValue
     //   })
     // }
-    getArrayUniqueSetting(property, defaultValue) {
-        return this.setting.read(property, SettingType_1.SettingType.arrayUnique([], defaultValue));
-    }
-    fillable() {
-        return this.getArrayUniqueSetting('fillable', []);
-    }
-    guarded() {
-        return this.getArrayUniqueSetting('guarded', ['*']);
-    }
-    visible() {
-        return this.getArrayUniqueSetting('visible', []);
-    }
-    hidden() {
-        return this.getArrayUniqueSetting('hidden', []);
-    }
     isInWhiteList(key, whiteList, blackList) {
         if (whiteList.length > 0 && whiteList.indexOf(key) !== -1) {
             return true;

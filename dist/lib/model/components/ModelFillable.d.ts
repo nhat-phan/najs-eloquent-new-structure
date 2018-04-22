@@ -1,11 +1,12 @@
 /// <reference path="../../contracts/Component.d.ts" />
 /// <reference path="../interfaces/IModel.d.ts" />
+/// <reference path="../interfaces/IModelSetting.d.ts" />
 export declare class ModelFillable implements Najs.Contracts.Eloquent.Component {
     static className: string;
     getClassName(): string;
     extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
-    static getFillable(this: NajsEloquent.Model.IModel<any>): string[];
-    static getGuarded(this: NajsEloquent.Model.IModel<any>): string[];
+    static getFillable(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[];
+    static getGuarded(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[];
     static markFillable(this: NajsEloquent.Model.IModel<any>): NajsEloquent.Model.IModel<any>;
     static markGuarded(this: NajsEloquent.Model.IModel<any>): NajsEloquent.Model.IModel<any>;
     static isFillable(this: NajsEloquent.Model.IModel<any>, key: string): boolean;

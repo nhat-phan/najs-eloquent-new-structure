@@ -5,6 +5,7 @@ const najs_binding_1 = require("najs-binding");
 const ClassSetting_1 = require("../util/ClassSetting");
 const najs_binding_2 = require("najs-binding");
 const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
+const SettingType_1 = require("./../util/SettingType");
 const ModelSetting_1 = require("./ModelSetting");
 const ModelAttribute_1 = require("./components/ModelAttribute");
 const ModelFillable_1 = require("./components/ModelFillable");
@@ -33,6 +34,15 @@ class Model {
     }
     newInstance(data) {
         return najs_binding_1.make(najs_binding_2.getClassName(this), [data]);
+    }
+    getSetting() {
+        if (!this.setting) {
+            this.setting = ClassSetting_1.ClassSetting.of(this);
+        }
+        return this.setting;
+    }
+    getArrayUniqueSetting(property, defaultValue) {
+        return this.getSetting().read(property, SettingType_1.SettingType.arrayUnique([], defaultValue));
     }
 }
 exports.Model = Model;

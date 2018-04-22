@@ -1,6 +1,7 @@
 "use strict";
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
+/// <reference path="../interfaces/IModelSetting.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
@@ -20,10 +21,10 @@ class ModelSerialization {
         prototype['toJson'] = ModelSerialization.toJSON;
     }
     static getVisible() {
-        return this['settings']['visible']();
+        return this.getArrayUniqueSetting('visible', []);
     }
     static getHidden() {
-        return this['settings']['hidden']();
+        return this.getArrayUniqueSetting('hidden', []);
     }
     static markVisible() {
         this['settings']['pushToUniqueArraySetting']('visible', arguments);

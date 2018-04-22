@@ -1,5 +1,6 @@
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
+/// <reference path="../interfaces/IModelSetting.ts" />
 
 import { register } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
@@ -22,12 +23,12 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
     prototype['forceFill'] = ModelFillable.forceFill
   }
 
-  static getFillable(this: NajsEloquent.Model.IModel<any>): string[] {
-    return this['settings']['fillable']()
+  static getFillable(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[] {
+    return this.getArrayUniqueSetting('fillable', [])
   }
 
-  static getGuarded(this: NajsEloquent.Model.IModel<any>): string[] {
-    return this['settings']['guarded']()
+  static getGuarded(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[] {
+    return this.getArrayUniqueSetting('guarded', ['*'])
   }
 
   static markFillable(this: NajsEloquent.Model.IModel<any>) {

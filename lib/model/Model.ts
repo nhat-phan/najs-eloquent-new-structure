@@ -1,9 +1,10 @@
 /// <reference path="interfaces/IModel.ts" />
 
 import { make } from 'najs-binding'
-import { CREATE_SAMPLE } from '../util/ClassSetting'
+import { CREATE_SAMPLE, ClassSetting } from '../util/ClassSetting'
 import { ClassRegistry, register, getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
+import { SettingType } from './../util/SettingType'
 import { ModelSetting } from './ModelSetting'
 import { ModelAttribute } from './components/ModelAttribute'
 import { ModelFillable } from './components/ModelFillable'
@@ -12,6 +13,8 @@ const collect = require('collect.js')
 
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {}
 export class Model<T = any> {
+  private setting: ClassSetting
+
   /**
    * Model constructor.
    *
@@ -37,6 +40,17 @@ export class Model<T = any> {
 
   newInstance(data?: Object | T): this {
     return <any>make(getClassName(this), [data])
+  }
+
+  private getSetting(): ClassSetting {
+    if (!this.setting) {
+      this.setting = ClassSetting.of(this)
+    }
+    return this.setting
+  }
+
+  protected getArrayUniqueSetting(property: string, defaultValue: string[]): string[] {
+    return this.getSetting().read(property, SettingType.arrayUnique([], defaultValue))
   }
 }
 

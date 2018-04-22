@@ -1,5 +1,4 @@
 import { ClassSetting } from '../util/ClassSetting'
-import { SettingType } from '../util/SettingType'
 import { array_unique } from '../util/functions'
 import { flatten } from 'lodash'
 
@@ -20,26 +19,6 @@ export class ModelSetting {
   //     return sampleVersion ? sampleVersion : defaultValue
   //   })
   // }
-
-  getArrayUniqueSetting(property: string, defaultValue: string[]): string[] {
-    return this.setting.read(property, SettingType.arrayUnique([], defaultValue))
-  }
-
-  fillable(): string[] {
-    return this.getArrayUniqueSetting('fillable', [])
-  }
-
-  guarded(): string[] {
-    return this.getArrayUniqueSetting('guarded', ['*'])
-  }
-
-  visible(): string[] {
-    return this.getArrayUniqueSetting('visible', [])
-  }
-
-  hidden(): string[] {
-    return this.getArrayUniqueSetting('hidden', [])
-  }
 
   isInWhiteList(key: string, whiteList: string[], blackList: string[]) {
     if (whiteList.length > 0 && whiteList.indexOf(key) !== -1) {

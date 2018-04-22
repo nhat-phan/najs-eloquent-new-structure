@@ -2,6 +2,7 @@
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {
 }
 export declare class Model<T = any> {
+    private setting;
     /**
      * Model constructor.
      *
@@ -10,4 +11,6 @@ export declare class Model<T = any> {
     constructor(data?: Object);
     newCollection(dataset: any[]): any;
     newInstance(data?: Object | T): this;
+    private getSetting();
+    protected getArrayUniqueSetting(property: string, defaultValue: string[]): string[];
 }

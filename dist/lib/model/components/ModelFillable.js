@@ -1,6 +1,7 @@
 "use strict";
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
+/// <reference path="../interfaces/IModelSetting.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
@@ -20,10 +21,10 @@ class ModelFillable {
         prototype['forceFill'] = ModelFillable.forceFill;
     }
     static getFillable() {
-        return this['settings']['fillable']();
+        return this.getArrayUniqueSetting('fillable', []);
     }
     static getGuarded() {
-        return this['settings']['guarded']();
+        return this.getArrayUniqueSetting('guarded', ['*']);
     }
     static markFillable() {
         this['settings']['pushToUniqueArraySetting']('fillable', arguments);

@@ -1,5 +1,6 @@
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
+/// <reference path="../interfaces/IModelSetting.ts" />
 
 import { register } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
@@ -22,12 +23,12 @@ export class ModelSerialization implements Najs.Contracts.Eloquent.Component {
     prototype['toJson'] = ModelSerialization.toJSON
   }
 
-  static getVisible(this: NajsEloquent.Model.IModel<any>): string[] {
-    return this['settings']['visible']()
+  static getVisible(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[] {
+    return this.getArrayUniqueSetting('visible', [])
   }
 
-  static getHidden(this: NajsEloquent.Model.IModel<any>): string[] {
-    return this['settings']['hidden']()
+  static getHidden(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[] {
+    return this.getArrayUniqueSetting('hidden', [])
   }
 
   static markVisible(this: NajsEloquent.Model.IModel<any>) {
