@@ -21,7 +21,7 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
     }
   }
 
-  static register(model: typeof Eloquent) {
+  static register(model: { new (): Eloquent }) {
     register(model)
     Reflect.construct(model, [])
   }

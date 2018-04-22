@@ -35,6 +35,38 @@ describe('Eloquent/ModelQuery', function () {
                 });
             }
         });
+        describe('FORWARD_TO_QUERY_BUILDER_WRAPPER', function () {
+            it('contains started query functions', function () {
+                expect(ModelQuery_1.ModelQuery.FORWARD_TO_QUERY_BUILDER_WRAPPER.sort()).toEqual([
+                    'queryName',
+                    'setLogGroup',
+                    'select',
+                    'limit',
+                    'orderBy',
+                    'orderByAsc',
+                    'orderByDesc',
+                    'where',
+                    'whereNot',
+                    'whereIn',
+                    'whereNotIn',
+                    'whereNull',
+                    'whereNotNull',
+                    'whereBetween',
+                    'whereNotBetween',
+                    'withTrashed',
+                    'onlyTrashed',
+                    'first',
+                    'find',
+                    'get',
+                    'all',
+                    'count',
+                    'pluck',
+                    'findById',
+                    'findOrFail',
+                    'firstOrFail'
+                ].sort());
+            });
+        });
     });
     describe('Integration', function () {
         it('is not available for class which extends from Model<T>', function () {

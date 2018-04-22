@@ -2,34 +2,9 @@
 /// <reference path="../interfaces/IModel.ts" />
 
 import { register } from 'najs-binding'
-import { NajsEloquent } from '../../constants'
+import { NajsEloquent, StartQueryFunctions } from '../../constants'
 
-const FORWARD_TO_QUERY_BUILDER_WRAPPER = [
-  'queryName',
-  'select',
-  'limit',
-  'orderBy',
-  'orderByAsc',
-  'orderByDesc',
-  'where',
-  'whereNot',
-  'whereIn',
-  'whereNotIn',
-  'whereNull',
-  'whereNotNull',
-  'whereBetween',
-  'whereNotBetween',
-  'withTrashed',
-  'onlyTrashed',
-  'first',
-  'find',
-  'get',
-  'count',
-  'pluck',
-  'findById',
-  'findOrFail',
-  'firstOrFail'
-]
+const FORWARD_TO_QUERY_BUILDER_WRAPPER = StartQueryFunctions
 
 export class ModelQuery implements Najs.Contracts.Eloquent.Component {
   static className = NajsEloquent.Model.Component.ModelQuery
@@ -45,7 +20,7 @@ export class ModelQuery implements Najs.Contracts.Eloquent.Component {
   }
 
   static get FORWARD_TO_QUERY_BUILDER_WRAPPER() {
-    return FORWARD_TO_QUERY_BUILDER_WRAPPER
+    return StartQueryFunctions
   }
 
   static newQuery(this: NajsEloquent.Model.IModel<any>): any {

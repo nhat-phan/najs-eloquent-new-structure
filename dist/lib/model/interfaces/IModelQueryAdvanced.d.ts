@@ -48,11 +48,11 @@ declare namespace NajsEloquent.Model {
          * Find first record by id and throws NotFoundException if there is no record
          * @param {string} id
          */
-        findOrFail(id: any): Promise<IModel<T> & T | null>;
+        findOrFail(id: any): Promise<IModel<T> & T>;
         /**
          * Find first record by id and throws NotFoundException if there is no record
          * @param {string} id
          */
-        firstOrFail(id: any): Promise<IModel<T> & T | null>;
+        firstOrFail(id: any): Promise<IModel<T> & T>;
     }
 }

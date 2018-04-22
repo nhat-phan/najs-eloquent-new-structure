@@ -4,32 +4,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
-const FORWARD_TO_QUERY_BUILDER_WRAPPER = [
-    'queryName',
-    'select',
-    'limit',
-    'orderBy',
-    'orderByAsc',
-    'orderByDesc',
-    'where',
-    'whereNot',
-    'whereIn',
-    'whereNotIn',
-    'whereNull',
-    'whereNotNull',
-    'whereBetween',
-    'whereNotBetween',
-    'withTrashed',
-    'onlyTrashed',
-    'first',
-    'find',
-    'get',
-    'count',
-    'pluck',
-    'findById',
-    'findOrFail',
-    'firstOrFail'
-];
+const FORWARD_TO_QUERY_BUILDER_WRAPPER = constants_1.StartQueryFunctions;
 class ModelQuery {
     getClassName() {
         return constants_1.NajsEloquent.Model.Component.ModelQuery;
@@ -41,7 +16,7 @@ class ModelQuery {
         }
     }
     static get FORWARD_TO_QUERY_BUILDER_WRAPPER() {
-        return FORWARD_TO_QUERY_BUILDER_WRAPPER;
+        return constants_1.StartQueryFunctions;
     }
     static newQuery() {
         return this['driver'].newQuery();
