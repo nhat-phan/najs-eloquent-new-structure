@@ -5,6 +5,7 @@
 /// <reference path="IModelSerialization.d.ts" />
 /// <reference path="IModelQuery.d.ts" />
 /// <reference path="IModelTimestamps.d.ts" />
+/// <reference path="IModelSetting.d.ts" />
 declare namespace NajsEloquent.Model {
     class IModel<A> {
         /**
@@ -25,4 +26,5 @@ declare namespace NajsEloquent.Model {
         newCollection(collection: any[]): any;
         newInstance(data: Object | A): any;
     }
+    type ModelMethod<T> = (this: IModel<any> & IModelSetting) => T;
 }

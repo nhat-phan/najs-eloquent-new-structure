@@ -34,6 +34,13 @@ export class Model<T = any> {
     }
   }
 
+  // model: 3 functions
+  // fillable: 8 functions
+  // serialization: 9 functions
+  // attribute: 5 functions
+  // timestamps: 3 functions
+  // soft delete: 5 functions
+
   newCollection(dataset: any[]): any {
     return collect(dataset.map(item => this.newInstance(item)))
   }

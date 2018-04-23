@@ -5,6 +5,7 @@
 /// <reference path="IModelSerialization.ts" />
 /// <reference path="IModelQuery.ts" />
 /// <reference path="IModelTimestamps.ts" />
+/// <reference path="IModelSetting.ts" />
 
 namespace NajsEloquent.Model {
   export class IModel<A> {
@@ -36,4 +37,6 @@ namespace NajsEloquent.Model {
 
     newInstance(data: Object | A): any
   }
+
+  export type ModelMethod<T> = (this: IModel<any> & IModelSetting) => T
 }

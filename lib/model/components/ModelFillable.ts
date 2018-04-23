@@ -1,15 +1,14 @@
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
-/// <reference path="../interfaces/IModelSetting.ts" />
 
+import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { register } from 'najs-binding'
-import { NajsEloquent } from '../../constants'
 import { pick } from 'lodash'
 
 export class ModelFillable implements Najs.Contracts.Eloquent.Component {
-  static className = NajsEloquent.Model.Component.ModelFillable
+  static className = NajsEloquentClasses.Model.Component.ModelFillable
   getClassName(): string {
-    return NajsEloquent.Model.Component.ModelFillable
+    return NajsEloquentClasses.Model.Component.ModelFillable
   }
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
@@ -23,11 +22,11 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
     prototype['forceFill'] = ModelFillable.forceFill
   }
 
-  static getFillable(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[] {
+  static getFillable: NajsEloquent.Model.ModelMethod<string[]> = function() {
     return this.getArrayUniqueSetting('fillable', [])
   }
 
-  static getGuarded(this: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting): string[] {
+  static getGuarded: NajsEloquent.Model.ModelMethod<string[]> = function() {
     return this.getArrayUniqueSetting('guarded', ['*'])
   }
 

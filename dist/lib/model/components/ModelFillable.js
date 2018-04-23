@@ -1,10 +1,9 @@
 "use strict";
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
-/// <reference path="../interfaces/IModelSetting.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
+const najs_binding_1 = require("najs-binding");
 const lodash_1 = require("lodash");
 class ModelFillable {
     getClassName() {
@@ -19,12 +18,6 @@ class ModelFillable {
         prototype['isGuarded'] = ModelFillable.isGuarded;
         prototype['fill'] = ModelFillable.fill;
         prototype['forceFill'] = ModelFillable.forceFill;
-    }
-    static getFillable() {
-        return this.getArrayUniqueSetting('fillable', []);
-    }
-    static getGuarded() {
-        return this.getArrayUniqueSetting('guarded', ['*']);
     }
     static markFillable() {
         this['settings']['pushToUniqueArraySetting']('fillable', arguments);
@@ -59,5 +52,11 @@ class ModelFillable {
     }
 }
 ModelFillable.className = constants_1.NajsEloquent.Model.Component.ModelFillable;
+ModelFillable.getFillable = function () {
+    return this.getArrayUniqueSetting('fillable', []);
+};
+ModelFillable.getGuarded = function () {
+    return this.getArrayUniqueSetting('guarded', ['*']);
+};
 exports.ModelFillable = ModelFillable;
 najs_binding_1.register(ModelFillable);
