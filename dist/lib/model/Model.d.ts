@@ -13,4 +13,5 @@ export declare class Model<T = any> {
     newInstance(data?: Object | T): this;
     private getSetting();
     protected getArrayUniqueSetting(property: string, defaultValue: string[]): string[];
+    protected pushToUniqueArraySetting(property: string, args: ArrayLike<any>): this;
 }

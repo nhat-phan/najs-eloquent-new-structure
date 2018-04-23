@@ -19,14 +19,6 @@ class ModelSerialization {
         prototype['toJSON'] = ModelSerialization.toJSON;
         prototype['toJson'] = ModelSerialization.toJSON;
     }
-    static markVisible() {
-        this['settings']['pushToUniqueArraySetting']('visible', arguments);
-        return this;
-    }
-    static markHidden() {
-        this['settings']['pushToUniqueArraySetting']('hidden', arguments);
-        return this;
-    }
     static isVisible(key) {
         return this['settings']['isInWhiteList'](key, this.getVisible(), this.getHidden());
     }
@@ -52,6 +44,12 @@ ModelSerialization.getVisible = function () {
 };
 ModelSerialization.getHidden = function () {
     return this.getArrayUniqueSetting('hidden', []);
+};
+ModelSerialization.markVisible = function () {
+    return this.pushToUniqueArraySetting('visible', arguments);
+};
+ModelSerialization.markHidden = function () {
+    return this.pushToUniqueArraySetting('hidden', arguments);
 };
 exports.ModelSerialization = ModelSerialization;
 najs_binding_1.register(ModelSerialization);

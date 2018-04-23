@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ClassSetting_1 = require("../util/ClassSetting");
-const functions_1 = require("../util/functions");
-const lodash_1 = require("lodash");
 class ModelSetting {
     constructor(model) {
         this.model = model;
@@ -27,11 +25,6 @@ class ModelSetting {
     }
     isInBlackList(key, blackList) {
         return (blackList.length === 1 && blackList[0] === '*') || blackList.indexOf(key) !== -1;
-    }
-    pushToUniqueArraySetting(key, args) {
-        const setting = this.model[key] || [];
-        this.model[key] = functions_1.array_unique(setting, lodash_1.flatten(args));
-        return this.model[key];
     }
 }
 exports.ModelSetting = ModelSetting;

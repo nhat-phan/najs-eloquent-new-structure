@@ -19,14 +19,6 @@ class ModelFillable {
         prototype['fill'] = ModelFillable.fill;
         prototype['forceFill'] = ModelFillable.forceFill;
     }
-    static markFillable() {
-        this['settings']['pushToUniqueArraySetting']('fillable', arguments);
-        return this;
-    }
-    static markGuarded() {
-        this['settings']['pushToUniqueArraySetting']('guarded', arguments);
-        return this;
-    }
     static isFillable(key) {
         return this['settings']['isInWhiteList'](key, this.getFillable(), this.getGuarded());
     }
@@ -57,6 +49,12 @@ ModelFillable.getFillable = function () {
 };
 ModelFillable.getGuarded = function () {
     return this.getArrayUniqueSetting('guarded', ['*']);
+};
+ModelFillable.markFillable = function () {
+    return this.pushToUniqueArraySetting('fillable', arguments);
+};
+ModelFillable.markGuarded = function () {
+    return this.pushToUniqueArraySetting('guarded', arguments);
 };
 exports.ModelFillable = ModelFillable;
 najs_binding_1.register(ModelFillable);

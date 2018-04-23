@@ -30,14 +30,12 @@ export class ModelSerialization implements Najs.Contracts.Eloquent.Component {
     return this.getArrayUniqueSetting('hidden', [])
   }
 
-  static markVisible(this: NajsEloquent.Model.IModel<any>) {
-    this['settings']['pushToUniqueArraySetting']('visible', arguments)
-    return this
+  static markVisible: NajsEloquent.Model.ModelMethod<string[], any> = function() {
+    return this.pushToUniqueArraySetting('visible', arguments)
   }
 
-  static markHidden(this: NajsEloquent.Model.IModel<any>) {
-    this['settings']['pushToUniqueArraySetting']('hidden', arguments)
-    return this
+  static markHidden: NajsEloquent.Model.ModelMethod<string[], any> = function() {
+    return this.pushToUniqueArraySetting('hidden', arguments)
   }
 
   static isVisible(this: NajsEloquent.Model.IModel<any>, key: string): boolean {

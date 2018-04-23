@@ -6,8 +6,8 @@ export declare class ModelSerialization implements Najs.Contracts.Eloquent.Compo
     extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
     static getVisible: NajsEloquent.Model.ModelMethod<string[]>;
     static getHidden: NajsEloquent.Model.ModelMethod<string[]>;
-    static markVisible(this: NajsEloquent.Model.IModel<any>): NajsEloquent.Model.IModel<any>;
-    static markHidden(this: NajsEloquent.Model.IModel<any>): NajsEloquent.Model.IModel<any>;
+    static markVisible: NajsEloquent.Model.ModelMethod<string[], any>;
+    static markHidden: NajsEloquent.Model.ModelMethod<string[], any>;
     static isVisible(this: NajsEloquent.Model.IModel<any>, key: string): boolean;
     static isHidden(this: NajsEloquent.Model.IModel<any>, key: string): boolean;
     static toObject(this: NajsEloquent.Model.IModel<any>, data: Object): Object;

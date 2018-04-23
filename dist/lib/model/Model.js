@@ -10,6 +10,8 @@ const ModelSetting_1 = require("./ModelSetting");
 const ModelAttribute_1 = require("./components/ModelAttribute");
 const ModelFillable_1 = require("./components/ModelFillable");
 const ModelSerialization_1 = require("./components/ModelSerialization");
+const functions_1 = require("../util/functions");
+const lodash_1 = require("lodash");
 const collect = require('collect.js');
 class Model {
     /**
@@ -29,12 +31,6 @@ class Model {
             this.attributes = this.driver.getRecord();
         }
     }
-    // model: 3 functions
-    // fillable: 8 functions
-    // serialization: 9 functions
-    // attribute: 5 functions
-    // timestamps: 3 functions
-    // soft delete: 5 functions
     newCollection(dataset) {
         return collect(dataset.map(item => this.newInstance(item)));
     }
@@ -49,6 +45,11 @@ class Model {
     }
     getArrayUniqueSetting(property, defaultValue) {
         return this.getSetting().read(property, SettingType_1.SettingType.arrayUnique([], defaultValue));
+    }
+    pushToUniqueArraySetting(property, args) {
+        const setting = this[property] || [];
+        this[property] = functions_1.array_unique(setting, lodash_1.flatten(args));
+        return this;
     }
 }
 exports.Model = Model;

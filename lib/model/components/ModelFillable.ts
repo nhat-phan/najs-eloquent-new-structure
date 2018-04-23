@@ -30,14 +30,12 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
     return this.getArrayUniqueSetting('guarded', ['*'])
   }
 
-  static markFillable(this: NajsEloquent.Model.IModel<any>) {
-    this['settings']['pushToUniqueArraySetting']('fillable', arguments)
-    return this
+  static markFillable: NajsEloquent.Model.ModelMethod<string[], any> = function() {
+    return this.pushToUniqueArraySetting('fillable', arguments)
   }
 
-  static markGuarded(this: NajsEloquent.Model.IModel<any>) {
-    this['settings']['pushToUniqueArraySetting']('guarded', arguments)
-    return this
+  static markGuarded: NajsEloquent.Model.ModelMethod<string[], any> = function() {
+    return this.pushToUniqueArraySetting('guarded', arguments)
   }
 
   static isFillable(this: NajsEloquent.Model.IModel<any>, key: string): boolean {

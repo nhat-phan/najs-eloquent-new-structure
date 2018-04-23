@@ -1,6 +1,4 @@
 import { ClassSetting } from '../util/ClassSetting'
-import { array_unique } from '../util/functions'
-import { flatten } from 'lodash'
 
 export class ModelSetting {
   model: NajsEloquent.Model.IModel<any>
@@ -34,12 +32,6 @@ export class ModelSetting {
 
   isInBlackList(key: string, blackList: string[]) {
     return (blackList.length === 1 && blackList[0] === '*') || blackList.indexOf(key) !== -1
-  }
-
-  pushToUniqueArraySetting(key: string, args: ArrayLike<any>) {
-    const setting: string[] = this.model[key] || []
-    this.model[key] = array_unique(setting, flatten(args))
-    return this.model[key]
   }
 
   // hasSetting(property: string): boolean {

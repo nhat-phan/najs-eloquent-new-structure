@@ -9,6 +9,8 @@ import { ModelSetting } from './ModelSetting'
 import { ModelAttribute } from './components/ModelAttribute'
 import { ModelFillable } from './components/ModelFillable'
 import { ModelSerialization } from './components/ModelSerialization'
+import { array_unique } from '../util/functions'
+import { flatten } from 'lodash'
 const collect = require('collect.js')
 
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {}
@@ -34,13 +36,6 @@ export class Model<T = any> {
     }
   }
 
-  // model: 3 functions
-  // fillable: 8 functions
-  // serialization: 9 functions
-  // attribute: 5 functions
-  // timestamps: 3 functions
-  // soft delete: 5 functions
-
   newCollection(dataset: any[]): any {
     return collect(dataset.map(item => this.newInstance(item)))
   }
@@ -58,6 +53,12 @@ export class Model<T = any> {
 
   protected getArrayUniqueSetting(property: string, defaultValue: string[]): string[] {
     return this.getSetting().read(property, SettingType.arrayUnique([], defaultValue))
+  }
+
+  protected pushToUniqueArraySetting(property: string, args: ArrayLike<any>): this {
+    const setting: string[] = this[property] || []
+    this[property] = array_unique(setting, flatten(args))
+    return this
   }
 }
 

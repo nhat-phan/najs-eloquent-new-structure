@@ -5,5 +5,4 @@ export declare class ModelSetting {
     constructor(model: NajsEloquent.Model.IModel<any>);
     isInWhiteList(key: string, whiteList: string[], blackList: string[]): boolean;
     isInBlackList(key: string, blackList: string[]): boolean;
-    pushToUniqueArraySetting(key: string, args: ArrayLike<any>): any;
 }
