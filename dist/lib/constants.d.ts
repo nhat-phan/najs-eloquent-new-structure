@@ -8,6 +8,7 @@ export declare const NajsEloquent: {
         Component: {
             ModelAttribute: string;
             DynamicAttribute: string;
+            ModelSetting: string;
             ModelFillable: string;
             ModelQuery: string;
             ModelTimestamps: string;

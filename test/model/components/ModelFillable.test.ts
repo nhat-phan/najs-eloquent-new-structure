@@ -1,11 +1,10 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { register } from 'najs-binding'
 import { Eloquent } from '../../../lib/model/Eloquent'
 import { ModelFillable } from '../../../lib/model/components/ModelFillable'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
-import { ModelSetting } from '../../../lib/model/ModelSetting'
+import { ModelSetting } from '../../../lib/model/components/ModelSetting'
 
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
@@ -42,7 +41,7 @@ describe('Model/Fillable', function() {
 
     describe('static .isFillable()', function() {
       it('uses ModelUtilities.isInWhiteList() with whiteList = .getFillable(), blackList = this.getGuarded()', function() {
-        const isInWhiteListStub = Sinon.stub(ModelSetting.prototype, 'isInWhiteList')
+        const isInWhiteListStub = Sinon.stub(ModelSetting, 'isInWhiteList')
         isInWhiteListStub.returns('anything')
 
         const user = {
@@ -53,11 +52,7 @@ describe('Model/Fillable', function() {
             return 'guarded'
           }
         }
-        class Test {
-          static className = 'Test'
-        }
-        register(Test)
-        user['settings'] = new ModelSetting(<any>new Test())
+        user['isInWhiteList'] = ModelSetting.isInWhiteList
 
         expect(ModelFillable.isFillable.call(user, 'test')).toEqual('anything')
         expect(isInWhiteListStub.calledWith('test', 'fillable', 'guarded')).toBe(true)
@@ -67,7 +62,7 @@ describe('Model/Fillable', function() {
 
     describe('static .isGuarded()', function() {
       it('uses ModelUtilities.isInBlackList() with blackList = this.getGuarded()', function() {
-        const isInBlackListStub = Sinon.stub(ModelSetting.prototype, 'isInBlackList')
+        const isInBlackListStub = Sinon.stub(ModelSetting, 'isInBlackList')
         isInBlackListStub.returns('anything')
 
         const user = {
@@ -75,11 +70,7 @@ describe('Model/Fillable', function() {
             return 'guarded'
           }
         }
-        class Test {
-          static className = 'Test'
-        }
-        register(Test)
-        user['settings'] = new ModelSetting(<any>new Test())
+        user['isInBlackList'] = ModelSetting.isInBlackList
 
         expect(ModelFillable.isGuarded.call(user, 'test')).toEqual('anything')
         expect(isInBlackListStub.calledWith('test', 'guarded')).toBe(true)

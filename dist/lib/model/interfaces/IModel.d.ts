@@ -26,5 +26,5 @@ declare namespace NajsEloquent.Model {
         newCollection(collection: any[]): any;
         newInstance(data: Object | A): any;
     }
-    type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting) => R;
+    type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting, ...args: any[]) => R;
 }

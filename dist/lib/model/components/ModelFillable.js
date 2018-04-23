@@ -19,29 +19,6 @@ class ModelFillable {
         prototype['fill'] = ModelFillable.fill;
         prototype['forceFill'] = ModelFillable.forceFill;
     }
-    static isFillable(key) {
-        return this['settings']['isInWhiteList'](key, this.getFillable(), this.getGuarded());
-    }
-    static isGuarded(key) {
-        return this['settings']['isInBlackList'](key, this.getGuarded());
-    }
-    static fill(data) {
-        const fillable = this.getFillable();
-        const guarded = this.getGuarded();
-        const attributes = fillable.length > 0 ? lodash_1.pick(data, fillable) : data;
-        for (const key in attributes) {
-            if (this['settings']['isInWhiteList'](key, fillable, guarded)) {
-                this.setAttribute(key, attributes[key]);
-            }
-        }
-        return this;
-    }
-    static forceFill(data) {
-        for (const key in data) {
-            this.setAttribute(key, data[key]);
-        }
-        return this;
-    }
 }
 ModelFillable.className = constants_1.NajsEloquent.Model.Component.ModelFillable;
 ModelFillable.getFillable = function () {
@@ -55,6 +32,29 @@ ModelFillable.markFillable = function () {
 };
 ModelFillable.markGuarded = function () {
     return this.pushToUniqueArraySetting('guarded', arguments);
+};
+ModelFillable.isFillable = function (key) {
+    return this.isInWhiteList(key, this.getFillable(), this.getGuarded());
+};
+ModelFillable.isGuarded = function (key) {
+    return this.isInBlackList(key, this.getGuarded());
+};
+ModelFillable.fill = function (data) {
+    const fillable = this.getFillable();
+    const guarded = this.getGuarded();
+    const attributes = fillable.length > 0 ? lodash_1.pick(data, fillable) : data;
+    for (const key in attributes) {
+        if (this.isInWhiteList(key, fillable, guarded)) {
+            this.setAttribute(key, attributes[key]);
+        }
+    }
+    return this;
+};
+ModelFillable.forceFill = function (data) {
+    for (const key in data) {
+        this.setAttribute(key, data[key]);
+    }
+    return this;
 };
 exports.ModelFillable = ModelFillable;
 najs_binding_1.register(ModelFillable);

@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const najs_binding_1 = require("najs-binding");
 const Eloquent_1 = require("../../../lib/model/Eloquent");
 const ModelSerialization_1 = require("../../../lib/model/components/ModelSerialization");
-const ModelSetting_1 = require("../../../lib/model/ModelSetting");
+const ModelSetting_1 = require("../../../lib/model/components/ModelSetting");
 const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
 const EloquentComponentProviderFacade_1 = require("../../../lib/facades/global/EloquentComponentProviderFacade");
@@ -43,7 +42,7 @@ describe('Model/Serialization', function () {
         });
         describe('static .isVisible()', function () {
             it('uses ModelUtilities.isInWhiteList() with whiteList = .getVisible(), blackList = this.getHidden()', function () {
-                const isInWhiteListStub = Sinon.stub(ModelSetting_1.ModelSetting.prototype, 'isInWhiteList');
+                const isInWhiteListStub = Sinon.stub(ModelSetting_1.ModelSetting, 'isInWhiteList');
                 isInWhiteListStub.returns('anything');
                 const user = {
                     getVisible() {
@@ -53,11 +52,7 @@ describe('Model/Serialization', function () {
                         return 'hidden';
                     }
                 };
-                class Test {
-                }
-                Test.className = 'Test';
-                najs_binding_1.register(Test);
-                user['settings'] = new ModelSetting_1.ModelSetting(new Test());
+                user['isInWhiteList'] = ModelSetting_1.ModelSetting.isInWhiteList;
                 expect(ModelSerialization_1.ModelSerialization.isVisible.call(user, 'test')).toEqual('anything');
                 expect(isInWhiteListStub.calledWith('test', 'visible', 'hidden')).toBe(true);
                 isInWhiteListStub.restore();
@@ -65,18 +60,14 @@ describe('Model/Serialization', function () {
         });
         describe('static .isGuarded()', function () {
             it('uses ModelUtilities.isInBlackList() with blackList = this.getHidden()', function () {
-                const isInBlackListStub = Sinon.stub(ModelSetting_1.ModelSetting.prototype, 'isInBlackList');
+                const isInBlackListStub = Sinon.stub(ModelSetting_1.ModelSetting, 'isInBlackList');
                 isInBlackListStub.returns('anything');
                 const user = {
                     getHidden() {
                         return 'hidden';
                     }
                 };
-                class Test {
-                }
-                Test.className = 'Test';
-                najs_binding_1.register(Test);
-                user['settings'] = new ModelSetting_1.ModelSetting(new Test());
+                user['isInBlackList'] = ModelSetting_1.ModelSetting.isInBlackList;
                 expect(ModelSerialization_1.ModelSerialization.isHidden.call(user, 'test')).toEqual('anything');
                 expect(isInBlackListStub.calledWith('test', 'hidden')).toBe(true);
                 isInBlackListStub.restore();

@@ -38,25 +38,25 @@ export class ModelSerialization implements Najs.Contracts.Eloquent.Component {
     return this.pushToUniqueArraySetting('hidden', arguments)
   }
 
-  static isVisible(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    return this['settings']['isInWhiteList'](key, this.getVisible(), this.getHidden())
+  static isVisible: NajsEloquent.Model.ModelMethod<boolean> = function(key: string) {
+    return this.isInWhiteList(key, this.getVisible(), this.getHidden())
   }
 
-  static isHidden(this: NajsEloquent.Model.IModel<any>, key: string): boolean {
-    return this['settings']['isInBlackList'](key, this.getHidden())
+  static isHidden: NajsEloquent.Model.ModelMethod<boolean> = function(key: string) {
+    return this.isInBlackList(key, this.getHidden())
   }
 
-  static toObject(this: NajsEloquent.Model.IModel<any>, data: Object): Object {
+  static toObject: NajsEloquent.Model.ModelMethod<Object> = function() {
     return this['driver'].toObject()
   }
 
-  static toJSON(this: NajsEloquent.Model.IModel<any>): Object {
+  static toJSON: NajsEloquent.Model.ModelMethod<Object> = function() {
     const data = this.toObject(),
       visible = this.getVisible(),
       hidden = this.getHidden()
 
     return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-      if (this['settings']['isInWhiteList'](name, visible, hidden)) {
+      if (this.isInWhiteList(name, visible, hidden)) {
         memo[name] = data[name]
       }
       return memo

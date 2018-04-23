@@ -8,8 +8,8 @@ export declare class ModelFillable implements Najs.Contracts.Eloquent.Component 
     static getGuarded: NajsEloquent.Model.ModelMethod<string[]>;
     static markFillable: NajsEloquent.Model.ModelMethod<string[], any>;
     static markGuarded: NajsEloquent.Model.ModelMethod<string[], any>;
-    static isFillable(this: NajsEloquent.Model.IModel<any>, key: string): boolean;
-    static isGuarded(this: NajsEloquent.Model.IModel<any>, key: string): boolean;
-    static fill(this: NajsEloquent.Model.IModel<any>, data: Object): NajsEloquent.Model.IModel<any>;
-    static forceFill(this: NajsEloquent.Model.IModel<any>, data: Object): NajsEloquent.Model.IModel<any>;
+    static isFillable: NajsEloquent.Model.ModelMethod<boolean>;
+    static isGuarded: NajsEloquent.Model.ModelMethod<boolean>;
+    static fill: NajsEloquent.Model.ModelMethod<Object>;
+    static forceFill: NajsEloquent.Model.ModelMethod<Object>;
 }

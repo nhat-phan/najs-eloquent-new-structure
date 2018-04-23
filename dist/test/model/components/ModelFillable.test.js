@@ -2,12 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const najs_binding_1 = require("najs-binding");
 const Eloquent_1 = require("../../../lib/model/Eloquent");
 const ModelFillable_1 = require("../../../lib/model/components/ModelFillable");
 const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
-const ModelSetting_1 = require("../../../lib/model/ModelSetting");
+const ModelSetting_1 = require("../../../lib/model/components/ModelSetting");
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
 describe('Model/Fillable', function () {
     describe('Unit', function () {
@@ -40,7 +39,7 @@ describe('Model/Fillable', function () {
         });
         describe('static .isFillable()', function () {
             it('uses ModelUtilities.isInWhiteList() with whiteList = .getFillable(), blackList = this.getGuarded()', function () {
-                const isInWhiteListStub = Sinon.stub(ModelSetting_1.ModelSetting.prototype, 'isInWhiteList');
+                const isInWhiteListStub = Sinon.stub(ModelSetting_1.ModelSetting, 'isInWhiteList');
                 isInWhiteListStub.returns('anything');
                 const user = {
                     getFillable() {
@@ -50,11 +49,7 @@ describe('Model/Fillable', function () {
                         return 'guarded';
                     }
                 };
-                class Test {
-                }
-                Test.className = 'Test';
-                najs_binding_1.register(Test);
-                user['settings'] = new ModelSetting_1.ModelSetting(new Test());
+                user['isInWhiteList'] = ModelSetting_1.ModelSetting.isInWhiteList;
                 expect(ModelFillable_1.ModelFillable.isFillable.call(user, 'test')).toEqual('anything');
                 expect(isInWhiteListStub.calledWith('test', 'fillable', 'guarded')).toBe(true);
                 isInWhiteListStub.restore();
@@ -62,18 +57,14 @@ describe('Model/Fillable', function () {
         });
         describe('static .isGuarded()', function () {
             it('uses ModelUtilities.isInBlackList() with blackList = this.getGuarded()', function () {
-                const isInBlackListStub = Sinon.stub(ModelSetting_1.ModelSetting.prototype, 'isInBlackList');
+                const isInBlackListStub = Sinon.stub(ModelSetting_1.ModelSetting, 'isInBlackList');
                 isInBlackListStub.returns('anything');
                 const user = {
                     getGuarded() {
                         return 'guarded';
                     }
                 };
-                class Test {
-                }
-                Test.className = 'Test';
-                najs_binding_1.register(Test);
-                user['settings'] = new ModelSetting_1.ModelSetting(new Test());
+                user['isInBlackList'] = ModelSetting_1.ModelSetting.isInBlackList;
                 expect(ModelFillable_1.ModelFillable.isGuarded.call(user, 'test')).toEqual('anything');
                 expect(isInBlackListStub.calledWith('test', 'guarded')).toBe(true);
                 isInBlackListStub.restore();

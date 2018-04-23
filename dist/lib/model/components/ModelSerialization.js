@@ -19,24 +19,6 @@ class ModelSerialization {
         prototype['toJSON'] = ModelSerialization.toJSON;
         prototype['toJson'] = ModelSerialization.toJSON;
     }
-    static isVisible(key) {
-        return this['settings']['isInWhiteList'](key, this.getVisible(), this.getHidden());
-    }
-    static isHidden(key) {
-        return this['settings']['isInBlackList'](key, this.getHidden());
-    }
-    static toObject(data) {
-        return this['driver'].toObject();
-    }
-    static toJSON() {
-        const data = this.toObject(), visible = this.getVisible(), hidden = this.getHidden();
-        return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-            if (this['settings']['isInWhiteList'](name, visible, hidden)) {
-                memo[name] = data[name];
-            }
-            return memo;
-        }, {});
-    }
 }
 ModelSerialization.className = constants_1.NajsEloquent.Model.Component.ModelSerialization;
 ModelSerialization.getVisible = function () {
@@ -50,6 +32,24 @@ ModelSerialization.markVisible = function () {
 };
 ModelSerialization.markHidden = function () {
     return this.pushToUniqueArraySetting('hidden', arguments);
+};
+ModelSerialization.isVisible = function (key) {
+    return this.isInWhiteList(key, this.getVisible(), this.getHidden());
+};
+ModelSerialization.isHidden = function (key) {
+    return this.isInBlackList(key, this.getHidden());
+};
+ModelSerialization.toObject = function () {
+    return this['driver'].toObject();
+};
+ModelSerialization.toJSON = function () {
+    const data = this.toObject(), visible = this.getVisible(), hidden = this.getHidden();
+    return Object.getOwnPropertyNames(data).reduce((memo, name) => {
+        if (this.isInWhiteList(name, visible, hidden)) {
+            memo[name] = data[name];
+        }
+        return memo;
+    }, {});
 };
 exports.ModelSerialization = ModelSerialization;
 najs_binding_1.register(ModelSerialization);

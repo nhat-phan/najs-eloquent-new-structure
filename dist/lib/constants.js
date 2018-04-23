@@ -11,6 +11,7 @@ exports.NajsEloquent = {
         Component: {
             ModelAttribute: 'NajsEloquent.Model.Component.ModelAttribute',
             DynamicAttribute: 'NajsEloquent.Model.Component.DynamicAttribute',
+            ModelSetting: 'NajsEloquent.Model.Component.ModelSetting',
             ModelFillable: 'NajsEloquent.Model.Component.ModelFillable',
             ModelQuery: 'NajsEloquent.Model.Component.ModelQuery',
             ModelTimestamps: 'NajsEloquent.Model.Component.ModelTimestamps',
