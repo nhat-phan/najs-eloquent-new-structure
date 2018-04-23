@@ -29,13 +29,13 @@ declare namespace NajsEloquent.Model {
          *
          * @param {string} key
          */
-        isVisible(key: string): boolean;
+        isVisible(...keys: Array<string | string[]>): boolean;
         /**
          * Determine if the given key hidden in JSON.
          *
          * @param {string} key
          */
-        isHidden(key: string): boolean;
+        isHidden(...keys: Array<string | string[]>): boolean;
         /**
          * Convert the model instance to a plain object, visible and hidden are not applied.
          */

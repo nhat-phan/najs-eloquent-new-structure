@@ -8,5 +8,7 @@ export declare class ModelSetting implements Najs.Contracts.Eloquent.Component {
     static getArrayUniqueSetting: NajsEloquent.Model.ModelMethod<string[]>;
     static pushToUniqueArraySetting: NajsEloquent.Model.ModelMethod<any>;
     static isInWhiteList: NajsEloquent.Model.ModelMethod<boolean>;
+    static isKeyInWhiteList: NajsEloquent.Model.ModelMethod<boolean>;
     static isInBlackList: NajsEloquent.Model.ModelMethod<boolean>;
+    static isKeyInBlackList: NajsEloquent.Model.ModelMethod<boolean>;
 }

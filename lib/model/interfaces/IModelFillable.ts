@@ -41,14 +41,14 @@ namespace NajsEloquent.Model {
      *
      * @param {string} key
      */
-    isFillable(key: string): boolean
+    isFillable(...keys: Array<string | string[]>): boolean
 
     /**
      * Determine if the given key is guarded.
      *
      * @param {string} key
      */
-    isGuarded(key: string): boolean
+    isGuarded(...keys: Array<string | string[]>): boolean
 
     /**
      * Fill the model with an array of attributes.

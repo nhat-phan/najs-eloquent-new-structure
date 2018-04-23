@@ -38,12 +38,12 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
     return this.pushToUniqueArraySetting('guarded', arguments)
   }
 
-  static isFillable: NajsEloquent.Model.ModelMethod<boolean> = function(key: string) {
-    return this.isInWhiteList(key, this.getFillable(), this.getGuarded())
+  static isFillable: NajsEloquent.Model.ModelMethod<boolean> = function() {
+    return this.isInWhiteList(arguments, this.getFillable(), this.getGuarded())
   }
 
-  static isGuarded: NajsEloquent.Model.ModelMethod<boolean> = function(key: string) {
-    return this.isInBlackList(key, this.getGuarded())
+  static isGuarded: NajsEloquent.Model.ModelMethod<boolean> = function() {
+    return this.isInBlackList(arguments, this.getGuarded())
   }
 
   static fill: NajsEloquent.Model.ModelMethod<Object> = function(data: Object) {
@@ -52,7 +52,7 @@ export class ModelFillable implements Najs.Contracts.Eloquent.Component {
 
     const attributes = fillable.length > 0 ? pick(data, fillable) : data
     for (const key in attributes) {
-      if (this.isInWhiteList(key, fillable, guarded)) {
+      if (this.isKeyInWhiteList(key, fillable, guarded)) {
         this.setAttribute(key, attributes[key])
       }
     }

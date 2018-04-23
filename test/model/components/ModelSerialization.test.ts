@@ -58,7 +58,10 @@ describe('Model/Serialization', function() {
         user['isInWhiteList'] = ModelSetting.isInWhiteList
 
         expect(ModelSerialization.isVisible.call(user, 'test')).toEqual('anything')
-        expect(isInWhiteListStub.calledWith('test', 'visible', 'hidden')).toBe(true)
+        expect(isInWhiteListStub.called).toBe(true)
+        expect(Array.from(isInWhiteListStub.firstCall.args[0])).toEqual(['test'])
+        expect(isInWhiteListStub.firstCall.args[1]).toEqual('visible')
+        expect(isInWhiteListStub.firstCall.args[2]).toEqual('hidden')
         isInWhiteListStub.restore()
       })
     })
@@ -76,7 +79,9 @@ describe('Model/Serialization', function() {
         user['isInBlackList'] = ModelSetting.isInBlackList
 
         expect(ModelSerialization.isHidden.call(user, 'test')).toEqual('anything')
-        expect(isInBlackListStub.calledWith('test', 'hidden')).toBe(true)
+        expect(isInBlackListStub.called).toBe(true)
+        expect(Array.from(isInBlackListStub.firstCall.args[0])).toEqual(['test'])
+        expect(isInBlackListStub.firstCall.args[1]).toEqual('hidden')
         isInBlackListStub.restore()
       })
     })
@@ -144,6 +149,40 @@ describe('Model/Serialization', function() {
         expect(token.getHidden()).toEqual(['token'])
         const secret = new Secret()
         expect(secret.getHidden()).toEqual(['password'])
+      })
+    })
+
+    describe('.isVisible()', function() {
+      it('can be used to detect single attribute', function() {
+        const user = new User()
+        expect(user.isVisible('first_name')).toBe(true)
+      })
+
+      it('can be used to detect multiple attributes with AND operator', function() {
+        const user = new User()
+        expect(user.isVisible('first_name', 'last_name')).toBe(true)
+        expect(user.isVisible(['first_name', 'last_name'])).toBe(true)
+        expect(user.isVisible(['first_name', 'last_name'], 'not-found')).toBe(false)
+      })
+    })
+
+    describe('.isHidden()', function() {
+      it('can be used to detect single attribute', function() {
+        const user = new User()
+        expect(user.isHidden('test')).toBe(false)
+        const token = new Token()
+        expect(token.isHidden('test')).toBe(false)
+        expect(token.isHidden('token')).toBe(true)
+      })
+
+      it('can be used to detect multiple attributes with AND operator', function() {
+        const user = new User()
+        user.markHidden('a', 'b')
+        expect(user.isHidden('a', 'b')).toBe(true)
+        expect(user.isHidden('a', 'b', 'c')).toBe(false)
+        const token = new Token()
+        expect(token.isHidden('token', 'test')).toBe(false)
+        expect(token.markHidden('test').isHidden('token', 'test')).toBe(true)
       })
     })
 

@@ -55,7 +55,10 @@ describe('Model/Fillable', function() {
         user['isInWhiteList'] = ModelSetting.isInWhiteList
 
         expect(ModelFillable.isFillable.call(user, 'test')).toEqual('anything')
-        expect(isInWhiteListStub.calledWith('test', 'fillable', 'guarded')).toBe(true)
+        expect(isInWhiteListStub.called).toBe(true)
+        expect(Array.from(isInWhiteListStub.firstCall.args[0])).toEqual(['test'])
+        expect(isInWhiteListStub.firstCall.args[1]).toEqual('fillable')
+        expect(isInWhiteListStub.firstCall.args[2]).toEqual('guarded')
         isInWhiteListStub.restore()
       })
     })
@@ -73,7 +76,9 @@ describe('Model/Fillable', function() {
         user['isInBlackList'] = ModelSetting.isInBlackList
 
         expect(ModelFillable.isGuarded.call(user, 'test')).toEqual('anything')
-        expect(isInBlackListStub.calledWith('test', 'guarded')).toBe(true)
+        expect(isInBlackListStub.called).toBe(true)
+        expect(Array.from(isInBlackListStub.firstCall.args[0])).toEqual(['test'])
+        expect(isInBlackListStub.firstCall.args[1]).toEqual('guarded')
         isInBlackListStub.restore()
       })
     })
@@ -146,6 +151,38 @@ describe('Model/Fillable', function() {
 
         const secret = new Secret()
         expect(secret.getGuarded()).toEqual(['password'])
+      })
+    })
+
+    describe('.isFillable()', function() {
+      it('can be used to detect single attribute', function() {
+        const user = new User()
+        expect(user.isFillable('first_name')).toBe(true)
+      })
+
+      it('can be used to detect multiple attributes with AND operator', function() {
+        const user = new User()
+        expect(user.isFillable('first_name', 'last_name')).toBe(true)
+        expect(user.isFillable(['first_name', 'last_name'])).toBe(true)
+        expect(user.isFillable(['first_name', 'last_name'], 'not-found')).toBe(false)
+      })
+    })
+
+    describe('.isGuarded()', function() {
+      it('can be used to detect single attribute', function() {
+        const user = new User()
+        expect(user.isGuarded('test')).toBe(true)
+        const token = new Token()
+        expect(token.isGuarded('test')).toBe(false)
+        expect(token.isGuarded('token')).toBe(true)
+      })
+
+      it('can be used to detect multiple attributes with AND operator', function() {
+        const user = new User()
+        expect(user.isGuarded('a', 'b')).toBe(true)
+        const token = new Token()
+        expect(token.isGuarded('token', 'test')).toBe(false)
+        expect(token.markGuarded('test').isGuarded('token', 'test')).toBe(true)
       })
     })
 

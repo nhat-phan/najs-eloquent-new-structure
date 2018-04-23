@@ -16,7 +16,9 @@ class ModelSetting {
         prototype['getArrayUniqueSetting'] = ModelSetting.getArrayUniqueSetting;
         prototype['pushToUniqueArraySetting'] = ModelSetting.pushToUniqueArraySetting;
         prototype['isInWhiteList'] = ModelSetting.isInWhiteList;
+        prototype['isKeyInWhiteList'] = ModelSetting.isKeyInWhiteList;
         prototype['isInBlackList'] = ModelSetting.isInBlackList;
+        prototype['isKeyInBlackList'] = ModelSetting.isKeyInBlackList;
     }
 }
 ModelSetting.className = constants_1.NajsEloquent.Model.Component.ModelSetting;
@@ -42,16 +44,37 @@ ModelSetting.pushToUniqueArraySetting = function (property, args) {
     this[property] = functions_1.array_unique(setting, lodash_1.flatten(args));
     return this;
 };
-ModelSetting.isInWhiteList = function (key, whiteList, blackList) {
+ModelSetting.isInWhiteList = function (list, whiteList, blackList) {
+    const keys = lodash_1.flatten(list);
+    for (const key of keys) {
+        if (!this.isKeyInWhiteList(key, whiteList, blackList)) {
+            return false;
+        }
+    }
+    return true;
+};
+ModelSetting.isKeyInWhiteList = function (key, whiteList, blackList) {
     if (whiteList.length > 0 && whiteList.indexOf(key) !== -1) {
         return true;
     }
-    if (this.isInBlackList(key, blackList)) {
+    if (this.isKeyInBlackList(key, blackList)) {
         return false;
     }
     return whiteList.length === 0 && !this.hasAttribute(key) && key.indexOf('_') !== 0;
 };
-ModelSetting.isInBlackList = function (key, blackList) {
+ModelSetting.isInBlackList = function (list, blackList) {
+    if (blackList.length === 1 && blackList[0] === '*') {
+        return true;
+    }
+    const keys = lodash_1.flatten(list);
+    for (const key of keys) {
+        if (blackList.indexOf(key) === -1) {
+            return false;
+        }
+    }
+    return true;
+};
+ModelSetting.isKeyInBlackList = function (key, blackList) {
     return (blackList.length === 1 && blackList[0] === '*') || blackList.indexOf(key) !== -1;
 };
 exports.ModelSetting = ModelSetting;

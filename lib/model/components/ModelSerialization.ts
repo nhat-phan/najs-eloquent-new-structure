@@ -38,12 +38,12 @@ export class ModelSerialization implements Najs.Contracts.Eloquent.Component {
     return this.pushToUniqueArraySetting('hidden', arguments)
   }
 
-  static isVisible: NajsEloquent.Model.ModelMethod<boolean> = function(key: string) {
-    return this.isInWhiteList(key, this.getVisible(), this.getHidden())
+  static isVisible: NajsEloquent.Model.ModelMethod<boolean> = function() {
+    return this.isInWhiteList(arguments, this.getVisible(), this.getHidden())
   }
 
-  static isHidden: NajsEloquent.Model.ModelMethod<boolean> = function(key: string) {
-    return this.isInBlackList(key, this.getHidden())
+  static isHidden: NajsEloquent.Model.ModelMethod<boolean> = function() {
+    return this.isInBlackList(arguments, this.getHidden())
   }
 
   static toObject: NajsEloquent.Model.ModelMethod<Object> = function() {
@@ -56,7 +56,7 @@ export class ModelSerialization implements Najs.Contracts.Eloquent.Component {
       hidden = this.getHidden()
 
     return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-      if (this.isInWhiteList(name, visible, hidden)) {
+      if (this.isKeyInWhiteList(name, visible, hidden)) {
         memo[name] = data[name]
       }
       return memo

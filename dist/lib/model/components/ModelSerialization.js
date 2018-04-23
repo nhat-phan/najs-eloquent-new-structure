@@ -33,11 +33,11 @@ ModelSerialization.markVisible = function () {
 ModelSerialization.markHidden = function () {
     return this.pushToUniqueArraySetting('hidden', arguments);
 };
-ModelSerialization.isVisible = function (key) {
-    return this.isInWhiteList(key, this.getVisible(), this.getHidden());
+ModelSerialization.isVisible = function () {
+    return this.isInWhiteList(arguments, this.getVisible(), this.getHidden());
 };
-ModelSerialization.isHidden = function (key) {
-    return this.isInBlackList(key, this.getHidden());
+ModelSerialization.isHidden = function () {
+    return this.isInBlackList(arguments, this.getHidden());
 };
 ModelSerialization.toObject = function () {
     return this['driver'].toObject();
@@ -45,7 +45,7 @@ ModelSerialization.toObject = function () {
 ModelSerialization.toJSON = function () {
     const data = this.toObject(), visible = this.getVisible(), hidden = this.getHidden();
     return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-        if (this.isInWhiteList(name, visible, hidden)) {
+        if (this.isKeyInWhiteList(name, visible, hidden)) {
             memo[name] = data[name];
         }
         return memo;

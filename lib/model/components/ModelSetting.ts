@@ -18,7 +18,9 @@ export class ModelSetting implements Najs.Contracts.Eloquent.Component {
     prototype['getArrayUniqueSetting'] = ModelSetting.getArrayUniqueSetting
     prototype['pushToUniqueArraySetting'] = ModelSetting.pushToUniqueArraySetting
     prototype['isInWhiteList'] = ModelSetting.isInWhiteList
+    prototype['isKeyInWhiteList'] = ModelSetting.isKeyInWhiteList
     prototype['isInBlackList'] = ModelSetting.isInBlackList
+    prototype['isKeyInBlackList'] = ModelSetting.isKeyInBlackList
   }
 
   // getSettingProperty<T extends any>(property: string, defaultValue: T): T {
@@ -54,6 +56,20 @@ export class ModelSetting implements Najs.Contracts.Eloquent.Component {
   }
 
   static isInWhiteList: NajsEloquent.Model.ModelMethod<boolean> = function(
+    list: ArrayLike<any>,
+    whiteList: string[],
+    blackList: string[]
+  ) {
+    const keys = flatten(list)
+    for (const key of keys) {
+      if (!this.isKeyInWhiteList(key, whiteList, blackList)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  static isKeyInWhiteList: NajsEloquent.Model.ModelMethod<boolean> = function(
     key: string,
     whiteList: string[],
     blackList: string[]
@@ -62,14 +78,27 @@ export class ModelSetting implements Najs.Contracts.Eloquent.Component {
       return true
     }
 
-    if (this.isInBlackList(key, blackList)) {
+    if (this.isKeyInBlackList(key, blackList)) {
       return false
     }
 
     return whiteList.length === 0 && !this.hasAttribute(key) && key.indexOf('_') !== 0
   }
 
-  static isInBlackList: NajsEloquent.Model.ModelMethod<boolean> = function(key: string, blackList: string[]) {
+  static isInBlackList: NajsEloquent.Model.ModelMethod<boolean> = function(list: ArrayLike<any>, blackList: string[]) {
+    if (blackList.length === 1 && blackList[0] === '*') {
+      return true
+    }
+    const keys = flatten(list)
+    for (const key of keys) {
+      if (blackList.indexOf(key) === -1) {
+        return false
+      }
+    }
+    return true
+  }
+
+  static isKeyInBlackList: NajsEloquent.Model.ModelMethod<boolean> = function(key: string, blackList: string[]) {
     return (blackList.length === 1 && blackList[0] === '*') || blackList.indexOf(key) !== -1
   }
 }

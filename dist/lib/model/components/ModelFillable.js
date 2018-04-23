@@ -33,18 +33,18 @@ ModelFillable.markFillable = function () {
 ModelFillable.markGuarded = function () {
     return this.pushToUniqueArraySetting('guarded', arguments);
 };
-ModelFillable.isFillable = function (key) {
-    return this.isInWhiteList(key, this.getFillable(), this.getGuarded());
+ModelFillable.isFillable = function () {
+    return this.isInWhiteList(arguments, this.getFillable(), this.getGuarded());
 };
-ModelFillable.isGuarded = function (key) {
-    return this.isInBlackList(key, this.getGuarded());
+ModelFillable.isGuarded = function () {
+    return this.isInBlackList(arguments, this.getGuarded());
 };
 ModelFillable.fill = function (data) {
     const fillable = this.getFillable();
     const guarded = this.getGuarded();
     const attributes = fillable.length > 0 ? lodash_1.pick(data, fillable) : data;
     for (const key in attributes) {
-        if (this.isInWhiteList(key, fillable, guarded)) {
+        if (this.isKeyInWhiteList(key, fillable, guarded)) {
             this.setAttribute(key, attributes[key]);
         }
     }
