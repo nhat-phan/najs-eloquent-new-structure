@@ -1,8 +1,13 @@
 /// <reference path="../../contracts/Component.ts" />
 /// <reference path="../interfaces/IModel.ts" />
 
+import { register } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
-import { ClassSetting } from '../../util/ClassSetting'
+
+const DEFAULT_TIMESTAMPS: NajsEloquent.Model.ITimestampsSetting = {
+  createdAt: 'created_at',
+  updatedAt: 'updated_at'
+}
 
 export class ModelTimestamps implements Najs.Contracts.Eloquent.Component {
   static className = NajsEloquent.Model.Component.ModelTimestamps
@@ -16,21 +21,23 @@ export class ModelTimestamps implements Najs.Contracts.Eloquent.Component {
     prototype['getTimestampsSetting'] = ModelTimestamps.getTimestampsSetting
   }
 
-  static hasTimestamps(this: NajsEloquent.Model.IModel<any>) {
-    return ClassSetting.of(this).read('timestamps', function(staticVersion: any, sample: any) {
-      return typeof staticVersion !== 'undefined' || typeof sample !== 'undefined'
-    })
+  static hasTimestamps: NajsEloquent.Model.ModelMethod<boolean> = function() {
+    return this.hasSetting('timestamps')
   }
 
-  static getTimestampsSetting(this: NajsEloquent.Model.IModel<any>) {}
+  static getTimestampsSetting: NajsEloquent.Model.ModelMethod<NajsEloquent.Model.ITimestampsSetting> = function() {
+    return this.getSettingWithDefaultForTrueValue('timestamps', DEFAULT_TIMESTAMPS)
+  }
 
   static touch(this: NajsEloquent.Model.IModel<any>) {
     if (this.hasTimestamps()) {
-      const settings = this.getTimestampsSetting()
-      if (settings) {
-        this['driver'].markModified(settings.updatedAt)
-      }
+      this['driver'].markModified(this.getTimestampsSetting().updatedAt)
     }
     return this
   }
+
+  static get DefaultSetting() {
+    return DEFAULT_TIMESTAMPS
+  }
 }
+register(ModelTimestamps)

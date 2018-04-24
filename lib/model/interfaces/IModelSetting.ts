@@ -8,6 +8,29 @@ namespace NajsEloquent.Model {
     getClassSetting(): any
 
     /**
+     * Get setting property, just use static or sample version, instance value is skipped.
+     *
+     * @param {string} property
+     * @param {mixed} defaultValue
+     */
+    getSettingProperty<T>(property: string, defaultValue: T): T
+
+    /**
+     * Determine setting is exist or not, just static or sample version only.
+     *
+     * @param {string} property
+     * @param {mixed} defaultValue
+     */
+    hasSetting(property: string): boolean
+
+    /**
+     * Get setting (static or sample only) and returns default value in case the setting === true
+     * @param {string} property
+     * @param {mixed} defaultValue
+     */
+    getSettingWithDefaultForTrueValue<T>(property: string, defaultValue: T): T
+
+    /**
      * Get the model setting which ensure result is always an unique array
      *
      * @param {string} property Property name

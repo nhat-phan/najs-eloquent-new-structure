@@ -9,6 +9,7 @@ const ModelSetting_1 = require("./components/ModelSetting");
 const ModelAttribute_1 = require("./components/ModelAttribute");
 const ModelFillable_1 = require("./components/ModelFillable");
 const ModelSerialization_1 = require("./components/ModelSerialization");
+const ModelTimestamps_1 = require("./components/ModelTimestamps");
 const collect = require('collect.js');
 class Model {
     /**
@@ -39,7 +40,8 @@ const defaultComponents = [
     najs_binding_1.make(ModelSetting_1.ModelSetting.className),
     najs_binding_1.make(ModelAttribute_1.ModelAttribute.className),
     najs_binding_1.make(ModelFillable_1.ModelFillable.className),
-    najs_binding_1.make(ModelSerialization_1.ModelSerialization.className)
+    najs_binding_1.make(ModelSerialization_1.ModelSerialization.className),
+    najs_binding_1.make(ModelTimestamps_1.ModelTimestamps.className)
 ];
 for (const component of defaultComponents) {
     component.extend(Model.prototype, [], {});

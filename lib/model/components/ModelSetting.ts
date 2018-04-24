@@ -15,6 +15,9 @@ export class ModelSetting implements Najs.Contracts.Eloquent.Component {
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['getClassSetting'] = ModelSetting.getClassSetting
+    prototype['getSettingProperty'] = ModelSetting.getSettingProperty
+    prototype['hasSetting'] = ModelSetting.hasSetting
+    prototype['getSettingWithDefaultForTrueValue'] = ModelSetting.getSettingWithDefaultForTrueValue
     prototype['getArrayUniqueSetting'] = ModelSetting.getArrayUniqueSetting
     prototype['pushToUniqueArraySetting'] = ModelSetting.pushToUniqueArraySetting
     prototype['isInWhiteList'] = ModelSetting.isInWhiteList
@@ -23,14 +26,29 @@ export class ModelSetting implements Najs.Contracts.Eloquent.Component {
     prototype['isKeyInBlackList'] = ModelSetting.isKeyInBlackList
   }
 
-  // getSettingProperty<T extends any>(property: string, defaultValue: T): T {
-  //   return this.getClassSetting().read(property, function(staticVersion?: any, sampleVersion?: any) {
-  //     if (staticVersion) {
-  //       return staticVersion
-  //     }
-  //     return sampleVersion ? sampleVersion : defaultValue
-  //   })
-  // }
+  static getSettingProperty: NajsEloquent.Model.ModelMethod<any> = function(property: string, defaultValue: any) {
+    return this.getClassSetting().read(property, function(staticVersion?: any, sampleVersion?: any) {
+      if (staticVersion) {
+        return staticVersion
+      }
+      return sampleVersion ? sampleVersion : defaultValue
+    })
+  }
+
+  static hasSetting: NajsEloquent.Model.ModelMethod<any> = function(property: string): any {
+    return !!this.getSettingProperty(property, false)
+  }
+
+  static getSettingWithDefaultForTrueValue: NajsEloquent.Model.ModelMethod<any> = function(
+    property: string,
+    defaultValue: any
+  ): any {
+    const value = this.getSettingProperty<any | boolean>(property, false)
+    if (value === true) {
+      return defaultValue
+    }
+    return value || defaultValue
+  }
 
   static getClassSetting: NajsEloquent.Model.ModelMethod<ClassSetting> = function() {
     if (!this.settings) {

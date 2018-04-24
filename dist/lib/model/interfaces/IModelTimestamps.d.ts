@@ -4,11 +4,11 @@ declare namespace NajsEloquent.Model {
         updatedAt: string;
     }
     class IModelTimestamps {
-        protected timestamps?: ITimestampsSetting;
+        protected timestamps?: ITimestampsSetting | boolean;
     }
     interface IModelTimestamps {
         touch(): this;
         hasTimestamps(): boolean;
-        getTimestampsSetting(): ITimestampsSetting | undefined;
+        getTimestampsSetting(): ITimestampsSetting;
     }
 }

@@ -5,13 +5,13 @@ namespace NajsEloquent.Model {
   }
 
   export class IModelTimestamps {
-    protected timestamps?: ITimestampsSetting
+    protected timestamps?: ITimestampsSetting | boolean
   }
   export interface IModelTimestamps {
     touch(): this
 
     hasTimestamps(): boolean
 
-    getTimestampsSetting(): ITimestampsSetting | undefined
+    getTimestampsSetting(): ITimestampsSetting
   }
 }

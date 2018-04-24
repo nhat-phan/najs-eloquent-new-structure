@@ -13,6 +13,9 @@ class ModelSetting {
     }
     extend(prototype, bases, driver) {
         prototype['getClassSetting'] = ModelSetting.getClassSetting;
+        prototype['getSettingProperty'] = ModelSetting.getSettingProperty;
+        prototype['hasSetting'] = ModelSetting.hasSetting;
+        prototype['getSettingWithDefaultForTrueValue'] = ModelSetting.getSettingWithDefaultForTrueValue;
         prototype['getArrayUniqueSetting'] = ModelSetting.getArrayUniqueSetting;
         prototype['pushToUniqueArraySetting'] = ModelSetting.pushToUniqueArraySetting;
         prototype['isInWhiteList'] = ModelSetting.isInWhiteList;
@@ -22,14 +25,24 @@ class ModelSetting {
     }
 }
 ModelSetting.className = constants_1.NajsEloquent.Model.Component.ModelSetting;
-// getSettingProperty<T extends any>(property: string, defaultValue: T): T {
-//   return this.getClassSetting().read(property, function(staticVersion?: any, sampleVersion?: any) {
-//     if (staticVersion) {
-//       return staticVersion
-//     }
-//     return sampleVersion ? sampleVersion : defaultValue
-//   })
-// }
+ModelSetting.getSettingProperty = function (property, defaultValue) {
+    return this.getClassSetting().read(property, function (staticVersion, sampleVersion) {
+        if (staticVersion) {
+            return staticVersion;
+        }
+        return sampleVersion ? sampleVersion : defaultValue;
+    });
+};
+ModelSetting.hasSetting = function (property) {
+    return !!this.getSettingProperty(property, false);
+};
+ModelSetting.getSettingWithDefaultForTrueValue = function (property, defaultValue) {
+    const value = this.getSettingProperty(property, false);
+    if (value === true) {
+        return defaultValue;
+    }
+    return value || defaultValue;
+};
 ModelSetting.getClassSetting = function () {
     if (!this.settings) {
         this.settings = ClassSetting_1.ClassSetting.of(this);
