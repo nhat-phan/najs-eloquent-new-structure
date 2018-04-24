@@ -13,7 +13,7 @@ export declare const NajsEloquent: {
             ModelQuery: string;
             ModelTimestamps: string;
             ModelSerialization: string;
-            SoftDeletes: string;
+            ModelSoftDeletes: string;
         };
     };
     QueryBuilder: {

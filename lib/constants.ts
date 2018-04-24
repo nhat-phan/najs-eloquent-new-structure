@@ -15,7 +15,7 @@ export const NajsEloquent = {
       ModelQuery: 'NajsEloquent.Model.Component.ModelQuery',
       ModelTimestamps: 'NajsEloquent.Model.Component.ModelTimestamps',
       ModelSerialization: 'NajsEloquent.Model.Component.ModelSerialization',
-      SoftDeletes: 'NajsEloquent.Model.Component.SoftDeletes'
+      ModelSoftDeletes: 'NajsEloquent.Model.Component.ModelSoftDeletes'
     }
   },
   QueryBuilder: {

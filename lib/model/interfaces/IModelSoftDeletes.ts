@@ -4,10 +4,13 @@ namespace NajsEloquent.Model {
     overrideMethods: boolean | 'all' | string
   }
 
+  export class IModelSoftDeletes {
+    protected softDeletes?: ISoftDeletesSetting | boolean
+  }
   export interface IModelSoftDeletes {
     hasSoftDeletes(): boolean
 
-    getSoftDeleteSetting(): ISoftDeletesSetting | undefined
+    getSoftDeletesSetting(): ISoftDeletesSetting | undefined
 
     forceDelete(): Promise<boolean>
 

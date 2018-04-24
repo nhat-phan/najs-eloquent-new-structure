@@ -30,7 +30,8 @@ namespace NajsEloquent.Model {
       IModelDynamicAttribute,
       IModelFillable,
       IModelSerialization,
-      IModelTimestamps {
+      IModelTimestamps,
+      IModelSoftDeletes {
     getClassName(): string
 
     newCollection(collection: any[]): any

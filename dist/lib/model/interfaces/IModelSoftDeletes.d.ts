@@ -3,9 +3,12 @@ declare namespace NajsEloquent.Model {
         deletedAt: string;
         overrideMethods: boolean | 'all' | string;
     }
+    class IModelSoftDeletes {
+        protected softDeletes?: ISoftDeletesSetting | boolean;
+    }
     interface IModelSoftDeletes {
         hasSoftDeletes(): boolean;
-        getSoftDeleteSetting(): ISoftDeletesSetting | undefined;
+        getSoftDeletesSetting(): ISoftDeletesSetting | undefined;
         forceDelete(): Promise<boolean>;
         restore(): Promise<this>;
     }

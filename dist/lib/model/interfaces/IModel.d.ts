@@ -21,7 +21,7 @@ declare namespace NajsEloquent.Model {
          */
         protected settings: Object;
     }
-    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelTimestamps {
+    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelTimestamps, IModelSoftDeletes {
         getClassName(): string;
         newCollection(collection: any[]): any;
         newInstance(data: Object | A): any;

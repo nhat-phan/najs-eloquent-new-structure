@@ -9,6 +9,7 @@ import { ModelAttribute } from './components/ModelAttribute'
 import { ModelFillable } from './components/ModelFillable'
 import { ModelSerialization } from './components/ModelSerialization'
 import { ModelTimestamps } from './components/ModelTimestamps'
+import { ModelSoftDeletes } from './components/ModelSoftDeletes'
 const collect = require('collect.js')
 
 export interface Model<T = any> extends NajsEloquent.Model.IModel<T> {}
@@ -45,7 +46,8 @@ const defaultComponents: Najs.Contracts.Eloquent.Component[] = [
   make(ModelAttribute.className),
   make(ModelFillable.className),
   make(ModelSerialization.className),
-  make(ModelTimestamps.className)
+  make(ModelTimestamps.className),
+  make(ModelSoftDeletes.className)
 ]
 for (const component of defaultComponents) {
   component.extend(Model.prototype, [], <any>{})
