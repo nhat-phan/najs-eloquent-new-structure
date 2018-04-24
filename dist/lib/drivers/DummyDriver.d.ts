@@ -14,6 +14,7 @@ export declare class DummyDriver implements Najs.Contracts.Eloquent.Driver<Objec
     delete(softDeletes: boolean): Promise<boolean>;
     restore(): Promise<any>;
     save(): Promise<any>;
+    isSoftDeleted(): boolean;
     markModified(name: string): void;
     getModelComponentName(): string | undefined;
     getModelComponentOrder(components: string[]): string[];

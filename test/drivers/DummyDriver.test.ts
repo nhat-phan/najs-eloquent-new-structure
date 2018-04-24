@@ -89,6 +89,13 @@ describe('DummyDriver', function() {
   describe('.markModified()', function() {
     it('should work', function() {
       const driver = new DummyDriver()
+      driver.isSoftDeleted()
+    })
+  })
+
+  describe('.markModified()', function() {
+    it('should work', function() {
+      const driver = new DummyDriver()
       driver.markModified('test')
     })
   })

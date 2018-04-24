@@ -78,6 +78,12 @@ describe('DummyDriver', function () {
     describe('.markModified()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();
+            driver.isSoftDeleted();
+        });
+    });
+    describe('.markModified()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
             driver.markModified('test');
         });
     });

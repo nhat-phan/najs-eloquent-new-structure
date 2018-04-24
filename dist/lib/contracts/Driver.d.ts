@@ -10,9 +10,10 @@ declare namespace Najs.Contracts.Eloquent {
         toObject(): Object;
         newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T>;
         delete(softDeletes: boolean): Promise<boolean>;
-        restore(): Promise<any>;
-        save(): Promise<any>;
+        restore(): Promise<boolean>;
+        save(): Promise<boolean>;
         markModified(name: string): void;
+        isSoftDeleted(): boolean;
         formatAttributeName(name: string): string;
         getModelComponentName(): string | undefined;
         getModelComponentOrder(components: string[]): string[];

@@ -18,6 +18,9 @@ export class ModelSoftDeletes implements Najs.Contracts.Eloquent.Component {
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['hasSoftDeletes'] = ModelSoftDeletes.hasSoftDeletes
     prototype['getSoftDeletesSetting'] = ModelSoftDeletes.getSoftDeletesSetting
+    prototype['trashed'] = ModelSoftDeletes.trashed
+    prototype['forceDelete'] = ModelSoftDeletes.forceDelete
+    prototype['restore'] = ModelSoftDeletes.restore
   }
 
   static hasSoftDeletes: NajsEloquent.Model.ModelMethod<boolean> = function() {
@@ -26,6 +29,21 @@ export class ModelSoftDeletes implements Najs.Contracts.Eloquent.Component {
 
   static getSoftDeletesSetting: NajsEloquent.Model.ModelMethod<NajsEloquent.Model.ISoftDeletesSetting> = function() {
     return this.getSettingWithDefaultForTrueValue('softDeletes', DEFAULT_SOFT_DELETES)
+  }
+
+  static trashed: NajsEloquent.Model.ModelMethod<boolean> = function() {
+    if (!this.hasSoftDeletes()) {
+      return false
+    }
+    return this['driver'].isSoftDeleted()
+  }
+
+  static forceDelete: NajsEloquent.Model.ModelMethod<Promise<boolean>> = function() {
+    return this['driver'].delete(true)
+  }
+
+  static restore: NajsEloquent.Model.ModelMethod<Promise<boolean>> = function() {
+    return this['driver'].restore()
   }
 
   static get DefaultSetting() {

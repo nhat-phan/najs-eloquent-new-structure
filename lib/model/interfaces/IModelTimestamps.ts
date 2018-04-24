@@ -6,20 +6,20 @@ namespace NajsEloquent.Model {
 
   export class IModelTimestamps {
     /**
-     * Timestamps setting
+     * Timestamps setting.
      */
     protected timestamps?: ITimestampsSetting | boolean
   }
   export interface IModelTimestamps {
     /**
-     * Determine the model is using timestamps or not
+     * Determine the model is using timestamps or not.
      */
     hasTimestamps(): boolean
 
     /**
      * Get timestamps setting.
      *
-     * Note: It's returns default timestamps even the model is not using timestamps
+     * Note: It's returns default timestamps even the model is not using timestamps.
      */
     getTimestampsSetting(): ITimestampsSetting
 

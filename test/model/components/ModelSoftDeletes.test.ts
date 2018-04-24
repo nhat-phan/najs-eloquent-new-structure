@@ -1,5 +1,5 @@
 import 'jest'
-// import * as Sinon from 'sinon'
+import * as Sinon from 'sinon'
 import { Eloquent } from '../../../lib/model/Eloquent'
 import { ModelSoftDeletes } from '../../../lib/model/components/ModelSoftDeletes'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
@@ -18,7 +18,7 @@ describe('Model/Fillable', function() {
 
     describe('.extend()', function() {
       it('extends the given prototype with 8 functions', function() {
-        const functions = ['hasSoftDeletes', 'getSoftDeletesSetting']
+        const functions = ['hasSoftDeletes', 'getSoftDeletesSetting', 'trashed', 'forceDelete', 'restore']
         const prototype = {}
         const softDeletes = new ModelSoftDeletes()
         softDeletes.extend(prototype, [], <any>{})
@@ -97,6 +97,67 @@ describe('Model/Fillable', function() {
       it('returns custom settings instead of default if defined', function() {
         expect(new StaticCustom().getSoftDeletesSetting()).toEqual({ deletedAt: 'deletedAt', overrideMethods: true })
         expect(new MemberCustom().getSoftDeletesSetting()).toEqual({ deletedAt: 'deletedAt', overrideMethods: true })
+      })
+    })
+
+    describe('.trashed()', function() {
+      it('always returns false if the model has no soft-deleted setting, otherwise it calls driver.isSoftDeleted()', function() {
+        expect(new NotUse().trashed()).toEqual(false)
+        expect(new StaticFalse().trashed()).toEqual(false)
+        expect(new MemberFalse().trashed()).toEqual(false)
+
+        const driver = {
+          isSoftDeleted() {
+            return 'anything'
+          }
+        }
+        const staticTrue = new StaticTrue()
+        staticTrue['driver'] = <any>driver
+        expect(staticTrue.trashed()).toEqual('anything')
+      })
+    })
+
+    describe('.forceDelete()', function() {
+      it('simply calls driver.delete() with option = true', async function() {
+        const driver = {
+          async delete() {
+            return false
+          }
+        }
+        const deleteSpy = Sinon.spy(driver, 'delete')
+
+        const staticFalse = new StaticTrue()
+        staticFalse['driver'] = <any>driver
+        expect(await staticFalse.forceDelete()).toEqual(false)
+        expect(deleteSpy.calledWith(true)).toBe(true)
+        deleteSpy.resetHistory()
+
+        const staticTrue = new StaticTrue()
+        staticTrue['driver'] = <any>driver
+        expect(await staticTrue.forceDelete()).toEqual(false)
+        expect(deleteSpy.calledWith(true)).toBe(true)
+      })
+    })
+
+    describe('.restore()', function() {
+      it('simply calls driver.restore()', async function() {
+        const driver = {
+          async restore() {
+            return false
+          }
+        }
+        const restoreSpy = Sinon.spy(driver, 'restore')
+
+        const staticFalse = new StaticTrue()
+        staticFalse['driver'] = <any>driver
+        expect(await staticFalse.restore()).toEqual(false)
+        expect(restoreSpy.calledWith()).toBe(true)
+        restoreSpy.resetHistory()
+
+        const staticTrue = new StaticTrue()
+        staticTrue['driver'] = <any>driver
+        expect(await staticTrue.restore()).toEqual(false)
+        expect(restoreSpy.calledWith()).toBe(true)
       })
     })
   })

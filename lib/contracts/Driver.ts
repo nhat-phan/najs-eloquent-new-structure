@@ -21,11 +21,13 @@ namespace Najs.Contracts.Eloquent {
 
     delete(softDeletes: boolean): Promise<boolean>
 
-    restore(): Promise<any>
+    restore(): Promise<boolean>
 
-    save(): Promise<any>
+    save(): Promise<boolean>
 
     markModified(name: string): void
+
+    isSoftDeleted(): boolean
 
     formatAttributeName(name: string): string
 

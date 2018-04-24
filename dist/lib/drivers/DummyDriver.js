@@ -45,6 +45,9 @@ class DummyDriver {
     async save() {
         return true;
     }
+    isSoftDeleted() {
+        return false;
+    }
     markModified(name) { }
     getModelComponentName() {
         return undefined;

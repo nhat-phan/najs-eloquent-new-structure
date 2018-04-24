@@ -15,6 +15,9 @@ class ModelSoftDeletes {
     extend(prototype, bases, driver) {
         prototype['hasSoftDeletes'] = ModelSoftDeletes.hasSoftDeletes;
         prototype['getSoftDeletesSetting'] = ModelSoftDeletes.getSoftDeletesSetting;
+        prototype['trashed'] = ModelSoftDeletes.trashed;
+        prototype['forceDelete'] = ModelSoftDeletes.forceDelete;
+        prototype['restore'] = ModelSoftDeletes.restore;
     }
     static get DefaultSetting() {
         return DEFAULT_SOFT_DELETES;
@@ -26,6 +29,18 @@ ModelSoftDeletes.hasSoftDeletes = function () {
 };
 ModelSoftDeletes.getSoftDeletesSetting = function () {
     return this.getSettingWithDefaultForTrueValue('softDeletes', DEFAULT_SOFT_DELETES);
+};
+ModelSoftDeletes.trashed = function () {
+    if (!this.hasSoftDeletes()) {
+        return false;
+    }
+    return this['driver'].isSoftDeleted();
+};
+ModelSoftDeletes.forceDelete = function () {
+    return this['driver'].delete(true);
+};
+ModelSoftDeletes.restore = function () {
+    return this['driver'].restore();
 };
 exports.ModelSoftDeletes = ModelSoftDeletes;
 najs_binding_1.register(ModelSoftDeletes);
