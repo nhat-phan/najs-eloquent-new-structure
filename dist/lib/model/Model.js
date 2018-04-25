@@ -9,6 +9,7 @@ const ModelSetting_1 = require("./components/ModelSetting");
 const ModelAttribute_1 = require("./components/ModelAttribute");
 const ModelFillable_1 = require("./components/ModelFillable");
 const ModelSerialization_1 = require("./components/ModelSerialization");
+const ModelActiveRecord_1 = require("./components/ModelActiveRecord");
 const ModelTimestamps_1 = require("./components/ModelTimestamps");
 const ModelSoftDeletes_1 = require("./components/ModelSoftDeletes");
 const collect = require('collect.js');
@@ -42,6 +43,7 @@ const defaultComponents = [
     najs_binding_1.make(ModelAttribute_1.ModelAttribute.className),
     najs_binding_1.make(ModelFillable_1.ModelFillable.className),
     najs_binding_1.make(ModelSerialization_1.ModelSerialization.className),
+    najs_binding_1.make(ModelActiveRecord_1.ModelActiveRecord.className),
     najs_binding_1.make(ModelTimestamps_1.ModelTimestamps.className),
     najs_binding_1.make(ModelSoftDeletes_1.ModelSoftDeletes.className)
 ];
