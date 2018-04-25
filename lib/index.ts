@@ -23,16 +23,8 @@ export {
   EloquentComponentProviderFacade,
   EloquentComponentProvider
 } from './facades/global/EloquentComponentProviderFacade'
-
-// import { Fillable as FillableClass } from './model/components/Fillable'
-
-// export interface BuiltinClasses {
-//   Fillable: typeof FillableClass
-// }
-
-// export const Builtin: BuiltinClasses = {
-//   Fillable: FillableClass
-// }
+export { FactoryFacade, Factory } from './facades/global/FactoryFacade'
+export { Eloquent } from './model/Eloquent'
 
 export const NajsEloquent: BuiltinClasses = {
   FacadeContainer: FacadeContainer,

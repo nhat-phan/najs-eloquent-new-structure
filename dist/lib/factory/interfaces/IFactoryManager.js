@@ -7,4 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // class User {
 //   doSomething() {}
 // }
+// const Factory: IFactoryManager<any> = <any>{}
+// Factory.make(User).doSomething()
 // test(User).doSomething()

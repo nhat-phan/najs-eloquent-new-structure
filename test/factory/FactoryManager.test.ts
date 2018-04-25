@@ -36,7 +36,7 @@ describe('FactoryManager', function() {
       const registerStub = Sinon.stub(Eloquent, 'register')
 
       const factoryManager = new FactoryManager()
-      expect(factoryManager['parseModelName'](Class)).toEqual('Class')
+      expect(factoryManager['parseModelName'](<any>Class)).toEqual('Class')
       expect(registerStub.calledWith(Class)).toBe(true)
 
       registerStub.restore()
@@ -92,13 +92,13 @@ describe('FactoryManager', function() {
       const definition = () => {}
       const factoryManager = new FactoryManager()
       expect(factoryManager['definitions']).toEqual({})
-      factoryManager.define(Class, <any>definition)
+      factoryManager.define(<any>Class, <any>definition)
       expect(factoryManager['definitions']).toEqual({
         Class: {
           default: definition
         }
       })
-      factoryManager.define(Class, <any>definition, 'test')
+      factoryManager.define(<any>Class, <any>definition, 'test')
       expect(factoryManager['definitions']).toEqual({
         Class: {
           test: definition,

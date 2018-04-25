@@ -23,13 +23,11 @@ exports.EloquentDriverProvider = EloquentDriverProviderFacade_1.EloquentDriverPr
 var EloquentComponentProviderFacade_1 = require("./facades/global/EloquentComponentProviderFacade");
 exports.EloquentComponentProviderFacade = EloquentComponentProviderFacade_1.EloquentComponentProviderFacade;
 exports.EloquentComponentProvider = EloquentComponentProviderFacade_1.EloquentComponentProvider;
-// import { Fillable as FillableClass } from './model/components/Fillable'
-// export interface BuiltinClasses {
-//   Fillable: typeof FillableClass
-// }
-// export const Builtin: BuiltinClasses = {
-//   Fillable: FillableClass
-// }
+var FactoryFacade_1 = require("./facades/global/FactoryFacade");
+exports.FactoryFacade = FactoryFacade_1.FactoryFacade;
+exports.Factory = FactoryFacade_1.Factory;
+var Eloquent_1 = require("./model/Eloquent");
+exports.Eloquent = Eloquent_1.Eloquent;
 exports.NajsEloquent = {
     FacadeContainer: container_1.container,
     Model: {
