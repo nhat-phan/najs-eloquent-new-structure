@@ -57,6 +57,10 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
     return true
   }
 
+  isNew(): boolean {
+    return true
+  }
+
   isSoftDeleted(): boolean {
     return false
   }

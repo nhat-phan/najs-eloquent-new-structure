@@ -27,6 +27,8 @@ namespace Najs.Contracts.Eloquent {
 
     markModified(name: string): void
 
+    isNew(): boolean
+
     isSoftDeleted(): boolean
 
     formatAttributeName(name: string): string

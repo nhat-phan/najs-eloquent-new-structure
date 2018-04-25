@@ -75,10 +75,16 @@ describe('DummyDriver', function () {
             driver.save();
         });
     });
-    describe('.markModified()', function () {
+    describe('.isSoftDeleted()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();
             driver.isSoftDeleted();
+        });
+    });
+    describe('.isNew()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.isNew();
         });
     });
     describe('.markModified()', function () {

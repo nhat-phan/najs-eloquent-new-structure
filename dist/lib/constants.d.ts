@@ -14,6 +14,7 @@ export declare const NajsEloquent: {
             ModelTimestamps: string;
             ModelSerialization: string;
             ModelSoftDeletes: string;
+            ModelActiveRecord: string;
         };
     };
     QueryBuilder: {

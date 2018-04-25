@@ -79,12 +79,12 @@ describe('FactoryBuilder', function () {
             const valueOne = await builder.create();
             expect(valueOne === model).toBe(true);
             expect(makeStub.calledWith()).toBe(true);
-            expect(model['save'].callCount).toEqual(1);
+            expect(model['save']['callCount']).toEqual(1);
             const params = {};
             const valueTwo = await builder.create(params);
             expect(valueTwo === model).toBe(true);
             expect(makeStub.calledWith(params)).toBe(true);
-            expect(model['save'].callCount).toEqual(2);
+            expect(model['save']['callCount']).toEqual(2);
         });
         it('calls .make() and loop all model in Collection, calls .save() and returns result', async function () {
             const builder = new FactoryBuilder_1.FactoryBuilder('Class', 'name', {}, {}, {});
@@ -95,12 +95,12 @@ describe('FactoryBuilder', function () {
             const valueOne = await builder.create();
             expect(valueOne).toEqual({ items: [model, model] });
             expect(makeStub.calledWith()).toBe(true);
-            expect(model['save'].callCount).toEqual(2);
+            expect(model['save']['callCount']).toEqual(2);
             const params = {};
             const valueTwo = await builder.create(params);
             expect(valueTwo).toEqual({ items: [model, model] });
             expect(makeStub.calledWith(params)).toBe(true);
-            expect(model['save'].callCount).toEqual(4);
+            expect(model['save']['callCount']).toEqual(4);
         });
     });
     describe('.make()', function () {

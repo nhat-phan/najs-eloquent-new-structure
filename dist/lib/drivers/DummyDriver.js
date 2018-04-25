@@ -45,6 +45,9 @@ class DummyDriver {
     async save() {
         return true;
     }
+    isNew() {
+        return true;
+    }
     isSoftDeleted() {
         return false;
     }

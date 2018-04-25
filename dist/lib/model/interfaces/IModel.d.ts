@@ -1,11 +1,12 @@
 /// <reference path="../../contracts/Driver.d.ts" />
+/// <reference path="IModelSetting.d.ts" />
 /// <reference path="IModelAttribute.d.ts" />
-/// <reference path="IModelDynamicAttribute.d.ts" />
 /// <reference path="IModelFillable.d.ts" />
 /// <reference path="IModelSerialization.d.ts" />
+/// <reference path="IModelActiveRecord.d.ts" />
 /// <reference path="IModelQuery.d.ts" />
 /// <reference path="IModelTimestamps.d.ts" />
-/// <reference path="IModelSetting.d.ts" />
+/// <reference path="IModelDynamicAttribute.d.ts" />
 declare namespace NajsEloquent.Model {
     class IModel<A> {
         /**
@@ -21,10 +22,10 @@ declare namespace NajsEloquent.Model {
          */
         protected settings: Object;
     }
-    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelTimestamps, IModelSoftDeletes {
+    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelActiveRecord, IModelTimestamps, IModelSoftDeletes {
         getClassName(): string;
         newCollection(collection: any[]): any;
         newInstance(data: Object | A): any;
     }
-    type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting, ...args: any[]) => R;
+    type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting & IModelQuery<any>, ...args: any[]) => R;
 }
