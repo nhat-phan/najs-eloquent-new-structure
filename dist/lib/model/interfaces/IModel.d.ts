@@ -23,8 +23,25 @@ declare namespace NajsEloquent.Model {
         protected settings: Object;
     }
     interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelActiveRecord, IModelTimestamps, IModelSoftDeletes {
+        /**
+         * Get class name of the model.
+         */
         getClassName(): string;
-        newCollection(collection: any[]): any;
+        /**
+         * Get model name of the model, returns .getClassName() by default.
+         */
+        getModelName(): string;
+        /**
+         * Create new Collection from an array of raw attributes.
+         *
+         * @param {Array<Object>} list
+         */
+        newCollection(list: any[]): any;
+        /**
+         * Create new instance from raw attributes.
+         *
+         * @param {Object} data
+         */
         newInstance(data: Object | A): any;
     }
     type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting & IModelQuery<any>, ...args: any[]) => R;

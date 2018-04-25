@@ -12,13 +12,13 @@ describe('DummyDriver', function () {
     describe('.initialize()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();
-            driver.initialize();
+            driver.initialize({}, false);
         });
     });
     describe('.getRecord()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();
-            driver.initialize();
+            driver.getRecord();
         });
     });
     describe('.hasAttribute()', function () {

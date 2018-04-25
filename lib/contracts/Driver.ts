@@ -1,9 +1,10 @@
 /// <reference types="najs-binding" />
+/// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../wrappers/interfaces/IQueryBuilderWrapper.ts" />
 
 namespace Najs.Contracts.Eloquent {
   export interface Driver<NativeRecord> extends Najs.Contracts.Autoload {
-    initialize(data?: NativeRecord | Object): void
+    initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: NativeRecord | Object): void
 
     getRecord(): NativeRecord
 

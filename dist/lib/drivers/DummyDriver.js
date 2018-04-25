@@ -11,7 +11,7 @@ class DummyDriver {
     getClassName() {
         return constants_1.NajsEloquent.Driver.DummyDriver;
     }
-    initialize(data) {
+    initialize(model, isGuarded, data) {
         this.attributes = data || {};
     }
     getRecord() {

@@ -18,15 +18,16 @@ class Model {
      * Model constructor.
      *
      * @param {Object|undefined} data
+     * @param {boolean|undefined} isGuarded
      */
-    constructor(data) {
+    constructor(data, isGuarded = true) {
         const className = najs_binding_2.getClassName(this);
         if (!najs_binding_2.ClassRegistry.has(className)) {
             najs_binding_2.register(Object.getPrototypeOf(this).constructor, className);
         }
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
             this.driver = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
-            this.driver.initialize(data);
+            this.driver.initialize(this, isGuarded, data);
             this.attributes = this.driver.getRecord();
         }
     }

@@ -12,14 +12,14 @@ describe('DummyDriver', function() {
   describe('.initialize()', function() {
     it('should work', function() {
       const driver = new DummyDriver()
-      driver.initialize()
+      driver.initialize(<any>{}, false)
     })
   })
 
   describe('.getRecord()', function() {
     it('should work', function() {
       const driver = new DummyDriver()
-      driver.initialize()
+      driver.getRecord()
     })
   })
 

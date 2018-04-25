@@ -12,7 +12,7 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
     return NajsEloquent.Driver.DummyDriver
   }
 
-  initialize(data?: Object): void {
+  initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: Object): void {
     this.attributes = data || {}
   }
 

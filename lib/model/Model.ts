@@ -19,8 +19,9 @@ export class Model<T = any> {
    * Model constructor.
    *
    * @param {Object|undefined} data
+   * @param {boolean|undefined} isGuarded
    */
-  constructor(data?: Object) {
+  constructor(data?: Object, isGuarded: boolean = true) {
     const className = getClassName(this)
     if (!ClassRegistry.has(className)) {
       register(Object.getPrototypeOf(this).constructor, className)
@@ -28,7 +29,7 @@ export class Model<T = any> {
 
     if (data !== CREATE_SAMPLE) {
       this.driver = EloquentDriverProvider.create(this)
-      this.driver.initialize(data)
+      this.driver.initialize(this, isGuarded, data)
       this.attributes = this.driver.getRecord()
     }
   }
