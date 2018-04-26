@@ -34,7 +34,9 @@ class MongooseDriver {
             schema.set('timestamps', model.getTimestampsSetting());
         }
         if (model.hasSoftDeletes()) {
-            schema.plugin(SoftDelete_1.SoftDelete, model.getSoftDeletesSetting());
+            const setting = model.getSoftDeletesSetting();
+            this.deletedAtField = setting.deletedAt;
+            schema.plugin(SoftDelete_1.SoftDelete, setting);
         }
         MongooseProviderFacade_1.MongooseProvider.createModelFromSchema(this.modelName, schema);
     }
@@ -110,8 +112,7 @@ class MongooseDriver {
         return this.attributes.isNew;
     }
     isSoftDeleted() {
-        return false;
-        // return this.attributes.soft
+        return this.attributes.get(this.deletedAtField) !== null;
     }
     formatAttributeName(name) {
         return lodash_1.snakeCase(name);

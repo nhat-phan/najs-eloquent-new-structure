@@ -10,6 +10,7 @@ export declare class MongooseDriver<Record extends Object> implements Najs.Contr
     protected mongooseModel: Model<Document & Record>;
     protected schema: SchemaDefinition;
     protected options: SchemaOptions;
+    protected deletedAtField: string;
     constructor(model: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting);
     getClassName(): string;
     initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: any): void;

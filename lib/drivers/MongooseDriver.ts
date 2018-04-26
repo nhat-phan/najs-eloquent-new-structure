@@ -19,6 +19,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   protected mongooseModel: Model<Document & Record>
   protected schema: SchemaDefinition
   protected options: SchemaOptions
+  protected deletedAtField: string
 
   constructor(model: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting) {
     this.modelName = model.getModelName()
@@ -49,7 +50,9 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     }
 
     if (model.hasSoftDeletes()) {
-      schema.plugin(SoftDelete, model.getSoftDeletesSetting())
+      const setting = model.getSoftDeletesSetting()
+      this.deletedAtField = setting.deletedAt
+      schema.plugin(SoftDelete, setting)
     }
 
     MongooseProvider.createModelFromSchema(this.modelName, schema)
@@ -143,8 +146,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   }
 
   isSoftDeleted(): boolean {
-    return false
-    // return this.attributes.soft
+    return this.attributes.get(this.deletedAtField) !== null
   }
 
   formatAttributeName(name: string): string {
