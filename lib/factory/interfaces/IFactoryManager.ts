@@ -31,21 +31,9 @@ export interface IFactoryManager<Faker> {
   makeAs<T = any>(className: string | ModelClass<T>, name: string): T
   makeAs<T = any>(className: string | ModelClass<T>, name: string, attributes: Object): T
 
-  raw<T = any>(className: string | ModelClass<T>): T
-  raw<T = any>(className: string | ModelClass<T>, attributes: Object): T
+  raw<T = any>(className: string | ModelClass<T>): Object
+  raw<T = any>(className: string | ModelClass<T>, attributes: Object): Object
 
-  rawOf<T = any>(className: string | ModelClass<T>, name: string): T
-  rawOf<T = any>(className: string | ModelClass<T>, name: string, attributes: Object): T
+  rawOf<T = any>(className: string | ModelClass<T>, name: string): Object
+  rawOf<T = any>(className: string | ModelClass<T>, name: string, attributes: Object): Object
 }
-
-// interface Test {
-//   <T>(test: { new(): T }): T
-// }
-// const test: Test = <any>function() {}
-
-// class User {
-//   doSomething() {}
-// }
-// const Factory: IFactoryManager<any> = <any>{}
-// Factory.make(User).doSomething()
-// test(User).doSomething()

@@ -26,6 +26,7 @@ exports.EloquentComponentProvider = EloquentComponentProviderFacade_1.EloquentCo
 var FactoryFacade_1 = require("./facades/global/FactoryFacade");
 exports.FactoryFacade = FactoryFacade_1.FactoryFacade;
 exports.Factory = FactoryFacade_1.Factory;
+exports.factory = FactoryFacade_1.factory;
 var Eloquent_1 = require("./model/Eloquent");
 exports.Eloquent = Eloquent_1.Eloquent;
 var DummyDriver_1 = require("./drivers/DummyDriver");

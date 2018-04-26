@@ -9,7 +9,7 @@
 import { BuiltinClasses } from './builtin';
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade';
 export { EloquentComponentProviderFacade, EloquentComponentProvider } from './facades/global/EloquentComponentProviderFacade';
-export { FactoryFacade, Factory } from './facades/global/FactoryFacade';
+export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade';
 export { Eloquent } from './model/Eloquent';
 export { DummyDriver } from './drivers/DummyDriver';
 export declare const NajsEloquent: BuiltinClasses;

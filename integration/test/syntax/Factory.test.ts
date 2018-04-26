@@ -1,5 +1,5 @@
 import 'jest'
-import { Eloquent, Factory, EloquentDriverProvider, DummyDriver } from '../../../dist/lib'
+import { Eloquent, Factory, factory, EloquentDriverProvider, DummyDriver } from '../../../dist/lib'
 
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
@@ -40,6 +40,18 @@ describe('Syntax/Factory', function() {
 
       Factory.make(Post).content = lastName
       Factory.make(Post).doSomething()
+    })
+  })
+
+  describe('factory()', function() {
+    it('can be detect which Model is using without GenericType', function() {
+      factory(User).make().first_name = 'test'
+      const lastName = Factory.make(User).last_name
+
+      factory(Post).make().content = lastName
+      factory(Post)
+        .make()
+        .doSomething()
     })
   })
 })
