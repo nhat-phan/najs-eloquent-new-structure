@@ -9,6 +9,7 @@ export declare class Model<T = any> {
      * @param {boolean|undefined} isGuarded
      */
     constructor(data?: Object, isGuarded?: boolean);
+    getModelName(): string;
     newCollection(dataset: any[]): any;
     newInstance(data?: Object | T): this;
 }

@@ -3,6 +3,7 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../model/interfaces/IModelSetting.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+// import { make } from 'najs-binding'
 const constants_1 = require("../constants");
 const MongooseProviderFacade_1 = require("../facades/global/MongooseProviderFacade");
 const SoftDelete_1 = require("./mongoose/SoftDelete");
@@ -22,7 +23,7 @@ class MongooseDriver {
     }
     initialize(model, isGuarded, data) {
         this.initializeModelIfNeeded(model);
-        this.createAttributesByData(data, isGuarded, data);
+        this.createAttributesByData(model, isGuarded, data);
     }
     initializeModelIfNeeded(model) {
         // prettier-ignore
@@ -91,7 +92,7 @@ class MongooseDriver {
         return this.attributes.toObject();
     }
     newQuery() {
-        return {};
+        return {}; // make(NajsEloquent)
     }
     async delete(softDeletes) {
         if (softDeletes) {

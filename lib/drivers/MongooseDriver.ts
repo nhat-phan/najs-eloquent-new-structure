@@ -2,6 +2,7 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../model/interfaces/IModelSetting.ts" />
 
+// import { make } from 'najs-binding'
 import { NajsEloquent } from '../constants'
 import { MongooseProvider } from '../facades/global/MongooseProviderFacade'
 import { SoftDelete } from './mongoose/SoftDelete'
@@ -34,7 +35,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
 
   initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: any): void {
     this.initializeModelIfNeeded(model)
-    this.createAttributesByData(data, isGuarded, data)
+    this.createAttributesByData(model, isGuarded, data)
   }
 
   protected initializeModelIfNeeded(model: NajsEloquent.Model.IModel<any>) {
@@ -119,7 +120,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   }
 
   newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {
-    return <any>{}
+    return <any>{} // make(NajsEloquent)
   }
 
   async delete(softDeletes: boolean): Promise<any> {

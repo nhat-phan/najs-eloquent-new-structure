@@ -31,6 +31,9 @@ class Model {
             this.attributes = this.driver.getRecord();
         }
     }
+    getModelName() {
+        return najs_binding_2.getClassName(this);
+    }
     newCollection(dataset) {
         return collect(dataset.map(item => this.newInstance(item)));
     }

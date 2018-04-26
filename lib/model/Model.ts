@@ -34,6 +34,10 @@ export class Model<T = any> {
     }
   }
 
+  getModelName() {
+    return getClassName(this)
+  }
+
   newCollection(dataset: any[]): any {
     return collect(dataset.map(item => this.newInstance(item)))
   }
