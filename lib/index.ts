@@ -25,6 +25,7 @@ export {
 } from './facades/global/EloquentComponentProviderFacade'
 export { FactoryFacade, Factory } from './facades/global/FactoryFacade'
 export { Eloquent } from './model/Eloquent'
+export { DummyDriver } from './drivers/DummyDriver'
 
 export const NajsEloquent: BuiltinClasses = {
   FacadeContainer: FacadeContainer,

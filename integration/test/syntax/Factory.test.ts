@@ -1,37 +1,45 @@
 import 'jest'
-// import { Eloquent, Factory } from '../../../dist/lib'
+import { Eloquent, Factory, EloquentDriverProvider, DummyDriver } from '../../../dist/lib'
+
+EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
 describe('Syntax/Factory', function() {
-  it('should work', function() {})
-  // interface IUser {
-  //   first_name: string
-  //   last_name: string
-  // }
-  // class User extends Eloquent<IUser> implements IUser {
-  //   static className = 'SyntaxUser'
-  //   first_name: string
-  //   last_name: string
-  // }
-  // Eloquent.register(User)
+  interface IUser {
+    first_name: string
+    last_name: string
+  }
+  class User extends Eloquent<IUser> implements IUser {
+    static className = 'SyntaxUser'
+    first_name: string
+    last_name: string
+  }
+  Eloquent.register(User)
 
-  // interface IPost {
-  //   content: string
-  // }
-  // class Post extends Eloquent<IPost> implements IPost {
-  //   static className = 'SyntaxPost'
-  //   content: string
+  interface IPost {
+    content: string
+  }
+  class Post extends Eloquent<IPost> implements IPost {
+    static className = 'SyntaxPost'
+    content: string
 
-  //   doSomething(...args: any[]) {}
-  // }
-  // Eloquent.register(Post)
+    doSomething(...args: any[]) {}
+  }
+  Eloquent.register(Post)
 
-  // describe('Factory', function() {
-  //   it('can be detect which Model is using without GenericType', function() {
-  //     Factory.make(User).first_name = 'test'
-  //     const lastName = Factory.make(User).last_name
+  Factory.define(User, function(faker) {
+    return {}
+  })
+  Factory.define(Post, function(faker) {
+    return {}
+  })
 
-  //     Factory.make(Post).content = lastName
-  //     Factory.raw(Post).doSomething()
-  //   })
-  // })
+  describe('Factory', function() {
+    it('can be detect which Model is using without GenericType', function() {
+      Factory.make(User).first_name = 'test'
+      const lastName = Factory.make(User).last_name
+
+      Factory.make(Post).content = lastName
+      Factory.make(Post).doSomething()
+    })
+  })
 })

@@ -28,6 +28,8 @@ exports.FactoryFacade = FactoryFacade_1.FactoryFacade;
 exports.Factory = FactoryFacade_1.Factory;
 var Eloquent_1 = require("./model/Eloquent");
 exports.Eloquent = Eloquent_1.Eloquent;
+var DummyDriver_1 = require("./drivers/DummyDriver");
+exports.DummyDriver = DummyDriver_1.DummyDriver;
 exports.NajsEloquent = {
     FacadeContainer: container_1.container,
     Model: {
