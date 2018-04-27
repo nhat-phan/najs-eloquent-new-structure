@@ -5,6 +5,7 @@ import { Model } from './Model'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { DynamicAttribute } from './components/DynamicAttribute'
 import { ModelQuery } from './components/ModelQuery'
+import { EloquentProxy } from './EloquentProxy'
 import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
 
 export interface Eloquent<T extends Object = {}> extends NajsEloquent.Model.IModelQuery<T> {}
@@ -17,7 +18,10 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
   constructor(data?: Object) {
     super(data)
     if (data !== CREATE_SAMPLE) {
-      EloquentComponentProvider.extend(this, this['driver'])
+      EloquentComponentProvider.extend(this, this.driver)
+      if (this.driver.useEloquentProxy()) {
+        return new Proxy(this, EloquentProxy)
+      }
     }
   }
 

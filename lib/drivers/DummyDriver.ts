@@ -20,6 +20,10 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
     return this.attributes
   }
 
+  useEloquentProxy() {
+    return false
+  }
+
   hasAttribute(name: string): boolean {
     return false
   }

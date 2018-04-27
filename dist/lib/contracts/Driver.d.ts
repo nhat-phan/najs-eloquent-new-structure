@@ -15,6 +15,10 @@ declare namespace Najs.Contracts.Eloquent {
          */
         getRecord(): NativeRecord;
         /**
+         * Determine that this driver depends on ModelProxy.
+         */
+        useEloquentProxy(): boolean;
+        /**
          * Determine given attribute is in the model or not.
          *
          * @param name

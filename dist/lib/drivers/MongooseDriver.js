@@ -76,8 +76,11 @@ class MongooseDriver {
     getRecord() {
         return this.attributes;
     }
+    useEloquentProxy() {
+        return true;
+    }
     hasAttribute(name) {
-        return typeof this.schema[name] !== 'undefined';
+        return true;
     }
     getAttribute(name) {
         return this.attributes.get(name);

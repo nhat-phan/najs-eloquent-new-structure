@@ -99,8 +99,12 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     return this.attributes
   }
 
+  useEloquentProxy() {
+    return true
+  }
+
   hasAttribute(name: string): boolean {
-    return typeof this.schema[name] !== 'undefined'
+    return true
   }
 
   getAttribute<T>(name: string): T {

@@ -274,13 +274,43 @@ describe('MongooseDriver', function() {
     })
   })
 
+  describe('.useEloquentProxy()', function() {
+    it('returns true, that means it depends on EloquentProxy', function() {
+      const driver = new MongooseDriver(modelInstance)
+      expect(driver.useEloquentProxy()).toBe(true)
+    })
+
+    it('can fill the value automatically by proxy', function() {
+      const user = new User()
+      user['first_name'] = 'test'
+      expect(user['driver']).toBeInstanceOf(MongooseDriver)
+      expect(
+        user
+          .markVisible('first_name')
+          .markHidden('id')
+          .toJSON()
+      ).toEqual({ first_name: 'test' })
+      expect(user['first_name']).toEqual('test')
+    })
+  })
+
+  // describe('.hasAttribute()', function() {
+  //   it('returns true if the attributes is defined in model.schema', function() {
+  //     const driver = new MongooseDriver(modelInstance)
+  //     const schema = { test: String }
+  //     driver['schema'] = <any>schema
+  //     expect(driver.hasAttribute('test')).toBe(true)
+  //     expect(driver.hasAttribute('not-found')).toBe(false)
+  //   })
+  // })
+
   describe('.hasAttribute()', function() {
-    it('returns true if the attributes is defined in model.schema', function() {
+    it('always returns true', function() {
       const driver = new MongooseDriver(modelInstance)
       const schema = { test: String }
       driver['schema'] = <any>schema
       expect(driver.hasAttribute('test')).toBe(true)
-      expect(driver.hasAttribute('not-found')).toBe(false)
+      expect(driver.hasAttribute('not_found')).toBe(true)
     })
   })
 

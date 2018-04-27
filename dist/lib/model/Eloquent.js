@@ -6,6 +6,7 @@ const Model_1 = require("./Model");
 const ClassSetting_1 = require("../util/ClassSetting");
 const DynamicAttribute_1 = require("./components/DynamicAttribute");
 const ModelQuery_1 = require("./components/ModelQuery");
+const EloquentProxy_1 = require("./EloquentProxy");
 const EloquentComponentProviderFacade_1 = require("../facades/global/EloquentComponentProviderFacade");
 class Eloquent extends Model_1.Model {
     /**
@@ -16,7 +17,10 @@ class Eloquent extends Model_1.Model {
     constructor(data) {
         super(data);
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
-            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this['driver']);
+            EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this.driver);
+            if (this.driver.useEloquentProxy()) {
+                return new Proxy(this, EloquentProxy_1.EloquentProxy);
+            }
         }
     }
     static register(model) {
