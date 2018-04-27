@@ -103,8 +103,22 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     return true
   }
 
-  hasAttribute(name: string): boolean {
+  shouldBeProxied(key: string): boolean {
+    if (key === 'schema' || key === 'options') {
+      return false
+    }
     return true
+  }
+
+  proxify(type: 'get' | 'set', target: any, key: string, value?: any): any {
+    if (type === 'get') {
+      return this.getAttribute(key)
+    }
+    return this.setAttribute(key, value)
+  }
+
+  hasAttribute(name: string): boolean {
+    return typeof this.schema[name] !== 'undefined'
   }
 
   getAttribute<T>(name: string): T {

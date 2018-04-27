@@ -236,22 +236,48 @@ describe('MongooseDriver', function () {
             expect(user['first_name']).toEqual('test');
         });
     });
-    // describe('.hasAttribute()', function() {
-    //   it('returns true if the attributes is defined in model.schema', function() {
-    //     const driver = new MongooseDriver(modelInstance)
-    //     const schema = { test: String }
-    //     driver['schema'] = <any>schema
-    //     expect(driver.hasAttribute('test')).toBe(true)
-    //     expect(driver.hasAttribute('not-found')).toBe(false)
-    //   })
-    // })
+    describe('.shouldBeProxied()', function () {
+        it('returns true if the key is not "schema" or "options"', function () {
+            const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
+            expect(driver.shouldBeProxied('a')).toBe(true);
+            expect(driver.shouldBeProxied('schemas')).toBe(true);
+            expect(driver.shouldBeProxied('option')).toBe(true);
+            expect(driver.shouldBeProxied('schema')).toBe(false);
+            expect(driver.shouldBeProxied('options')).toBe(false);
+        });
+        it('should be returns original schema setup of Model', function () {
+            const user = new User();
+            expect(user.schema).toEqual({
+                email: { type: String, required: true },
+                first_name: { type: String, required: true },
+                last_name: { type: String, required: true },
+                age: { type: Number, default: 0 }
+            });
+        });
+    });
+    describe('.proxify()', function () {
+        it('calls .getAttribute() if the type is "get"', function () {
+            const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
+            const getAttributeStub = Sinon.stub(driver, 'getAttribute');
+            getAttributeStub.returns('anything');
+            expect(driver.proxify('get', {}, 'test')).toBe('anything');
+            expect(getAttributeStub.calledWith('test')).toBe(true);
+        });
+        it('calls .setAttribute() if the type is "set"', function () {
+            const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
+            const setAttributeStub = Sinon.stub(driver, 'setAttribute');
+            setAttributeStub.returns('anything');
+            expect(driver.proxify('set', {}, 'test', 'value')).toBe('anything');
+            expect(setAttributeStub.calledWith('test', 'value')).toBe(true);
+        });
+    });
     describe('.hasAttribute()', function () {
-        it('always returns true', function () {
+        it('returns true if the attributes is defined in model.schema', function () {
             const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
             const schema = { test: String };
             driver['schema'] = schema;
             expect(driver.hasAttribute('test')).toBe(true);
-            expect(driver.hasAttribute('not_found')).toBe(true);
+            expect(driver.hasAttribute('not-found')).toBe(false);
         });
     });
     describe('.getAttribute()', function () {

@@ -50,6 +50,7 @@
       "timestamps",
       "mutators",
       "proxify",
+      "proxied",
       "chainable"
     ],
     "search.exclude": {

@@ -21,6 +21,25 @@ describe('DummyDriver', function () {
             driver.getRecord();
         });
     });
+    describe('.useEloquentProxy()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.useEloquentProxy();
+        });
+    });
+    describe('.shouldBeProxied()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.shouldBeProxied('test');
+        });
+    });
+    describe('.proxify()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.proxify('get', {}, 'test');
+            driver.proxify('set', {}, 'test', 'value');
+        });
+    });
     describe('.hasAttribute()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();

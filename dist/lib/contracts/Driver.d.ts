@@ -15,9 +15,22 @@ declare namespace Najs.Contracts.Eloquent {
          */
         getRecord(): NativeRecord;
         /**
-         * Determine that this driver depends on ModelProxy.
+         * Determine that this driver depends on EloquentProxy.
          */
         useEloquentProxy(): boolean;
+        /**
+         * Determine given key should be forward to driver or not.
+         */
+        shouldBeProxied(key: string): boolean;
+        /**
+         * Perform Eloquent proxy
+         *
+         * @param {string} type
+         * @param {Eloquent} target
+         * @param {string} key
+         * @param {any} value
+         */
+        proxify(type: 'get' | 'set', target: any, key: string, value?: any): any;
         /**
          * Determine given attribute is in the model or not.
          *

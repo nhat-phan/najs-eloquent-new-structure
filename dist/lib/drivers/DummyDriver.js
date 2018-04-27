@@ -20,6 +20,16 @@ class DummyDriver {
     useEloquentProxy() {
         return false;
     }
+    shouldBeProxied(key) {
+        return false;
+    }
+    proxify(type, target, key, value) {
+        if (type === 'get') {
+            return target[key];
+        }
+        target[key] = value;
+        return true;
+    }
     hasAttribute(name) {
         return false;
     }

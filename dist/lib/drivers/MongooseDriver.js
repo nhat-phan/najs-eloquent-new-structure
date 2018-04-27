@@ -79,8 +79,20 @@ class MongooseDriver {
     useEloquentProxy() {
         return true;
     }
-    hasAttribute(name) {
+    shouldBeProxied(key) {
+        if (key === 'schema' || key === 'options') {
+            return false;
+        }
         return true;
+    }
+    proxify(type, target, key, value) {
+        if (type === 'get') {
+            return this.getAttribute(key);
+        }
+        return this.setAttribute(key, value);
+    }
+    hasAttribute(name) {
+        return typeof this.schema[name] !== 'undefined';
     }
     getAttribute(name) {
         return this.attributes.get(name);

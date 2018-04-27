@@ -24,6 +24,18 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
     return false
   }
 
+  shouldBeProxied(key: string) {
+    return false
+  }
+
+  proxify(type: 'get' | 'set', target: any, key: string, value?: any): any {
+    if (type === 'get') {
+      return target[key]
+    }
+    target[key] = value
+    return true
+  }
+
   hasAttribute(name: string): boolean {
     return false
   }
