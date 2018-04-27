@@ -11,6 +11,8 @@ const MongooseDriver_1 = require("../../lib/drivers/MongooseDriver");
 const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
 const MongooseProviderFacade_1 = require("../../lib/facades/global/MongooseProviderFacade");
 const SoftDelete_1 = require("../../lib/drivers/mongoose/SoftDelete");
+const QueryBuilderWrapper_1 = require("../../lib/wrappers/QueryBuilderWrapper");
+const MongooseQueryBuilder_1 = require("../../lib/query-builders/mongodb/MongooseQueryBuilder");
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MongooseDriver_1.MongooseDriver, 'mongoose', true);
 class User extends Eloquent_1.Eloquent {
     constructor() {
@@ -173,7 +175,7 @@ describe('MongooseDriver', function () {
             driver['initializeModelIfNeeded'](modelInstance);
             expect(pluginSpy.calledWith(SoftDelete_1.SoftDelete, { deletedAt: 'anything' })).toBe(true);
             expect(getMongooseSchemaStub.called).toBe(true);
-            expect(driver['deletedAtField']).toEqual('anything');
+            expect(driver['softDeletesSetting']).toEqual({ deletedAt: 'anything' });
             najs_facade_1.FacadeContainer.verifyAndRestoreAllFacades();
             getSoftDeletesSettingStub.restore();
             hasTimestampsStub.restore();
@@ -271,9 +273,12 @@ describe('MongooseDriver', function () {
         });
     });
     describe('.newQuery()', function () {
-        it('works', function () {
+        it('returns QueryBuilderWrapper which wrap MongooseQueryBuilder', function () {
             const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
-            expect(driver.newQuery()).toEqual({});
+            const queryBuilderWrapper = driver.newQuery();
+            expect(queryBuilderWrapper).toBeInstanceOf(QueryBuilderWrapper_1.QueryBuilderWrapper);
+            expect(queryBuilderWrapper['modelName']).toEqual(driver['modelName']);
+            expect(queryBuilderWrapper['queryBuilder']).toBeInstanceOf(MongooseQueryBuilder_1.MongooseQueryBuilder);
         });
     });
     describe('.delete()', function () {
@@ -347,12 +352,17 @@ describe('MongooseDriver', function () {
         });
     });
     describe('.isSoftDeleted()', function () {
-        it('calls attributes.get(this.deletedAtField) and returns true if the value is not null', function () {
+        it('always returns false if this.softDeletesSetting is not found', function () {
+            const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
+            driver['softDeletesSetting'] = undefined;
+            expect(driver.isSoftDeleted()).toEqual(false);
+        });
+        it('calls attributes.get(this.softDeletesSetting.deletedAt) and returns true if the value is not null', function () {
             const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
             driver['attributes'] = {
                 get() { }
             };
-            driver['deletedAtField'] = 'anything';
+            driver['softDeletesSetting'] = { deletedAt: 'anything', overrideMethods: true };
             const getStub = Sinon.stub(driver['attributes'], 'get');
             // tslint:disable-next-line
             getStub.returns(null);

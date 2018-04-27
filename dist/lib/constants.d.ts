@@ -36,6 +36,9 @@ export declare const NajsEloquent: {
         DriverProvider: string;
         MongooseProvider: string;
     };
+    Wrapper: {
+        QueryBuilderWrapper: string;
+    };
 };
 export declare const QueryFunctions: {
     BasicQuery: string[];

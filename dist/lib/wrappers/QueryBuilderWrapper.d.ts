@@ -1,8 +1,12 @@
+/// <reference path="../model/interfaces/IModel.d.ts" />
+/// <reference path="interfaces/IQueryBuilderWrapper.d.ts" />
 export interface QueryBuilderWrapper<T> extends NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {
 }
 export declare class QueryBuilderWrapper<T> {
+    static className: string;
     protected modelName: string;
     constructor(model: string, queryBuilder: NajsEloquent.QueryBuilder.IQueryBuilder & NajsEloquent.QueryBuilder.IFetchResultQuery<T>);
+    getClassName(): string;
     protected createCollection(result: Object[]): CollectJs.Collection<NajsEloquent.Model.IModel<T> & T>;
     protected createInstance(result: Object): NajsEloquent.Model.IModel<T> & T;
     first(id?: any): Promise<(NajsEloquent.Model.IModel<T> & T) | null>;

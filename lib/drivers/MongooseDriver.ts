@@ -2,7 +2,9 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../model/interfaces/IModelSetting.ts" />
 
-// import { make } from 'najs-binding'
+import '../wrappers/QueryBuilderWrapper'
+import '../query-builders/mongodb/MongooseQueryBuilder'
+import { make } from 'najs-binding'
 import { NajsEloquent } from '../constants'
 import { MongooseProvider } from '../facades/global/MongooseProviderFacade'
 import { SoftDelete } from './mongoose/SoftDelete'
@@ -20,7 +22,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   protected mongooseModel: Model<Document & Record>
   protected schema: SchemaDefinition
   protected options: SchemaOptions
-  protected deletedAtField: string
+  protected softDeletesSetting?: NajsEloquent.Model.ISoftDeletesSetting
 
   constructor(model: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting) {
     this.modelName = model.getModelName()
@@ -51,9 +53,8 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     }
 
     if (model.hasSoftDeletes()) {
-      const setting = model.getSoftDeletesSetting()
-      this.deletedAtField = setting.deletedAt
-      schema.plugin(SoftDelete, setting)
+      this.softDeletesSetting = model.getSoftDeletesSetting()
+      schema.plugin(SoftDelete, this.softDeletesSetting)
     }
 
     MongooseProvider.createModelFromSchema(this.modelName, schema)
@@ -120,7 +121,10 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   }
 
   newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {
-    return <any>{} // make(NajsEloquent)
+    return make(NajsEloquent.Wrapper.QueryBuilderWrapper, [
+      this.modelName,
+      make(NajsEloquent.QueryBuilder.MongooseQueryBuilder, [this.modelName, this.softDeletesSetting])
+    ])
   }
 
   async delete(softDeletes: boolean): Promise<any> {
@@ -147,7 +151,10 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   }
 
   isSoftDeleted(): boolean {
-    return this.attributes.get(this.deletedAtField) !== null
+    if (this.softDeletesSetting) {
+      return this.attributes.get(this.softDeletesSetting.deletedAt) !== null
+    }
+    return false
   }
 
   formatAttributeName(name: string): string {

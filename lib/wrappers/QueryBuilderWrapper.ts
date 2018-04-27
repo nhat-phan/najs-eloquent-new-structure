@@ -1,8 +1,8 @@
-import { QueryFunctions } from './../constants'
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="interfaces/IQueryBuilderWrapper.ts" />
 
-import { make } from 'najs-binding'
+import { make, register } from 'najs-binding'
+import { NajsEloquent, QueryFunctions } from '../constants'
 import { NotFoundError } from '../errors/NotFoundError'
 import { array_unique } from '../util/functions'
 
@@ -15,6 +15,7 @@ const FORWARD_FUNCTIONS = array_unique(
 
 export interface QueryBuilderWrapper<T> extends NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {}
 export class QueryBuilderWrapper<T> {
+  static className: string = NajsEloquent.Wrapper.QueryBuilderWrapper
   protected modelName: string
 
   constructor(
@@ -23,6 +24,10 @@ export class QueryBuilderWrapper<T> {
   ) {
     this.modelName = model
     this.queryBuilder = queryBuilder
+  }
+
+  getClassName() {
+    return NajsEloquent.Wrapper.QueryBuilderWrapper
   }
 
   protected createCollection(result: Object[]): CollectJs.Collection<NajsEloquent.Model.IModel<T> & T> {
@@ -91,3 +96,5 @@ for (const name of FORWARD_FUNCTIONS) {
     return this['queryBuilder'][name](...arguments)
   }
 }
+
+register(QueryBuilderWrapper)

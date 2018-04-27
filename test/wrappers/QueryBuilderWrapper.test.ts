@@ -14,6 +14,11 @@ class Test extends Eloquent {
 Eloquent.register(Test)
 
 describe('QueryBuilderWrapper', function() {
+  it('implements IAutoload and returns class name as "NajsEloquent.Wrapper.QueryBuilderWrapper"', function() {
+    const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+    expect(queryBuilderWrapper.getClassName()).toEqual('NajsEloquent.Wrapper.QueryBuilderWrapper')
+  })
+
   describe('FORWARD_FUNCTIONS', function() {
     it('contains not overridden functions except AdvancedQuery function', function() {
       expect(QueryBuilderWrapper.FORWARD_FUNCTIONS.sort()).toEqual(

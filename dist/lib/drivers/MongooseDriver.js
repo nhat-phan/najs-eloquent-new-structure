@@ -3,7 +3,9 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../model/interfaces/IModelSetting.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-// import { make } from 'najs-binding'
+require("../wrappers/QueryBuilderWrapper");
+require("../query-builders/mongodb/MongooseQueryBuilder");
+const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
 const MongooseProviderFacade_1 = require("../facades/global/MongooseProviderFacade");
 const SoftDelete_1 = require("./mongoose/SoftDelete");
@@ -35,9 +37,8 @@ class MongooseDriver {
             schema.set('timestamps', model.getTimestampsSetting());
         }
         if (model.hasSoftDeletes()) {
-            const setting = model.getSoftDeletesSetting();
-            this.deletedAtField = setting.deletedAt;
-            schema.plugin(SoftDelete_1.SoftDelete, setting);
+            this.softDeletesSetting = model.getSoftDeletesSetting();
+            schema.plugin(SoftDelete_1.SoftDelete, this.softDeletesSetting);
         }
         MongooseProviderFacade_1.MongooseProvider.createModelFromSchema(this.modelName, schema);
     }
@@ -92,7 +93,10 @@ class MongooseDriver {
         return this.attributes.toObject();
     }
     newQuery() {
-        return {}; // make(NajsEloquent)
+        return najs_binding_1.make(constants_1.NajsEloquent.Wrapper.QueryBuilderWrapper, [
+            this.modelName,
+            najs_binding_1.make(constants_1.NajsEloquent.QueryBuilder.MongooseQueryBuilder, [this.modelName, this.softDeletesSetting])
+        ]);
     }
     async delete(softDeletes) {
         if (softDeletes) {
@@ -113,7 +117,10 @@ class MongooseDriver {
         return this.attributes.isNew;
     }
     isSoftDeleted() {
-        return this.attributes.get(this.deletedAtField) !== null;
+        if (this.softDeletesSetting) {
+            return this.attributes.get(this.softDeletesSetting.deletedAt) !== null;
+        }
+        return false;
     }
     formatAttributeName(name) {
         return lodash_1.snakeCase(name);

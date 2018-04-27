@@ -1,6 +1,8 @@
 /// <reference path="../contracts/Driver.d.ts" />
 /// <reference path="../model/interfaces/IModel.d.ts" />
 /// <reference path="../model/interfaces/IModelSetting.d.ts" />
+import '../wrappers/QueryBuilderWrapper';
+import '../query-builders/mongodb/MongooseQueryBuilder';
 import { Document, Model, Schema, SchemaDefinition, SchemaOptions } from 'mongoose';
 export declare class MongooseDriver<Record extends Object> implements Najs.Contracts.Eloquent.Driver<Record> {
     static className: string;
@@ -10,7 +12,7 @@ export declare class MongooseDriver<Record extends Object> implements Najs.Contr
     protected mongooseModel: Model<Document & Record>;
     protected schema: SchemaDefinition;
     protected options: SchemaOptions;
-    protected deletedAtField: string;
+    protected softDeletesSetting?: NajsEloquent.Model.ISoftDeletesSetting;
     constructor(model: NajsEloquent.Model.IModel<any> & NajsEloquent.Model.IModelSetting);
     getClassName(): string;
     initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: any): void;

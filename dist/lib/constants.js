@@ -38,6 +38,9 @@ exports.NajsEloquent = {
         ComponentProvider: 'NajsEloquent.Provider.ComponentProvider',
         DriverProvider: 'NajsEloquent.Provider.DriverProvider',
         MongooseProvider: 'NajsEloquent.Provider.MongooseProvider'
+    },
+    Wrapper: {
+        QueryBuilderWrapper: 'NajsEloquent.Wrapper.QueryBuilderWrapper'
     }
 };
 exports.QueryFunctions = {

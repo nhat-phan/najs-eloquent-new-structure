@@ -9,6 +9,8 @@ import { MongooseDriver } from '../../lib/drivers/MongooseDriver'
 import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
 import { MongooseProvider } from '../../lib/facades/global/MongooseProviderFacade'
 import { SoftDelete } from '../../lib/drivers/mongoose/SoftDelete'
+import { QueryBuilderWrapper } from '../../lib/wrappers/QueryBuilderWrapper'
+import { MongooseQueryBuilder } from '../../lib/query-builders/mongodb/MongooseQueryBuilder'
 
 EloquentDriverProvider.register(MongooseDriver, 'mongoose', true)
 
@@ -220,7 +222,7 @@ describe('MongooseDriver', function() {
 
       expect(pluginSpy.calledWith(SoftDelete, { deletedAt: 'anything' })).toBe(true)
       expect(getMongooseSchemaStub.called).toBe(true)
-      expect(driver['deletedAtField']).toEqual('anything')
+      expect(driver['softDeletesSetting']).toEqual({ deletedAt: 'anything' })
       FacadeContainer.verifyAndRestoreAllFacades()
       getSoftDeletesSettingStub.restore()
       hasTimestampsStub.restore()
@@ -330,9 +332,12 @@ describe('MongooseDriver', function() {
   })
 
   describe('.newQuery()', function() {
-    it('works', function() {
+    it('returns QueryBuilderWrapper which wrap MongooseQueryBuilder', function() {
       const driver = new MongooseDriver(modelInstance)
-      expect(driver.newQuery()).toEqual({})
+      const queryBuilderWrapper = driver.newQuery()
+      expect(queryBuilderWrapper).toBeInstanceOf(QueryBuilderWrapper)
+      expect(queryBuilderWrapper['modelName']).toEqual(driver['modelName'])
+      expect(queryBuilderWrapper['queryBuilder']).toBeInstanceOf(MongooseQueryBuilder)
     })
   })
 
@@ -413,12 +418,18 @@ describe('MongooseDriver', function() {
   })
 
   describe('.isSoftDeleted()', function() {
-    it('calls attributes.get(this.deletedAtField) and returns true if the value is not null', function() {
+    it('always returns false if this.softDeletesSetting is not found', function() {
+      const driver = new MongooseDriver(modelInstance)
+      driver['softDeletesSetting'] = undefined
+      expect(driver.isSoftDeleted()).toEqual(false)
+    })
+
+    it('calls attributes.get(this.softDeletesSetting.deletedAt) and returns true if the value is not null', function() {
       const driver = new MongooseDriver(modelInstance)
       driver['attributes'] = <any>{
         get() {}
       }
-      driver['deletedAtField'] = 'anything'
+      driver['softDeletesSetting'] = { deletedAt: 'anything', overrideMethods: true }
       const getStub = Sinon.stub(driver['attributes'], 'get')
       // tslint:disable-next-line
       getStub.returns(null)
