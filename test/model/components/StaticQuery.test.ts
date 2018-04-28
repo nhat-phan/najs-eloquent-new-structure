@@ -1,46 +1,48 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { ModelQuery } from '../../../lib/model/components/ModelQuery'
-import { Eloquent } from '../../../lib/model/Eloquent'
+import * as NajsBinding from 'najs-binding'
+import { StaticQuery } from '../../../lib/model/components/StaticQuery'
 import { Model } from '../../../lib/model/Model'
+import { Eloquent } from '../../../lib/model/Eloquent'
 import { DummyDriver } from '../../../lib/drivers/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
 
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
-describe('Eloquent/ModelQuery', function() {
+describe('DriverComponents/StaticQuery', function() {
   describe('Unit', function() {
-    describe('.getClassName()', function() {
-      it('implements Najs.Contracts.Autoload and returns "NajsEloquent.Model.Component.ModelQuery" as class name', function() {
-        const query = new ModelQuery()
-        expect(query.getClassName()).toEqual('NajsEloquent.Model.Component.ModelQuery')
-      })
+    it('implements IAutoload and returns "NajsEloquent.Driver.Component.StaticQuery" as class name', function() {
+      const staticQuery = new StaticQuery()
+      expect(staticQuery.getClassName()).toEqual('NajsEloquent.Driver.Component.StaticQuery')
     })
 
     describe('.extend()', function() {
       it('assigns newQuery to prototype which return driver.newQuery()', function() {
-        const prototype = {}
-        const query = new ModelQuery()
+        class Test {}
+        const prototype = Test.prototype
+        const query = new StaticQuery()
         query.extend(prototype, [], <any>{})
-        expect(prototype['newQuery'] === ModelQuery.newQuery).toBe(true)
+        expect(Test['newQuery'] === StaticQuery.newQuery).toBe(true)
       })
 
-      for (const name of ModelQuery.ForwardToQueryBuilderMethods) {
-        it('calls .forwardToQueryBuilder() with name = "' + name + '"', function() {
-          const forwardToQueryBuilderStub = Sinon.stub(ModelQuery, 'forwardToQueryBuilder')
-          forwardToQueryBuilderStub.returns('forward-to-' + name)
-          const prototype = {}
-          const query = new ModelQuery()
+      for (const name of StaticQuery.ForwardToNewQueryMethods) {
+        it('calls .forwardToNewQuery() with name = "' + name + '"', function() {
+          const forwardToNewQueryStub = Sinon.stub(StaticQuery, 'forwardToNewQuery')
+          forwardToNewQueryStub.returns('forward-to-' + name)
+
+          class Test {}
+          const prototype = Test.prototype
+          const query = new StaticQuery()
           query.extend(prototype, [], <any>{})
-          expect(prototype[name] === 'forward-to-' + name).toBe(true)
-          forwardToQueryBuilderStub.restore()
+          expect(Test[name] === 'forward-to-' + name).toBe(true)
+          forwardToNewQueryStub.restore()
         })
       }
     })
 
-    describe('ForwardToQueryBuilderMethods', function() {
+    describe('ForwardToNewQueryMethods', function() {
       it('contains started query functions', function() {
-        expect(ModelQuery.ForwardToQueryBuilderMethods.sort()).toEqual(
+        expect(StaticQuery.ForwardToNewQueryMethods.sort()).toEqual(
           [
             'queryName',
             'setLogGroup',
@@ -78,8 +80,8 @@ describe('Eloquent/ModelQuery', function() {
     it('is not available for class which extends from Model<T>', function() {
       class Test extends Model {}
 
-      for (const name of ModelQuery.ForwardToQueryBuilderMethods) {
-        expect(typeof Test.prototype[name] !== 'function').toBe(true)
+      for (const name of StaticQuery.ForwardToNewQueryMethods) {
+        expect(typeof Test[name] !== 'function').toBe(true)
       }
     })
 
@@ -87,26 +89,24 @@ describe('Eloquent/ModelQuery', function() {
       static className = 'User'
     }
 
-    it('is available for class which extends from Eloquent<T>', function() {
-      for (const name of ModelQuery.ForwardToQueryBuilderMethods) {
-        expect(typeof User.prototype[name] === 'function').toBe(true)
-      }
-    })
-
-    it('forwards .newQuery() to driver.newQuery()', function() {
+    it('create new instance by make(Class) and calls instance.newQuery()', function() {
       const driver = {
         newQuery() {
           return 'anything'
         }
       }
-
       const user = new User()
       user['driver'] = <any>driver
-      expect(user.newQuery()).toEqual('anything')
+
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      makeStub.returns(user)
+      expect(User['newQuery']()).toEqual('anything')
+      expect(makeStub.calledWith(User)).toBe(true)
+      makeStub.restore()
     })
 
-    for (const name of ModelQuery.ForwardToQueryBuilderMethods) {
-      it('forwards all params to driver.newQuery().' + name + '()', function() {
+    for (const name of StaticQuery.ForwardToNewQueryMethods) {
+      it('forwards all params to this.newQuery().' + name + '()', function() {
         const target = function() {
           return 'anything-' + Array.from(arguments).join('-')
         }
@@ -122,12 +122,16 @@ describe('Eloquent/ModelQuery', function() {
         const user = new User()
         user['driver'] = <any>driver
 
-        expect(user[name]('a')).toEqual('anything-a')
+        const makeStub = Sinon.stub(NajsBinding, 'make')
+        makeStub.returns(user)
+
+        expect(User[name]('a')).toEqual('anything-a')
         expect(targetSpy.calledWith('a')).toBe(true)
-        expect(user[name]('a', 'b')).toEqual('anything-a-b')
+        expect(User[name]('a', 'b')).toEqual('anything-a-b')
         expect(targetSpy.calledWith('a', 'b')).toBe(true)
-        expect(user[name](['a', 'b', 'c'])).toEqual('anything-a,b,c')
+        expect(User[name](['a', 'b', 'c'])).toEqual('anything-a,b,c')
         expect(targetSpy.calledWith(['a', 'b', 'c'])).toBe(true)
+        makeStub.restore()
       })
     }
   })

@@ -29,6 +29,10 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     this.queryLogGroup = 'all'
     this.schema = model.getSettingProperty('schema', {})
     this.options = model.getSettingProperty('options', {})
+    // we need softDeletesSetting to initialize softDeletes option in query builder
+    if (model.hasSoftDeletes()) {
+      this.softDeletesSetting = model.getSoftDeletesSetting()
+    }
   }
 
   getClassName() {

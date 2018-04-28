@@ -2,6 +2,9 @@ import { array_unique } from './util/functions'
 
 export const NajsEloquent = {
   Driver: {
+    Component: {
+      StaticQuery: 'NajsEloquent.Driver.Component.StaticQuery'
+    },
     DummyDriver: 'NajsEloquent.Driver.DummyDriver',
     MongooseDriver: 'NajsEloquent.Driver.MongooseDriver',
     KnexDriver: 'NajsEloquent.Driver.KnexDriver'

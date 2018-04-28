@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const functions_1 = require("./util/functions");
 exports.NajsEloquent = {
     Driver: {
+        Component: {
+            StaticQuery: 'NajsEloquent.Driver.Component.StaticQuery'
+        },
         DummyDriver: 'NajsEloquent.Driver.DummyDriver',
         MongooseDriver: 'NajsEloquent.Driver.MongooseDriver',
         KnexDriver: 'NajsEloquent.Driver.KnexDriver'

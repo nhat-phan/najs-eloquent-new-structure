@@ -4,8 +4,6 @@
 import { register } from 'najs-binding'
 import { NajsEloquent, StartQueryFunctions } from '../../constants'
 
-const FORWARD_TO_QUERY_BUILDER_WRAPPER = StartQueryFunctions
-
 export class ModelQuery implements Najs.Contracts.Eloquent.Component {
   static className = NajsEloquent.Model.Component.ModelQuery
   getClassName(): string {
@@ -14,12 +12,12 @@ export class ModelQuery implements Najs.Contracts.Eloquent.Component {
 
   extend(prototype: Object, bases: Object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     prototype['newQuery'] = ModelQuery.newQuery
-    for (const name of FORWARD_TO_QUERY_BUILDER_WRAPPER) {
+    for (const name of StartQueryFunctions) {
       prototype[name] = ModelQuery.forwardToQueryBuilder(name)
     }
   }
 
-  static get FORWARD_TO_QUERY_BUILDER_WRAPPER() {
+  static get ForwardToQueryBuilderMethods() {
     return StartQueryFunctions
   }
 

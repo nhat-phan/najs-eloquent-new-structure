@@ -118,7 +118,7 @@ describe('Model/Fillable', function() {
     })
 
     describe('.forceDelete()', function() {
-      it('simply calls driver.delete() with option = true', async function() {
+      it('simply calls driver.delete() with option = false', async function() {
         const driver = {
           async delete() {
             return false
@@ -129,13 +129,13 @@ describe('Model/Fillable', function() {
         const staticFalse = new StaticTrue()
         staticFalse['driver'] = <any>driver
         expect(await staticFalse.forceDelete()).toEqual(false)
-        expect(deleteSpy.calledWith(true)).toBe(true)
+        expect(deleteSpy.calledWith(false)).toBe(true)
         deleteSpy.resetHistory()
 
         const staticTrue = new StaticTrue()
         staticTrue['driver'] = <any>driver
         expect(await staticTrue.forceDelete()).toEqual(false)
-        expect(deleteSpy.calledWith(true)).toBe(true)
+        expect(deleteSpy.calledWith(false)).toBe(true)
       })
     })
 

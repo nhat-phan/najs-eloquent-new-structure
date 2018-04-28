@@ -39,7 +39,7 @@ export class ModelSoftDeletes implements Najs.Contracts.Eloquent.Component {
   }
 
   static forceDelete: NajsEloquent.Model.ModelMethod<Promise<boolean>> = function() {
-    return this['driver'].delete(true)
+    return this['driver'].delete(false)
   }
 
   static restore: NajsEloquent.Model.ModelMethod<Promise<boolean>> = function() {

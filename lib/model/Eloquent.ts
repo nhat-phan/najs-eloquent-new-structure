@@ -5,6 +5,7 @@ import { Model } from './Model'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { DynamicAttribute } from './components/DynamicAttribute'
 import { ModelQuery } from './components/ModelQuery'
+import { StaticQuery } from './components/StaticQuery'
 import { EloquentProxy } from './EloquentProxy'
 import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
 
@@ -31,7 +32,7 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
   }
 }
 
-const defaultComponents: Najs.Contracts.Eloquent.Component[] = [make(ModelQuery.className)]
+const defaultComponents: Najs.Contracts.Eloquent.Component[] = [make(ModelQuery.className), make(StaticQuery.className)]
 for (const component of defaultComponents) {
   component.extend(Eloquent.prototype, [], <any>{})
 }

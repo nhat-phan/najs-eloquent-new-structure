@@ -1,5 +1,8 @@
 export declare const NajsEloquent: {
     Driver: {
+        Component: {
+            StaticQuery: string;
+        };
         DummyDriver: string;
         MongooseDriver: string;
         KnexDriver: string;

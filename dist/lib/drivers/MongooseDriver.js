@@ -19,6 +19,10 @@ class MongooseDriver {
         this.queryLogGroup = 'all';
         this.schema = model.getSettingProperty('schema', {});
         this.options = model.getSettingProperty('options', {});
+        // we need softDeletesSetting to initialize softDeletes option in query builder
+        if (model.hasSoftDeletes()) {
+            this.softDeletesSetting = model.getSoftDeletesSetting();
+        }
     }
     getClassName() {
         return constants_1.NajsEloquent.Driver.MongooseDriver;

@@ -37,7 +37,7 @@ ModelSoftDeletes.trashed = function () {
     return this['driver'].isSoftDeleted();
 };
 ModelSoftDeletes.forceDelete = function () {
-    return this['driver'].delete(true);
+    return this['driver'].delete(false);
 };
 ModelSoftDeletes.restore = function () {
     return this['driver'].restore();
