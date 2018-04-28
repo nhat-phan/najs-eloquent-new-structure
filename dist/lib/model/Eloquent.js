@@ -1,6 +1,6 @@
 "use strict";
 /// <reference path="interfaces/IModelQuery.ts" />
-/// <reference path="interfaces/IMongoose.ts" />
+/// <reference path="interfaces/static/IMongooseStatic.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("./Model");

@@ -7,6 +7,8 @@
 /// <reference path="model/interfaces/IModel.d.ts" />
 /// <reference path="model/interfaces/IModelQuery.d.ts" />
 import { BuiltinClasses } from './builtin';
+import { ChanceFaker } from './factory/FactoryManager';
+export declare type Faker = ChanceFaker;
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade';
 export { EloquentComponentProviderFacade, EloquentComponentProvider } from './facades/global/EloquentComponentProviderFacade';
 export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade';

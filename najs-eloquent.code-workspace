@@ -51,7 +51,8 @@
       "mutators",
       "proxify",
       "proxied",
-      "chainable"
+      "chainable",
+      "bson"
     ],
     "search.exclude": {
       "**/.git": true,

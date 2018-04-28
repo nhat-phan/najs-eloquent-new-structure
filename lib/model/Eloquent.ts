@@ -1,5 +1,5 @@
 /// <reference path="interfaces/IModelQuery.ts" />
-/// <reference path="interfaces/IMongoose.ts" />
+/// <reference path="interfaces/static/IMongooseStatic.ts" />
 
 import { make, register } from 'najs-binding'
 import { Model } from './Model'
@@ -37,11 +37,11 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
     Reflect.construct(model, [])
   }
 
-  static Mongoose<T>(): NajsEloquent.Model.IMongoose<T> {
+  static Mongoose<T>(): NajsEloquent.Model.Static.IMongooseStatic<T> {
     return <any>Eloquent
   }
 
-  static Class<T>(): NajsEloquent.Model.IMongoose<T> {
+  static Class<T>(): NajsEloquent.Model.Static.IMongooseStatic<T> {
     return <any>Eloquent
   }
 }

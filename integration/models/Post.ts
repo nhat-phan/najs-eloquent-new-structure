@@ -1,0 +1,31 @@
+import { Eloquent } from '../../dist/lib'
+
+export interface IPost {
+  user_id: string
+  title: string
+  content: string
+  view: number
+}
+
+export const PostBase = Eloquent.Mongoose<IPost>()
+
+/**
+ * Post model, extends from Eloquent.Mongoose<IPost>(), supports
+ *   - full definitions of Eloquent<IPost>
+ *   - full definitions of static API
+ */
+export class Post extends PostBase {
+  static className: string = 'Post'
+  protected static timestamps = true
+  protected static softDeletes = true
+  protected static schema = {
+    user_id: { type: String, required: true },
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    view: { type: Number, required: false }
+  }
+
+  getClassName() {
+    return Post.className
+  }
+}

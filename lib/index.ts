@@ -17,7 +17,9 @@ import { DynamicAttribute } from './model/components/DynamicAttribute'
 import { DriverProvider } from './providers/DriverProvider'
 import { ComponentProvider } from './providers/ComponentProvider'
 import { MongooseProvider } from './providers/MongooseProvider'
+import { ChanceFaker } from './factory/FactoryManager'
 
+export type Faker = ChanceFaker
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
 export {
   EloquentComponentProviderFacade,
