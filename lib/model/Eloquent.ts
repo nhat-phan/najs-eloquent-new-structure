@@ -1,4 +1,5 @@
 /// <reference path="interfaces/IModelQuery.ts" />
+/// <reference path="interfaces/IMongoose.ts" />
 
 import { make, register } from 'najs-binding'
 import { Model } from './Model'
@@ -26,9 +27,22 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
     }
   }
 
+  /**
+   * Register given model.
+   *
+   * @param {Eloquent} model
+   */
   static register(model: { new (): Eloquent }) {
     register(model)
     Reflect.construct(model, [])
+  }
+
+  static Mongoose<T>(): NajsEloquent.Model.IMongoose<T> {
+    return <any>Eloquent
+  }
+
+  static Class<T>(): NajsEloquent.Model.IMongoose<T> {
+    return <any>Eloquent
   }
 }
 
@@ -38,26 +52,3 @@ for (const component of defaultComponents) {
 }
 
 EloquentComponentProvider.register(DynamicAttribute, 'dynamic-attribute', true)
-
-// async function run() {
-//   interface IUser {
-//     first_name: string
-//     last_name: string
-//   }
-
-//   interface UserMethods {
-//     doSomething(): void
-//   }
-
-//   class User extends Eloquent<IUser & UserMethods> implements UserMethods {
-//     doSomething() {}
-//   }
-
-//   const test = new User()
-//   const result = await test
-//     .select(['id', 'created_at'])
-//     .orderBy('id')
-//     .where('id', 1)
-//     .get()
-// }
-// run()

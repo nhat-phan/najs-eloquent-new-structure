@@ -1,5 +1,6 @@
 "use strict";
 /// <reference path="interfaces/IModelQuery.ts" />
+/// <reference path="interfaces/IMongoose.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("./Model");
@@ -24,9 +25,20 @@ class Eloquent extends Model_1.Model {
             }
         }
     }
+    /**
+     * Register given model.
+     *
+     * @param {Eloquent} model
+     */
     static register(model) {
         najs_binding_1.register(model);
         Reflect.construct(model, []);
+    }
+    static Mongoose() {
+        return Eloquent;
+    }
+    static Class() {
+        return Eloquent;
     }
 }
 exports.Eloquent = Eloquent;
@@ -35,22 +47,3 @@ for (const component of defaultComponents) {
     component.extend(Eloquent.prototype, [], {});
 }
 EloquentComponentProviderFacade_1.EloquentComponentProvider.register(DynamicAttribute_1.DynamicAttribute, 'dynamic-attribute', true);
-// async function run() {
-//   interface IUser {
-//     first_name: string
-//     last_name: string
-//   }
-//   interface UserMethods {
-//     doSomething(): void
-//   }
-//   class User extends Eloquent<IUser & UserMethods> implements UserMethods {
-//     doSomething() {}
-//   }
-//   const test = new User()
-//   const result = await test
-//     .select(['id', 'created_at'])
-//     .orderBy('id')
-//     .where('id', 1)
-//     .get()
-// }
-// run()
