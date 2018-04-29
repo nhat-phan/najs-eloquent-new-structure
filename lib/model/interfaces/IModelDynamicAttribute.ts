@@ -7,7 +7,7 @@ namespace NajsEloquent.Model {
     mutator?: string
   }
 
-  export class IModelDynamicAttribute {
+  export declare class IModelDynamicAttribute {
     /**
      * Contains list of known attributes, included Eloquent members and current class members
      */

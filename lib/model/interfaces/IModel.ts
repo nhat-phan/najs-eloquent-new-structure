@@ -1,32 +1,33 @@
 /// <reference path="../../contracts/Driver.ts" />
-/// <reference path="IModelSetting.ts" />
-/// <reference path="IModelAttribute.ts" />
-/// <reference path="IModelFillable.ts" />
-/// <reference path="IModelSerialization.ts" />
-/// <reference path="IModelActiveRecord.ts" />
-/// <reference path="IModelQuery.ts" />
-/// <reference path="IModelTimestamps.ts" />
-/// <reference path="IModelDynamicAttribute.ts" />
+/// <reference path="./IModelSetting.ts" />
+/// <reference path="./IModelAttribute.ts" />
+/// <reference path="./IModelFillable.ts" />
+/// <reference path="./IModelSerialization.ts" />
+/// <reference path="./IModelActiveRecord.ts" />
+/// <reference path="./IModelQuery.ts" />
+/// <reference path="./IModelTimestamps.ts" />
+/// <reference path="./IModelSoftDeletes.ts" />
+/// <reference path="./IModelDynamicAttribute.ts" />
 
 namespace NajsEloquent.Model {
-  export class IModel<A> {
+  export declare class IModel<T> {
     /**
      * The model's attributes.
      */
-    protected attributes: A
+    protected attributes: T
 
     /**
      * The driver associated with the model.
      */
-    protected driver: Najs.Contracts.Eloquent.Driver<A>
+    protected driver: Najs.Contracts.Eloquent.Driver<T>
 
     /**
      * The settings associated with the model
      */
-    protected settings: Object
+    protected settings?: Object
   }
 
-  export interface IModel<A>
+  export interface IModel<T>
     extends IModelAttribute,
       IModelDynamicAttribute,
       IModelFillable,
@@ -56,7 +57,7 @@ namespace NajsEloquent.Model {
      *
      * @param {Object} data
      */
-    newInstance(data: Object | A): any
+    newInstance(data: Object | T): this
   }
 
   export type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting & IModelQuery<any, any>, ...args: any[]) => R

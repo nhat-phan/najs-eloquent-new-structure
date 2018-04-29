@@ -31,11 +31,11 @@ export class QueryBuilderWrapper<T> {
   }
 
   protected createCollection(result: Object[]): CollectJs.Collection<NajsEloquent.Model.IModel<T> & T> {
-    return make<NajsEloquent.Model.IModel<T>>(this.modelName).newCollection(result)
+    return make<NajsEloquent.Model.IModel<T> & T>(this.modelName).newCollection(result)
   }
 
   protected createInstance(result: Object): NajsEloquent.Model.IModel<T> & T {
-    return make<NajsEloquent.Model.IModel<T>>(this.modelName).newInstance(result)
+    return make<NajsEloquent.Model.IModel<T> & T>(this.modelName).newInstance(result)
   }
 
   async first(id?: any): Promise<(NajsEloquent.Model.IModel<T> & T) | null> {

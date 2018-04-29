@@ -16,18 +16,26 @@ import { ModelQuery } from './model/components/ModelQuery'
 import { DynamicAttribute } from './model/components/DynamicAttribute'
 import { DriverProvider } from './providers/DriverProvider'
 import { ComponentProvider } from './providers/ComponentProvider'
-import { MongooseProvider } from './providers/MongooseProvider'
+import { MongooseProvider as MongooseProviderClass } from './providers/MongooseProvider'
 import { ChanceFaker } from './factory/FactoryManager'
+import { EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
+import { MongooseDriver } from './drivers/MongooseDriver'
 
 export type Faker = ChanceFaker
+
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
 export {
   EloquentComponentProviderFacade,
   EloquentComponentProvider
 } from './facades/global/EloquentComponentProviderFacade'
+export { MongooseProviderFacade, MongooseProvider } from './facades/global/MongooseProviderFacade'
+
 export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade'
+export { Model } from './model/Model'
 export { Eloquent, EloquentStaticMongoose } from './model/Eloquent'
 export { DummyDriver } from './drivers/DummyDriver'
+export { MongooseDriver } from './drivers/MongooseDriver'
+EloquentDriverProvider.register(MongooseDriver, 'mongoose', true)
 
 export const NajsEloquent: BuiltinClasses = {
   FacadeContainer: FacadeContainer,
@@ -43,7 +51,6 @@ export const NajsEloquent: BuiltinClasses = {
   Provider: {
     DriverProvider: DriverProvider,
     ComponentProvider: ComponentProvider,
-    MongooseProvider: MongooseProvider
+    MongooseProvider: MongooseProviderClass
   }
 }
-// IModel<T> & T

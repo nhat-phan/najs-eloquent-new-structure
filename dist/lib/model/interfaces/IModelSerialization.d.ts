@@ -1,9 +1,15 @@
 declare namespace NajsEloquent.Model {
-    class IModelSerializationMembers {
+    class IModelSerialization {
+        /**
+         * The attributes that are visible when serialized.
+         */
         protected visible?: string[];
+        /**
+         * The attributes that are hidden when serialized.
+         */
         protected hidden?: string[];
     }
-    interface IModelSerialization extends IModelSerializationMembers {
+    interface IModelSerialization {
         /**
          * Get the visible attributes for the model.
          */

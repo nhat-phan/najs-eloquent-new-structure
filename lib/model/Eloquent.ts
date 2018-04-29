@@ -1,3 +1,4 @@
+/// <reference path="interfaces/IModel.ts" />
 /// <reference path="interfaces/IModelQuery.ts" />
 /// <reference path="interfaces/static/IMongooseStatic.ts" />
 
@@ -38,7 +39,7 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
    *
    * @param {Eloquent} model
    */
-  static register(model: { new (): Eloquent }) {
+  static register(model: { new (): Eloquent<any> | Model<any> | NajsEloquent.Model.IModel<any> }) {
     register(model)
     Reflect.construct(model, [])
   }

@@ -4,12 +4,13 @@ namespace NajsEloquent.Model {
     updatedAt: string
   }
 
-  export class IModelTimestamps {
+  export declare class IModelTimestamps {
     /**
      * Timestamps setting.
      */
     protected timestamps?: ITimestampsSetting | boolean
   }
+
   export interface IModelTimestamps {
     /**
      * Determine the model is using timestamps or not.

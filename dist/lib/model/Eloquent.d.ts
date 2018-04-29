@@ -1,3 +1,4 @@
+/// <reference path="interfaces/IModel.d.ts" />
 /// <reference path="interfaces/IModelQuery.d.ts" />
 /// <reference path="interfaces/static/IMongooseStatic.d.ts" />
 import { Model } from './Model';
@@ -19,7 +20,7 @@ export declare class Eloquent<T extends Object = {}> extends Model<T> {
      * @param {Eloquent} model
      */
     static register(model: {
-        new (): Eloquent;
+        new (): Eloquent<any> | Model<any> | NajsEloquent.Model.IModel<any>;
     }): void;
     static Mongoose<T>(): EloquentStaticMongoose<T>;
     static Class<T>(): EloquentStaticMongoose<T>;

@@ -2,6 +2,7 @@ import 'jest'
 import { Model } from '../../lib/model/Model'
 import { DummyDriver } from '../../lib/drivers/DummyDriver'
 import { EloquentDriverProviderFacade } from '../../lib/facades/global/EloquentDriverProviderFacade'
+import collect from 'collect.js'
 
 EloquentDriverProviderFacade.register(DummyDriver, 'dummy', true)
 
@@ -21,5 +22,24 @@ describe('NajsEloquent', function() {
     expect(descriptor).not.toBeUndefined()
     expect(descriptor && typeof descriptor.get).toBe('function')
     expect(descriptor && typeof descriptor.set).toBe('function')
+  })
+
+  it('test Collection reference of collect.js library (use for Relation)', function() {
+    const a = { name: 'a', index: 0, id: 10 }
+    const b = { name: 'b', index: 1, id: 11 }
+    const c = { name: 'c', index: 2, id: 12 }
+    const d = { name: 'd', index: 3, id: 13 }
+    const array = [a, b, c, d]
+    const collection = collect(array)
+    expect(collection.first() === a).toBe(true)
+    expect(collection.last() === d).toBe(true)
+    const keyed = collection.keyBy('id')
+    expect(keyed.get('10') === a).toBe(true)
+
+    const filtered = collection.filter(function(item) {
+      return item.index < 2
+    })
+    expect(filtered.first() === a).toBe(true)
+    expect(filtered.last() === b).toBe(true)
   })
 })

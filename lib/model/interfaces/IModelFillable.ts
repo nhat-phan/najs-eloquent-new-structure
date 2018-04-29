@@ -1,5 +1,5 @@
 namespace NajsEloquent.Model {
-  export class IModelFillable {
+  export declare class IModelFillable {
     /**
      * The attributes that are mass assignable.
      */

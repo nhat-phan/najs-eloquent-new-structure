@@ -4,9 +4,13 @@ namespace NajsEloquent.Model {
     overrideMethods: boolean | 'all' | string
   }
 
-  export class IModelSoftDeletes {
+  export declare class IModelSoftDeletes {
+    /**
+     * Soft deletes setting
+     */
     protected softDeletes?: ISoftDeletesSetting | boolean
   }
+
   export interface IModelSoftDeletes {
     /**
      * Determine the model is using soft delete or not.

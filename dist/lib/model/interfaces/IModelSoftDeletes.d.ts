@@ -4,6 +4,9 @@ declare namespace NajsEloquent.Model {
         overrideMethods: boolean | 'all' | string;
     }
     class IModelSoftDeletes {
+        /**
+         * Soft deletes setting
+         */
         protected softDeletes?: ISoftDeletesSetting | boolean;
     }
     interface IModelSoftDeletes {

@@ -17,20 +17,30 @@ const DynamicAttribute_1 = require("./model/components/DynamicAttribute");
 const DriverProvider_1 = require("./providers/DriverProvider");
 const ComponentProvider_1 = require("./providers/ComponentProvider");
 const MongooseProvider_1 = require("./providers/MongooseProvider");
-var EloquentDriverProviderFacade_1 = require("./facades/global/EloquentDriverProviderFacade");
-exports.EloquentDriverProviderFacade = EloquentDriverProviderFacade_1.EloquentDriverProviderFacade;
-exports.EloquentDriverProvider = EloquentDriverProviderFacade_1.EloquentDriverProvider;
+const EloquentDriverProviderFacade_1 = require("./facades/global/EloquentDriverProviderFacade");
+const MongooseDriver_1 = require("./drivers/MongooseDriver");
+var EloquentDriverProviderFacade_2 = require("./facades/global/EloquentDriverProviderFacade");
+exports.EloquentDriverProviderFacade = EloquentDriverProviderFacade_2.EloquentDriverProviderFacade;
+exports.EloquentDriverProvider = EloquentDriverProviderFacade_2.EloquentDriverProvider;
 var EloquentComponentProviderFacade_1 = require("./facades/global/EloquentComponentProviderFacade");
 exports.EloquentComponentProviderFacade = EloquentComponentProviderFacade_1.EloquentComponentProviderFacade;
 exports.EloquentComponentProvider = EloquentComponentProviderFacade_1.EloquentComponentProvider;
+var MongooseProviderFacade_1 = require("./facades/global/MongooseProviderFacade");
+exports.MongooseProviderFacade = MongooseProviderFacade_1.MongooseProviderFacade;
+exports.MongooseProvider = MongooseProviderFacade_1.MongooseProvider;
 var FactoryFacade_1 = require("./facades/global/FactoryFacade");
 exports.FactoryFacade = FactoryFacade_1.FactoryFacade;
 exports.Factory = FactoryFacade_1.Factory;
 exports.factory = FactoryFacade_1.factory;
+var Model_1 = require("./model/Model");
+exports.Model = Model_1.Model;
 var Eloquent_1 = require("./model/Eloquent");
 exports.Eloquent = Eloquent_1.Eloquent;
 var DummyDriver_1 = require("./drivers/DummyDriver");
 exports.DummyDriver = DummyDriver_1.DummyDriver;
+var MongooseDriver_2 = require("./drivers/MongooseDriver");
+exports.MongooseDriver = MongooseDriver_2.MongooseDriver;
+EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MongooseDriver_1.MongooseDriver, 'mongoose', true);
 exports.NajsEloquent = {
     FacadeContainer: container_1.container,
     Model: {
@@ -48,4 +58,3 @@ exports.NajsEloquent = {
         MongooseProvider: MongooseProvider_1.MongooseProvider
     }
 };
-// IModel<T> & T

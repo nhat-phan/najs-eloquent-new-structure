@@ -33,7 +33,7 @@ export class Model<T = any> {
     }
   }
 
-  protected get attributes() {
+  protected get attributes(): T {
     return this.driver.getRecord()
   }
 

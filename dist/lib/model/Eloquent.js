@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="interfaces/IModel.ts" />
 /// <reference path="interfaces/IModelQuery.ts" />
 /// <reference path="interfaces/static/IMongooseStatic.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });

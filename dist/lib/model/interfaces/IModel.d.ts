@@ -6,23 +6,24 @@
 /// <reference path="IModelActiveRecord.d.ts" />
 /// <reference path="IModelQuery.d.ts" />
 /// <reference path="IModelTimestamps.d.ts" />
+/// <reference path="IModelSoftDeletes.d.ts" />
 /// <reference path="IModelDynamicAttribute.d.ts" />
 declare namespace NajsEloquent.Model {
-    class IModel<A> {
+    class IModel<T> {
         /**
          * The model's attributes.
          */
-        protected attributes: A;
+        protected attributes: T;
         /**
          * The driver associated with the model.
          */
-        protected driver: Najs.Contracts.Eloquent.Driver<A>;
+        protected driver: Najs.Contracts.Eloquent.Driver<T>;
         /**
          * The settings associated with the model
          */
-        protected settings: Object;
+        protected settings?: Object;
     }
-    interface IModel<A> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelActiveRecord, IModelTimestamps, IModelSoftDeletes {
+    interface IModel<T> extends IModelAttribute, IModelDynamicAttribute, IModelFillable, IModelSerialization, IModelActiveRecord, IModelTimestamps, IModelSoftDeletes {
         /**
          * Get class name of the model.
          */
@@ -42,7 +43,7 @@ declare namespace NajsEloquent.Model {
          *
          * @param {Object} data
          */
-        newInstance(data: Object | A): any;
+        newInstance(data: Object | T): this;
     }
     type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting & IModelQuery<any, any>, ...args: any[]) => R;
 }
