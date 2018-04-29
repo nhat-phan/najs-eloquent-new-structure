@@ -8,7 +8,7 @@ services:
 jobs:
   include:
     - stage: test
-      node_js: "node"
+      node_js: "9"
       os: linux
       before_script: 
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
