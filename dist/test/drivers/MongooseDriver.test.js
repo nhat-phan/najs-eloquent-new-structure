@@ -11,7 +11,7 @@ const MongooseDriver_1 = require("../../lib/drivers/MongooseDriver");
 const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
 const MongooseProviderFacade_1 = require("../../lib/facades/global/MongooseProviderFacade");
 const SoftDelete_1 = require("../../lib/drivers/mongoose/SoftDelete");
-const QueryBuilderWrapper_1 = require("../../lib/wrappers/QueryBuilderWrapper");
+const MongooseQueryBuilderWrapper_1 = require("../../lib/wrappers/MongooseQueryBuilderWrapper");
 const MongooseQueryBuilder_1 = require("../../lib/query-builders/mongodb/MongooseQueryBuilder");
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MongooseDriver_1.MongooseDriver, 'mongoose', true);
 class User extends Eloquent_1.Eloquent {
@@ -324,10 +324,10 @@ describe('MongooseDriver', function () {
         });
     });
     describe('.newQuery()', function () {
-        it('returns QueryBuilderWrapper which wrap MongooseQueryBuilder', function () {
+        it('returns MongooseQueryBuilderWrapper which wrap MongooseQueryBuilder', function () {
             const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
             const queryBuilderWrapper = driver.newQuery();
-            expect(queryBuilderWrapper).toBeInstanceOf(QueryBuilderWrapper_1.QueryBuilderWrapper);
+            expect(queryBuilderWrapper).toBeInstanceOf(MongooseQueryBuilderWrapper_1.MongooseQueryBuilderWrapper);
             expect(queryBuilderWrapper['modelName']).toEqual(driver['modelName']);
             expect(queryBuilderWrapper['queryBuilder']).toBeInstanceOf(MongooseQueryBuilder_1.MongooseQueryBuilder);
         });

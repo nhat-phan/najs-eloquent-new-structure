@@ -3,7 +3,7 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../model/interfaces/IModelSetting.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-require("../wrappers/QueryBuilderWrapper");
+require("../wrappers/MongooseQueryBuilderWrapper");
 require("../query-builders/mongodb/MongooseQueryBuilder");
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
@@ -112,7 +112,7 @@ class MongooseDriver {
         return this.attributes.toObject();
     }
     newQuery() {
-        return najs_binding_1.make(constants_1.NajsEloquent.Wrapper.QueryBuilderWrapper, [
+        return najs_binding_1.make(constants_1.NajsEloquent.Wrapper.MongooseQueryBuilderWrapper, [
             this.modelName,
             najs_binding_1.make(constants_1.NajsEloquent.QueryBuilder.MongooseQueryBuilder, [this.modelName, this.softDeletesSetting])
         ]);

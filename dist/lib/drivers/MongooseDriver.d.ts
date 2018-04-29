@@ -1,7 +1,7 @@
 /// <reference path="../contracts/Driver.d.ts" />
 /// <reference path="../model/interfaces/IModel.d.ts" />
 /// <reference path="../model/interfaces/IModelSetting.d.ts" />
-import '../wrappers/QueryBuilderWrapper';
+import '../wrappers/MongooseQueryBuilderWrapper';
 import '../query-builders/mongodb/MongooseQueryBuilder';
 import { Document, Model, Schema, SchemaDefinition, SchemaOptions } from 'mongoose';
 export declare class MongooseDriver<Record extends Object> implements Najs.Contracts.Eloquent.Driver<Record> {

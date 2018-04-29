@@ -59,5 +59,5 @@ namespace NajsEloquent.Model {
     newInstance(data: Object | A): any
   }
 
-  export type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting & IModelQuery<any>, ...args: any[]) => R
+  export type ModelMethod<T, R = T> = (this: IModel<any> & IModelSetting & IModelQuery<any, any>, ...args: any[]) => R
 }

@@ -83,7 +83,7 @@ describe('MongooseDriver.Timestamps', function () {
         const now = new Date(2010, 0, 1);
         Moment.now = () => now;
         const idList = await model.pluck('id');
-        model.whereIn('id', Object.keys(idList)).update({});
+        await model.whereIn('id', Object.keys(idList)).update({});
         const documents = await model.get();
         expect(documents.map((item) => item.updated_at).all()).toEqual([now, now, now]);
     });

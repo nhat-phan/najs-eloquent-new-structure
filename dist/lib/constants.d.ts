@@ -41,6 +41,7 @@ export declare const NajsEloquent: {
     };
     Wrapper: {
         QueryBuilderWrapper: string;
+        MongooseQueryBuilderWrapper: string;
     };
 };
 export declare const QueryFunctions: {

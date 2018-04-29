@@ -46,3 +46,4 @@ export const NajsEloquent: BuiltinClasses = {
     MongooseProvider: MongooseProvider
   }
 }
+// IModel<T> & T

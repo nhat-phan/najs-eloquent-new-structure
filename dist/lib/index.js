@@ -48,3 +48,4 @@ exports.NajsEloquent = {
         MongooseProvider: MongooseProvider_1.MongooseProvider
     }
 };
+// IModel<T> & T

@@ -9,7 +9,7 @@ import { MongooseDriver } from '../../lib/drivers/MongooseDriver'
 import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
 import { MongooseProvider } from '../../lib/facades/global/MongooseProviderFacade'
 import { SoftDelete } from '../../lib/drivers/mongoose/SoftDelete'
-import { QueryBuilderWrapper } from '../../lib/wrappers/QueryBuilderWrapper'
+import { MongooseQueryBuilderWrapper } from '../../lib/wrappers/MongooseQueryBuilderWrapper'
 import { MongooseQueryBuilder } from '../../lib/query-builders/mongodb/MongooseQueryBuilder'
 
 EloquentDriverProvider.register(MongooseDriver, 'mongoose', true)
@@ -391,10 +391,10 @@ describe('MongooseDriver', function() {
   })
 
   describe('.newQuery()', function() {
-    it('returns QueryBuilderWrapper which wrap MongooseQueryBuilder', function() {
+    it('returns MongooseQueryBuilderWrapper which wrap MongooseQueryBuilder', function() {
       const driver = new MongooseDriver(modelInstance)
       const queryBuilderWrapper = driver.newQuery()
-      expect(queryBuilderWrapper).toBeInstanceOf(QueryBuilderWrapper)
+      expect(queryBuilderWrapper).toBeInstanceOf(MongooseQueryBuilderWrapper)
       expect(queryBuilderWrapper['modelName']).toEqual(driver['modelName'])
       expect(queryBuilderWrapper['queryBuilder']).toBeInstanceOf(MongooseQueryBuilder)
     })

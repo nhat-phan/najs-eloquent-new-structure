@@ -43,7 +43,8 @@ exports.NajsEloquent = {
         MongooseProvider: 'NajsEloquent.Provider.MongooseProvider'
     },
     Wrapper: {
-        QueryBuilderWrapper: 'NajsEloquent.Wrapper.QueryBuilderWrapper'
+        QueryBuilderWrapper: 'NajsEloquent.Wrapper.QueryBuilderWrapper',
+        MongooseQueryBuilderWrapper: 'NajsEloquent.Wrapper.MongooseQueryBuilderWrapper'
     }
 };
 exports.QueryFunctions = {

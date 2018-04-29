@@ -2,7 +2,7 @@
 /// <reference path="../model/interfaces/IModel.ts" />
 /// <reference path="../model/interfaces/IModelSetting.ts" />
 
-import '../wrappers/QueryBuilderWrapper'
+import '../wrappers/MongooseQueryBuilderWrapper'
 import '../query-builders/mongodb/MongooseQueryBuilder'
 import { make } from 'najs-binding'
 import { NajsEloquent } from '../constants'
@@ -143,7 +143,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   }
 
   newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {
-    return make(NajsEloquent.Wrapper.QueryBuilderWrapper, [
+    return make(NajsEloquent.Wrapper.MongooseQueryBuilderWrapper, [
       this.modelName,
       make(NajsEloquent.QueryBuilder.MongooseQueryBuilder, [this.modelName, this.softDeletesSetting])
     ])
