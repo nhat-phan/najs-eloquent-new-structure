@@ -274,6 +274,16 @@ describe('MongooseDriver', function() {
     })
   })
 
+  describe('.setRecord()', function() {
+    it('sets "attributes" property with given record', function() {
+      const driver = new MongooseDriver(modelInstance)
+      const attributes = {}
+      driver.setRecord(<any>attributes)
+      expect(driver['attributes'] === attributes).toBe(true)
+      expect(driver.getRecord() === attributes).toBe(true)
+    })
+  })
+
   describe('.useEloquentProxy()', function() {
     it('returns true, that means it depends on EloquentProxy', function() {
       const driver = new MongooseDriver(modelInstance)

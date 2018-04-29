@@ -26,7 +26,7 @@ export {
   EloquentComponentProvider
 } from './facades/global/EloquentComponentProviderFacade'
 export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade'
-export { Eloquent } from './model/Eloquent'
+export { Eloquent, EloquentStaticMongoose } from './model/Eloquent'
 export { DummyDriver } from './drivers/DummyDriver'
 
 export const NajsEloquent: BuiltinClasses = {

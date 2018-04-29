@@ -1,4 +1,4 @@
-import { Eloquent } from '../../dist/lib'
+import { Eloquent, EloquentStaticMongoose } from '../../dist/lib'
 
 export interface IPost {
   user_id: string
@@ -7,7 +7,7 @@ export interface IPost {
   view: number
 }
 
-export const PostBase = Eloquent.Mongoose<IPost>()
+export const PostBase: EloquentStaticMongoose<IPost> = Eloquent.Mongoose<IPost>()
 
 /**
  * Post model, extends from Eloquent.Mongoose<IPost>(), supports

@@ -220,6 +220,15 @@ describe('MongooseDriver', function () {
             expect(driver.getRecord() === attributes).toBe(true);
         });
     });
+    describe('.setRecord()', function () {
+        it('sets "attributes" property with given record', function () {
+            const driver = new MongooseDriver_1.MongooseDriver(modelInstance);
+            const attributes = {};
+            driver.setRecord(attributes);
+            expect(driver['attributes'] === attributes).toBe(true);
+            expect(driver.getRecord() === attributes).toBe(true);
+        });
+    });
     describe('.useEloquentProxy()', function () {
         it('returns true, that means it depends on EloquentProxy', function () {
             const driver = new MongooseDriver_1.MongooseDriver(modelInstance);

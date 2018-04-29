@@ -21,6 +21,12 @@ describe('DummyDriver', function () {
             driver.getRecord();
         });
     });
+    describe('.setRecord()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.setRecord({});
+        });
+    });
     describe('.useEloquentProxy()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();

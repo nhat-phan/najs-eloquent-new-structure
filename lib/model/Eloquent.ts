@@ -11,8 +11,12 @@ import { EloquentProxy } from './EloquentProxy'
 import { EloquentComponentProvider } from '../facades/global/EloquentComponentProviderFacade'
 import { MongooseQueryBuilderWrapper } from '../wrappers/MongooseQueryBuilderWrapper'
 
+export interface EloquentStaticMongoose<T>
+  extends NajsEloquent.Model.Static.IMongooseStatic<T, MongooseQueryBuilderWrapper<Model<T> & T>> {}
+
 export interface Eloquent<T extends Object = {}>
   extends NajsEloquent.Model.IModelQuery<T, NajsEloquent.Wrapper.IQueryBuilderWrapper<Model<T> & T>> {}
+
 export class Eloquent<T extends Object = {}> extends Model<T> {
   /**
    * Model constructor.
@@ -39,11 +43,11 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
     Reflect.construct(model, [])
   }
 
-  static Mongoose<T>(): NajsEloquent.Model.Static.IMongooseStatic<T, MongooseQueryBuilderWrapper<Model<T> & T>> {
+  static Mongoose<T>(): EloquentStaticMongoose<T> {
     return <any>Eloquent
   }
 
-  static Class<T>(): NajsEloquent.Model.Static.IMongooseStatic<T, MongooseQueryBuilderWrapper<Model<T> & T>> {
+  static Class<T>(): EloquentStaticMongoose<T> {
     return <any>Eloquent
   }
 }

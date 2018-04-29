@@ -80,6 +80,9 @@ class MongooseDriver {
     getRecord() {
         return this.attributes;
     }
+    setRecord(value) {
+        this.attributes = value;
+    }
     useEloquentProxy() {
         return true;
     }

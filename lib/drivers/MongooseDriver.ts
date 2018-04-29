@@ -103,6 +103,10 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     return this.attributes
   }
 
+  setRecord(value: Document & Record): void {
+    this.attributes = value
+  }
+
   useEloquentProxy() {
     return true
   }

@@ -30,8 +30,15 @@ export class Model<T = any> {
     if (data !== CREATE_SAMPLE) {
       this.driver = EloquentDriverProvider.create(this)
       this.driver.initialize(this, isGuarded, data)
-      this.attributes = this.driver.getRecord()
     }
+  }
+
+  protected get attributes() {
+    return this.driver.getRecord()
+  }
+
+  protected set attributes(value: T) {
+    this.driver.setRecord(value)
   }
 
   getModelName() {

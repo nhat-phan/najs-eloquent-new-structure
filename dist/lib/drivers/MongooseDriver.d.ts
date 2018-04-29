@@ -21,6 +21,7 @@ export declare class MongooseDriver<Record extends Object> implements Najs.Contr
     protected createAttributesByData(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: any): void;
     protected getCollectionName(): string;
     getRecord(): Record;
+    setRecord(value: Document & Record): void;
     useEloquentProxy(): boolean;
     shouldBeProxied(key: string): boolean;
     proxify(type: 'get' | 'set', target: any, key: string, value?: any): any;

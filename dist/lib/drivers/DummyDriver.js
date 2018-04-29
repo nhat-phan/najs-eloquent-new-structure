@@ -17,6 +17,9 @@ class DummyDriver {
     getRecord() {
         return this.attributes;
     }
+    setRecord(value) {
+        this.attributes = value;
+    }
     useEloquentProxy() {
         return false;
     }

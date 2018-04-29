@@ -23,6 +23,13 @@ describe('DummyDriver', function() {
     })
   })
 
+  describe('.setRecord()', function() {
+    it('should work', function() {
+      const driver = new DummyDriver()
+      driver.setRecord({})
+    })
+  })
+
   describe('.useEloquentProxy()', function() {
     it('should work', function() {
       const driver = new DummyDriver()

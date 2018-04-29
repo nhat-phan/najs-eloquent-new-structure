@@ -15,6 +15,10 @@ declare namespace Najs.Contracts.Eloquent {
          */
         getRecord(): NativeRecord;
         /**
+         * Set the native record instance.
+         */
+        setRecord(record: NativeRecord): void;
+        /**
          * Determine that this driver depends on EloquentProxy.
          */
         useEloquentProxy(): boolean;

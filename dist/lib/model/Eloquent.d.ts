@@ -2,6 +2,8 @@
 /// <reference path="interfaces/static/IMongooseStatic.d.ts" />
 import { Model } from './Model';
 import { MongooseQueryBuilderWrapper } from '../wrappers/MongooseQueryBuilderWrapper';
+export interface EloquentStaticMongoose<T> extends NajsEloquent.Model.Static.IMongooseStatic<T, MongooseQueryBuilderWrapper<Model<T> & T>> {
+}
 export interface Eloquent<T extends Object = {}> extends NajsEloquent.Model.IModelQuery<T, NajsEloquent.Wrapper.IQueryBuilderWrapper<Model<T> & T>> {
 }
 export declare class Eloquent<T extends Object = {}> extends Model<T> {
@@ -19,6 +21,6 @@ export declare class Eloquent<T extends Object = {}> extends Model<T> {
     static register(model: {
         new (): Eloquent;
     }): void;
-    static Mongoose<T>(): NajsEloquent.Model.Static.IMongooseStatic<T, MongooseQueryBuilderWrapper<Model<T> & T>>;
-    static Class<T>(): NajsEloquent.Model.Static.IMongooseStatic<T, MongooseQueryBuilderWrapper<Model<T> & T>>;
+    static Mongoose<T>(): EloquentStaticMongoose<T>;
+    static Class<T>(): EloquentStaticMongoose<T>;
 }

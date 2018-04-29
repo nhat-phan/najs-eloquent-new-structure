@@ -5,6 +5,7 @@ export declare class DummyDriver implements Najs.Contracts.Eloquent.Driver<Objec
     getClassName(): string;
     initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: Object): void;
     getRecord(): Object;
+    setRecord(value: any): void;
     useEloquentProxy(): boolean;
     shouldBeProxied(key: string): boolean;
     proxify(type: 'get' | 'set', target: any, key: string, value?: any): any;
