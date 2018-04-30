@@ -28,16 +28,14 @@ class Model {
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
             this.driver = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
             this.driver.initialize(this, isGuarded, data);
+            this.attributes = this.driver.getRecord();
         }
-    }
-    get attributes() {
-        return this.driver.getRecord();
-    }
-    set attributes(value) {
-        this.driver.setRecord(value);
     }
     getModelName() {
         return najs_binding_2.getClassName(this);
+    }
+    is(model) {
+        return this === model || this.getPrimaryKey().toString() === model.getPrimaryKey().toString();
     }
     newCollection(dataset) {
         return collect(dataset.map(item => this.newInstance(item)));

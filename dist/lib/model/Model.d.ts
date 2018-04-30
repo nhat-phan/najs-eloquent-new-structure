@@ -9,8 +9,8 @@ export declare class Model<T = any> {
      * @param {boolean|undefined} isGuarded
      */
     constructor(data?: Object, isGuarded?: boolean);
-    protected attributes: T;
     getModelName(): string;
+    is(model: this | NajsEloquent.Model.IModel<T>): boolean;
     newCollection(dataset: any[]): any;
     newInstance(data?: Object | T): this;
 }

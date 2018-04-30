@@ -46,6 +46,13 @@ namespace NajsEloquent.Model {
     getModelName(): string
 
     /**
+     * Determine if two models have the same ID and belong to the same table/collection.
+     *
+     * @param {Model} model
+     */
+    is(model: IModel<T>): boolean
+
+    /**
      * Create new Collection from an array of raw attributes.
      *
      * @param {Array<Object>} list

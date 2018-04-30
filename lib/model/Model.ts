@@ -30,19 +30,16 @@ export class Model<T = any> {
     if (data !== CREATE_SAMPLE) {
       this.driver = EloquentDriverProvider.create(this)
       this.driver.initialize(this, isGuarded, data)
+      this.attributes = this.driver.getRecord()
     }
-  }
-
-  protected get attributes(): T {
-    return this.driver.getRecord()
-  }
-
-  protected set attributes(value: T) {
-    this.driver.setRecord(value)
   }
 
   getModelName() {
     return getClassName(this)
+  }
+
+  is(model: this | NajsEloquent.Model.IModel<T>): boolean {
+    return this === model || this.getPrimaryKey().toString() === model.getPrimaryKey().toString()
   }
 
   newCollection(dataset: any[]): any {

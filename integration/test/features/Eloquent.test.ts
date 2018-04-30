@@ -221,16 +221,16 @@ describe('Integration Test - Eloquent model functions', function() {
     })
   })
 
-  // describe('.is()', function() {
-  //   it('determines if two models have the same ID and belong to the same table/collection.', async function() {
-  //     const user = await factory(User).create<User>()
-  //     const newUser = new User()
-  //     const freshUser = await user.where('id', user.id).first()
+  describe('.is()', function() {
+    it('determines if two models have the same ID and belong to the same table/collection.', async function() {
+      const user = await factory(User).create<User>()
+      const newUser = new User()
+      const freshUser = await user.firstOrFail(user.id)
 
-  //     expect(user.is(newUser)).toBe(false)
-  //     expect(user.is(freshUser)).toBe(true)
-  //   })
-  // })
+      expect(user.is(newUser)).toBe(false)
+      expect(user.is(freshUser)).toBe(true)
+    })
+  })
 
   describe('.touch()', function() {
     it("updates the model's update timestamp.", async function() {
@@ -291,11 +291,11 @@ describe('Integration Test - Eloquent model functions', function() {
     })
   })
 
-  // describe('.fresh()', function() {
-  //   it('reloads a fresh model instance from the database.', async function() {
-  //     const user = await factory(User).create<User>()
-  //     expect(user.is(await user.fresh())).toBe(true)
-  //     expect(await new User().fresh()).toBeNull()
-  //   })
-  // })
+  describe('.fresh()', function() {
+    it('reloads a fresh model instance from the database.', async function() {
+      const user = await factory(User).create<User>()
+      expect(user.is(<User>await user.fresh())).toBe(true)
+      expect(await new User().fresh()).toBeNull()
+    })
+  })
 })

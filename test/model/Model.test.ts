@@ -11,17 +11,23 @@ class User extends Model {
 }
 
 describe('NajsEloquent', function() {
-  it('defines "attributes" as a getter/setter to remove circular reference', function() {
-    const user = new User()
-    expect(user['attributes'] === user['driver'].getRecord()).toBe(true)
-    const attributes = { test: 'anything' }
-    user['attributes'] = attributes
-    expect(user['driver'].getRecord() === attributes).toBe(true)
+  describe('.is()', function() {
+    it('returns true if that is the same instance or both primaryKeys have the same "string" format', function() {
+      const a = new User()
+      a.setPrimaryKey(1)
 
-    const descriptor = Object.getOwnPropertyDescriptor(Model.prototype, 'attributes')
-    expect(descriptor).not.toBeUndefined()
-    expect(descriptor && typeof descriptor.get).toBe('function')
-    expect(descriptor && typeof descriptor.set).toBe('function')
+      const b = new User()
+      b.setPrimaryKey('1')
+
+      const c = new User()
+      c.setPrimaryKey('1     ')
+
+      expect(a.is(a)).toBe(true)
+      expect(c.is(c)).toBe(true)
+      expect(b.is(b)).toBe(true)
+      expect(a.is(b)).toBe(true)
+      expect(a.is(c)).toBe(false)
+    })
   })
 
   it('test Collection reference of collect.js library (use for Relation)', function() {
