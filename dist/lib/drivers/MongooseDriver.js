@@ -112,7 +112,7 @@ class MongooseDriver {
         return '_id';
     }
     toObject() {
-        return this.attributes.toObject();
+        return this.attributes.toObject({ virtuals: true });
     }
     newQuery() {
         return najs_binding_1.make(constants_1.NajsEloquent.Wrapper.MongooseQueryBuilderWrapper, [

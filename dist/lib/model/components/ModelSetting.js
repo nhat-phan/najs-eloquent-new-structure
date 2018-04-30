@@ -73,7 +73,7 @@ ModelSetting.isKeyInWhiteList = function (key, whiteList, blackList) {
     if (this.isKeyInBlackList(key, blackList)) {
         return false;
     }
-    return whiteList.length === 0 && !this.hasAttribute(key) && key.indexOf('_') !== 0;
+    return whiteList.length === 0 && this['knownAttributes'].indexOf(key) === -1 && key.indexOf('_') !== 0;
 };
 ModelSetting.isInBlackList = function (list, blackList) {
     if (blackList.length === 1 && blackList[0] === '*') {

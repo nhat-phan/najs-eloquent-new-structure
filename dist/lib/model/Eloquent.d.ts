@@ -13,7 +13,7 @@ export declare class Eloquent<T extends Object = {}> extends Model<T> {
      *
      * @param {Object|undefined} data
      */
-    constructor(data?: Object);
+    constructor(data?: Object, isGuarded?: boolean);
     /**
      * Register given model.
      *

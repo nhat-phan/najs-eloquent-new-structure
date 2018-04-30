@@ -17,8 +17,8 @@ class Eloquent extends Model_1.Model {
      *
      * @param {Object|undefined} data
      */
-    constructor(data) {
-        super(data);
+    constructor(data, isGuarded = true) {
+        super(data, isGuarded);
         if (data !== ClassSetting_1.CREATE_SAMPLE) {
             EloquentComponentProviderFacade_1.EloquentComponentProvider.extend(this, this.driver);
             if (this.driver.useEloquentProxy()) {

@@ -88,13 +88,13 @@ describe('Integration Test - Eloquent model functions', function() {
     })
   })
 
-  // describe('.isVisible()', function() {
-  //   it('determines if the given attribute may be included in JSON.', function() {
-  //     const user = new User()
-  //     expect(user.isVisible('email')).toBe(true)
-  //     expect(user.isVisible('password')).toBe(false)
-  //   })
-  // })
+  describe('.isVisible()', function() {
+    it('determines if the given attribute may be included in JSON.', function() {
+      const user = new User()
+      expect(user.isVisible('email')).toBe(true)
+      expect(user.isVisible('password')).toBe(false)
+    })
+  })
 
   describe('.isHidden()', function() {
     it('determines if the given key hidden in JSON.', function() {
@@ -119,20 +119,20 @@ describe('Integration Test - Eloquent model functions', function() {
     })
   })
 
-  // describe('.getId()', function() {
-  //   it('gets the primary key for the model.', async function() {
-  //     const user = new User()
-  //     expect(user.getId().toString()).toEqual(user.id)
-  //   })
-  // })
+  describe('.getPrimaryKey()', function() {
+    it('gets the primary key for the model.', async function() {
+      const user = new User()
+      expect(user.getPrimaryKey().toString()).toEqual(user.id)
+    })
+  })
 
-  // describe('.setId()', function() {
-  //   it('sets the primary key for the model.', async function() {
-  //     // setId() only works for mongoose scheme with option { _id: false }
-  //     const user = new User()
-  //     user.setId('test')
-  //   })
-  // })
+  describe('.setPrimaryKey()', function() {
+    it('sets the primary key for the model.', async function() {
+      // setId() only works for mongoose scheme with option { _id: false }
+      const user = new User()
+      user.setPrimaryKey('test')
+    })
+  })
 
   describe('.markFillable()', function() {
     it('adds temporary fillable attributes for current instance.', async function() {
@@ -173,54 +173,53 @@ describe('Integration Test - Eloquent model functions', function() {
     })
   })
 
-  // describe('.toObject()', function() {
-  //   it('converts the model instance to a plain object, visible and hidden are not applied.', async function() {
-  //     const user = await factory(User).create<User>({ password: 'test' })
+  describe('.toObject()', function() {
+    it('converts the model instance to a plain object, visible and hidden are not applied.', async function() {
+      const user = await factory(User).create<User>({ password: 'test' })
+      const plainObject = user.toObject()
+      expect(plainObject['_id']).toEqual(user.getPrimaryKey())
+      expect(plainObject['__v']).not.toBeUndefined()
+      expect(plainObject['password']).not.toBeUndefined()
+    })
+  })
 
-  //     const plainObject = user.toObject()
-  //     expect(plainObject['_id']).toEqual(user.getPrimaryKey())
-  //     expect(plainObject['__v']).not.toBeUndefined()
-  //     expect(plainObject['password']).not.toBeUndefined()
-  //   })
-  // })
+  describe('.toJSON()', function() {
+    it('converts the model instance to JSON object.', async function() {
+      const user = await factory(User).create<User>({ password: 'test' })
 
-  // describe('.toJSON()', function() {
-  //   it('converts the model instance to JSON object.', async function() {
-  //     const user = await factory(User).create<User>({ password: 'test' })
+      const json = user.toJSON()
+      expect(json).toEqual({
+        id: user.getPrimaryKey().toString(),
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        age: user.age,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+        // tslint:disable-next-line
+        deleted_at: null
+      })
+    })
+  })
 
-  //     const json = user.toJSON()
-  //     expect(json).toEqual({
-  //       id: user.getPrimaryKey(),
-  //       email: user.email,
-  //       first_name: user.first_name,
-  //       last_name: user.last_name,
-  //       age: user.age,
-  //       created_at: user.created_at,
-  //       updated_at: user.updated_at,
-  //       // tslint:disable-next-line
-  //       deleted_at: null
-  //     })
-  //   })
-  // })
+  describe('.toJson()', function() {
+    it('converts the model instance to JSON object.', async function() {
+      const user = await factory(User).create<User>({ password: 'test' })
 
-  // describe('.toJson()', function() {
-  //   it('converts the model instance to JSON object.', async function() {
-  //     const user = await factory(User).create<User>({ password: 'test' })
-
-  //     const json = user.toJSON()
-  //     expect(json).toEqual({
-  //       id: user.getPrimaryKey(),
-  //       email: user.email,
-  //       first_name: user.first_name,
-  //       last_name: user.last_name,
-  //       age: user.age,
-  //       created_at: user.created_at,
-  //       updated_at: user.updated_at,
-  //       // tslint:disable-next-line
-  //       deleted_at: null
-  //     })
-  //   })
-  // })
+      const json = user.toJSON()
+      expect(json).toEqual({
+        id: user.getPrimaryKey().toString(),
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        age: user.age,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+        // tslint:disable-next-line
+        deleted_at: null
+      })
+    })
+  })
 
   // describe('.is()', function() {
   //   it('determines if two models have the same ID and belong to the same table/collection.', async function() {

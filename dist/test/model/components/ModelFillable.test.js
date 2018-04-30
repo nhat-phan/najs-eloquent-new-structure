@@ -143,6 +143,13 @@ describe('Model/Fillable', function () {
             it('can be used to detect single attribute', function () {
                 const user = new User();
                 expect(user.isFillable('first_name')).toBe(true);
+                expect(user.isFillable('not-defined')).toBe(false);
+            });
+            it('return true if the "fillable" setting is empty and not a knownAttributes and not start with _', function () {
+                const token = new Token();
+                expect(token.isFillable('anything')).toBe(true);
+                expect(token.isFillable('_anything')).toBe(false);
+                expect(token.isFillable('guarded')).toBe(false);
             });
             it('can be used to detect multiple attributes with AND operator', function () {
                 const user = new User();

@@ -100,7 +100,7 @@ export class ModelSetting implements Najs.Contracts.Eloquent.Component {
       return false
     }
 
-    return whiteList.length === 0 && !this.hasAttribute(key) && key.indexOf('_') !== 0
+    return whiteList.length === 0 && this['knownAttributes'].indexOf(key) === -1 && key.indexOf('_') !== 0
   }
 
   static isInBlackList: NajsEloquent.Model.ModelMethod<boolean> = function(list: ArrayLike<any>, blackList: string[]) {

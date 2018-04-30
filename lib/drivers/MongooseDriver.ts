@@ -143,7 +143,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   }
 
   toObject(): Object {
-    return this.attributes.toObject()
+    return this.attributes.toObject({ virtuals: true })
   }
 
   newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {

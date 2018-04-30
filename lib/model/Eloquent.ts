@@ -24,8 +24,8 @@ export class Eloquent<T extends Object = {}> extends Model<T> {
    *
    * @param {Object|undefined} data
    */
-  constructor(data?: Object) {
-    super(data)
+  constructor(data?: Object, isGuarded: boolean = true) {
+    super(data, isGuarded)
     if (data !== CREATE_SAMPLE) {
       EloquentComponentProvider.extend(this, this.driver)
       if (this.driver.useEloquentProxy()) {

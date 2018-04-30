@@ -156,6 +156,14 @@ describe('Model/Serialization', function() {
       it('can be used to detect single attribute', function() {
         const user = new User()
         expect(user.isVisible('first_name')).toBe(true)
+        expect(user.isVisible('not-defined')).toBe(false)
+      })
+
+      it('return true if the "visible" setting is empty and not a knownAttributes and not start with _', function() {
+        const token = new Token()
+        expect(token.isVisible('anything')).toBe(true)
+        expect(token.isVisible('_anything')).toBe(false)
+        expect(token.isVisible('guarded')).toBe(false)
       })
 
       it('can be used to detect multiple attributes with AND operator', function() {
