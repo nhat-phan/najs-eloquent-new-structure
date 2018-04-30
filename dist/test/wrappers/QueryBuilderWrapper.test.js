@@ -19,7 +19,7 @@ describe('QueryBuilderWrapper', function () {
     });
     describe('FORWARD_FUNCTIONS', function () {
         it('contains not overridden functions except AdvancedQuery function', function () {
-            expect(QueryBuilderWrapper_1.QueryBuilderWrapper.FORWARD_FUNCTIONS.sort()).toEqual([
+            expect(QueryBuilderWrapper_1.QueryBuilderWrapper.ForwardFunctions.sort()).toEqual([
                 'queryName',
                 'setLogGroup',
                 'getPrimaryKeyName',
@@ -39,6 +39,7 @@ describe('QueryBuilderWrapper', function () {
                 'orWhereIn',
                 'whereNotIn',
                 'andWhereNotIn',
+                'orWhereNotIn',
                 'whereNull',
                 'andWhereNull',
                 'orWhereNull',
@@ -61,7 +62,7 @@ describe('QueryBuilderWrapper', function () {
             ].sort());
         });
     });
-    for (const name of QueryBuilderWrapper_1.QueryBuilderWrapper.FORWARD_FUNCTIONS) {
+    for (const name of QueryBuilderWrapper_1.QueryBuilderWrapper.ForwardFunctions) {
         describe('.' + name + '()', function () {
             it('forwards to this.queryBuilder.' + name + '() with passed arguments', function () {
                 const queryBuilder = {
@@ -77,6 +78,15 @@ describe('QueryBuilderWrapper', function () {
                 expect(spy.calledWith(['a'], 'b')).toBe(true);
                 expect(queryBuilderWrapper[name](['a', 'b', 'c'])).toEqual('anything');
                 expect(spy.calledWith(['a', 'b', 'c'])).toBe(true);
+            });
+            it('returns itself (chainable) if the this.queryBuilder.' + name + ' is chainable', function () {
+                const queryBuilder = {
+                    [name]: function () {
+                        return this;
+                    }
+                };
+                const queryBuilderWrapper = new QueryBuilderWrapper_1.QueryBuilderWrapper('Test', queryBuilder);
+                expect(queryBuilderWrapper[name]('a') === queryBuilderWrapper).toBe(true);
             });
         });
     }

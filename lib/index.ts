@@ -23,14 +23,15 @@ import { MongooseDriver } from './drivers/MongooseDriver'
 
 export type Faker = ChanceFaker
 
+export { QueryLogFacade, QueryLog } from './facades/global/QueryLogFacade'
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
 export {
   EloquentComponentProviderFacade,
   EloquentComponentProvider
 } from './facades/global/EloquentComponentProviderFacade'
 export { MongooseProviderFacade, MongooseProvider } from './facades/global/MongooseProviderFacade'
-
 export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade'
+
 export { Model } from './model/Model'
 export { Eloquent, EloquentStaticMongoose } from './model/Eloquent'
 export { DummyDriver } from './drivers/DummyDriver'

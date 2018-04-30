@@ -17,5 +17,5 @@ export declare class QueryBuilderWrapper<T> {
     findById(id: any): Promise<NajsEloquent.Model.IModel<T> & T | null>;
     findOrFail(id: any): Promise<NajsEloquent.Model.IModel<T> & T>;
     firstOrFail(id: any): Promise<NajsEloquent.Model.IModel<T> & T>;
-    static readonly FORWARD_FUNCTIONS: string[];
+    static readonly ForwardFunctions: string[];
 }

@@ -70,6 +70,7 @@ exports.QueryFunctions = {
         'orWhereIn',
         'whereNotIn',
         'andWhereNotIn',
+        'orWhereNotIn',
         'whereNull',
         'andWhereNull',
         'orWhereNull',

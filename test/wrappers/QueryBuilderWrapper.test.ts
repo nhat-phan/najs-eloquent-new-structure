@@ -21,7 +21,7 @@ describe('QueryBuilderWrapper', function() {
 
   describe('FORWARD_FUNCTIONS', function() {
     it('contains not overridden functions except AdvancedQuery function', function() {
-      expect(QueryBuilderWrapper.FORWARD_FUNCTIONS.sort()).toEqual(
+      expect(QueryBuilderWrapper.ForwardFunctions.sort()).toEqual(
         [
           'queryName',
           'setLogGroup',
@@ -42,6 +42,7 @@ describe('QueryBuilderWrapper', function() {
           'orWhereIn',
           'whereNotIn',
           'andWhereNotIn',
+          'orWhereNotIn',
           'whereNull',
           'andWhereNull',
           'orWhereNull',
@@ -66,7 +67,7 @@ describe('QueryBuilderWrapper', function() {
     })
   })
 
-  for (const name of QueryBuilderWrapper.FORWARD_FUNCTIONS) {
+  for (const name of QueryBuilderWrapper.ForwardFunctions) {
     describe('.' + name + '()', function() {
       it('forwards to this.queryBuilder.' + name + '() with passed arguments', function() {
         const queryBuilder = {
@@ -83,6 +84,16 @@ describe('QueryBuilderWrapper', function() {
         expect(spy.calledWith(['a'], 'b')).toBe(true)
         expect(queryBuilderWrapper[name](['a', 'b', 'c'])).toEqual('anything')
         expect(spy.calledWith(['a', 'b', 'c'])).toBe(true)
+      })
+
+      it('returns itself (chainable) if the this.queryBuilder.' + name + ' is chainable', function() {
+        const queryBuilder = {
+          [name]: function() {
+            return this
+          }
+        }
+        const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>queryBuilder)
+        expect(queryBuilderWrapper[name]('a') === queryBuilderWrapper).toBe(true)
       })
     })
   }

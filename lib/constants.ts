@@ -70,6 +70,7 @@ export const QueryFunctions = {
     'orWhereIn',
     'whereNotIn',
     'andWhereNotIn',
+    'orWhereNotIn',
     'whereNull',
     'andWhereNull',
     'orWhereNull',

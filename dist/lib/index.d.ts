@@ -9,6 +9,7 @@
 import { BuiltinClasses } from './builtin';
 import { ChanceFaker } from './factory/FactoryManager';
 export declare type Faker = ChanceFaker;
+export { QueryLogFacade, QueryLog } from './facades/global/QueryLogFacade';
 export { EloquentDriverProviderFacade, EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade';
 export { EloquentComponentProviderFacade, EloquentComponentProvider } from './facades/global/EloquentComponentProviderFacade';
 export { MongooseProviderFacade, MongooseProvider } from './facades/global/MongooseProviderFacade';

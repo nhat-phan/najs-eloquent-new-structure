@@ -32,6 +32,11 @@ namespace NajsEloquent.Model {
     get(...fields: Array<string | string[]>): Promise<CollectJs.Collection<IModel<T> & T>>
 
     /**
+     * Execute query and return the records as a Collection.
+     */
+    all(): Promise<CollectJs.Collection<IModel<T> & T>>
+
+    /**
      * Execute query and returns count of records.
      */
     count(): Promise<number>

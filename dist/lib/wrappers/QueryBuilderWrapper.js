@@ -61,7 +61,7 @@ class QueryBuilderWrapper {
     async firstOrFail(id) {
         return this.findOrFail(id);
     }
-    static get FORWARD_FUNCTIONS() {
+    static get ForwardFunctions() {
         return FORWARD_FUNCTIONS;
     }
 }
@@ -69,7 +69,8 @@ QueryBuilderWrapper.className = constants_1.NajsEloquent.Wrapper.QueryBuilderWra
 exports.QueryBuilderWrapper = QueryBuilderWrapper;
 for (const name of FORWARD_FUNCTIONS) {
     QueryBuilderWrapper.prototype[name] = function () {
-        return this['queryBuilder'][name](...arguments);
+        const result = this['queryBuilder'][name](...arguments);
+        return result === this['queryBuilder'] ? this : result;
     };
 }
 najs_binding_1.register(QueryBuilderWrapper);
