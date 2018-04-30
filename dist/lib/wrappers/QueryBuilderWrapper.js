@@ -1,25 +1,32 @@
 "use strict";
 /// <reference path="../model/interfaces/IModel.ts" />
+/// <reference path="../relations/interfaces/IRelationDataBucket.ts" />
 /// <reference path="interfaces/IQueryBuilderWrapper.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+require("../relations/RelationDataBucket");
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
 const NotFoundError_1 = require("../errors/NotFoundError");
 const functions_1 = require("../util/functions");
 const FORWARD_FUNCTIONS = functions_1.array_unique(constants_1.QueryFunctions.BasicQuery, constants_1.QueryFunctions.ConditionQuery, constants_1.QueryFunctions.SoftDeleteQuery, constants_1.QueryFunctions.FetchResultQuery.filter(item => item !== 'first' && item !== 'get'));
 class QueryBuilderWrapper {
-    constructor(model, queryBuilder) {
+    constructor(model, recordName, queryBuilder) {
         this.modelName = model;
+        this.recordName = recordName;
         this.queryBuilder = queryBuilder;
     }
     getClassName() {
         return constants_1.NajsEloquent.Wrapper.QueryBuilderWrapper;
     }
     createCollection(result) {
-        return najs_binding_1.make(this.modelName).newCollection(result);
+        return this.createEagerBucket().newCollection(this.recordName, result);
     }
     createInstance(result) {
-        return najs_binding_1.make(this.modelName).newInstance(result);
+        return this.createEagerBucket().newInstance(this.recordName, result);
+    }
+    createEagerBucket() {
+        const eager = najs_binding_1.make(constants_1.NajsEloquent.Relation.RelationDataBucket, []);
+        return eager.register(this.recordName, this.modelName);
     }
     async first(id) {
         if (typeof id !== 'undefined') {

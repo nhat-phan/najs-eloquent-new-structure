@@ -44,6 +44,9 @@ export const NajsEloquent = {
   Wrapper: {
     QueryBuilderWrapper: 'NajsEloquent.Wrapper.QueryBuilderWrapper',
     MongooseQueryBuilderWrapper: 'NajsEloquent.Wrapper.MongooseQueryBuilderWrapper'
+  },
+  Relation: {
+    RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket'
   }
 }
 

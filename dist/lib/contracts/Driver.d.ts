@@ -11,6 +11,12 @@ declare namespace Najs.Contracts.Eloquent {
          */
         initialize(model: NajsEloquent.Model.IModel<any>, isGuarded: boolean, data?: NativeRecord | Object): void;
         /**
+         * Get the record's name, i.e
+         *  - With MySQL it is a table's name
+         *  - With Mongoose it is a collection's name
+         */
+        getRecordName(): string;
+        /**
          * Get the native record instance.
          */
         getRecord(): NativeRecord;

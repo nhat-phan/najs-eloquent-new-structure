@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
+const Sinon = require("sinon");
 const Model_1 = require("../../lib/model/Model");
 const DummyDriver_1 = require("../../lib/drivers/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
@@ -10,6 +11,15 @@ class User extends Model_1.Model {
 }
 User.className = 'User';
 describe('NajsEloquent', function () {
+    describe('.getRecordName()', function () {
+        it('returns this.driver.getRecordName()', function () {
+            const model = new User();
+            const getRecordNameStub = Sinon.stub(model['driver'], 'getRecordName');
+            getRecordNameStub.returns('anything');
+            expect(model.getRecordName()).toEqual('anything');
+            expect(getRecordNameStub.called).toBe(true);
+        });
+    });
     describe('.is()', function () {
         it('returns true if that is the same instance or both primaryKeys have the same "string" format', function () {
             const a = new User();

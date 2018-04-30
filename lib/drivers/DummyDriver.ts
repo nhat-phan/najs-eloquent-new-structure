@@ -16,6 +16,10 @@ export class DummyDriver implements Najs.Contracts.Eloquent.Driver<Object> {
     this.attributes = data || {}
   }
 
+  getRecordName(): string {
+    return ''
+  }
+
   getRecord(): Object {
     return this.attributes
   }

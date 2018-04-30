@@ -14,6 +14,9 @@ class DummyDriver {
     initialize(model, isGuarded, data) {
         this.attributes = data || {};
     }
+    getRecordName() {
+        return '';
+    }
     getRecord() {
         return this.attributes;
     }

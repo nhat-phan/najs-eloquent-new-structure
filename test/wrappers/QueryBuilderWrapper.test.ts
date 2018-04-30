@@ -15,7 +15,7 @@ Eloquent.register(Test)
 
 describe('QueryBuilderWrapper', function() {
   it('implements IAutoload and returns class name as "NajsEloquent.Wrapper.QueryBuilderWrapper"', function() {
-    const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+    const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
     expect(queryBuilderWrapper.getClassName()).toEqual('NajsEloquent.Wrapper.QueryBuilderWrapper')
   })
 
@@ -75,7 +75,7 @@ describe('QueryBuilderWrapper', function() {
             return 'anything'
           }
         }
-        const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>queryBuilder)
+        const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>queryBuilder)
         const spy = Sinon.spy(queryBuilder, name)
 
         expect(queryBuilderWrapper[name]('a')).toEqual('anything')
@@ -92,14 +92,14 @@ describe('QueryBuilderWrapper', function() {
             return this
           }
         }
-        const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>queryBuilder)
+        const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>queryBuilder)
         expect(queryBuilderWrapper[name]('a') === queryBuilderWrapper).toBe(true)
       })
     })
   }
 
   describe('.first()', function() {
-    it('calls this.queryBuilder.first() to the result and model.newInstance() to create model instance', async function() {
+    it('calls this.queryBuilder.first() to the result and eagerBucket.newInstance() to create model instance', async function() {
       const queryBuilder = {
         getPrimaryKeyName() {
           return 'id'
@@ -112,7 +112,7 @@ describe('QueryBuilderWrapper', function() {
       const firstSpy = Sinon.spy(queryBuilder, 'first')
       const whereSpy = Sinon.spy(queryBuilder, 'where')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       const result = <Test>await queryBuilderWrapper.first()
       expect(result.getAttribute('a')).toEqual(1)
@@ -135,7 +135,7 @@ describe('QueryBuilderWrapper', function() {
       const firstSpy = Sinon.spy(queryBuilder, 'first')
       const whereSpy = Sinon.spy(queryBuilder, 'where')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       const result = await queryBuilderWrapper.first()
       expect(result).toBeNull()
@@ -156,7 +156,7 @@ describe('QueryBuilderWrapper', function() {
       const firstSpy = Sinon.spy(queryBuilder, 'first')
       const whereSpy = Sinon.spy(queryBuilder, 'where')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       const result = <Test>await queryBuilderWrapper.first('value')
       expect(result.getAttribute('a')).toEqual(1)
@@ -168,7 +168,7 @@ describe('QueryBuilderWrapper', function() {
 
   describe('.find()', function() {
     it('is an alias of .first()', async function() {
-      const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+      const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
       const firstStub = Sinon.stub(queryBuilderWrapper, 'first')
       firstStub.returns('anything')
 
@@ -190,7 +190,7 @@ describe('QueryBuilderWrapper', function() {
       const getSpy = Sinon.spy(queryBuilder, 'get')
       const selectSpy = Sinon.spy(queryBuilder, 'select')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       const result = await queryBuilderWrapper.get()
       expect(result.items[0]).toBeInstanceOf(Test)
@@ -211,7 +211,7 @@ describe('QueryBuilderWrapper', function() {
       const getSpy = Sinon.spy(queryBuilder, 'get')
       const selectSpy = Sinon.spy(queryBuilder, 'select')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       await queryBuilderWrapper.get('test')
       expect(getSpy.called).toBe(true)
@@ -225,7 +225,7 @@ describe('QueryBuilderWrapper', function() {
 
   describe('.all()', function() {
     it('is an alias of .get()', async function() {
-      const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+      const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
       const getStub = Sinon.stub(queryBuilderWrapper, 'get')
       getStub.returns('anything')
 
@@ -254,7 +254,7 @@ describe('QueryBuilderWrapper', function() {
       const getSpy = Sinon.spy(queryBuilder, 'get')
       const selectSpy = Sinon.spy(queryBuilder, 'select')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       expect(await queryBuilderWrapper.pluck('a')).toEqual({
         1: 'a1',
@@ -279,7 +279,7 @@ describe('QueryBuilderWrapper', function() {
       const getSpy = Sinon.spy(queryBuilder, 'get')
       const selectSpy = Sinon.spy(queryBuilder, 'select')
 
-      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, <any>queryBuilder)
+      const queryBuilderWrapper = new QueryBuilderWrapper(Test.className, 'test', <any>queryBuilder)
 
       expect(await queryBuilderWrapper.pluck('a', 'b')).toEqual({
         b1: 'a1',
@@ -292,7 +292,7 @@ describe('QueryBuilderWrapper', function() {
 
   describe('.findById()', function() {
     it('is an alias of .first()', async function() {
-      const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+      const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
       const firstStub = Sinon.stub(queryBuilderWrapper, 'first')
       firstStub.returns('anything')
 
@@ -303,7 +303,7 @@ describe('QueryBuilderWrapper', function() {
 
   describe('.findOrFail()', function() {
     it('calls .find(id) and return result if not null', async function() {
-      const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+      const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
       const findStub = Sinon.stub(queryBuilderWrapper, 'find')
       findStub.returns('anything')
 
@@ -312,7 +312,7 @@ describe('QueryBuilderWrapper', function() {
     })
 
     it('calls .find(id) and throws a NotFoundError if result is null', async function() {
-      const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+      const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
       const findStub = Sinon.stub(queryBuilderWrapper, 'find')
       // tslint:disable-next-line
       findStub.returns(null)
@@ -331,7 +331,7 @@ describe('QueryBuilderWrapper', function() {
 
   describe('.firstOrFail()', function() {
     it('is an alias of .findOrFail()', async function() {
-      const queryBuilderWrapper = new QueryBuilderWrapper('Test', <any>{})
+      const queryBuilderWrapper = new QueryBuilderWrapper('Test', 'test', <any>{})
       const findOrFailStub = Sinon.stub(queryBuilderWrapper, 'findOrFail')
       findOrFailStub.returns('anything')
 

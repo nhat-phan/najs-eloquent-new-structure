@@ -7,6 +7,7 @@
 /// <reference path="./IModelQuery.ts" />
 /// <reference path="./IModelTimestamps.ts" />
 /// <reference path="./IModelSoftDeletes.ts" />
+/// <reference path="./IModelRelation.ts" />
 /// <reference path="./IModelDynamicAttribute.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {

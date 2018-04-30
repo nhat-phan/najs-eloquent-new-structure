@@ -265,6 +265,19 @@ describe('MongooseDriver', function() {
     })
   })
 
+  describe('.getRecordName()', function() {
+    it('returns collection name of attributes if attributes && attributes.collection is not undefined', function() {
+      const driver = new MongooseDriver(modelInstance)
+      driver.initialize(modelInstance, true, {})
+      expect(driver.getRecordName()).toEqual('users')
+    })
+
+    it('returns .getCollectionName() in case the driver is not initialized', function() {
+      const notInitializedDriver = new MongooseDriver(modelInstance)
+      expect(notInitializedDriver.getRecordName()).toEqual('users')
+    })
+  })
+
   describe('.getRecord()', function() {
     it('returns "attributes" property', function() {
       const driver = new MongooseDriver(modelInstance)

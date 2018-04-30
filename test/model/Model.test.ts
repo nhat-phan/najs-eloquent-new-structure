@@ -1,4 +1,5 @@
 import 'jest'
+import * as Sinon from 'sinon'
 import { Model } from '../../lib/model/Model'
 import { DummyDriver } from '../../lib/drivers/DummyDriver'
 import { EloquentDriverProviderFacade } from '../../lib/facades/global/EloquentDriverProviderFacade'
@@ -11,6 +12,17 @@ class User extends Model {
 }
 
 describe('NajsEloquent', function() {
+  describe('.getRecordName()', function() {
+    it('returns this.driver.getRecordName()', function() {
+      const model = new User()
+      const getRecordNameStub = Sinon.stub(model['driver'], 'getRecordName')
+      getRecordNameStub.returns('anything')
+
+      expect(model.getRecordName()).toEqual('anything')
+      expect(getRecordNameStub.called).toBe(true)
+    })
+  })
+
   describe('.is()', function() {
     it('returns true if that is the same instance or both primaryKeys have the same "string" format', function() {
       const a = new User()

@@ -15,6 +15,12 @@ describe('DummyDriver', function () {
             driver.initialize({}, false);
         });
     });
+    describe('.getRecordName()', function () {
+        it('should work', function () {
+            const driver = new DummyDriver_1.DummyDriver();
+            driver.getRecordName();
+        });
+    });
     describe('.getRecord()', function () {
         it('should work', function () {
             const driver = new DummyDriver_1.DummyDriver();

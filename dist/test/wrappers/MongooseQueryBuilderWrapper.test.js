@@ -6,7 +6,7 @@ const QueryBuilderWrapper_1 = require("../../lib/wrappers/QueryBuilderWrapper");
 const MongooseQueryBuilderWrapper_1 = require("../../lib/wrappers/MongooseQueryBuilderWrapper");
 describe('MongooseQueryBuilderWrapper', function () {
     it('extends QueryBuilderWrapper, implements IAutoload with class name "NajsEloquent.Wrapper.MongooseQueryBuilderWrapper"', function () {
-        const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper_1.MongooseQueryBuilderWrapper('test', {});
+        const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper_1.MongooseQueryBuilderWrapper('test', 'test', {});
         expect(mongooseQueryBuilderWrapper).toBeInstanceOf(QueryBuilderWrapper_1.QueryBuilderWrapper);
         expect(mongooseQueryBuilderWrapper.getClassName()).toEqual('NajsEloquent.Wrapper.MongooseQueryBuilderWrapper');
     });
@@ -18,7 +18,7 @@ describe('MongooseQueryBuilderWrapper', function () {
                 }
             };
             const nativeSpy = Sinon.spy(queryBuilder, 'native');
-            const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper_1.MongooseQueryBuilderWrapper('test', queryBuilder);
+            const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper_1.MongooseQueryBuilderWrapper('test', 'test', queryBuilder);
             const handler = function () { };
             expect(mongooseQueryBuilderWrapper.native(handler)).toEqual('anything');
             expect(nativeSpy.calledWith(handler)).toBe(true);

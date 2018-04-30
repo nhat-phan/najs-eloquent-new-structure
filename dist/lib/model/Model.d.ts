@@ -10,6 +10,7 @@ export declare class Model<T = any> {
      */
     constructor(data?: Object, isGuarded?: boolean);
     getModelName(): string;
+    getRecordName(): string;
     is(model: this | NajsEloquent.Model.IModel<T>): boolean;
     newCollection(dataset: any[]): any;
     newInstance(data?: Object | T): this;

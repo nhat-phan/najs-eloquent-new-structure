@@ -99,6 +99,10 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
     return plural(snakeCase(this.modelName))
   }
 
+  getRecordName(): string {
+    return this.attributes ? this.attributes.collection.name : this.getCollectionName()
+  }
+
   getRecord(): Record {
     return this.attributes
   }
@@ -149,6 +153,7 @@ export class MongooseDriver<Record extends Object> implements Najs.Contracts.Elo
   newQuery<T>(): NajsEloquent.Wrapper.IQueryBuilderWrapper<T> {
     return make(NajsEloquent.Wrapper.MongooseQueryBuilderWrapper, [
       this.modelName,
+      this.getRecordName(),
       make(NajsEloquent.QueryBuilder.MongooseQueryBuilder, [this.modelName, this.softDeletesSetting])
     ])
   }

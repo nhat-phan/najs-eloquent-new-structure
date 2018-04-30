@@ -43,6 +43,9 @@ export declare const NajsEloquent: {
         QueryBuilderWrapper: string;
         MongooseQueryBuilderWrapper: string;
     };
+    Relation: {
+        RelationDataBucket: string;
+    };
 };
 export declare const QueryFunctions: {
     BasicQuery: string[];

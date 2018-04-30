@@ -34,6 +34,9 @@ class Model {
     getModelName() {
         return najs_binding_2.getClassName(this);
     }
+    getRecordName() {
+        return this.driver.getRecordName();
+    }
     is(model) {
         return this === model || this.getPrimaryKey().toString() === model.getPrimaryKey().toString();
     }

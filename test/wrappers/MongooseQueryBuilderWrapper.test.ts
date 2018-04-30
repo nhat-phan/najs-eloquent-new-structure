@@ -5,7 +5,7 @@ import { MongooseQueryBuilderWrapper } from '../../lib/wrappers/MongooseQueryBui
 
 describe('MongooseQueryBuilderWrapper', function() {
   it('extends QueryBuilderWrapper, implements IAutoload with class name "NajsEloquent.Wrapper.MongooseQueryBuilderWrapper"', function() {
-    const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper('test', <any>{})
+    const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper('test', 'test', <any>{})
     expect(mongooseQueryBuilderWrapper).toBeInstanceOf(QueryBuilderWrapper)
     expect(mongooseQueryBuilderWrapper.getClassName()).toEqual('NajsEloquent.Wrapper.MongooseQueryBuilderWrapper')
   })
@@ -18,7 +18,7 @@ describe('MongooseQueryBuilderWrapper', function() {
         }
       }
       const nativeSpy = Sinon.spy(queryBuilder, 'native')
-      const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper('test', <any>queryBuilder)
+      const mongooseQueryBuilderWrapper = new MongooseQueryBuilderWrapper('test', 'test', <any>queryBuilder)
       const handler = function() {}
 
       expect(mongooseQueryBuilderWrapper.native(<any>handler)).toEqual('anything')

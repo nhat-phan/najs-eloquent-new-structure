@@ -16,6 +16,13 @@ describe('DummyDriver', function() {
     })
   })
 
+  describe('.getRecordName()', function() {
+    it('should work', function() {
+      const driver = new DummyDriver()
+      driver.getRecordName()
+    })
+  })
+
   describe('.getRecord()', function() {
     it('should work', function() {
       const driver = new DummyDriver()

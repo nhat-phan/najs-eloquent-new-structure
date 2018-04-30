@@ -7,6 +7,7 @@
 /// <reference path="./IModelQuery.ts" />
 /// <reference path="./IModelTimestamps.ts" />
 /// <reference path="./IModelSoftDeletes.ts" />
+/// <reference path="./IModelRelation.ts" />
 /// <reference path="./IModelDynamicAttribute.ts" />
 
 namespace NajsEloquent.Model {
@@ -34,7 +35,8 @@ namespace NajsEloquent.Model {
       IModelSerialization,
       IModelActiveRecord,
       IModelTimestamps,
-      IModelSoftDeletes {
+      IModelSoftDeletes,
+      IModelRelation {
     /**
      * Get class name of the model.
      */
@@ -44,6 +46,11 @@ namespace NajsEloquent.Model {
      * Get model name of the model, returns .getClassName() by default.
      */
     getModelName(): string
+
+    /**
+     * Get record name of the model, returns .driver.getRecordName() by default.
+     */
+    getRecordName(): string
 
     /**
      * Determine if two models have the same ID and belong to the same table/collection.

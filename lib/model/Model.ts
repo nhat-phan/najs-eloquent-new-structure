@@ -38,6 +38,10 @@ export class Model<T = any> {
     return getClassName(this)
   }
 
+  getRecordName() {
+    return this.driver.getRecordName()
+  }
+
   is(model: this | NajsEloquent.Model.IModel<T>): boolean {
     return this === model || this.getPrimaryKey().toString() === model.getPrimaryKey().toString()
   }

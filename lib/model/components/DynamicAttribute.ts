@@ -137,6 +137,7 @@ export class DynamicAttribute implements Najs.Contracts.Eloquent.Component {
   static buildKnownAttributes(prototype: Object, bases: Object[]) {
     return array_unique(
       ['knownAttributes', 'dynamicAttributes', 'attributes', 'settings', 'driver'],
+      ['relationDataBucket'],
       ['fillable', 'guarded'],
       ['visible', 'hidden'],
       ['timestamps'],

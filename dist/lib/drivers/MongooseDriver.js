@@ -77,6 +77,9 @@ class MongooseDriver {
     getCollectionName() {
         return pluralize_1.plural(lodash_1.snakeCase(this.modelName));
     }
+    getRecordName() {
+        return this.attributes ? this.attributes.collection.name : this.getCollectionName();
+    }
     getRecord() {
         return this.attributes;
     }
@@ -117,6 +120,7 @@ class MongooseDriver {
     newQuery() {
         return najs_binding_1.make(constants_1.NajsEloquent.Wrapper.MongooseQueryBuilderWrapper, [
             this.modelName,
+            this.getRecordName(),
             najs_binding_1.make(constants_1.NajsEloquent.QueryBuilder.MongooseQueryBuilder, [this.modelName, this.softDeletesSetting])
         ]);
     }

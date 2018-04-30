@@ -1,6 +1,8 @@
 /// <reference path="../model/interfaces/IModel.ts" />
+/// <reference path="../relations/interfaces/IRelationDataBucket.ts" />
 /// <reference path="interfaces/IQueryBuilderWrapper.ts" />
 
+import '../relations/RelationDataBucket'
 import { make, register } from 'najs-binding'
 import { NajsEloquent, QueryFunctions } from '../constants'
 import { NotFoundError } from '../errors/NotFoundError'
@@ -17,12 +19,15 @@ export interface QueryBuilderWrapper<T> extends NajsEloquent.Wrapper.IQueryBuild
 export class QueryBuilderWrapper<T> {
   static className: string = NajsEloquent.Wrapper.QueryBuilderWrapper
   protected modelName: string
+  protected recordName: string
 
   constructor(
     model: string,
+    recordName: string,
     queryBuilder: NajsEloquent.QueryBuilder.IQueryBuilder & NajsEloquent.QueryBuilder.IFetchResultQuery<T>
   ) {
     this.modelName = model
+    this.recordName = recordName
     this.queryBuilder = queryBuilder
   }
 
@@ -31,11 +36,16 @@ export class QueryBuilderWrapper<T> {
   }
 
   protected createCollection(result: Object[]): CollectJs.Collection<NajsEloquent.Model.IModel<T> & T> {
-    return make<NajsEloquent.Model.IModel<T> & T>(this.modelName).newCollection(result)
+    return this.createEagerBucket().newCollection<NajsEloquent.Model.IModel<T> & T>(this.recordName, result)
   }
 
   protected createInstance(result: Object): NajsEloquent.Model.IModel<T> & T {
-    return make<NajsEloquent.Model.IModel<T> & T>(this.modelName).newInstance(result)
+    return this.createEagerBucket().newInstance<NajsEloquent.Model.IModel<T> & T>(this.recordName, result)
+  }
+
+  protected createEagerBucket(): NajsEloquent.Relation.IRelationDataBucket {
+    const eager: NajsEloquent.Relation.IRelationDataBucket = make(NajsEloquent.Relation.RelationDataBucket, [])
+    return eager.register(this.recordName, this.modelName)
   }
 
   async first(id?: any): Promise<(NajsEloquent.Model.IModel<T> & T) | null> {
