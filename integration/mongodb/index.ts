@@ -2,7 +2,7 @@ import '../ModelFactory'
 import { Eloquent, MongooseDriver, EloquentDriverProvider, MongooseProvider } from '../../dist/lib'
 import { IUser, User } from '../models/User'
 import { IPost, Post } from '../models/Post'
-// import { IComment, Comment } from '../models/Comment'
+import { IComment, Comment } from '../models/Comment'
 
 EloquentDriverProvider.register(MongooseDriver, 'mongoose', true)
 
@@ -11,7 +11,7 @@ Eloquent.register(Post)
 
 export { IUser, User }
 export { IPost, Post }
-// export { IComment, Comment }
+export { IComment, Comment }
 
 export function init_mongoose(name: string): Promise<any> {
   return new Promise(resolve => {

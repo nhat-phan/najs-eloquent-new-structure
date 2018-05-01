@@ -1,7 +1,7 @@
 import { Factory, Faker } from '../dist/lib'
 import { User } from './models/User'
 import { Post } from './models/Post'
-// import { Comment } from './models/Comment'
+import { Comment } from './models/Comment'
 import { ObjectId } from 'bson'
 
 function createObjectId(): string {
@@ -32,14 +32,14 @@ Factory.define(Post, (faker: Faker, attributes?: Object): Object => {
   )
 })
 
-// Factory.define(Comment, (faker: Faker, attributes?: Object): Object => {
-//   return Object.assign(
-//     {
-//       email: faker.email(),
-//       name: faker.name(),
-//       content: faker.paragraph(),
-//       like: faker.natural()
-//     },
-//     attributes
-//   )
-// })
+Factory.define(Comment, (faker: Faker, attributes?: Object): Object => {
+  return Object.assign(
+    {
+      email: faker.email(),
+      name: faker.name(),
+      content: faker.paragraph(),
+      like: faker.natural()
+    },
+    attributes
+  )
+})

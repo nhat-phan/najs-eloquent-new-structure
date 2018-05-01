@@ -5,6 +5,7 @@
 /// <reference path="contracts/Component.ts" />
 /// <reference path="contracts/ComponentProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
+/// <reference path="contracts/MongooseProvider.ts" />
 /// <reference path="model/interfaces/IModel.ts" />
 /// <reference path="model/interfaces/IModelQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -39,6 +40,8 @@ var Model_1 = require("./model/Model");
 exports.Model = Model_1.Model;
 var Eloquent_1 = require("./model/Eloquent");
 exports.Eloquent = Eloquent_1.Eloquent;
+var EloquentMongoose_1 = require("./model/EloquentMongoose");
+exports.EloquentMongoose = EloquentMongoose_1.EloquentMongoose;
 var DummyDriver_1 = require("./drivers/DummyDriver");
 exports.DummyDriver = DummyDriver_1.DummyDriver;
 var MongooseDriver_2 = require("./drivers/MongooseDriver");

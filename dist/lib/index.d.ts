@@ -4,6 +4,7 @@
 /// <reference path="contracts/Component.d.ts" />
 /// <reference path="contracts/ComponentProvider.d.ts" />
 /// <reference path="contracts/QueryLog.d.ts" />
+/// <reference path="contracts/MongooseProvider.d.ts" />
 /// <reference path="model/interfaces/IModel.d.ts" />
 /// <reference path="model/interfaces/IModelQuery.d.ts" />
 import { BuiltinClasses } from './builtin';
@@ -16,6 +17,7 @@ export { MongooseProviderFacade, MongooseProvider } from './facades/global/Mongo
 export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade';
 export { Model } from './model/Model';
 export { Eloquent, EloquentStaticMongoose } from './model/Eloquent';
+export { EloquentMongoose } from './model/EloquentMongoose';
 export { DummyDriver } from './drivers/DummyDriver';
 export { MongooseDriver } from './drivers/MongooseDriver';
 export declare const NajsEloquent: BuiltinClasses;

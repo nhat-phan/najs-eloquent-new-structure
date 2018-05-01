@@ -4,6 +4,7 @@
 /// <reference path="contracts/Component.ts" />
 /// <reference path="contracts/ComponentProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
+/// <reference path="contracts/MongooseProvider.ts" />
 /// <reference path="model/interfaces/IModel.ts" />
 /// <reference path="model/interfaces/IModelQuery.ts" />
 
@@ -34,6 +35,7 @@ export { FactoryFacade, Factory, factory } from './facades/global/FactoryFacade'
 
 export { Model } from './model/Model'
 export { Eloquent, EloquentStaticMongoose } from './model/Eloquent'
+export { EloquentMongoose } from './model/EloquentMongoose'
 export { DummyDriver } from './drivers/DummyDriver'
 export { MongooseDriver } from './drivers/MongooseDriver'
 EloquentDriverProvider.register(MongooseDriver, 'mongoose', true)

@@ -14,6 +14,7 @@ export const PostBase: EloquentStaticMongoose<IPost> = Eloquent.Mongoose<IPost>(
  *   - full definitions of Eloquent<IPost>
  *   - full definitions of static API
  */
+export interface Post extends IPost {}
 export class Post extends PostBase {
   static className: string = 'Post'
   protected static timestamps = true
