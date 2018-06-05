@@ -1,2 +1,2 @@
 import 'jest';
-import '../../lib/index';
+import '../../lib';

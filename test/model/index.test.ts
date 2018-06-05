@@ -1,5 +1,5 @@
 import 'jest'
-import '../../lib/index'
+import '../../lib'
 
 describe('Test', function() {
   it('should works', function() {})
