@@ -24,16 +24,16 @@ export function array_unique<T>(...array: Array<T[] | ArrayLike<any>>): T[] {
   return Array.from(new Set(flatten(array)))
 }
 
-// export function find_base_prototypes(prototype: Object, root: Object): Object[] {
-//   const bases: Object[] = []
-//   let count = 0
-//   do {
-//     prototype = Object.getPrototypeOf(prototype)
-//     bases.push(prototype)
-//     count++
-//   } while (count < 100 && (typeof prototype === 'undefined' || prototype !== root))
-//   return bases
-// }
+export function find_base_prototypes(prototype: Object, root: Object): Object[] {
+  const bases: Object[] = []
+  let count = 0
+  do {
+    prototype = Object.getPrototypeOf(prototype)
+    bases.push(prototype)
+    count++
+  } while (count < 100 && (typeof prototype === 'undefined' || prototype !== root))
+  return bases
+}
 
 export type DotNotationInfo = {
   first: string

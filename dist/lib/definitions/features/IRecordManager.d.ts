@@ -44,7 +44,7 @@ declare namespace NajsEloquent.Feature {
          * @param {string} key
          * @param {mixed} value
          */
-        setAttribute<T>(model: Model.IModel, key: string, value: T): this;
+        setAttribute<T>(model: Model.IModel, key: string, value: T): boolean;
         /**
          * Get the primary key value.
          *
@@ -57,7 +57,7 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {mixed} value
          */
-        setPrimaryKey<T>(model: Model.IModel, value: T): this;
+        setPrimaryKey<K>(model: Model.IModel, value: K): this;
         /**
          * Get the primary key's name
          *

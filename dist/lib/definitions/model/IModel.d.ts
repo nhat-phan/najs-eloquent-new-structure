@@ -6,6 +6,10 @@ declare namespace NajsEloquent.Model {
     };
     class IModel<T = any> {
         /**
+         * Contains metadata data which shared for all model instances
+         */
+        protected sharedMetadata: object;
+        /**
          * The model's attributes.
          */
         protected attributes: T;
@@ -19,5 +23,9 @@ declare namespace NajsEloquent.Model {
          * Get driver which is used by the model.
          */
         getDriver(): Najs.Contracts.Eloquent.Driver<T>;
+        /**
+         * Get model name.
+         */
+        getModelName(): string;
     }
 }
