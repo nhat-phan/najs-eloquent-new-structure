@@ -48,7 +48,7 @@ declare namespace NajsEloquent.Feature {
          * @param {string} property Property name
          * @param {Array<string|string[]} args arguments
          */
-        pushToUniqueArraySetting(model: Model.IModel, property: string, args: ArrayLike<any>): this;
+        pushToUniqueArraySetting(model: Model.IModel, property: string, args: ArrayLike<any>): void;
         /**
          * Determine that given key should be in white list and not in black list
          *

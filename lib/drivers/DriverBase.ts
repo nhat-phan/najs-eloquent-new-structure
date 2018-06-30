@@ -43,20 +43,22 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
       bases: bases
     }
 
-    return this.attachPublicApi(prototype, bases)
+    const features = this.getFeatures()
+    for (const feature of features) {
+      this.attachFeatureIfNeeded(feature, prototype, bases)
+    }
   }
 
-  attachPublicApi(prototype: object, bases: object[]) {
-    // prettier-ignore
-    this
-      .attachFeatureIfNeeded(this.getFillableFeature(), prototype, bases)
-      .attachFeatureIfNeeded(this.getSettingFeature(), prototype, bases)
-
-    // RecordManager must be attached after other features
-    this.attachFeatureIfNeeded(this.getRecordManager(), prototype, bases)
+  getFeatures() {
+    return [
+      this.getFillableFeature(),
+      this.getSettingFeature(),
+      // RecordManager must be attached after other features
+      this.getRecordManager()
+    ]
   }
 
-  attachFeatureIfNeeded(feature: NajsEloquent.Feature.IFeature, prototype: object, bases: object[]): this {
+  attachFeatureIfNeeded(feature: NajsEloquent.Feature.IFeature, prototype: object, bases: object[]) {
     if (typeof prototype['sharedMetadata'] === 'undefined') {
       prototype['sharedMetadata'] = {}
     }
@@ -69,7 +71,5 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
       feature.attachPublicApi(prototype, bases, this)
       prototype['sharedMetadata']['features'][feature.getFeatureName()] = true
     }
-
-    return this
   }
 }

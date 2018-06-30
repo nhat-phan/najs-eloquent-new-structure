@@ -1,4 +1,5 @@
 /// <reference path="../../contracts/Driver.d.ts" />
+/// <reference path="../utils/IClassSetting.d.ts" />
 /// <reference path="IModelFillable.d.ts" />
 declare namespace NajsEloquent.Model {
     type ModelDefinition<T = any> = string | {
@@ -13,6 +14,10 @@ declare namespace NajsEloquent.Model {
          * The model's attributes.
          */
         protected attributes: T;
+        /**
+         * The model's class setting
+         */
+        protected classSettings: NajsEloquent.Util.IClassSetting;
         /**
          * The driver associated with the model.
          */

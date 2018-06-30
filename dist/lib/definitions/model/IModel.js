@@ -1,4 +1,5 @@
 /// <reference path="../../contracts/Driver.ts" />
+/// <reference path="../utils/IClassSetting.ts" />
 /// <reference path="./IModelFillable.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {

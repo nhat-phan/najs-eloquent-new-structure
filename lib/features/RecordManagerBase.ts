@@ -44,7 +44,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   buildKnownAttributes(prototype: object, bases: object[]) {
     return array_unique(
-      ['knownAttributes', 'dynamicAttributes', 'attributes', 'settings', 'driver'],
+      ['knownAttributes', 'dynamicAttributes', 'attributes', 'classSettings', 'driver'],
       ['relationDataBucket', 'relationsMap', 'relations'],
       ['eventEmitter'],
       ['fillable', 'guarded'],

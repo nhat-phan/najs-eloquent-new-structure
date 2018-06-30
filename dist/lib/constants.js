@@ -5,6 +5,9 @@ exports.NajsEloquent = {
     Driver: {
         DummyDriver: 'NajsEloquent.Driver.DummyDriver'
     },
+    Feature: {
+        SettingFeature: 'NajsEloquent.Feature.SettingFeature'
+    },
     Provider: {
         DriverProvider: 'NajsEloquent.Provider.DriverProvider'
     }

@@ -2,6 +2,9 @@ export declare const NajsEloquent: {
     Driver: {
         DummyDriver: string;
     };
+    Feature: {
+        SettingFeature: string;
+    };
     Provider: {
         DriverProvider: string;
     };

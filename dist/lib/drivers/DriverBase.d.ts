@@ -12,6 +12,6 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     abstract getSettingFeature(): NajsEloquent.Feature.ISettingFeature;
     makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
     attachPublicApiIfNeeded(model: NajsEloquent.Model.IModel): void;
-    attachPublicApi(prototype: object, bases: object[]): void;
-    attachFeatureIfNeeded(feature: NajsEloquent.Feature.IFeature, prototype: object, bases: object[]): this;
+    getFeatures(): (NajsEloquent.Feature.IFillableFeature | NajsEloquent.Feature.ISettingFeature | NajsEloquent.Feature.IRecordManager<T>)[];
+    attachFeatureIfNeeded(feature: NajsEloquent.Feature.IFeature, prototype: object, bases: object[]): void;
 }
