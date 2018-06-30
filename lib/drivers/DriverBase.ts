@@ -1,8 +1,7 @@
 /// <reference path="../contracts/Driver.ts" />
 
+import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { find_base_prototypes } from '../util/functions'
-
-export const CREATE_SAMPLE = 'create-sample'
 
 /**
  * Base class of all drivers, handling:

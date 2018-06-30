@@ -1,5 +1,4 @@
 /// <reference path="../contracts/Driver.d.ts" />
-export declare const CREATE_SAMPLE = "create-sample";
 /**
  * Base class of all drivers, handling:
  *   - generic initialize for makeModel()

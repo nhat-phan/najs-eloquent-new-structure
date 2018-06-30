@@ -1,8 +1,8 @@
 "use strict";
 /// <reference path="../contracts/Driver.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
-exports.CREATE_SAMPLE = 'create-sample';
 /**
  * Base class of all drivers, handling:
  *   - generic initialize for makeModel()
@@ -13,7 +13,7 @@ class DriverBase {
         this.attachedModels = {};
     }
     makeModel(model, data, isGuarded) {
-        if (data === exports.CREATE_SAMPLE) {
+        if (data === ClassSetting_1.CREATE_SAMPLE) {
             return model;
         }
         this.getRecordManager().initialize(model, !!isGuarded, data);
