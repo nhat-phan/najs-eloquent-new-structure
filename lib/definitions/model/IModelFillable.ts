@@ -55,13 +55,13 @@ namespace NajsEloquent.Model {
      *
      * @param {Object} data
      */
-    fill(data: Object): this
+    fill(data: object): this
 
     /**
      * Fill the model with an array of attributes. Force mass assignment.
      *
      * @param {Object} data
      */
-    forceFill(data: Object): this
+    forceFill(data: object): this
   }
 }

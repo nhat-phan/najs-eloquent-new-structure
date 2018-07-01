@@ -3,6 +3,7 @@ export declare const NajsEloquent: {
         DummyDriver: string;
     };
     Feature: {
+        FillableFeature: string;
         SettingFeature: string;
     };
     Provider: {

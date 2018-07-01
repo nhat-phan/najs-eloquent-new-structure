@@ -5,6 +5,7 @@ export const NajsEloquent = {
     DummyDriver: 'NajsEloquent.Driver.DummyDriver'
   },
   Feature: {
+    FillableFeature: 'NajsEloquent.Feature.FillableFeature',
     SettingFeature: 'NajsEloquent.Feature.SettingFeature'
   },
   Provider: {

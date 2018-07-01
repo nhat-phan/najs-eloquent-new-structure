@@ -23,7 +23,7 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      * @param {Array<string|string[]>} keys
      */
-    markFillable(model: Model.IModel, keys: Array<Array<string | string[]>>): this
+    markFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
 
     /**
      * Add temporary guarded attributes for current instance.
@@ -31,7 +31,7 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      * @param {Array<string|string[]>} keys
      */
-    markGuarded(model: Model.IModel, keys: Array<Array<string | string[]>>): this
+    markGuarded(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
 
     /**
      * Determine if the given attribute may be mass assigned.
@@ -39,7 +39,7 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      * @param {Array<string|string[]>} key
      */
-    isFillable(model: Model.IModel, keys: Array<Array<string | string[]>>): boolean
+    isFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
 
     /**
      * Determine if the given key is guarded.
@@ -47,7 +47,7 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      * @param {string} key
      */
-    isGuarded(model: Model.IModel, keys: Array<Array<string | string[]>>): boolean
+    isGuarded(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
 
     /**
      * Fill the model with an array of attributes.
@@ -55,7 +55,7 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      * @param {Object} data
      */
-    fill(model: Model.IModel, data: Object): this
+    fill(model: Model.IModel, data: object): void
 
     /**
      * Fill the model with an array of attributes. Force mass assignment.
@@ -63,6 +63,6 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      * @param {Object} data
      */
-    forceFill(model: Model.IModel, data: Object): this
+    forceFill(model: Model.IModel, data: object): void
   }
 }
