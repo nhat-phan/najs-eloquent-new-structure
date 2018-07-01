@@ -10,9 +10,7 @@ import { NajsEloquent } from '../constants'
 
 export class FillableFeature {
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    for (const name in FillablePublicApi) {
-      prototype[name] = FillablePublicApi[name]
-    }
+    Object.assign(prototype, FillablePublicApi)
   }
 
   getFeatureName(): string {

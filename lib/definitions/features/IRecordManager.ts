@@ -36,6 +36,13 @@ namespace NajsEloquent.Feature {
     getRecord(model: Model.IModel): T
 
     /**
+     * Format given attribute name
+     *
+     * @param {string} name
+     */
+    formatAttributeName(name: string): string
+
+    /**
      * Get value for given key.
      *
      * @param {Model} model

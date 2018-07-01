@@ -10,9 +10,7 @@ const FillablePublicApi_1 = require("./FillablePublicApi");
 const constants_1 = require("../constants");
 class FillableFeature {
     attachPublicApi(prototype, bases, driver) {
-        for (const name in FillablePublicApi_1.FillablePublicApi) {
-            prototype[name] = FillablePublicApi_1.FillablePublicApi[name];
-        }
+        Object.assign(prototype, FillablePublicApi_1.FillablePublicApi);
     }
     getFeatureName() {
         return 'Fillable';

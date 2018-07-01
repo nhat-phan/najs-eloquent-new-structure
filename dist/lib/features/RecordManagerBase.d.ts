@@ -18,8 +18,15 @@ export declare abstract class RecordManagerBase<T> implements NajsEloquent.Featu
     abstract hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean;
     abstract getFeatureName(): string;
     abstract getClassName(): string;
+    abstract formatAttributeName(name: string): string;
     getKnownAttributes(model: NajsEloquent.Model.IModel): string[];
     getDynamicAttributes(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.DynamicAttributeSetting[];
     attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
     buildKnownAttributes(prototype: object, bases: object[]): string[];
+    buildDynamicAttributes(prototype: Object, bases: Object[]): {};
+    findGettersAndSetters(dynamicAttributes: Object, prototype: Object): void;
+    createDynamicAttributeIfNeeded(bucket: Object, property: string): void;
+    findAccessorsAndMutators(bucket: Object, prototype: any): void;
+    bindAccessorsAndMutators(prototype: Object, dynamicAttributes: Object): void;
+    makeAccessorAndMutatorDescriptor(prototype: Object, name: string, settings: NajsEloquent.Feature.DynamicAttributeSetting): Object | undefined;
 }
