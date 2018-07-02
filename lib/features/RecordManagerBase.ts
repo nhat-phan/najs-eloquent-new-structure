@@ -4,6 +4,8 @@
 
 import { isFunction } from 'lodash'
 import { array_unique } from '../util/functions'
+import { snakeCase } from 'lodash'
+import { plural } from 'pluralize'
 
 /**
  * Base class of all RecordManager, handling:
@@ -11,29 +13,41 @@ import { array_unique } from '../util/functions'
  *   - finding accessors/mutators and getters/setters of model
  */
 export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IRecordManager<T> {
-  abstract initialize(model: NajsEloquent.Model.IModel, isGuarded: boolean, data?: T | object): this
-
-  abstract getRecordName(model: NajsEloquent.Model.IModel): string
-
-  abstract getRecord(model: NajsEloquent.Model.IModel): T
+  abstract initialize(model: NajsEloquent.Model.IModel, isGuarded: boolean, data?: T | object): void
 
   abstract getAttribute(model: NajsEloquent.Model.IModel, key: string): any
 
   abstract setAttribute<T>(model: NajsEloquent.Model.IModel, key: string, value: T): boolean
 
-  abstract getPrimaryKey(model: NajsEloquent.Model.IModel): any
-
-  abstract setPrimaryKey<K>(model: NajsEloquent.Model.IModel, value: K): this
+  abstract hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean
 
   abstract getPrimaryKeyName(model: NajsEloquent.Model.IModel): string
 
-  abstract hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean
-
-  abstract getFeatureName(): string
-
   abstract getClassName(): string
 
-  abstract formatAttributeName(name: string): string
+  getFeatureName(): string {
+    return 'RecordManager'
+  }
+
+  getRecordName(model: NajsEloquent.Model.IModel): string {
+    return snakeCase(plural(model.getModelName()))
+  }
+
+  getRecord(model: NajsEloquent.Model.IModel): T {
+    return model['attributes']
+  }
+
+  formatAttributeName(model: NajsEloquent.Model.IModel, name: string): string {
+    return snakeCase(name)
+  }
+
+  getPrimaryKey(model: NajsEloquent.Model.IModel) {
+    return this.getAttribute(model, this.getPrimaryKeyName(model))
+  }
+
+  setPrimaryKey<K>(model: NajsEloquent.Model.IModel, value: K): boolean {
+    return this.setAttribute(model, this.getPrimaryKeyName(model), value)
+  }
 
   getKnownAttributes(model: NajsEloquent.Model.IModel): string[] {
     return model['sharedMetadata']['knownAttributes']
@@ -64,7 +78,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   buildKnownAttributes(prototype: object, bases: object[]) {
     return array_unique(
-      ['knownAttributes', 'dynamicAttributes', 'attributes', 'classSettings', 'driver'],
+      ['attributes', 'classSettings', 'driver', 'primaryKey'],
       ['relationDataBucket', 'relationsMap', 'relations'],
       ['eventEmitter'],
       ['fillable', 'guarded'],
@@ -126,7 +140,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
         // if (match.index === regex.lastIndex) {
         //   ++regex.lastIndex
         // }
-        const property: string = this.formatAttributeName(match[2])
+        const property: string = this.formatAttributeName(prototype, match[2])
         this.createDynamicAttributeIfNeeded(bucket, property)
         if (match[1] === 'get') {
           bucket[property].accessor = match[0]

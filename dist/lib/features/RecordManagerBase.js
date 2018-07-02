@@ -5,12 +5,32 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const functions_1 = require("../util/functions");
+const lodash_2 = require("lodash");
+const pluralize_1 = require("pluralize");
 /**
  * Base class of all RecordManager, handling:
  *   - getKnownAttributes() and getDynamicAttributes() accessors
  *   - finding accessors/mutators and getters/setters of model
  */
 class RecordManagerBase {
+    getFeatureName() {
+        return 'RecordManager';
+    }
+    getRecordName(model) {
+        return lodash_2.snakeCase(pluralize_1.plural(model.getModelName()));
+    }
+    getRecord(model) {
+        return model['attributes'];
+    }
+    formatAttributeName(model, name) {
+        return lodash_2.snakeCase(name);
+    }
+    getPrimaryKey(model) {
+        return this.getAttribute(model, this.getPrimaryKeyName(model));
+    }
+    setPrimaryKey(model, value) {
+        return this.setAttribute(model, this.getPrimaryKeyName(model), value);
+    }
     getKnownAttributes(model) {
         return model['sharedMetadata']['knownAttributes'];
     }
@@ -35,7 +55,7 @@ class RecordManagerBase {
         this.bindAccessorsAndMutators(prototype, dynamicAttributes);
     }
     buildKnownAttributes(prototype, bases) {
-        return functions_1.array_unique(['knownAttributes', 'dynamicAttributes', 'attributes', 'classSettings', 'driver'], ['relationDataBucket', 'relationsMap', 'relations'], ['eventEmitter'], ['fillable', 'guarded'], ['visible', 'hidden'], ['timestamps'], ['softDeletes'], Object.getOwnPropertyNames(prototype), ...bases.map(base => Object.getOwnPropertyNames(base)));
+        return functions_1.array_unique(['attributes', 'classSettings', 'driver', 'primaryKey'], ['relationDataBucket', 'relationsMap', 'relations'], ['eventEmitter'], ['fillable', 'guarded'], ['visible', 'hidden'], ['timestamps'], ['softDeletes'], Object.getOwnPropertyNames(prototype), ...bases.map(base => Object.getOwnPropertyNames(base)));
     }
     buildDynamicAttributes(prototype, bases) {
         const dynamicAttributes = {};
@@ -82,7 +102,7 @@ class RecordManagerBase {
                 // if (match.index === regex.lastIndex) {
                 //   ++regex.lastIndex
                 // }
-                const property = this.formatAttributeName(match[2]);
+                const property = this.formatAttributeName(prototype, match[2]);
                 this.createDynamicAttributeIfNeeded(bucket, property);
                 if (match[1] === 'get') {
                     bucket[property].accessor = match[0];

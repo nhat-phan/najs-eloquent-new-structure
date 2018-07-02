@@ -15,7 +15,7 @@ declare namespace NajsEloquent.Feature {
          * @param {boolean} isGuarded
          * @param {Record|object} data
          */
-        initialize(model: Model.IModel, isGuarded: boolean, data?: T | object): this;
+        initialize(model: Model.IModel, isGuarded: boolean, data?: T | object): void;
         /**
          * Get the record's name, i.e
          *  - With MySQL it is a table's name
@@ -33,9 +33,10 @@ declare namespace NajsEloquent.Feature {
         /**
          * Format given attribute name
          *
+         * @param {Model} model
          * @param {string} name
          */
-        formatAttributeName(name: string): string;
+        formatAttributeName(model: Model.IModel, name: string): string;
         /**
          * Get value for given key.
          *
@@ -63,7 +64,7 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {mixed} value
          */
-        setPrimaryKey<K>(model: Model.IModel, value: K): this;
+        setPrimaryKey<K>(model: Model.IModel, value: K): boolean;
         /**
          * Get the primary key's name
          *
