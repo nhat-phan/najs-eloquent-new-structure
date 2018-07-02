@@ -5,6 +5,7 @@ export declare const NajsEloquent: {
     Feature: {
         FillableFeature: string;
         SettingFeature: string;
+        RecordManager: string;
     };
     Provider: {
         DriverProvider: string;

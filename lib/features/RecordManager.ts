@@ -1,6 +1,7 @@
 import { RecordManagerBase } from './RecordManagerBase'
 
 import { Record } from './Record'
+import { NajsEloquent } from '../constants'
 
 export class RecordManager<T extends Record> extends RecordManagerBase<T> {
   initialize(model: NajsEloquent.Model.IModel<Record>, isGuarded: boolean, data?: T | object): void {
@@ -43,6 +44,6 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
   }
 
   getClassName(): string {
-    return 'RecordManager'
+    return NajsEloquent.Feature.RecordManager
   }
 }

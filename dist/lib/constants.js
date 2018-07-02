@@ -7,7 +7,8 @@ exports.NajsEloquent = {
     },
     Feature: {
         FillableFeature: 'NajsEloquent.Feature.FillableFeature',
-        SettingFeature: 'NajsEloquent.Feature.SettingFeature'
+        SettingFeature: 'NajsEloquent.Feature.SettingFeature',
+        RecordManager: 'NajsEloquent.Feature.RecordManager'
     },
     Provider: {
         DriverProvider: 'NajsEloquent.Provider.DriverProvider'

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const RecordManagerBase_1 = require("./RecordManagerBase");
 const Record_1 = require("./Record");
+const constants_1 = require("../constants");
 class RecordManager extends RecordManagerBase_1.RecordManagerBase {
     initialize(model, isGuarded, data) {
         if (data instanceof Record_1.Record) {
@@ -35,7 +36,7 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
             .getSettingProperty(model, 'primaryKey', 'id');
     }
     getClassName() {
-        return 'RecordManager';
+        return constants_1.NajsEloquent.Feature.RecordManager;
     }
 }
 exports.RecordManager = RecordManager;
