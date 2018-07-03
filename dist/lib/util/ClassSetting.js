@@ -17,7 +17,7 @@ class ClassSetting {
      * @param {Function} reader
      */
     read(property, reader) {
-        return reader(this.definition[property] ? this.definition[property] : undefined, this.sample[property] ? this.sample[property] : undefined, this.instance[property] ? this.instance[property] : undefined);
+        return reader(typeof this.definition[property] !== 'undefined' ? this.definition[property] : undefined, typeof this.sample[property] !== 'undefined' ? this.sample[property] : undefined, typeof this.instance[property] !== 'undefined' ? this.instance[property] : undefined);
     }
     /**
      * Get the "sample" instance.

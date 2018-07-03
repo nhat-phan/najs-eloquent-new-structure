@@ -26,9 +26,9 @@ export class ClassSetting implements NajsEloquent.Util.IClassSetting {
    */
   read<T>(property: string, reader: NajsEloquent.Util.ISettingReader<T>): T {
     return reader(
-      this.definition[property] ? this.definition[property] : undefined,
-      this.sample[property] ? this.sample[property] : undefined,
-      this.instance[property] ? this.instance[property] : undefined
+      typeof this.definition[property] !== 'undefined' ? this.definition[property] : undefined,
+      typeof this.sample[property] !== 'undefined' ? this.sample[property] : undefined,
+      typeof this.instance[property] !== 'undefined' ? this.instance[property] : undefined
     )
   }
 

@@ -8,7 +8,6 @@ import { ClassSetting } from '../util/ClassSetting'
 import { array_unique } from '../util/functions'
 import { NajsEloquent } from '../constants'
 
-// TODO: write test
 export class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {}
 
@@ -33,7 +32,7 @@ export class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
       if (staticVersion) {
         return staticVersion
       }
-      return sampleVersion ? sampleVersion : defaultValue
+      return typeof sampleVersion !== 'undefined' ? sampleVersion : defaultValue
     })
   }
 
@@ -42,11 +41,8 @@ export class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
   }
 
   getSettingWithDefaultForTrueValue<T>(model: NajsEloquent.Model.IModel, property: string, defaultValue: T): T {
-    const value = this.getSettingProperty<any | boolean>(model, property, false)
-    if (value === true) {
-      return defaultValue
-    }
-    return value || defaultValue
+    const value = this.getSettingProperty<any | boolean>(model, property, defaultValue)
+    return value === true ? defaultValue : value
   }
 
   getArrayUniqueSetting(model: NajsEloquent.Model.IModel, property: string, defaultValue: string[]): string[] {

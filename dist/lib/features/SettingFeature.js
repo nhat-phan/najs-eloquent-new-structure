@@ -8,7 +8,6 @@ const SettingType_1 = require("../util/SettingType");
 const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
 const constants_1 = require("../constants");
-// TODO: write test
 class SettingFeature {
     attachPublicApi(prototype, bases, driver) { }
     getFeatureName() {
@@ -28,18 +27,15 @@ class SettingFeature {
             if (staticVersion) {
                 return staticVersion;
             }
-            return sampleVersion ? sampleVersion : defaultValue;
+            return typeof sampleVersion !== 'undefined' ? sampleVersion : defaultValue;
         });
     }
     hasSetting(model, property) {
         return !!this.getSettingProperty(model, property, false);
     }
     getSettingWithDefaultForTrueValue(model, property, defaultValue) {
-        const value = this.getSettingProperty(model, property, false);
-        if (value === true) {
-            return defaultValue;
-        }
-        return value || defaultValue;
+        const value = this.getSettingProperty(model, property, defaultValue);
+        return value === true ? defaultValue : value;
     }
     getArrayUniqueSetting(model, property, defaultValue) {
         return this.getClassSetting(model).read(property, SettingType_1.SettingType.arrayUnique([], defaultValue));
