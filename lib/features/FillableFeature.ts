@@ -8,7 +8,7 @@ import { register } from 'najs-binding'
 import { FillablePublicApi } from './FillablePublicApi'
 import { NajsEloquent } from '../constants'
 
-export class FillableFeature {
+export class FillableFeature implements NajsEloquent.Feature.IFillableFeature {
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     Object.assign(prototype, FillablePublicApi)
   }
@@ -49,7 +49,7 @@ export class FillableFeature {
     return this.getSettingFeature(model).isInBlackList(model, keys, this.getGuarded(model))
   }
 
-  fill(model: NajsEloquent.Model.IModel, data: Object): void {
+  fill(model: NajsEloquent.Model.IModel, data: object): void {
     const fillable = this.getFillable(model)
     const guarded = this.getGuarded(model)
 
@@ -64,7 +64,7 @@ export class FillableFeature {
     }
   }
 
-  forceFill(model: NajsEloquent.Model.IModel, data: Object): void {
+  forceFill(model: NajsEloquent.Model.IModel, data: object): void {
     const recordManager = model.getDriver().getRecordManager()
     for (const key in data) {
       recordManager.setAttribute(model, key, data[key])

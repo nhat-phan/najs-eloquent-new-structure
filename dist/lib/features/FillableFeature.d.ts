@@ -2,7 +2,7 @@
 /// <reference path="../definitions/model/IModelFillable.d.ts" />
 /// <reference path="../definitions/features/IFillableFeature.d.ts" />
 /// <reference path="../definitions/features/ISettingFeature.d.ts" />
-export declare class FillableFeature {
+export declare class FillableFeature implements NajsEloquent.Feature.IFillableFeature {
     attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
     getFeatureName(): string;
     getClassName(): string;
@@ -13,6 +13,6 @@ export declare class FillableFeature {
     markGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void;
     isFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean;
     isGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean;
-    fill(model: NajsEloquent.Model.IModel, data: Object): void;
-    forceFill(model: NajsEloquent.Model.IModel, data: Object): void;
+    fill(model: NajsEloquent.Model.IModel, data: object): void;
+    forceFill(model: NajsEloquent.Model.IModel, data: object): void;
 }
