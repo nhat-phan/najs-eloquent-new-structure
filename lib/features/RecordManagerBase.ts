@@ -78,7 +78,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   buildKnownAttributes(prototype: object, bases: object[]) {
     return array_unique(
-      ['attributes', 'classSettings', 'driver', 'primaryKey'],
+      ['attributes', 'classSettings', 'driver', 'sharedMetadata', 'primaryKey'],
       ['relationDataBucket', 'relationsMap', 'relations'],
       ['eventEmitter'],
       ['fillable', 'guarded'],
@@ -90,19 +90,22 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
     )
   }
 
-  buildDynamicAttributes(prototype: Object, bases: Object[]) {
-    const dynamicAttributes = {}
-    this.findGettersAndSetters(dynamicAttributes, prototype)
-    this.findAccessorsAndMutators(dynamicAttributes, prototype)
+  buildDynamicAttributes(prototype: object, bases: object[]) {
+    const bucket = {}
+
+    this.findGettersAndSetters(bucket, prototype)
+    this.findAccessorsAndMutators(bucket, prototype)
+
     bases.forEach(basePrototype => {
-      this.findGettersAndSetters(dynamicAttributes, basePrototype)
-      this.findAccessorsAndMutators(dynamicAttributes, basePrototype)
+      this.findGettersAndSetters(bucket, basePrototype)
+      this.findAccessorsAndMutators(bucket, basePrototype)
     })
-    return dynamicAttributes
+
+    return bucket
   }
 
-  findGettersAndSetters(dynamicAttributes: Object, prototype: Object) {
-    const descriptors: Object = Object.getOwnPropertyDescriptors(prototype)
+  findGettersAndSetters(dynamicAttributes: object, prototype: object) {
+    const descriptors: object = Object.getOwnPropertyDescriptors(prototype)
     for (const property in descriptors) {
       if (property === '__proto__') {
         continue
@@ -120,17 +123,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
     }
   }
 
-  createDynamicAttributeIfNeeded(bucket: Object, property: string) {
-    if (!bucket[property]) {
-      bucket[property] = {
-        name: property,
-        getter: false,
-        setter: false
-      }
-    }
-  }
-
-  findAccessorsAndMutators(bucket: Object, prototype: any) {
+  findAccessorsAndMutators(bucket: object, prototype: any) {
     const names = Object.getOwnPropertyNames(prototype)
     const regex = new RegExp('^(get|set)([a-zA-z0-9_\\-]{1,})Attribute$', 'g')
     names.forEach(name => {
@@ -151,12 +144,22 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
     })
   }
 
-  bindAccessorsAndMutators(prototype: Object, dynamicAttributes: Object) {
-    for (const name in dynamicAttributes) {
-      const descriptor: Object | undefined = this.makeAccessorAndMutatorDescriptor(
+  createDynamicAttributeIfNeeded(bucket: object, property: string) {
+    if (!bucket[property]) {
+      bucket[property] = {
+        name: property,
+        getter: false,
+        setter: false
+      }
+    }
+  }
+
+  bindAccessorsAndMutators(prototype: object, dynamicAttributeSettings: object) {
+    for (const name in dynamicAttributeSettings) {
+      const descriptor: object | undefined = this.makeAccessorAndMutatorDescriptor(
         prototype,
         name,
-        dynamicAttributes[name]
+        dynamicAttributeSettings[name]
       )
       if (descriptor) {
         Object.defineProperty(prototype, name, descriptor)
@@ -165,10 +168,10 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
   }
 
   makeAccessorAndMutatorDescriptor(
-    prototype: Object,
+    prototype: object,
     name: string,
     settings: NajsEloquent.Feature.DynamicAttributeSetting
-  ): Object | undefined {
+  ): PropertyDescriptor | undefined {
     // does nothing if there is a setter and a getter in there
     if (settings.getter && settings.setter) {
       return undefined
@@ -186,6 +189,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
         this[this['sharedMetadata']['dynamicAttributes'][name].mutator].call(this, value)
       }
     }
+
     return descriptor
   }
 }

@@ -23,10 +23,10 @@ export declare abstract class RecordManagerBase<T> implements NajsEloquent.Featu
     getDynamicAttributes(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.DynamicAttributeSetting[];
     attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
     buildKnownAttributes(prototype: object, bases: object[]): string[];
-    buildDynamicAttributes(prototype: Object, bases: Object[]): {};
-    findGettersAndSetters(dynamicAttributes: Object, prototype: Object): void;
-    createDynamicAttributeIfNeeded(bucket: Object, property: string): void;
-    findAccessorsAndMutators(bucket: Object, prototype: any): void;
-    bindAccessorsAndMutators(prototype: Object, dynamicAttributes: Object): void;
-    makeAccessorAndMutatorDescriptor(prototype: Object, name: string, settings: NajsEloquent.Feature.DynamicAttributeSetting): Object | undefined;
+    buildDynamicAttributes(prototype: object, bases: object[]): {};
+    findGettersAndSetters(dynamicAttributes: object, prototype: object): void;
+    findAccessorsAndMutators(bucket: object, prototype: any): void;
+    createDynamicAttributeIfNeeded(bucket: object, property: string): void;
+    bindAccessorsAndMutators(prototype: object, dynamicAttributeSettings: object): void;
+    makeAccessorAndMutatorDescriptor(prototype: object, name: string, settings: NajsEloquent.Feature.DynamicAttributeSetting): PropertyDescriptor | undefined;
 }

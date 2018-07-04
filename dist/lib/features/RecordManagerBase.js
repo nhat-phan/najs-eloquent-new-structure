@@ -55,17 +55,17 @@ class RecordManagerBase {
         this.bindAccessorsAndMutators(prototype, dynamicAttributes);
     }
     buildKnownAttributes(prototype, bases) {
-        return functions_1.array_unique(['attributes', 'classSettings', 'driver', 'primaryKey'], ['relationDataBucket', 'relationsMap', 'relations'], ['eventEmitter'], ['fillable', 'guarded'], ['visible', 'hidden'], ['timestamps'], ['softDeletes'], Object.getOwnPropertyNames(prototype), ...bases.map(base => Object.getOwnPropertyNames(base)));
+        return functions_1.array_unique(['attributes', 'classSettings', 'driver', 'sharedMetadata', 'primaryKey'], ['relationDataBucket', 'relationsMap', 'relations'], ['eventEmitter'], ['fillable', 'guarded'], ['visible', 'hidden'], ['timestamps'], ['softDeletes'], Object.getOwnPropertyNames(prototype), ...bases.map(base => Object.getOwnPropertyNames(base)));
     }
     buildDynamicAttributes(prototype, bases) {
-        const dynamicAttributes = {};
-        this.findGettersAndSetters(dynamicAttributes, prototype);
-        this.findAccessorsAndMutators(dynamicAttributes, prototype);
+        const bucket = {};
+        this.findGettersAndSetters(bucket, prototype);
+        this.findAccessorsAndMutators(bucket, prototype);
         bases.forEach(basePrototype => {
-            this.findGettersAndSetters(dynamicAttributes, basePrototype);
-            this.findAccessorsAndMutators(dynamicAttributes, basePrototype);
+            this.findGettersAndSetters(bucket, basePrototype);
+            this.findAccessorsAndMutators(bucket, basePrototype);
         });
-        return dynamicAttributes;
+        return bucket;
     }
     findGettersAndSetters(dynamicAttributes, prototype) {
         const descriptors = Object.getOwnPropertyDescriptors(prototype);
@@ -81,15 +81,6 @@ class RecordManagerBase {
             this.createDynamicAttributeIfNeeded(dynamicAttributes, property);
             dynamicAttributes[property].getter = getter;
             dynamicAttributes[property].setter = setter;
-        }
-    }
-    createDynamicAttributeIfNeeded(bucket, property) {
-        if (!bucket[property]) {
-            bucket[property] = {
-                name: property,
-                getter: false,
-                setter: false
-            };
         }
     }
     findAccessorsAndMutators(bucket, prototype) {
@@ -113,9 +104,18 @@ class RecordManagerBase {
             }
         });
     }
-    bindAccessorsAndMutators(prototype, dynamicAttributes) {
-        for (const name in dynamicAttributes) {
-            const descriptor = this.makeAccessorAndMutatorDescriptor(prototype, name, dynamicAttributes[name]);
+    createDynamicAttributeIfNeeded(bucket, property) {
+        if (!bucket[property]) {
+            bucket[property] = {
+                name: property,
+                getter: false,
+                setter: false
+            };
+        }
+    }
+    bindAccessorsAndMutators(prototype, dynamicAttributeSettings) {
+        for (const name in dynamicAttributeSettings) {
+            const descriptor = this.makeAccessorAndMutatorDescriptor(prototype, name, dynamicAttributeSettings[name]);
             if (descriptor) {
                 Object.defineProperty(prototype, name, descriptor);
             }

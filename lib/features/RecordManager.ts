@@ -1,9 +1,13 @@
+import { register } from 'najs-binding'
 import { RecordManagerBase } from './RecordManagerBase'
-
 import { Record } from './Record'
 import { NajsEloquent } from '../constants'
 
 export class RecordManager<T extends Record> extends RecordManagerBase<T> {
+  getClassName(): string {
+    return NajsEloquent.Feature.RecordManager
+  }
+
   initialize(model: NajsEloquent.Model.IModel<Record>, isGuarded: boolean, data?: T | object): void {
     if (data instanceof Record) {
       model['attributes'] = data
@@ -42,8 +46,5 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
       .getSettingFeature()
       .getSettingProperty(model, 'primaryKey', 'id')
   }
-
-  getClassName(): string {
-    return NajsEloquent.Feature.RecordManager
-  }
 }
+register(RecordManager, NajsEloquent.Feature.RecordManager)
