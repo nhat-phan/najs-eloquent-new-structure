@@ -1,30 +1,49 @@
 /// <reference path="../contracts/Driver.ts" />
+/// <reference path="../definitions/features/IFillableFeature.ts" />
+/// <reference path="../definitions/features/ISettingFeature.ts" />
 
+import '../features/FillableFeature'
+import '../features/SettingFeature'
+import { make } from 'najs-binding'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { find_base_prototypes } from '../util/functions'
+import { NajsEloquent } from '../constants'
 
 /**
  * Base class of all drivers, handling:
  *   - generic initialize for makeModel()
+ *   - make common/share features
  *   - attachPublicApi logic, ensure that the model prototype should be attached 1 time only.
  */
 export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T> {
-  protected attachedModels = {}
+  protected attachedModels: object
+  protected fillableFeature: NajsEloquent.Feature.IFillableFeature
+  protected settingFeature: NajsEloquent.Feature.ISettingFeature
+
+  constructor() {
+    this.attachedModels = {}
+    this.fillableFeature = make(NajsEloquent.Feature.FillableFeature)
+    this.settingFeature = make(NajsEloquent.Feature.SettingFeature)
+  }
 
   abstract getClassName(): string
 
   abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>
 
-  abstract getFillableFeature(): NajsEloquent.Feature.IFillableFeature
+  getFillableFeature() {
+    return this.fillableFeature
+  }
 
-  abstract getSettingFeature(): NajsEloquent.Feature.ISettingFeature
+  getSettingFeature() {
+    return this.settingFeature
+  }
 
-  makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M {
+  makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded: boolean = true): M {
     if (data === CREATE_SAMPLE) {
       return model
     }
 
-    this.getRecordManager().initialize(model, !!isGuarded, data as T | object | undefined)
+    this.getRecordManager().initialize(model, isGuarded, data as T | object | undefined)
     this.attachPublicApiIfNeeded(model)
 
     return model
@@ -49,13 +68,19 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     }
   }
 
-  getFeatures() {
-    return [
-      this.getFillableFeature(),
-      this.getSettingFeature(),
+  getSharedFeatures(): NajsEloquent.Feature.IFeature[] {
+    return [this.getFillableFeature(), this.getSettingFeature()]
+  }
+
+  getCustomFeatures(): NajsEloquent.Feature.IFeature[] {
+    return []
+  }
+
+  getFeatures(): NajsEloquent.Feature.IFeature[] {
+    return ([] as NajsEloquent.Feature.IFeature[]).concat(this.getSharedFeatures(), this.getCustomFeatures(), [
       // RecordManager must be attached after other features
       this.getRecordManager()
-    ]
+    ])
   }
 
   attachFeatureIfNeeded(feature: NajsEloquent.Feature.IFeature, prototype: object, bases: object[]) {
@@ -67,7 +92,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
       prototype['sharedMetadata']['features'] = {}
     }
 
-    if (typeof prototype['sharedMetadata']['features'][feature.getFeatureName()]) {
+    if (!prototype['sharedMetadata']['features'][feature.getFeatureName()]) {
       feature.attachPublicApi(prototype, bases, this)
       prototype['sharedMetadata']['features'][feature.getFeatureName()] = true
     }

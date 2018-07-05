@@ -1,11 +1,7 @@
 "use strict";
 /// <reference path="../definitions/features/IRecordManager.ts" />
-/// <reference path="../definitions/features/IFillableFeature.ts" />
-/// <reference path="../definitions/features/ISettingFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../features/RecordManager");
-require("../features/FillableFeature");
-require("../features/SettingFeature");
 const najs_binding_1 = require("najs-binding");
 const DriverBase_1 = require("./DriverBase");
 const constants_1 = require("../constants");
@@ -13,20 +9,12 @@ class DummyDriver extends DriverBase_1.DriverBase {
     constructor() {
         super();
         this.recordManager = najs_binding_1.make(constants_1.NajsEloquent.Feature.RecordManager);
-        this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
-        this.settingFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SettingFeature);
     }
     getClassName() {
         return constants_1.NajsEloquent.Driver.DummyDriver;
     }
     getRecordManager() {
         return this.recordManager;
-    }
-    getFillableFeature() {
-        return this.fillableFeature;
-    }
-    getSettingFeature() {
-        return this.settingFeature;
     }
 }
 exports.DummyDriver = DummyDriver;
