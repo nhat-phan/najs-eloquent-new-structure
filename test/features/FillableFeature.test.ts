@@ -1,5 +1,6 @@
 import 'jest'
 import * as Sinon from 'sinon'
+import { FeatureBase } from '../../lib/features/FeatureBase'
 import { FillableFeature } from '../../lib/features/FillableFeature'
 import { FillablePublicApi } from '../../lib/features/FillablePublicApi'
 import { SettingFeature } from '../../lib/features/SettingFeature'
@@ -7,7 +8,8 @@ import { SettingFeature } from '../../lib/features/SettingFeature'
 describe('FillableFeature', function() {
   const fillableFeature = new FillableFeature()
 
-  it('implements Najs.Contracts.Autoload under name NajsEloquent.Feature.FillableFeature', function() {
+  it('extends FeatureBase, implements Najs.Contracts.Autoload under name NajsEloquent.Feature.FillableFeature', function() {
+    expect(fillableFeature).toBeInstanceOf(FeatureBase)
     expect(fillableFeature.getClassName()).toEqual('NajsEloquent.Feature.FillableFeature')
   })
 
@@ -23,25 +25,8 @@ describe('FillableFeature', function() {
   })
 
   describe('.getFeatureName()', function() {
-    it('returns literally string "Setting"', function() {
+    it('returns literally string "Fillable"', function() {
       expect(fillableFeature.getFeatureName()).toEqual('Fillable')
-    })
-  })
-
-  describe('.getSettingFeature()', function() {
-    it('is an helper to reduce repetition code. It returns SettingFeature from a driver', function() {
-      const settingFeature = {}
-      const model: any = {
-        getDriver() {
-          return {
-            getSettingFeature() {
-              return settingFeature
-            }
-          }
-        }
-      }
-
-      expect(fillableFeature.getSettingFeature(model) === settingFeature).toBe(true)
     })
   })
 

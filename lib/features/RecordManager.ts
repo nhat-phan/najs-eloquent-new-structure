@@ -46,5 +46,9 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
       .getSettingFeature()
       .getSettingProperty(model, 'primaryKey', 'id')
   }
+
+  toObject(model: NajsEloquent.Model.IModel<T>): object {
+    return model['attributes'].toObject()
+  }
 }
 register(RecordManager, NajsEloquent.Feature.RecordManager)

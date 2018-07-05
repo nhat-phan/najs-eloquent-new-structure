@@ -2,12 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
+const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const FillableFeature_1 = require("../../lib/features/FillableFeature");
 const FillablePublicApi_1 = require("../../lib/features/FillablePublicApi");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
 describe('FillableFeature', function () {
     const fillableFeature = new FillableFeature_1.FillableFeature();
-    it('implements Najs.Contracts.Autoload under name NajsEloquent.Feature.FillableFeature', function () {
+    it('extends FeatureBase, implements Najs.Contracts.Autoload under name NajsEloquent.Feature.FillableFeature', function () {
+        expect(fillableFeature).toBeInstanceOf(FeatureBase_1.FeatureBase);
         expect(fillableFeature.getClassName()).toEqual('NajsEloquent.Feature.FillableFeature');
     });
     describe('.attachPublicApi()', function () {
@@ -20,23 +22,8 @@ describe('FillableFeature', function () {
         });
     });
     describe('.getFeatureName()', function () {
-        it('returns literally string "Setting"', function () {
+        it('returns literally string "Fillable"', function () {
             expect(fillableFeature.getFeatureName()).toEqual('Fillable');
-        });
-    });
-    describe('.getSettingFeature()', function () {
-        it('is an helper to reduce repetition code. It returns SettingFeature from a driver', function () {
-            const settingFeature = {};
-            const model = {
-                getDriver() {
-                    return {
-                        getSettingFeature() {
-                            return settingFeature;
-                        }
-                    };
-                }
-            };
-            expect(fillableFeature.getSettingFeature(model) === settingFeature).toBe(true);
         });
     });
     describe('.getFillable()', function () {

@@ -7,4 +7,5 @@ export declare class RecordManager<T extends Record> extends RecordManagerBase<T
     setAttribute<T>(model: NajsEloquent.Model.IModel<Record>, key: string, value: T): boolean;
     hasAttribute(model: NajsEloquent.Model.IModel<Record>, key: string): boolean;
     getPrimaryKeyName(model: NajsEloquent.Model.IModel): string;
+    toObject(model: NajsEloquent.Model.IModel<T>): object;
 }

@@ -23,6 +23,8 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   abstract getPrimaryKeyName(model: NajsEloquent.Model.IModel): string
 
+  abstract toObject(model: NajsEloquent.Model.IModel): object
+
   abstract getClassName(): string
 
   getFeatureName(): string {

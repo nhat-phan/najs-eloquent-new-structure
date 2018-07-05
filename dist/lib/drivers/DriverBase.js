@@ -1,10 +1,12 @@
 "use strict";
 /// <reference path="../contracts/Driver.ts" />
-/// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISettingFeature.ts" />
+/// <reference path="../definitions/features/IFillableFeature.ts" />
+/// <reference path="../definitions/features/ISerializationFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../features/FillableFeature");
 require("../features/SettingFeature");
+require("../features/SerializationFeature");
 const najs_binding_1 = require("najs-binding");
 const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
@@ -18,14 +20,18 @@ const constants_1 = require("../constants");
 class DriverBase {
     constructor() {
         this.attachedModels = {};
-        this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
         this.settingFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SettingFeature);
+        this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
+        this.serializationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SerializationFeature);
+    }
+    getSettingFeature() {
+        return this.settingFeature;
     }
     getFillableFeature() {
         return this.fillableFeature;
     }
-    getSettingFeature() {
-        return this.settingFeature;
+    getSerializationFeature() {
+        return this.serializationFeature;
     }
     makeModel(model, data, isGuarded = true) {
         if (data === ClassSetting_1.CREATE_SAMPLE) {

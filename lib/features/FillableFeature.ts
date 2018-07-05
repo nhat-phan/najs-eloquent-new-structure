@@ -1,14 +1,13 @@
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/model/IModelFillable.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
-/// <reference path="../definitions/features/ISettingFeature.ts" />
 
 import { pick } from 'lodash'
 import { register } from 'najs-binding'
+import { FeatureBase } from './FeatureBase'
 import { FillablePublicApi } from './FillablePublicApi'
 import { NajsEloquent } from '../constants'
 
-export class FillableFeature implements NajsEloquent.Feature.IFillableFeature {
+export class FillableFeature extends FeatureBase implements NajsEloquent.Feature.IFillableFeature {
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     Object.assign(prototype, FillablePublicApi)
   }
@@ -21,32 +20,28 @@ export class FillableFeature implements NajsEloquent.Feature.IFillableFeature {
     return NajsEloquent.Feature.FillableFeature
   }
 
-  getSettingFeature(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature {
-    return model.getDriver().getSettingFeature()
-  }
-
   getFillable(model: NajsEloquent.Model.IModel): string[] {
-    return this.getSettingFeature(model).getArrayUniqueSetting(model, 'fillable', [])
+    return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'fillable', [])
   }
 
   getGuarded(model: NajsEloquent.Model.IModel): string[] {
-    return this.getSettingFeature(model).getArrayUniqueSetting(model, 'guarded', ['*'])
+    return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'guarded', ['*'])
   }
 
   markFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void {
-    return this.getSettingFeature(model).pushToUniqueArraySetting(model, 'fillable', keys)
+    return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'fillable', keys)
   }
 
   markGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void {
-    return this.getSettingFeature(model).pushToUniqueArraySetting(model, 'guarded', keys)
+    return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'guarded', keys)
   }
 
   isFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean {
-    return this.getSettingFeature(model).isInWhiteList(model, keys, this.getFillable(model), this.getGuarded(model))
+    return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getFillable(model), this.getGuarded(model))
   }
 
   isGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean {
-    return this.getSettingFeature(model).isInBlackList(model, keys, this.getGuarded(model))
+    return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getGuarded(model))
   }
 
   fill(model: NajsEloquent.Model.IModel, data: object): void {
@@ -54,8 +49,8 @@ export class FillableFeature implements NajsEloquent.Feature.IFillableFeature {
     const guarded = this.getGuarded(model)
 
     const attributes = fillable.length > 0 ? pick(data, fillable) : data
-    const settingFeature = model.getDriver().getSettingFeature()
-    const recordManager = model.getDriver().getRecordManager()
+    const settingFeature = this.useSettingFeatureOf(model)
+    const recordManager = this.useRecordManagerOf(model)
 
     for (const key in attributes) {
       if (settingFeature.isKeyInWhiteList(model, key, fillable, guarded)) {

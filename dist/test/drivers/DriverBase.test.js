@@ -7,6 +7,7 @@ const ClassSetting_1 = require("../../lib/util/ClassSetting");
 const DummyDriver_1 = require("../../lib/drivers/DummyDriver");
 const FillableFeature_1 = require("../../lib/features/FillableFeature");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
+const SerializationFeature_1 = require("../../lib/features/SerializationFeature");
 describe('DriverBase', function () {
     function createDriver() {
         return new DummyDriver_1.DummyDriver();
@@ -16,11 +17,21 @@ describe('DriverBase', function () {
         it('creates instance of common features via NajsBinding.make()', function () {
             const makeSpy = Sinon.spy(NajsBinding, 'make');
             const driverBase = createDriver();
-            expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature_1.FillableFeature);
             expect(driverBase['settingFeature']).toBeInstanceOf(SettingFeature_1.SettingFeature);
-            expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true);
-            expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true);
+            expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature_1.FillableFeature);
+            expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature_1.SerializationFeature);
+            expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true);
+            expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true);
+            expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true);
             makeSpy.restore();
+        });
+    });
+    describe('.getSettingFeature()', function () {
+        it('simply returns "settingFeature" property', function () {
+            const settingFeature = {};
+            const driverBase = createDriver();
+            driverBase['settingFeature'] = settingFeature;
+            expect(driverBase.getSettingFeature() === settingFeature).toBe(true);
         });
     });
     describe('.getFillableFeature()', function () {
@@ -31,12 +42,12 @@ describe('DriverBase', function () {
             expect(driverBase.getFillableFeature() === fillableFeature).toBe(true);
         });
     });
-    describe('.getSettingFeature()', function () {
-        it('simply returns "settingFeature" property', function () {
-            const settingFeature = {};
+    describe('.getSerializationFeature()', function () {
+        it('simply returns "serializationFeature" property', function () {
+            const serializationFeature = {};
             const driverBase = createDriver();
-            driverBase['settingFeature'] = settingFeature;
-            expect(driverBase.getSettingFeature() === settingFeature).toBe(true);
+            driverBase['serializationFeature'] = serializationFeature;
+            expect(driverBase.getSerializationFeature() === serializationFeature).toBe(true);
         });
     });
     describe('.makeModel()', function () {

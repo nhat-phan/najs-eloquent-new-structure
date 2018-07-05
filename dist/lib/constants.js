@@ -6,9 +6,10 @@ exports.NajsEloquent = {
         DummyDriver: 'NajsEloquent.Driver.DummyDriver'
     },
     Feature: {
-        FillableFeature: 'NajsEloquent.Feature.FillableFeature',
         SettingFeature: 'NajsEloquent.Feature.SettingFeature',
-        RecordManager: 'NajsEloquent.Feature.RecordManager'
+        RecordManager: 'NajsEloquent.Feature.RecordManager',
+        FillableFeature: 'NajsEloquent.Feature.FillableFeature',
+        SerializationFeature: 'NajsEloquent.Feature.SerializationFeature'
     },
     Provider: {
         DriverProvider: 'NajsEloquent.Provider.DriverProvider'

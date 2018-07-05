@@ -6,6 +6,7 @@ import { DriverBase } from '../../lib/drivers/DriverBase'
 import { DummyDriver } from '../../lib/drivers/DummyDriver'
 import { FillableFeature } from '../../lib/features/FillableFeature'
 import { SettingFeature } from '../../lib/features/SettingFeature'
+import { SerializationFeature } from '../../lib/features/SerializationFeature'
 
 describe('DriverBase', function() {
   function createDriver(): DriverBase<any> {
@@ -18,11 +19,22 @@ describe('DriverBase', function() {
       const makeSpy = Sinon.spy(NajsBinding, 'make')
       const driverBase = createDriver()
 
-      expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature)
       expect(driverBase['settingFeature']).toBeInstanceOf(SettingFeature)
-      expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
-      expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true)
+      expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature)
+      expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature)
+      expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true)
+      expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
+      expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true)
       makeSpy.restore()
+    })
+  })
+
+  describe('.getSettingFeature()', function() {
+    it('simply returns "settingFeature" property', function() {
+      const settingFeature: any = {}
+      const driverBase = createDriver()
+      driverBase['settingFeature'] = settingFeature
+      expect(driverBase.getSettingFeature() === settingFeature).toBe(true)
     })
   })
 
@@ -35,12 +47,12 @@ describe('DriverBase', function() {
     })
   })
 
-  describe('.getSettingFeature()', function() {
-    it('simply returns "settingFeature" property', function() {
-      const settingFeature: any = {}
+  describe('.getSerializationFeature()', function() {
+    it('simply returns "serializationFeature" property', function() {
+      const serializationFeature: any = {}
       const driverBase = createDriver()
-      driverBase['settingFeature'] = settingFeature
-      expect(driverBase.getSettingFeature() === settingFeature).toBe(true)
+      driverBase['serializationFeature'] = serializationFeature
+      expect(driverBase.getSerializationFeature() === serializationFeature).toBe(true)
     })
   })
 

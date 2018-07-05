@@ -124,4 +124,19 @@ describe('RecordManager', function () {
             expect(recordManager.getPrimaryKeyName(new ModelWithCustomPrimaryKey())).toEqual('test');
         });
     });
+    describe('.toObject()', function () {
+        it('calls and returns model.attributes.toObject()', function () {
+            const model = {
+                attributes: {
+                    toObject() {
+                        return 'result';
+                    }
+                }
+            };
+            const stub = Sinon.stub(model.attributes, 'toObject');
+            stub.returns('anything');
+            expect(recordManager.toObject(model)).toEqual('anything');
+            expect(stub.calledWith()).toBe(true);
+        });
+    });
 });

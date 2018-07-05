@@ -12,6 +12,7 @@ export declare abstract class RecordManagerBase<T> implements NajsEloquent.Featu
     abstract setAttribute<T>(model: NajsEloquent.Model.IModel, key: string, value: T): boolean;
     abstract hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean;
     abstract getPrimaryKeyName(model: NajsEloquent.Model.IModel): string;
+    abstract toObject(model: NajsEloquent.Model.IModel): object;
     abstract getClassName(): string;
     getFeatureName(): string;
     getRecordName(model: NajsEloquent.Model.IModel): string;

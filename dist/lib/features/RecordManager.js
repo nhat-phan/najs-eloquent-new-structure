@@ -39,6 +39,9 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
             .getSettingFeature()
             .getSettingProperty(model, 'primaryKey', 'id');
     }
+    toObject(model) {
+        return model['attributes'].toObject();
+    }
 }
 exports.RecordManager = RecordManager;
 najs_binding_1.register(RecordManager, constants_1.NajsEloquent.Feature.RecordManager);

@@ -3,9 +3,10 @@ export declare const NajsEloquent: {
         DummyDriver: string;
     };
     Feature: {
-        FillableFeature: string;
         SettingFeature: string;
         RecordManager: string;
+        FillableFeature: string;
+        SerializationFeature: string;
     };
     Provider: {
         DriverProvider: string;

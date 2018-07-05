@@ -88,5 +88,9 @@ declare namespace NajsEloquent.Feature {
          * Get dynamic attributes (AKA accessors and mutators)
          */
         getDynamicAttributes(model: Model.IModel): DynamicAttributeSetting[];
+        /**
+         * Convert the record to a plain object.
+         */
+        toObject(model: Model.IModel): object;
     }
 }
