@@ -7,6 +7,7 @@ const lodash_1 = require("lodash");
 const functions_1 = require("../util/functions");
 const lodash_2 = require("lodash");
 const pluralize_1 = require("pluralize");
+const RecordManagerPublicApi_1 = require("./RecordManagerPublicApi");
 /**
  * Base class of all RecordManager, handling:
  *   - getKnownAttributes() and getDynamicAttributes() accessors
@@ -38,6 +39,7 @@ class RecordManagerBase {
         return model['sharedMetadata']['dynamicAttributes'];
     }
     attachPublicApi(prototype, bases, driver) {
+        Object.assign(prototype, RecordManagerPublicApi_1.RecordManagerPublicApi);
         const knownAttributes = this.buildKnownAttributes(prototype, bases);
         const dynamicAttributes = this.buildDynamicAttributes(prototype, bases);
         Object.defineProperties(prototype['sharedMetadata'], {

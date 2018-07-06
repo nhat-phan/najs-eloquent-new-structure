@@ -6,6 +6,7 @@ import { isFunction } from 'lodash'
 import { array_unique } from '../util/functions'
 import { snakeCase } from 'lodash'
 import { plural } from 'pluralize'
+import { RecordManagerPublicApi } from './RecordManagerPublicApi'
 
 /**
  * Base class of all RecordManager, handling:
@@ -66,6 +67,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
   }
 
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
+    Object.assign(prototype, RecordManagerPublicApi)
     const knownAttributes = this.buildKnownAttributes(prototype, bases)
     const dynamicAttributes = this.buildDynamicAttributes(prototype, bases)
 

@@ -116,14 +116,18 @@ describe('DriverBase', function () {
                 prototype: Test.prototype,
                 bases: bases
             });
-            expect(attachFeatureIfNeededSpy.callCount).toEqual(3);
+            expect(attachFeatureIfNeededSpy.callCount).toEqual(4);
             expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true);
             attachFeatureIfNeededSpy.restore();
         });
     });
     describe('.getSharedFeatures()', function () {
         it('simply returns an array of shared features', function () {
-            expect(driver.getSharedFeatures()).toEqual([driver['fillableFeature'], driver['settingFeature']]);
+            expect(driver.getSharedFeatures()).toEqual([
+                driver['settingFeature'],
+                driver['fillableFeature'],
+                driver['serializationFeature']
+            ]);
         });
     });
     describe('.getCustomFeatures()', function () {

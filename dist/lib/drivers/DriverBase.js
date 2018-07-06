@@ -57,7 +57,7 @@ class DriverBase {
         }
     }
     getSharedFeatures() {
-        return [this.getFillableFeature(), this.getSettingFeature()];
+        return [this.getSettingFeature(), this.getFillableFeature(), this.getSerializationFeature()];
     }
     getCustomFeatures() {
         return [];

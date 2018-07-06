@@ -1,6 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { RecordManager } from '../../lib/features/RecordManager'
+import { RecordManagerPublicApi } from '../../lib/features/RecordManagerPublicApi'
 
 describe('RecordManagerBase', function() {
   const recordManager = new RecordManager()
@@ -155,6 +156,15 @@ describe('RecordManagerBase', function() {
 
   describe('KnownAttributes', function() {
     describe('.attachPublicApi()', function() {
+      it('attaches RecordManagerPublicApi to prototype', function() {
+        const prototype = { sharedMetadata: {} }
+        recordManager.attachPublicApi(prototype, [], <any>{})
+
+        for (const name in RecordManagerPublicApi) {
+          expect(prototype[name] === RecordManagerPublicApi[name])
+        }
+      })
+
       it('finds knownAttribute by .buildKnownAttributes(), dynamicAttributes by .buildDynamicAttributes() then define all of them to "sharedMetadata" and calls .bindAccessorsAndMutators()', function() {
         const prototype = { sharedMetadata: {} }
 

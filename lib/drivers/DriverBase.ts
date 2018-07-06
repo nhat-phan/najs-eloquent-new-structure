@@ -77,7 +77,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   }
 
   getSharedFeatures(): NajsEloquent.Feature.IFeature[] {
-    return [this.getFillableFeature(), this.getSettingFeature()]
+    return [this.getSettingFeature(), this.getFillableFeature(), this.getSerializationFeature()]
   }
 
   getCustomFeatures(): NajsEloquent.Feature.IFeature[] {

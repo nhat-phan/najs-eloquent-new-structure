@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const RecordManager_1 = require("../../lib/features/RecordManager");
+const RecordManagerPublicApi_1 = require("../../lib/features/RecordManagerPublicApi");
 describe('RecordManagerBase', function () {
     const recordManager = new RecordManager_1.RecordManager();
     describe('.getFeatureName()', function () {
@@ -137,6 +138,13 @@ describe('RecordManagerBase', function () {
     });
     describe('KnownAttributes', function () {
         describe('.attachPublicApi()', function () {
+            it('attaches RecordManagerPublicApi to prototype', function () {
+                const prototype = { sharedMetadata: {} };
+                recordManager.attachPublicApi(prototype, [], {});
+                for (const name in RecordManagerPublicApi_1.RecordManagerPublicApi) {
+                    expect(prototype[name] === RecordManagerPublicApi_1.RecordManagerPublicApi[name]);
+                }
+            });
             it('finds knownAttribute by .buildKnownAttributes(), dynamicAttributes by .buildDynamicAttributes() then define all of them to "sharedMetadata" and calls .bindAccessorsAndMutators()', function () {
                 const prototype = { sharedMetadata: {} };
                 const buildKnownAttributesStub = Sinon.stub(recordManager, 'buildKnownAttributes');

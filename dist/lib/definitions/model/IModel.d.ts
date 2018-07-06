@@ -1,5 +1,6 @@
 /// <reference path="../../contracts/Driver.d.ts" />
 /// <reference path="../utils/IClassSetting.d.ts" />
+/// <reference path="IModelRecord.d.ts" />
 /// <reference path="IModelFillable.d.ts" />
 /// <reference path="IModelSerialization.d.ts" />
 declare namespace NajsEloquent.Model {
@@ -12,10 +13,6 @@ declare namespace NajsEloquent.Model {
          */
         protected sharedMetadata: object;
         /**
-         * The model's attributes.
-         */
-        protected attributes: T;
-        /**
          * The model's class setting
          */
         protected classSettings: NajsEloquent.Util.IClassSetting;
@@ -23,8 +20,12 @@ declare namespace NajsEloquent.Model {
          * The driver associated with the model.
          */
         protected driver: Najs.Contracts.Eloquent.Driver<T>;
+        /**
+         * The model's attributes.
+         */
+        protected attributes: T;
     }
-    interface IModel<T = any> extends IModelFillable, IModelSerialization {
+    interface IModel<T = any> extends IModelRecord<T>, IModelFillable, IModelSerialization {
         /**
          * Get driver which is used by the model.
          */
