@@ -139,4 +139,49 @@ describe('RecordManager', function () {
             expect(stub.calledWith()).toBe(true);
         });
     });
+    describe('.markModified()', function () {
+        it('flattens the keys and calls model.attributes.markModified()', function () {
+            const model = {
+                attributes: {
+                    markModified() {
+                        return 'result';
+                    }
+                }
+            };
+            const spy = Sinon.stub(model.attributes, 'markModified');
+            recordManager.markModified(model, [['a', ['b', 'c']]]);
+            expect(spy.callCount).toEqual(3);
+            expect(spy.firstCall.calledWith('a')).toBe(true);
+            expect(spy.secondCall.calledWith('b')).toBe(true);
+            expect(spy.thirdCall.calledWith('c')).toBe(true);
+        });
+    });
+    describe('.isModified()', function () {
+        it('flattens the keys and returns true if all keys in model.attributes.getModified()', function () {
+            const model = {
+                attributes: {
+                    getModified() {
+                        return ['a', 'b'];
+                    }
+                }
+            };
+            expect(recordManager.isModified(model, [['a', ['b']]])).toBe(true);
+            expect(recordManager.isModified(model, [['a', ['b', 'c']]])).toBe(false);
+        });
+    });
+    describe('.getModified()', function () {
+        it('calls and returns model.attributes.getModified()', function () {
+            const model = {
+                attributes: {
+                    getModified() {
+                        return 'result';
+                    }
+                }
+            };
+            const stub = Sinon.stub(model.attributes, 'getModified');
+            stub.returns('anything');
+            expect(recordManager.getModified(model)).toEqual('anything');
+            expect(stub.calledWith()).toBe(true);
+        });
+    });
 });

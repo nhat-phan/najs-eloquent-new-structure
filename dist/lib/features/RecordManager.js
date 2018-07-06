@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const lodash_1 = require("lodash");
 const najs_binding_1 = require("najs-binding");
 const RecordManagerBase_1 = require("./RecordManagerBase");
 const Record_1 = require("./Record");
@@ -41,6 +42,25 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
     }
     toObject(model) {
         return model['attributes'].toObject();
+    }
+    markModified(model, keys) {
+        const attributes = lodash_1.flatten(lodash_1.flatten(keys));
+        for (const attribute of attributes) {
+            model['attributes'].markModified(attribute);
+        }
+    }
+    isModified(model, keys) {
+        const attributes = lodash_1.flatten(lodash_1.flatten(keys));
+        const modified = model['attributes'].getModified();
+        for (const attribute of attributes) {
+            if (modified.indexOf(attribute) === -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    getModified(model) {
+        return model['attributes'].getModified();
     }
 }
 exports.RecordManager = RecordManager;

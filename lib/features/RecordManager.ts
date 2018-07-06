@@ -1,3 +1,4 @@
+import { flatten } from 'lodash'
 import { register } from 'najs-binding'
 import { RecordManagerBase } from './RecordManagerBase'
 import { Record } from './Record'
@@ -49,6 +50,28 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
 
   toObject(model: NajsEloquent.Model.IModel<T>): object {
     return model['attributes'].toObject()
+  }
+
+  markModified(model: NajsEloquent.Model.IModel<T>, keys: ArrayLike<Array<string | string[]>>): void {
+    const attributes = flatten(flatten(keys))
+    for (const attribute of attributes) {
+      model['attributes'].markModified(attribute)
+    }
+  }
+
+  isModified(model: NajsEloquent.Model.IModel<T>, keys: ArrayLike<Array<string | string[]>>): boolean {
+    const attributes = flatten(flatten(keys))
+    const modified = model['attributes'].getModified()
+    for (const attribute of attributes) {
+      if (modified.indexOf(attribute) === -1) {
+        return false
+      }
+    }
+    return true
+  }
+
+  getModified(model: NajsEloquent.Model.IModel<T>): string[] {
+    return model['attributes'].getModified()
   }
 }
 register(RecordManager, NajsEloquent.Feature.RecordManager)

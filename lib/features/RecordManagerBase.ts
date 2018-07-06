@@ -25,6 +25,12 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   abstract toObject(model: NajsEloquent.Model.IModel): object
 
+  abstract markModified(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
+
+  abstract isModified(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
+
+  abstract getModified(model: NajsEloquent.Model.IModel): string[]
+
   abstract getClassName(): string
 
   getFeatureName(): string {

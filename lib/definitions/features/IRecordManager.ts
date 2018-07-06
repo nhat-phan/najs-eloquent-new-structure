@@ -106,5 +106,22 @@ namespace NajsEloquent.Feature {
      * Convert the record to a plain object.
      */
     toObject(model: Model.IModel): object
+
+    /**
+     * Mark given attribute is modified.
+     *
+     * @param {string} name
+     */
+    markModified(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
+
+    /**
+     * Determine the attribute is modified or not.
+     */
+    isModified(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
+
+    /**
+     * Get modified fields name.
+     */
+    getModified(model: Model.IModel): string[]
   }
 }
