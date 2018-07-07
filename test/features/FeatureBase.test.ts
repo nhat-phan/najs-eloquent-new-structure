@@ -1,7 +1,7 @@
 import 'jest'
 import { FillableFeature } from '../../lib/features/FillableFeature'
 
-describe('FillableBase', function() {
+describe('FeatureBase', function() {
   const featureInstance = new FillableFeature()
 
   describe('.useSettingFeatureOf()', function() {
@@ -69,6 +69,23 @@ describe('FillableBase', function() {
       }
 
       expect(featureInstance.useSerializationFeatureOf(model) === feature).toBe(true)
+    })
+  })
+
+  describe('.useTimestampsFeatureOf()', function() {
+    it('is an helper to reduce repetition code. It returns RecordManager from a driver', function() {
+      const feature = {}
+      const model: any = {
+        getDriver() {
+          return {
+            getTimestampsFeature() {
+              return feature
+            }
+          }
+        }
+      }
+
+      expect(featureInstance.useTimestampsFeatureOf(model) === feature).toBe(true)
     })
   })
 })

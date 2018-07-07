@@ -3,6 +3,7 @@
 /// <reference path="../definitions/features/IRecordManager.ts" />
 /// <reference path="../definitions/features/IRecordManager.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.ts" />
 
 export class FeatureBase {
   useSettingFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature {
@@ -19,5 +20,9 @@ export class FeatureBase {
 
   useSerializationFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISerializationFeature {
     return model.getDriver().getSerializationFeature()
+  }
+
+  useTimestampsFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ITimestampsFeature {
+    return model.getDriver().getTimestampsFeature()
   }
 }

@@ -4,6 +4,7 @@
 /// <reference path="../definitions/features/IRecordManager.ts" />
 /// <reference path="../definitions/features/IRecordManager.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class FeatureBase {
     useSettingFeatureOf(model) {
@@ -17,6 +18,9 @@ class FeatureBase {
     }
     useSerializationFeatureOf(model) {
         return model.getDriver().getSerializationFeature();
+    }
+    useTimestampsFeatureOf(model) {
+        return model.getDriver().getTimestampsFeature();
     }
 }
 exports.FeatureBase = FeatureBase;

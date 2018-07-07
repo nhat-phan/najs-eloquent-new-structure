@@ -3,6 +3,7 @@
 /// <reference path="./IModelRecord.ts" />
 /// <reference path="./IModelFillable.ts" />
 /// <reference path="./IModelSerialization.ts" />
+/// <reference path="./IModelTimestamps.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var Model;

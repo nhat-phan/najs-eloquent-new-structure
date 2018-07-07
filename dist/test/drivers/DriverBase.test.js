@@ -50,6 +50,14 @@ describe('DriverBase', function () {
             expect(driverBase.getSerializationFeature() === serializationFeature).toBe(true);
         });
     });
+    describe('.getTimestampsFeature()', function () {
+        it('simply returns "timestampsFeature" property', function () {
+            const timestampsFeature = {};
+            const driverBase = createDriver();
+            driverBase['timestampsFeature'] = timestampsFeature;
+            expect(driverBase.getTimestampsFeature() === timestampsFeature).toBe(true);
+        });
+    });
     describe('.makeModel()', function () {
         it('does nothing, just returns model if the data is "create-sample"', function () {
             const model = {};
@@ -116,7 +124,7 @@ describe('DriverBase', function () {
                 prototype: Test.prototype,
                 bases: bases
             });
-            expect(attachFeatureIfNeededSpy.callCount).toEqual(4);
+            expect(attachFeatureIfNeededSpy.callCount).toEqual(5);
             expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true);
             attachFeatureIfNeededSpy.restore();
         });
@@ -126,7 +134,8 @@ describe('DriverBase', function () {
             expect(driver.getSharedFeatures()).toEqual([
                 driver['settingFeature'],
                 driver['fillableFeature'],
-                driver['serializationFeature']
+                driver['serializationFeature'],
+                driver['timestampsFeature']
             ]);
         });
     });

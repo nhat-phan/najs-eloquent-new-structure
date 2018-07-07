@@ -3,10 +3,12 @@
 /// <reference path="../definitions/features/ISettingFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../features/FillableFeature");
 require("../features/SettingFeature");
 require("../features/SerializationFeature");
+require("../features/TimestampsFeature");
 const najs_binding_1 = require("najs-binding");
 const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
@@ -23,6 +25,7 @@ class DriverBase {
         this.settingFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SettingFeature);
         this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
         this.serializationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SerializationFeature);
+        this.timestampsFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.TimestampsFeature);
     }
     getSettingFeature() {
         return this.settingFeature;
@@ -32,6 +35,9 @@ class DriverBase {
     }
     getSerializationFeature() {
         return this.serializationFeature;
+    }
+    getTimestampsFeature() {
+        return this.timestampsFeature;
     }
     makeModel(model, data, isGuarded = true) {
         if (data === ClassSetting_1.CREATE_SAMPLE) {
@@ -57,7 +63,12 @@ class DriverBase {
         }
     }
     getSharedFeatures() {
-        return [this.getSettingFeature(), this.getFillableFeature(), this.getSerializationFeature()];
+        return [
+            this.getSettingFeature(),
+            this.getFillableFeature(),
+            this.getSerializationFeature(),
+            this.getTimestampsFeature()
+        ];
     }
     getCustomFeatures() {
         return [];

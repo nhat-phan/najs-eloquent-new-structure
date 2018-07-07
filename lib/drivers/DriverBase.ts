@@ -2,10 +2,12 @@
 /// <reference path="../definitions/features/ISettingFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.ts" />
 
 import '../features/FillableFeature'
 import '../features/SettingFeature'
 import '../features/SerializationFeature'
+import '../features/TimestampsFeature'
 import { make } from 'najs-binding'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { find_base_prototypes } from '../util/functions'
@@ -22,12 +24,14 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   protected settingFeature: NajsEloquent.Feature.ISettingFeature
   protected fillableFeature: NajsEloquent.Feature.IFillableFeature
   protected serializationFeature: NajsEloquent.Feature.ISerializationFeature
+  protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature
 
   constructor() {
     this.attachedModels = {}
     this.settingFeature = make(NajsEloquent.Feature.SettingFeature)
     this.fillableFeature = make(NajsEloquent.Feature.FillableFeature)
     this.serializationFeature = make(NajsEloquent.Feature.SerializationFeature)
+    this.timestampsFeature = make(NajsEloquent.Feature.TimestampsFeature)
   }
 
   abstract getClassName(): string
@@ -44,6 +48,10 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   getSerializationFeature() {
     return this.serializationFeature
+  }
+
+  getTimestampsFeature() {
+    return this.timestampsFeature
   }
 
   makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded: boolean = true): M {
@@ -77,7 +85,12 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   }
 
   getSharedFeatures(): NajsEloquent.Feature.IFeature[] {
-    return [this.getSettingFeature(), this.getFillableFeature(), this.getSerializationFeature()]
+    return [
+      this.getSettingFeature(),
+      this.getFillableFeature(),
+      this.getSerializationFeature(),
+      this.getTimestampsFeature()
+    ]
   }
 
   getCustomFeatures(): NajsEloquent.Feature.IFeature[] {

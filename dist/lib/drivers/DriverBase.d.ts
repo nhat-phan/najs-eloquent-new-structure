@@ -2,9 +2,11 @@
 /// <reference path="../definitions/features/ISettingFeature.d.ts" />
 /// <reference path="../definitions/features/IFillableFeature.d.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.d.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 import '../features/FillableFeature';
 import '../features/SettingFeature';
 import '../features/SerializationFeature';
+import '../features/TimestampsFeature';
 /**
  * Base class of all drivers, handling:
  *   - generic initialize for makeModel()
@@ -16,12 +18,14 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     protected settingFeature: NajsEloquent.Feature.ISettingFeature;
     protected fillableFeature: NajsEloquent.Feature.IFillableFeature;
     protected serializationFeature: NajsEloquent.Feature.ISerializationFeature;
+    protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature;
     constructor();
     abstract getClassName(): string;
     abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
     getSettingFeature(): NajsEloquent.Feature.ISettingFeature;
     getFillableFeature(): NajsEloquent.Feature.IFillableFeature;
     getSerializationFeature(): NajsEloquent.Feature.ISerializationFeature;
+    getTimestampsFeature(): NajsEloquent.Feature.ITimestampsFeature;
     makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
     attachPublicApiIfNeeded(model: NajsEloquent.Model.IModel): void;
     getSharedFeatures(): NajsEloquent.Feature.IFeature[];
