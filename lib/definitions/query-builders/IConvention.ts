@@ -1,5 +1,5 @@
 namespace NajsEloquent.QueryBuilder {
-  export interface IQueryConvention {
+  export interface IConvention {
     /**
      * Format the given name
      *

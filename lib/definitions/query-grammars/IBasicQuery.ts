@@ -1,6 +1,4 @@
-/// <reference path="../collect.js/index.d.ts" />
-
-namespace NajsEloquent.QueryBuilder {
+namespace NajsEloquent.QueryGrammar {
   export interface IBasicQuery {
     /**
      * Set the query with given name
@@ -47,21 +45,5 @@ namespace NajsEloquent.QueryBuilder {
      * @param {string} direction
      */
     orderBy(field: string, direction: 'asc' | 'desc'): this
-
-    /**
-     * Add an "order by" clause to the query with direction ASC.
-     *
-     * @param {string} field
-     * @param {string} direction
-     */
-    orderByAsc(field: string): this
-
-    /**
-     * Add an "order by" clause to the query with direction DESC.
-     *
-     * @param {string} field
-     * @param {string} direction
-     */
-    orderByDesc(field: string): this
   }
 }

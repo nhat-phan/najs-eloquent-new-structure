@@ -1,4 +1,4 @@
-namespace NajsEloquent.QueryBuilder {
+namespace NajsEloquent.QueryGrammar {
   export interface ISoftDeleteQuery {
     /**
      * Consider all soft-deleted or not-deleted items.

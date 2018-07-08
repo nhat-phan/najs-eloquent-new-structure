@@ -1,7 +1,7 @@
 /// <reference path="../collect.js/index.d.ts" />
 
 namespace NajsEloquent.QueryBuilder {
-  export interface IFetchResultQuery<T extends Object = {}> {
+  export interface IExecutor<T extends Object = {}> {
     /**
      * Execute query and return the records as a Collection.
      */
