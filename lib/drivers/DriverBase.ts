@@ -1,14 +1,18 @@
+/// <reference types="najs-event" />
 /// <reference path="../contracts/Driver.ts" />
 /// <reference path="../definitions/features/ISettingFeature.ts" />
+/// <reference path="../definitions/features/IEventFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 
-import '../features/FillableFeature'
 import '../features/SettingFeature'
+import '../features/EventFeature'
+import '../features/FillableFeature'
 import '../features/SerializationFeature'
 import '../features/TimestampsFeature'
 import { make } from 'najs-binding'
+import { EventEmitterFactory } from 'najs-event'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { find_base_prototypes } from '../util/functions'
 import { NajsEloquent } from '../constants'
@@ -22,16 +26,23 @@ import { NajsEloquent } from '../constants'
 export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T> {
   protected attachedModels: object
   protected settingFeature: NajsEloquent.Feature.ISettingFeature
+  protected eventFeature: NajsEloquent.Feature.IEventFeature
   protected fillableFeature: NajsEloquent.Feature.IFillableFeature
   protected serializationFeature: NajsEloquent.Feature.ISerializationFeature
   protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature
+  protected static globalEventEmitter: Najs.Contracts.Event.AsyncEventEmitter
 
   constructor() {
     this.attachedModels = {}
     this.settingFeature = make(NajsEloquent.Feature.SettingFeature)
+    this.eventFeature = make(NajsEloquent.Feature.EventFeature)
     this.fillableFeature = make(NajsEloquent.Feature.FillableFeature)
     this.serializationFeature = make(NajsEloquent.Feature.SerializationFeature)
     this.timestampsFeature = make(NajsEloquent.Feature.TimestampsFeature)
+
+    if (typeof DriverBase.globalEventEmitter === 'undefined') {
+      DriverBase.globalEventEmitter = EventEmitterFactory.create(true)
+    }
   }
 
   abstract getClassName(): string
@@ -40,6 +51,10 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   getSettingFeature() {
     return this.settingFeature
+  }
+
+  getEventFeature() {
+    return this.eventFeature
   }
 
   getFillableFeature() {
@@ -52,6 +67,10 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   getTimestampsFeature() {
     return this.timestampsFeature
+  }
+
+  getGlobalEventEmitter() {
+    return DriverBase.globalEventEmitter
   }
 
   makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded: boolean = true): M {
@@ -87,6 +106,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   getSharedFeatures(): NajsEloquent.Feature.IFeature[] {
     return [
       this.getSettingFeature(),
+      this.getEventFeature(),
       this.getFillableFeature(),
       this.getSerializationFeature(),
       this.getTimestampsFeature()

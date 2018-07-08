@@ -4,9 +4,11 @@ import * as NajsBinding from 'najs-binding'
 import { CREATE_SAMPLE } from '../../lib/util/ClassSetting'
 import { DriverBase } from '../../lib/drivers/DriverBase'
 import { DummyDriver } from '../../lib/drivers/DummyDriver'
-import { FillableFeature } from '../../lib/features/FillableFeature'
 import { SettingFeature } from '../../lib/features/SettingFeature'
+import { EventFeature } from '../../lib/features/EventFeature'
+import { FillableFeature } from '../../lib/features/FillableFeature'
 import { SerializationFeature } from '../../lib/features/SerializationFeature'
+import { TimestampsFeature } from '../../lib/features/TimestampsFeature'
 
 describe('DriverBase', function() {
   function createDriver(): DriverBase<any> {
@@ -20,11 +22,15 @@ describe('DriverBase', function() {
       const driverBase = createDriver()
 
       expect(driverBase['settingFeature']).toBeInstanceOf(SettingFeature)
+      expect(driverBase['eventFeature']).toBeInstanceOf(EventFeature)
       expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature)
       expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature)
+      expect(driverBase['timestampsFeature']).toBeInstanceOf(TimestampsFeature)
       expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true)
-      expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
-      expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true)
+      expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.EventFeature')).toBe(true)
+      expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
+      expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true)
+      expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true)
       makeSpy.restore()
     })
   })
@@ -35,6 +41,15 @@ describe('DriverBase', function() {
       const driverBase = createDriver()
       driverBase['settingFeature'] = settingFeature
       expect(driverBase.getSettingFeature() === settingFeature).toBe(true)
+    })
+  })
+
+  describe('.getSettingFeature()', function() {
+    it('simply returns "settingFeature" property', function() {
+      const eventFeature: any = {}
+      const driverBase = createDriver()
+      driverBase['eventFeature'] = eventFeature
+      expect(driverBase.getEventFeature() === eventFeature).toBe(true)
     })
   })
 
@@ -62,6 +77,16 @@ describe('DriverBase', function() {
       const driverBase = createDriver()
       driverBase['timestampsFeature'] = timestampsFeature
       expect(driverBase.getTimestampsFeature() === timestampsFeature).toBe(true)
+    })
+  })
+
+  describe('.getGlobalEventEmitter()', function() {
+    it ('simply returns the DriverBase.globalEventEmitter', function() {
+      const globalEventEmitter: any = {}
+      const driverBase = createDriver()
+      DriverBase['globalEventEmitter'] = globalEventEmitter
+      expect(driverBase.getGlobalEventEmitter() === globalEventEmitter).toBe(true)
+      delete DriverBase['globalEventEmitter']
     })
   })
 
@@ -146,7 +171,7 @@ describe('DriverBase', function() {
         prototype: Test.prototype,
         bases: bases
       })
-      expect(attachFeatureIfNeededSpy.callCount).toEqual(5)
+      expect(attachFeatureIfNeededSpy.callCount).toEqual(6)
       expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true)
 
       attachFeatureIfNeededSpy.restore()
@@ -157,6 +182,7 @@ describe('DriverBase', function() {
     it('simply returns an array of shared features', function() {
       expect(driver.getSharedFeatures()).toEqual([
         driver['settingFeature'],
+        driver['eventFeature'],
         driver['fillableFeature'],
         driver['serializationFeature'],
         driver['timestampsFeature']

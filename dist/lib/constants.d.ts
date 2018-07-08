@@ -8,6 +8,7 @@ export declare const NajsEloquent: {
         FillableFeature: string;
         SerializationFeature: string;
         TimestampsFeature: string;
+        EventFeature: string;
     };
     Provider: {
         DriverProvider: string;

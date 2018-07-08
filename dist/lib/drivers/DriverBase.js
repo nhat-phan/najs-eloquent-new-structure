@@ -1,15 +1,19 @@
 "use strict";
+/// <reference types="najs-event" />
 /// <reference path="../contracts/Driver.ts" />
 /// <reference path="../definitions/features/ISettingFeature.ts" />
+/// <reference path="../definitions/features/IEventFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-require("../features/FillableFeature");
 require("../features/SettingFeature");
+require("../features/EventFeature");
+require("../features/FillableFeature");
 require("../features/SerializationFeature");
 require("../features/TimestampsFeature");
 const najs_binding_1 = require("najs-binding");
+const najs_event_1 = require("najs-event");
 const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
 const constants_1 = require("../constants");
@@ -23,12 +27,19 @@ class DriverBase {
     constructor() {
         this.attachedModels = {};
         this.settingFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SettingFeature);
+        this.eventFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.EventFeature);
         this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
         this.serializationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SerializationFeature);
         this.timestampsFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.TimestampsFeature);
+        if (typeof DriverBase.globalEventEmitter === 'undefined') {
+            DriverBase.globalEventEmitter = najs_event_1.EventEmitterFactory.create(true);
+        }
     }
     getSettingFeature() {
         return this.settingFeature;
+    }
+    getEventFeature() {
+        return this.eventFeature;
     }
     getFillableFeature() {
         return this.fillableFeature;
@@ -38,6 +49,9 @@ class DriverBase {
     }
     getTimestampsFeature() {
         return this.timestampsFeature;
+    }
+    getGlobalEventEmitter() {
+        return DriverBase.globalEventEmitter;
     }
     makeModel(model, data, isGuarded = true) {
         if (data === ClassSetting_1.CREATE_SAMPLE) {
@@ -65,6 +79,7 @@ class DriverBase {
     getSharedFeatures() {
         return [
             this.getSettingFeature(),
+            this.getEventFeature(),
             this.getFillableFeature(),
             this.getSerializationFeature(),
             this.getTimestampsFeature()

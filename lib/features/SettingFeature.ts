@@ -24,7 +24,7 @@ export class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
       model['classSettings'] = ClassSetting.of(model)
     }
 
-    return model['classSettings']
+    return model['classSettings']!
   }
 
   getSettingProperty<T>(model: NajsEloquent.Model.IModel, property: string, defaultValue: T): T {

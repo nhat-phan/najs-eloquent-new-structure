@@ -14,19 +14,19 @@ declare namespace NajsEloquent.Model {
          */
         protected sharedMetadata: object;
         /**
-         * The model's class setting
-         */
-        protected classSettings: NajsEloquent.Util.IClassSetting;
-        /**
          * The driver associated with the model.
          */
         protected driver: Najs.Contracts.Eloquent.Driver<T>;
+        /**
+         * The model's class setting
+         */
+        protected classSettings?: NajsEloquent.Util.IClassSetting;
         /**
          * The model's attributes.
          */
         protected attributes: T;
     }
-    interface IModel<T = any> extends IModelRecord<T>, IModelFillable, IModelSerialization, IModelTimestamps {
+    interface IModel<T = any> extends IModelRecord<T>, IModelFillable, IModelSerialization, IModelTimestamps, IModelEvent {
         /**
          * Get driver which is used by the model.
          */

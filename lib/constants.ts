@@ -9,7 +9,8 @@ export const NajsEloquent = {
     RecordManager: 'NajsEloquent.Feature.RecordManager',
     FillableFeature: 'NajsEloquent.Feature.FillableFeature',
     SerializationFeature: 'NajsEloquent.Feature.SerializationFeature',
-    TimestampsFeature: 'NajsEloquent.Feature.TimestampsFeature'
+    TimestampsFeature: 'NajsEloquent.Feature.TimestampsFeature',
+    EventFeature: 'NajsEloquent.Feature.EventFeature'
   },
   Provider: {
     DriverProvider: 'NajsEloquent.Provider.DriverProvider'
