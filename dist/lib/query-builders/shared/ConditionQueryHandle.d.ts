@@ -1,14 +1,14 @@
 /// <reference path="../../definitions/query-grammars/IBasicConditionQuery.d.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.d.ts" />
-/// <reference path="../../definitions/query-builders/IConditionQueryHandle.d.ts" />
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition;
 import Operator = NajsEloquent.QueryGrammar.Operator;
 import Range = NajsEloquent.QueryGrammar.Range;
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery;
+import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
-export declare class ConditionQueryHandle implements NajsEloquent.QueryBuilder.IConditionQueryHandle {
-    basicConditionQuery: IBasicConditionQuery;
-    convention: IConvention;
+export declare class ConditionQueryHandle implements IConditionQuery {
+    protected basicConditionQuery: IBasicConditionQuery;
+    protected convention: IConvention;
     constructor(basicConditionQuery: IBasicConditionQuery, convention: IConvention);
     where(conditionBuilder: SubCondition): this;
     where(field: string, value: any): this;

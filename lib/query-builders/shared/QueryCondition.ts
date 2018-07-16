@@ -4,8 +4,8 @@
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Operator = NajsEloquent.QueryGrammar.Operator
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery
+import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IConvention = NajsEloquent.QueryBuilder.IConvention
-import IConditionQueryHandle = NajsEloquent.QueryBuilder.IConditionQueryHandle
 
 import { isFunction } from 'lodash'
 import { ConditionQueryHandle } from './ConditionQueryHandle'
@@ -18,7 +18,7 @@ export class QueryCondition implements IBasicConditionQuery {
   field: string
   value: string
   queries: QueryCondition[]
-  conditionQueryHandle: IConditionQueryHandle
+  conditionQueryHandle: IConditionQuery
 
   protected constructor() {
     this.isSubQuery = false
@@ -38,7 +38,7 @@ export class QueryCondition implements IBasicConditionQuery {
     return condition
   }
 
-  protected getConditionQueryHandle(): IConditionQueryHandle {
+  protected getConditionQueryHandle(): IConditionQuery {
     return new ConditionQueryHandle(this, this.convention)
   }
 

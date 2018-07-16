@@ -3,8 +3,8 @@
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition;
 import Operator = NajsEloquent.QueryGrammar.Operator;
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery;
+import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
-import IConditionQueryHandle = NajsEloquent.QueryBuilder.IConditionQueryHandle;
 export declare class QueryCondition implements IBasicConditionQuery {
     convention: IConvention;
     isSubQuery: boolean;
@@ -13,10 +13,10 @@ export declare class QueryCondition implements IBasicConditionQuery {
     field: string;
     value: string;
     queries: QueryCondition[];
-    conditionQueryHandle: IConditionQueryHandle;
+    conditionQueryHandle: IConditionQuery;
     protected constructor();
     static create(convention: IConvention, operator: 'and' | 'or', arg0: string | SubCondition, arg1: Operator | any, arg2: any): QueryCondition;
-    protected getConditionQueryHandle(): IConditionQueryHandle;
+    protected getConditionQueryHandle(): IConditionQuery;
     toObject(): Object;
     protected buildQuery(bool: 'and' | 'or', arg0: string | SubCondition, arg1: Operator | any, arg2: any): this;
     protected buildSubQuery(queryCondition: QueryCondition, arg0: SubCondition): this;

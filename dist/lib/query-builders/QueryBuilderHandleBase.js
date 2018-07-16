@@ -1,4 +1,8 @@
 "use strict";
+/// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/query-builders/IQueryBuilderHandle.ts" />
+/// <reference path="../definitions/query-grammars/IBasicQuery.ts" />
+/// <reference path="../definitions/query-grammars/IQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class QueryBuilderHandleBase {
     constructor(model) {

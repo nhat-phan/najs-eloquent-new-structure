@@ -1,7 +1,6 @@
 "use strict";
 /// <reference path="../../definitions/query-grammars/IBasicConditionQuery.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
-/// <reference path="../../definitions/query-builders/IConditionQueryHandle.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class ConditionQueryHandle {
     constructor(basicConditionQuery, convention) {

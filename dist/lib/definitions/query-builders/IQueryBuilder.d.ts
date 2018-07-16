@@ -1,7 +1,9 @@
-/// <reference path="IBasicQuery.d.ts" />
-/// <reference path="IConditionQuery.d.ts" />
-/// <reference path="IFetchResultQuery.d.ts" />
+/// <reference path="IQueryBuilderHandle.d.ts" />
+/// <reference path="../query-grammars/IQuery.d.ts" />
 declare namespace NajsEloquent.QueryBuilder {
-    interface IQueryBuilder extends IBasicQuery, IConditionQuery {
+    class IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> {
+        protected handler: Handle;
+    }
+    interface IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> extends QueryGrammar.IQuery {
     }
 }

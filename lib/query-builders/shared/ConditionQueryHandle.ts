@@ -1,16 +1,16 @@
 /// <reference path="../../definitions/query-grammars/IBasicConditionQuery.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
-/// <reference path="../../definitions/query-builders/IConditionQueryHandle.ts" />
 
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Operator = NajsEloquent.QueryGrammar.Operator
 import Range = NajsEloquent.QueryGrammar.Range
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery
+import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IConvention = NajsEloquent.QueryBuilder.IConvention
 
-export class ConditionQueryHandle implements NajsEloquent.QueryBuilder.IConditionQueryHandle {
-  basicConditionQuery: IBasicConditionQuery
-  convention: IConvention
+export class ConditionQueryHandle implements IConditionQuery {
+  protected basicConditionQuery: IBasicConditionQuery
+  protected convention: IConvention
 
   constructor(basicConditionQuery: IBasicConditionQuery, convention: IConvention) {
     this.basicConditionQuery = basicConditionQuery

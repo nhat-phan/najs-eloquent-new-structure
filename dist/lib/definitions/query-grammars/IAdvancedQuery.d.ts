@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 declare namespace NajsEloquent.QueryGrammar {
-    interface IQueryAdvanced<Model> {
+    interface IAdvancedQuery<Model> {
         /**
          * Execute query and returns the first record.
          */

@@ -1,5 +1,6 @@
-/// <reference path="IQueryBuilderHandle.ts" />
-/// <reference path="../query-grammars/IQuery.ts" />
+/// <reference path="../model/IModel.ts" />
+/// <reference path="../query-grammars/IBasicQuery.ts" />
+/// <reference path="../query-grammars/IConditionQuery.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var QueryBuilder;

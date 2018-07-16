@@ -1,7 +1,7 @@
 /// <reference path="../collect.js/index.d.ts" />
 
 namespace NajsEloquent.QueryGrammar {
-  export interface IQueryAdvanced<Model> {
+  export interface IAdvancedQuery<Model> {
     /**
      * Execute query and returns the first record.
      */
