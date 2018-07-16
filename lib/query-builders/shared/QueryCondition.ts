@@ -1,5 +1,5 @@
-/// <reference path="../definitions/query-grammars/IBasicConditionQuery.ts" />
-/// <reference path="../definitions/query-grammars/IConditionQuery.ts" />
+/// <reference path="../../definitions/query-grammars/IBasicConditionQuery.ts" />
+/// <reference path="../../definitions/query-grammars/IConditionQuery.ts" />
 
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Operator = NajsEloquent.QueryGrammar.Operator
