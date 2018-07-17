@@ -3,22 +3,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Query = {
     select(...fields) {
         this['handler'].getBasicQuery().select(...fields);
+        this['handler'].markUsed();
         return this;
     },
     limit(record) {
         this['handler'].getBasicQuery().limit(record);
+        this['handler'].markUsed();
         return this;
     },
     orderBy(field, direction) {
         this['handler'].getBasicQuery().orderBy(field, direction);
+        this['handler'].markUsed();
         return this;
     },
     queryName(name) {
         this['handler'].setQueryName(name);
+        this['handler'].markUsed();
         return this;
     },
     setLogGroup(group) {
         this['handler'].setLogGroup(group);
+        this['handler'].markUsed();
         return this;
     },
     orderByAsc(field) {
