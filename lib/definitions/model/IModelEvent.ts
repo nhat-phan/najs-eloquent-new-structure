@@ -22,6 +22,6 @@ namespace NajsEloquent.Model {
      * @param {string} eventName event's name
      * @param {mixed} args arguments
      */
-    fire(eventName: string, args: any): Promise<void>
+    fire(eventName: string, args?: any): Promise<void>
   }
 }

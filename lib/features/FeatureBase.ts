@@ -4,6 +4,7 @@
 /// <reference path="../definitions/features/IRecordManager.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 
 export class FeatureBase {
   useSettingFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature {
@@ -24,5 +25,9 @@ export class FeatureBase {
 
   useTimestampsFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ITimestampsFeature {
     return model.getDriver().getTimestampsFeature()
+  }
+
+  useSoftDeletesFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISoftDeletesFeature {
+    return model.getDriver().getSoftDeletesFeature()
   }
 }

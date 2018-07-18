@@ -12,6 +12,7 @@ require("../features/EventFeature");
 require("../features/FillableFeature");
 require("../features/SerializationFeature");
 require("../features/TimestampsFeature");
+require("../features/SoftDeletesFeature");
 const najs_binding_1 = require("najs-binding");
 const najs_event_1 = require("najs-event");
 const ClassSetting_1 = require("../util/ClassSetting");
@@ -31,6 +32,7 @@ class DriverBase {
         this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
         this.serializationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SerializationFeature);
         this.timestampsFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.TimestampsFeature);
+        this.softDeletesFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SoftDeletesFeature);
         if (typeof DriverBase.globalEventEmitter === 'undefined') {
             DriverBase.globalEventEmitter = najs_event_1.EventEmitterFactory.create(true);
         }
@@ -49,6 +51,9 @@ class DriverBase {
     }
     getTimestampsFeature() {
         return this.timestampsFeature;
+    }
+    getSoftDeletesFeature() {
+        return this.softDeletesFeature;
     }
     getGlobalEventEmitter() {
         return DriverBase.globalEventEmitter;
@@ -82,7 +87,8 @@ class DriverBase {
             this.getEventFeature(),
             this.getFillableFeature(),
             this.getSerializationFeature(),
-            this.getTimestampsFeature()
+            this.getTimestampsFeature(),
+            this.getSoftDeletesFeature()
         ];
     }
     getCustomFeatures() {

@@ -80,8 +80,17 @@ describe('DriverBase', function() {
     })
   })
 
+  describe('.getSoftDeletesFeature()', function() {
+    it('simply returns "softDeletesFeature" property', function() {
+      const softDeletesFeature: any = {}
+      const driverBase = createDriver()
+      driverBase['softDeletesFeature'] = softDeletesFeature
+      expect(driverBase.getSoftDeletesFeature() === softDeletesFeature).toBe(true)
+    })
+  })
+
   describe('.getGlobalEventEmitter()', function() {
-    it ('simply returns the DriverBase.globalEventEmitter', function() {
+    it('simply returns the DriverBase.globalEventEmitter', function() {
       const globalEventEmitter: any = {}
       const driverBase = createDriver()
       DriverBase['globalEventEmitter'] = globalEventEmitter
@@ -171,7 +180,7 @@ describe('DriverBase', function() {
         prototype: Test.prototype,
         bases: bases
       })
-      expect(attachFeatureIfNeededSpy.callCount).toEqual(6)
+      expect(attachFeatureIfNeededSpy.callCount).toEqual(7)
       expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true)
 
       attachFeatureIfNeededSpy.restore()
@@ -185,7 +194,8 @@ describe('DriverBase', function() {
         driver['eventFeature'],
         driver['fillableFeature'],
         driver['serializationFeature'],
-        driver['timestampsFeature']
+        driver['timestampsFeature'],
+        driver['softDeletesFeature']
       ])
     })
   })

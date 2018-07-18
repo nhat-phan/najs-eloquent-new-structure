@@ -9,6 +9,7 @@ import '../features/EventFeature';
 import '../features/FillableFeature';
 import '../features/SerializationFeature';
 import '../features/TimestampsFeature';
+import '../features/SoftDeletesFeature';
 /**
  * Base class of all drivers, handling:
  *   - generic initialize for makeModel()
@@ -22,6 +23,7 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     protected fillableFeature: NajsEloquent.Feature.IFillableFeature;
     protected serializationFeature: NajsEloquent.Feature.ISerializationFeature;
     protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature;
+    protected softDeletesFeature: NajsEloquent.Feature.ISoftDeletesFeature;
     protected static globalEventEmitter: Najs.Contracts.Event.AsyncEventEmitter;
     constructor();
     abstract getClassName(): string;
@@ -31,6 +33,7 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     getFillableFeature(): NajsEloquent.Feature.IFillableFeature;
     getSerializationFeature(): NajsEloquent.Feature.ISerializationFeature;
     getTimestampsFeature(): NajsEloquent.Feature.ITimestampsFeature;
+    getSoftDeletesFeature(): NajsEloquent.Feature.ISoftDeletesFeature;
     getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter;
     makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
     attachPublicApiIfNeeded(model: NajsEloquent.Model.IModel): void;

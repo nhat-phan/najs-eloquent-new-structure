@@ -4,6 +4,7 @@
 /// <reference path="./IModelFillable.ts" />
 /// <reference path="./IModelSerialization.ts" />
 /// <reference path="./IModelTimestamps.ts" />
+/// <reference path="./IModelSoftDeletes.ts" />
 
 namespace NajsEloquent.Model {
   export type ModelDefinition<T = any> = string | { new (): IModel<T> }
@@ -32,10 +33,11 @@ namespace NajsEloquent.Model {
 
   export interface IModel<T = any>
     extends IModelRecord<T>,
+      IModelEvent,
       IModelFillable,
       IModelSerialization,
       IModelTimestamps,
-      IModelEvent {
+      IModelSoftDeletes {
     /**
      * Get driver which is used by the model.
      */

@@ -4,11 +4,12 @@ export declare const NajsEloquent: {
     };
     Feature: {
         SettingFeature: string;
+        EventFeature: string;
         RecordManager: string;
         FillableFeature: string;
         SerializationFeature: string;
         TimestampsFeature: string;
-        EventFeature: string;
+        SoftDeletesFeature: string;
     };
     Provider: {
         DriverProvider: string;

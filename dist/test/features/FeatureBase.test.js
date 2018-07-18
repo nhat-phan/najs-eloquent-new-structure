@@ -79,4 +79,19 @@ describe('FeatureBase', function () {
             expect(featureInstance.useTimestampsFeatureOf(model) === feature).toBe(true);
         });
     });
+    describe('.useSoftDeletesFeatureOf()', function () {
+        it('is an helper to reduce repetition code. It returns RecordManager from a driver', function () {
+            const feature = {};
+            const model = {
+                getDriver() {
+                    return {
+                        getSoftDeletesFeature() {
+                            return feature;
+                        }
+                    };
+                }
+            };
+            expect(featureInstance.useSoftDeletesFeatureOf(model) === feature).toBe(true);
+        });
+    });
 });

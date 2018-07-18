@@ -5,6 +5,7 @@
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 
 namespace Najs.Contracts.Eloquent {
   export interface Driver<T> extends Najs.Contracts.Autoload {
@@ -19,6 +20,8 @@ namespace Najs.Contracts.Eloquent {
     getSerializationFeature(): NajsEloquent.Feature.ISerializationFeature
 
     getTimestampsFeature(): NajsEloquent.Feature.ITimestampsFeature
+
+    getSoftDeletesFeature(): NajsEloquent.Feature.ISoftDeletesFeature
 
     getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter
 

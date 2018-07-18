@@ -11,6 +11,7 @@ import '../features/EventFeature'
 import '../features/FillableFeature'
 import '../features/SerializationFeature'
 import '../features/TimestampsFeature'
+import '../features/SoftDeletesFeature'
 import { make } from 'najs-binding'
 import { EventEmitterFactory } from 'najs-event'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
@@ -30,6 +31,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   protected fillableFeature: NajsEloquent.Feature.IFillableFeature
   protected serializationFeature: NajsEloquent.Feature.ISerializationFeature
   protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature
+  protected softDeletesFeature: NajsEloquent.Feature.ISoftDeletesFeature
   protected static globalEventEmitter: Najs.Contracts.Event.AsyncEventEmitter
 
   constructor() {
@@ -39,6 +41,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     this.fillableFeature = make(NajsEloquent.Feature.FillableFeature)
     this.serializationFeature = make(NajsEloquent.Feature.SerializationFeature)
     this.timestampsFeature = make(NajsEloquent.Feature.TimestampsFeature)
+    this.softDeletesFeature = make(NajsEloquent.Feature.SoftDeletesFeature)
 
     if (typeof DriverBase.globalEventEmitter === 'undefined') {
       DriverBase.globalEventEmitter = EventEmitterFactory.create(true)
@@ -67,6 +70,10 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   getTimestampsFeature() {
     return this.timestampsFeature
+  }
+
+  getSoftDeletesFeature() {
+    return this.softDeletesFeature
   }
 
   getGlobalEventEmitter() {
@@ -109,7 +116,8 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
       this.getEventFeature(),
       this.getFillableFeature(),
       this.getSerializationFeature(),
-      this.getTimestampsFeature()
+      this.getTimestampsFeature(),
+      this.getSoftDeletesFeature()
     ]
   }
 

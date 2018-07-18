@@ -7,11 +7,12 @@ exports.NajsEloquent = {
     },
     Feature: {
         SettingFeature: 'NajsEloquent.Feature.SettingFeature',
+        EventFeature: 'NajsEloquent.Feature.EventFeature',
         RecordManager: 'NajsEloquent.Feature.RecordManager',
         FillableFeature: 'NajsEloquent.Feature.FillableFeature',
         SerializationFeature: 'NajsEloquent.Feature.SerializationFeature',
         TimestampsFeature: 'NajsEloquent.Feature.TimestampsFeature',
-        EventFeature: 'NajsEloquent.Feature.EventFeature'
+        SoftDeletesFeature: 'NajsEloquent.Feature.SoftDeletesFeature'
     },
     Provider: {
         DriverProvider: 'NajsEloquent.Provider.DriverProvider'

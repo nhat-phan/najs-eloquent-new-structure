@@ -5,6 +5,7 @@
 /// <reference path="../definitions/features/IRecordManager.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class FeatureBase {
     useSettingFeatureOf(model) {
@@ -21,6 +22,9 @@ class FeatureBase {
     }
     useTimestampsFeatureOf(model) {
         return model.getDriver().getTimestampsFeature();
+    }
+    useSoftDeletesFeatureOf(model) {
+        return model.getDriver().getSoftDeletesFeature();
     }
 }
 exports.FeatureBase = FeatureBase;
