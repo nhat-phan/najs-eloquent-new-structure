@@ -1,7 +1,7 @@
 import 'jest'
 import { register } from 'najs-binding'
 import { Model } from '../../../lib/model/Model'
-import { DummyDriver } from '../../../lib/drivers/DummyDriver'
+import { DummyDriver } from '../../../lib/drivers/dummy/DummyDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
 
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)

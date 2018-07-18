@@ -1,10 +1,10 @@
 "use strict";
-/// <reference path="../definitions/features/IRecordManager.ts" />
+/// <reference path="../../definitions/features/IRecordManager.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-require("../features/RecordManager");
+require("../../features/RecordManager");
 const najs_binding_1 = require("najs-binding");
-const DriverBase_1 = require("./DriverBase");
-const constants_1 = require("../constants");
+const DriverBase_1 = require("../DriverBase");
+const constants_1 = require("../../constants");
 class DummyDriver extends DriverBase_1.DriverBase {
     constructor() {
         super();

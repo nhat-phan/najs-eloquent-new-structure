@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../../lib/model/Model");
-const DummyDriver_1 = require("../../../lib/drivers/DummyDriver");
+const DummyDriver_1 = require("../../../lib/drivers/dummy/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
 describe('Model Fillable Feature', function () {

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const NajsBinding = require("najs-binding");
-const DummyDriver_1 = require("../../lib/drivers/DummyDriver");
-const RecordManager_1 = require("../../lib/features/RecordManager");
+const DummyDriver_1 = require("../../../lib/drivers/dummy/DummyDriver");
+const RecordManager_1 = require("../../../lib/features/RecordManager");
 describe('DummyDriver', function () {
     it('implements Najs.Contracts.Autoload under name NajsEloquent.Driver.DummyDriver', function () {
         const dummyDriver = new DummyDriver_1.DummyDriver();
