@@ -11,6 +11,7 @@ namespace NajsEloquent.QueryBuilder {
   }
 
   export interface IQueryBuilderHandle<T extends Model.IModel = Model.IModel> {
+    getModel(): T
     getBasicQuery(): QueryGrammar.IBasicQuery
     getConditionQuery(): QueryGrammar.IConditionQuery
     getQueryConvention(): IConvention
@@ -26,5 +27,11 @@ namespace NajsEloquent.QueryBuilder {
     markUsed(): void
 
     isUsed(): boolean
+
+    hasSoftDeletes(): boolean
+
+    markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void
+
+    shouldAddSoftDeleteCondition(): boolean
   }
 }

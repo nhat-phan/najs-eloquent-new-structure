@@ -14,14 +14,19 @@ export declare abstract class QueryBuilderHandleBase<T extends IModel = IModel> 
     protected queryName: string;
     protected logGroup: string;
     protected used: boolean;
+    protected softDeleteState: 'should-add' | 'should-not-add' | 'added';
     constructor(model: T);
     abstract getBasicQuery(): IBasicQuery;
     abstract getConditionQuery(): IConditionQuery;
     abstract getQueryConvention(): IConvention;
+    getModel(): T;
     setQueryName(name: string): void;
     getQueryName(): string;
     getLogGroup(): string;
     setLogGroup(group: string): void;
     markUsed(): void;
     isUsed(): boolean;
+    hasSoftDeletes(): boolean;
+    markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
+    shouldAddSoftDeleteCondition(): boolean;
 }

@@ -8,6 +8,10 @@ class QueryBuilderHandleBase {
     constructor(model) {
         this.model = model;
         this.used = false;
+        this.softDeleteState = 'should-add';
+    }
+    getModel() {
+        return this.model;
     }
     setQueryName(name) {
         this.queryName = name;
@@ -26,6 +30,18 @@ class QueryBuilderHandleBase {
     }
     isUsed() {
         return this.used;
+    }
+    hasSoftDeletes() {
+        return this.model
+            .getDriver()
+            .getSoftDeletesFeature()
+            .hasSoftDeletes(this.model);
+    }
+    markSoftDeleteState(state) {
+        this.softDeleteState = state;
+    }
+    shouldAddSoftDeleteCondition() {
+        return this.softDeleteState === 'should-add' && this.hasSoftDeletes();
     }
 }
 exports.QueryBuilderHandleBase = QueryBuilderHandleBase;

@@ -5,6 +5,6 @@ declare namespace NajsEloquent.QueryBuilder {
     class IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> {
         protected handler: Handle;
     }
-    interface IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> extends QueryGrammar.IQuery, QueryGrammar.IConditionQuery {
+    interface IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> extends QueryGrammar.IQuery, QueryGrammar.IConditionQuery, QueryGrammar.ISoftDeleteQuery {
     }
 }

@@ -9,6 +9,7 @@ declare namespace NajsEloquent.QueryBuilder {
         protected used: boolean;
     }
     interface IQueryBuilderHandle<T extends Model.IModel = Model.IModel> {
+        getModel(): T;
         getBasicQuery(): QueryGrammar.IBasicQuery;
         getConditionQuery(): QueryGrammar.IConditionQuery;
         getQueryConvention(): IConvention;
@@ -18,5 +19,8 @@ declare namespace NajsEloquent.QueryBuilder {
         setLogGroup(group: string): void;
         markUsed(): void;
         isUsed(): boolean;
+        hasSoftDeletes(): boolean;
+        markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
+        shouldAddSoftDeleteCondition(): boolean;
     }
 }

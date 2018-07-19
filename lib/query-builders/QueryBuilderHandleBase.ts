@@ -15,15 +15,21 @@ export abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
   protected queryName: string
   protected logGroup: string
   protected used: boolean
+  protected softDeleteState: 'should-add' | 'should-not-add' | 'added'
 
   constructor(model: T) {
     this.model = model
     this.used = false
+    this.softDeleteState = 'should-add'
   }
 
   abstract getBasicQuery(): IBasicQuery
   abstract getConditionQuery(): IConditionQuery
   abstract getQueryConvention(): IConvention
+
+  getModel(): T {
+    return this.model
+  }
 
   setQueryName(name: string): void {
     this.queryName = name
@@ -47,5 +53,20 @@ export abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
 
   isUsed(): boolean {
     return this.used
+  }
+
+  hasSoftDeletes(): boolean {
+    return this.model
+      .getDriver()
+      .getSoftDeletesFeature()
+      .hasSoftDeletes(this.model)
+  }
+
+  markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void {
+    this.softDeleteState = state
+  }
+
+  shouldAddSoftDeleteCondition(): boolean {
+    return this.softDeleteState === 'should-add' && this.hasSoftDeletes()
   }
 }
