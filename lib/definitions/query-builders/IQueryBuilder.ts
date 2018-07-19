@@ -9,6 +9,5 @@ namespace NajsEloquent.QueryBuilder {
 
   export interface IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle>
     extends QueryGrammar.IQuery,
-      QueryGrammar.IConditionQuery,
-      QueryGrammar.ISoftDeleteQuery {}
+      QueryGrammar.IConditionQuery {}
 }

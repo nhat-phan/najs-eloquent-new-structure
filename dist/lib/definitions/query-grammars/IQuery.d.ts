@@ -27,5 +27,13 @@ declare namespace NajsEloquent.QueryGrammar {
          * @param {string} direction
          */
         orderByDesc(field: string): this;
+        /**
+         * Consider all soft-deleted or not-deleted items.
+         */
+        withTrashed(): this;
+        /**
+         * Consider soft-deleted items only.
+         */
+        onlyTrashed(): this;
     }
 }
