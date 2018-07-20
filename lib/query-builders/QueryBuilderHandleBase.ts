@@ -1,9 +1,12 @@
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/query-builders/IConvention.ts" />
+/// <reference path="../definitions/query-builders/IExecutor.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilderHandle.ts" />
 /// <reference path="../definitions/query-grammars/IBasicQuery.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.ts" />
 
 import IModel = NajsEloquent.Model.IModel
+import IExecutor = NajsEloquent.QueryBuilder.IExecutor
 import IConvention = NajsEloquent.QueryBuilder.IConvention
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
@@ -26,9 +29,14 @@ export abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
   abstract getBasicQuery(): IBasicQuery
   abstract getConditionQuery(): IConditionQuery
   abstract getQueryConvention(): IConvention
+  abstract getQueryExecutor(): IExecutor
 
   getModel(): T {
     return this.model
+  }
+
+  getPrimaryKeyName(): string {
+    return this.model.getPrimaryKeyName()
   }
 
   setQueryName(name: string): void {
@@ -68,5 +76,13 @@ export abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
 
   shouldAddSoftDeleteCondition(): boolean {
     return this.softDeleteState === 'should-add' && this.hasSoftDeletes()
+  }
+
+  createCollection(result: object[]): any {
+    return {}
+  }
+
+  createInstance(result: object): any {
+    return {}
   }
 }

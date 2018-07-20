@@ -1,5 +1,7 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/query-builders/IConvention.ts" />
+/// <reference path="../definitions/query-builders/IExecutor.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilderHandle.ts" />
 /// <reference path="../definitions/query-grammars/IBasicQuery.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.ts" />
@@ -12,6 +14,9 @@ class QueryBuilderHandleBase {
     }
     getModel() {
         return this.model;
+    }
+    getPrimaryKeyName() {
+        return this.model.getPrimaryKeyName();
     }
     setQueryName(name) {
         this.queryName = name;
@@ -42,6 +47,12 @@ class QueryBuilderHandleBase {
     }
     shouldAddSoftDeleteCondition() {
         return this.softDeleteState === 'should-add' && this.hasSoftDeletes();
+    }
+    createCollection(result) {
+        return {};
+    }
+    createInstance(result) {
+        return {};
     }
 }
 exports.QueryBuilderHandleBase = QueryBuilderHandleBase;

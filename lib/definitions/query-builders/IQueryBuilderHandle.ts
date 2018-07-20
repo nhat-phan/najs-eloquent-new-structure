@@ -1,4 +1,6 @@
+/// <reference path="./IExecutor.ts" />
 /// <reference path="../model/IModel.ts" />
+/// <reference path="../collect.js/index.d.ts" />
 /// <reference path="../query-grammars/IBasicQuery.ts" />
 /// <reference path="../query-grammars/IConditionQuery.ts" />
 
@@ -12,9 +14,16 @@ namespace NajsEloquent.QueryBuilder {
 
   export interface IQueryBuilderHandle<T extends Model.IModel = Model.IModel> {
     getModel(): T
+
     getBasicQuery(): QueryGrammar.IBasicQuery
+
     getConditionQuery(): QueryGrammar.IConditionQuery
+
     getQueryConvention(): IConvention
+
+    getQueryExecutor(): IExecutor
+
+    getPrimaryKeyName(): string
 
     setQueryName(name: string): void
 
@@ -33,5 +42,9 @@ namespace NajsEloquent.QueryBuilder {
     markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void
 
     shouldAddSoftDeleteCondition(): boolean
+
+    createCollection(result: object[]): CollectJs.Collection<T>
+
+    createInstance(result: object): T
   }
 }

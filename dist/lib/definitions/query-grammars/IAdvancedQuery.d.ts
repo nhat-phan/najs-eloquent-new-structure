@@ -36,11 +36,11 @@ declare namespace NajsEloquent.QueryGrammar {
         /**
          * Execute query and returns "pluck" result.
          */
-        pluck(valueKey: string): Promise<Object>;
+        pluck(valueKey: string): Promise<object>;
         /**
          * Execute query and returns "pluck" result.
          */
-        pluck(valueKey: string, indexKey: string): Promise<Object>;
+        pluck(valueKey: string, indexKey: string): Promise<object>;
         /**
          * Find first record by id
          * @param {string} id
