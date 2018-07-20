@@ -3,7 +3,7 @@
 
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
-import { TimestampsPublicApi } from './TimestampsPublicApi'
+import { TimestampsPublicApi } from './mixin/TimestampsPublicApi'
 import { NajsEloquent } from '../constants'
 
 export class TimestampsFeature extends FeatureBase implements NajsEloquent.Feature.ITimestampsFeature {
@@ -12,8 +12,8 @@ export class TimestampsFeature extends FeatureBase implements NajsEloquent.Featu
     updatedAt: 'updated_at'
   }
 
-  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    Object.assign(prototype, TimestampsPublicApi)
+  getPublicApi(): object {
+    return TimestampsPublicApi
   }
 
   getFeatureName(): string {

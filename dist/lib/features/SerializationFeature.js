@@ -4,11 +4,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
-const SerializationPublicApi_1 = require("./SerializationPublicApi");
+const SerializationPublicApi_1 = require("./mixin/SerializationPublicApi");
 const constants_1 = require("../constants");
 class SerializationFeature extends FeatureBase_1.FeatureBase {
-    attachPublicApi(prototype, bases, driver) {
-        Object.assign(prototype, SerializationPublicApi_1.SerializationPublicApi);
+    getPublicApi() {
+        return SerializationPublicApi_1.SerializationPublicApi;
     }
     getFeatureName() {
         return 'Serialization';

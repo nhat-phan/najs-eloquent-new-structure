@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_event_1 = require("najs-event");
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
-const EventPublicApi_1 = require("./EventPublicApi");
+const EventPublicApi_1 = require("./mixin/EventPublicApi");
 const constants_1 = require("../constants");
 class EventFeature extends FeatureBase_1.FeatureBase {
-    attachPublicApi(prototype, bases, driver) {
-        Object.assign(prototype, EventPublicApi_1.EventPublicApi);
+    getPublicApi() {
+        return EventPublicApi_1.EventPublicApi;
     }
     getFeatureName() {
         return 'Event';

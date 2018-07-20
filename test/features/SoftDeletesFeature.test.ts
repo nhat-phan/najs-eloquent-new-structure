@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { FeatureBase } from '../../lib/features/FeatureBase'
 import { SoftDeletesFeature } from '../../lib/features/SoftDeletesFeature'
-import { SoftDeletesPublicApi } from '../../lib/features/SoftDeletesPublicApi'
+import { SoftDeletesPublicApi } from '../../lib/features/mixin/SoftDeletesPublicApi'
 
 describe('FillableFeature', function() {
   const softDeletesFeature = new SoftDeletesFeature()

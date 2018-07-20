@@ -6,7 +6,13 @@
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 
-export class FeatureBase {
+export abstract class FeatureBase {
+  abstract getPublicApi(): object
+
+  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
+    Object.assign(prototype, this.getPublicApi())
+  }
+
   useSettingFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature {
     return model.getDriver().getSettingFeature()
   }

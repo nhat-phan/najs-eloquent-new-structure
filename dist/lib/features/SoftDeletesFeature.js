@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ModelEvent_1 = require("../model/ModelEvent");
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
-const SoftDeletesPublicApi_1 = require("./SoftDeletesPublicApi");
+const SoftDeletesPublicApi_1 = require("./mixin/SoftDeletesPublicApi");
 const constants_1 = require("../constants");
 class SoftDeletesFeature extends FeatureBase_1.FeatureBase {
-    attachPublicApi(prototype, bases, driver) {
-        Object.assign(prototype, SoftDeletesPublicApi_1.SoftDeletesPublicApi);
+    getPublicApi() {
+        return SoftDeletesPublicApi_1.SoftDeletesPublicApi;
     }
     getFeatureName() {
         return 'SoftDeletes';

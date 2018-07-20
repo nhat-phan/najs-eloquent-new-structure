@@ -5,12 +5,12 @@
 import { EventEmitterFactory } from 'najs-event'
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
-import { EventPublicApi } from './EventPublicApi'
+import { EventPublicApi } from './mixin/EventPublicApi'
 import { NajsEloquent } from '../constants'
 
 export class EventFeature extends FeatureBase implements NajsEloquent.Feature.IEventFeature {
-  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    Object.assign(prototype, EventPublicApi)
+  getPublicApi(): object {
+    return EventPublicApi
   }
 
   getFeatureName(): string {

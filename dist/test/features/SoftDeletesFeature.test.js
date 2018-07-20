@@ -4,7 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const SoftDeletesFeature_1 = require("../../lib/features/SoftDeletesFeature");
-const SoftDeletesPublicApi_1 = require("../../lib/features/SoftDeletesPublicApi");
+const SoftDeletesPublicApi_1 = require("../../lib/features/mixin/SoftDeletesPublicApi");
 describe('FillableFeature', function () {
     const softDeletesFeature = new SoftDeletesFeature_1.SoftDeletesFeature();
     it('extends FeatureBase, implements Najs.Contracts.Autoload under name NajsEloquent.Feature.SoftDeletesFeature', function () {

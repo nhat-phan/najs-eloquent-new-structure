@@ -4,7 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const FillableFeature_1 = require("../../lib/features/FillableFeature");
-const FillablePublicApi_1 = require("../../lib/features/FillablePublicApi");
+const FillablePublicApi_1 = require("../../lib/features/mixin/FillablePublicApi");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
 describe('FillableFeature', function () {
     const fillableFeature = new FillableFeature_1.FillableFeature();

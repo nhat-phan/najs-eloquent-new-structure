@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { FeatureBase } from '../../lib/features/FeatureBase'
 import { FillableFeature } from '../../lib/features/FillableFeature'
-import { FillablePublicApi } from '../../lib/features/FillablePublicApi'
+import { FillablePublicApi } from '../../lib/features/mixin/FillablePublicApi'
 import { SettingFeature } from '../../lib/features/SettingFeature'
 
 describe('FillableFeature', function() {

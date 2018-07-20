@@ -4,7 +4,9 @@
 /// <reference path="../definitions/features/ISerializationFeature.d.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.d.ts" />
-export declare class FeatureBase {
+export declare abstract class FeatureBase {
+    abstract getPublicApi(): object;
+    attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
     useSettingFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature;
     useRecordManagerOf<T>(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.IRecordManager<T>;
     useFillableFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.IFillableFeature;

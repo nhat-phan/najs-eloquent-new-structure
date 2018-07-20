@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { FeatureBase } from '../../lib/features/FeatureBase'
 import { EventFeature } from '../../lib/features/EventFeature'
-import { EventPublicApi } from '../../lib/features/EventPublicApi'
+import { EventPublicApi } from '../../lib/features/mixin/EventPublicApi'
 
 describe('EventFeature', function() {
   const eventFeature = new EventFeature()

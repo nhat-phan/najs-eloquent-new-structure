@@ -4,11 +4,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
-const TimestampsPublicApi_1 = require("./TimestampsPublicApi");
+const TimestampsPublicApi_1 = require("./mixin/TimestampsPublicApi");
 const constants_1 = require("../constants");
 class TimestampsFeature extends FeatureBase_1.FeatureBase {
-    attachPublicApi(prototype, bases, driver) {
-        Object.assign(prototype, TimestampsPublicApi_1.TimestampsPublicApi);
+    getPublicApi() {
+        return TimestampsPublicApi_1.TimestampsPublicApi;
     }
     getFeatureName() {
         return 'Timestamps';

@@ -4,12 +4,12 @@
 import { pick } from 'lodash'
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
-import { FillablePublicApi } from './FillablePublicApi'
+import { FillablePublicApi } from './mixin/FillablePublicApi'
 import { NajsEloquent } from '../constants'
 
 export class FillableFeature extends FeatureBase implements NajsEloquent.Feature.IFillableFeature {
-  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    Object.assign(prototype, FillablePublicApi)
+  getPublicApi(): object {
+    return FillablePublicApi
   }
 
   getFeatureName(): string {

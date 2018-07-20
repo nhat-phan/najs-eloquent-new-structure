@@ -8,6 +8,9 @@
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class FeatureBase {
+    attachPublicApi(prototype, bases, driver) {
+        Object.assign(prototype, this.getPublicApi());
+    }
     useSettingFeatureOf(model) {
         return model.getDriver().getSettingFeature();
     }

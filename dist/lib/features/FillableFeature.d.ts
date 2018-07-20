@@ -2,7 +2,7 @@
 /// <reference path="../definitions/features/IFillableFeature.d.ts" />
 import { FeatureBase } from './FeatureBase';
 export declare class FillableFeature extends FeatureBase implements NajsEloquent.Feature.IFillableFeature {
-    attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
+    getPublicApi(): object;
     getFeatureName(): string;
     getClassName(): string;
     getFillable(model: NajsEloquent.Model.IModel): string[];

@@ -3,7 +3,7 @@
 import { FeatureBase } from './FeatureBase';
 export declare class TimestampsFeature extends FeatureBase implements NajsEloquent.Feature.ITimestampsFeature {
     static DefaultSetting: NajsEloquent.Feature.ITimestampsSetting;
-    attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
+    getPublicApi(): object;
     getFeatureName(): string;
     getClassName(): string;
     hasTimestamps(model: NajsEloquent.Model.IModel): boolean;

@@ -6,7 +6,7 @@ import { isFunction } from 'lodash'
 import { array_unique } from '../util/functions'
 import { snakeCase } from 'lodash'
 import { plural } from 'pluralize'
-import { RecordManagerPublicApi } from './RecordManagerPublicApi'
+import { RecordManagerPublicApi } from './mixin/RecordManagerPublicApi'
 
 /**
  * Base class of all RecordManager, handling:

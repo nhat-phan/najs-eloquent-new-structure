@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { FeatureBase } from '../../lib/features/FeatureBase'
 import { SerializationFeature } from '../../lib/features/SerializationFeature'
-import { SerializationPublicApi } from '../../lib/features/SerializationPublicApi'
+import { SerializationPublicApi } from '../../lib/features/mixin/SerializationPublicApi'
 import { SettingFeature } from '../../lib/features/SettingFeature'
 
 describe('SerializationFeature', function() {

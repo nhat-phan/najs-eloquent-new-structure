@@ -3,12 +3,12 @@
 
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
-import { SerializationPublicApi } from './SerializationPublicApi'
+import { SerializationPublicApi } from './mixin/SerializationPublicApi'
 import { NajsEloquent } from '../constants'
 
 export class SerializationFeature extends FeatureBase implements NajsEloquent.Feature.ISerializationFeature {
-  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    Object.assign(prototype, SerializationPublicApi)
+  getPublicApi(): object {
+    return SerializationPublicApi
   }
 
   getFeatureName(): string {

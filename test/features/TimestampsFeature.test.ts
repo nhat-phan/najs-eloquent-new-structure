@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { FeatureBase } from '../../lib/features/FeatureBase'
 import { TimestampsFeature } from '../../lib/features/TimestampsFeature'
-import { TimestampsPublicApi } from '../../lib/features/TimestampsPublicApi'
+import { TimestampsPublicApi } from '../../lib/features/mixin/TimestampsPublicApi'
 
 describe('TimestampsFeature', function() {
   const timestampFeature = new TimestampsFeature()

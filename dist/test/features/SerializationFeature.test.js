@@ -4,7 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const SerializationFeature_1 = require("../../lib/features/SerializationFeature");
-const SerializationPublicApi_1 = require("../../lib/features/SerializationPublicApi");
+const SerializationPublicApi_1 = require("../../lib/features/mixin/SerializationPublicApi");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
 describe('SerializationFeature', function () {
     const serializationFeature = new SerializationFeature_1.SerializationFeature();

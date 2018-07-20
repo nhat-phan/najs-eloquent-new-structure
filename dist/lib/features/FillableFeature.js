@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
-const FillablePublicApi_1 = require("./FillablePublicApi");
+const FillablePublicApi_1 = require("./mixin/FillablePublicApi");
 const constants_1 = require("../constants");
 class FillableFeature extends FeatureBase_1.FeatureBase {
-    attachPublicApi(prototype, bases, driver) {
-        Object.assign(prototype, FillablePublicApi_1.FillablePublicApi);
+    getPublicApi() {
+        return FillablePublicApi_1.FillablePublicApi;
     }
     getFeatureName() {
         return 'Fillable';

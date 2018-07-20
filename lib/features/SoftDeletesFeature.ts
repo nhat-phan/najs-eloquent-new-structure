@@ -4,7 +4,7 @@
 import { ModelEvent } from '../model/ModelEvent'
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
-import { SoftDeletesPublicApi } from './SoftDeletesPublicApi'
+import { SoftDeletesPublicApi } from './mixin/SoftDeletesPublicApi'
 import { NajsEloquent } from '../constants'
 
 export class SoftDeletesFeature extends FeatureBase implements NajsEloquent.Feature.ISoftDeletesFeature {
@@ -13,8 +13,8 @@ export class SoftDeletesFeature extends FeatureBase implements NajsEloquent.Feat
     overrideMethods: false
   }
 
-  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    Object.assign(prototype, SoftDeletesPublicApi)
+  getPublicApi(): object {
+    return SoftDeletesPublicApi
   }
 
   getFeatureName(): string {

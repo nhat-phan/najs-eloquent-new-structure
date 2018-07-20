@@ -1,8 +1,31 @@
 import 'jest'
 import { FillableFeature } from '../../lib/features/FillableFeature'
+import { FeatureBase } from '../../lib/features/FeatureBase'
 
 describe('FeatureBase', function() {
   const featureInstance = new FillableFeature()
+
+  describe('.attachPublicApi()', function() {
+    it('assigns to prototype the object get from .getPublicApi()', function() {
+      const publicApi = {
+        a() {},
+        b() {},
+        c() {}
+      }
+
+      class Any extends FeatureBase {
+        getPublicApi() {
+          return publicApi
+        }
+      }
+      const instance = new Any()
+      const prototype = {}
+      instance.attachPublicApi(prototype, [], <any>{})
+      for (const name in publicApi) {
+        expect(prototype[name] === publicApi[name]).toBe(true)
+      }
+    })
+  })
 
   describe('.useSettingFeatureOf()', function() {
     it('is an helper to reduce repetition code. It returns SettingFeature from a driver', function() {

@@ -4,7 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const TimestampsFeature_1 = require("../../lib/features/TimestampsFeature");
-const TimestampsPublicApi_1 = require("../../lib/features/TimestampsPublicApi");
+const TimestampsPublicApi_1 = require("../../lib/features/mixin/TimestampsPublicApi");
 describe('TimestampsFeature', function () {
     const timestampFeature = new TimestampsFeature_1.TimestampsFeature();
     it('extends FeatureBase, implements Najs.Contracts.Autoload under name NajsEloquent.Feature.TimestampsFeature', function () {

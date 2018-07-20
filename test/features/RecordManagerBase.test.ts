@@ -1,7 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { RecordManager } from '../../lib/features/RecordManager'
-import { RecordManagerPublicApi } from '../../lib/features/RecordManagerPublicApi'
+import { RecordManagerPublicApi } from '../../lib/features/mixin/RecordManagerPublicApi'
 
 describe('RecordManagerBase', function() {
   const recordManager = new RecordManager()

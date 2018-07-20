@@ -3,7 +3,7 @@
 import { FeatureBase } from './FeatureBase';
 export declare class SoftDeletesFeature extends FeatureBase implements NajsEloquent.Feature.ISoftDeletesFeature {
     static DefaultSetting: NajsEloquent.Feature.ISoftDeletesSetting;
-    attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
+    getPublicApi(): object;
     getFeatureName(): string;
     getClassName(): string;
     hasSoftDeletes(model: NajsEloquent.Model.IModel): boolean;

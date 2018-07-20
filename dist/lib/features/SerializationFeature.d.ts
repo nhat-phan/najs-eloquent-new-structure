@@ -2,7 +2,7 @@
 /// <reference path="../definitions/features/ISerializationFeature.d.ts" />
 import { FeatureBase } from './FeatureBase';
 export declare class SerializationFeature extends FeatureBase implements NajsEloquent.Feature.ISerializationFeature {
-    attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
+    getPublicApi(): object;
     getFeatureName(): string;
     getClassName(): string;
     getVisible(model: NajsEloquent.Model.IModel): string[];

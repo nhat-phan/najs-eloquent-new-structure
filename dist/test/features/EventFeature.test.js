@@ -4,7 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const EventFeature_1 = require("../../lib/features/EventFeature");
-const EventPublicApi_1 = require("../../lib/features/EventPublicApi");
+const EventPublicApi_1 = require("../../lib/features/mixin/EventPublicApi");
 describe('EventFeature', function () {
     const eventFeature = new EventFeature_1.EventFeature();
     it('extends FeatureBase, implements Najs.Contracts.Autoload under name NajsEloquent.Feature.EventFeature', function () {

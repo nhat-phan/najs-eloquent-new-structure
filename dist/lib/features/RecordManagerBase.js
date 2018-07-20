@@ -7,7 +7,7 @@ const lodash_1 = require("lodash");
 const functions_1 = require("../util/functions");
 const lodash_2 = require("lodash");
 const pluralize_1 = require("pluralize");
-const RecordManagerPublicApi_1 = require("./RecordManagerPublicApi");
+const RecordManagerPublicApi_1 = require("./mixin/RecordManagerPublicApi");
 /**
  * Base class of all RecordManager, handling:
  *   - getKnownAttributes() and getDynamicAttributes() accessors
