@@ -27,18 +27,18 @@ export class QueryCondition implements IBasicConditionQuery {
 
   static create(
     convention: IConvention,
-    operator: 'and' | 'or',
+    bool: 'and' | 'or',
     arg0: string | SubCondition,
-    arg1: Operator | any,
-    arg2: any
+    arg1?: Operator | any,
+    arg2?: any
   ): QueryCondition {
     const condition = new QueryCondition()
     condition.convention = convention
-    condition.buildQuery(operator, arg0, arg1, arg2)
+    condition.buildQuery(bool, arg0, arg1, arg2)
     return condition
   }
 
-  protected getConditionQueryHandle(): IConditionQuery {
+  getConditionQueryHandle(): IConditionQuery {
     return new ConditionQueryHandle(this, this.convention)
   }
 
@@ -59,7 +59,7 @@ export class QueryCondition implements IBasicConditionQuery {
     return result
   }
 
-  protected buildQuery(bool: 'and' | 'or', arg0: string | SubCondition, arg1: Operator | any, arg2: any): this {
+  buildQuery(bool: 'and' | 'or', arg0: string | SubCondition, arg1?: Operator | any, arg2?: any): this {
     let queryCondition
     if (this.isSubQuery) {
       queryCondition = new QueryCondition()
@@ -86,7 +86,7 @@ export class QueryCondition implements IBasicConditionQuery {
     return this
   }
 
-  protected buildSubQuery(queryCondition: QueryCondition, arg0: SubCondition) {
+  buildSubQuery(queryCondition: QueryCondition, arg0: SubCondition) {
     // case 1
     const query = new QueryCondition()
     query.convention = this.convention

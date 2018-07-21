@@ -15,11 +15,11 @@ export declare class QueryCondition implements IBasicConditionQuery {
     queries: QueryCondition[];
     conditionQueryHandle: IConditionQuery;
     protected constructor();
-    static create(convention: IConvention, operator: 'and' | 'or', arg0: string | SubCondition, arg1: Operator | any, arg2: any): QueryCondition;
-    protected getConditionQueryHandle(): IConditionQuery;
+    static create(convention: IConvention, bool: 'and' | 'or', arg0: string | SubCondition, arg1?: Operator | any, arg2?: any): QueryCondition;
+    getConditionQueryHandle(): IConditionQuery;
     toObject(): Object;
-    protected buildQuery(bool: 'and' | 'or', arg0: string | SubCondition, arg1: Operator | any, arg2: any): this;
-    protected buildSubQuery(queryCondition: QueryCondition, arg0: SubCondition): this;
+    buildQuery(bool: 'and' | 'or', arg0: string | SubCondition, arg1?: Operator | any, arg2?: any): this;
+    buildSubQuery(queryCondition: QueryCondition, arg0: SubCondition): this;
     where(conditionBuilder: SubCondition): this;
     where(field: string, value: any): this;
     where(field: string, operator: Operator, value: any): this;

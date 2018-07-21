@@ -2,7 +2,7 @@ export enum Operator {
   And = 'and',
   Or = 'or',
   GreaterThan = '>',
-  LessThan = '>',
+  LessThan = '<',
   Equals = '=',
   NotEquals = '<>',
   GreaterThanOrEquals = '>=',

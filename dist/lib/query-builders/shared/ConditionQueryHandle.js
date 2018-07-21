@@ -13,12 +13,11 @@ class ConditionQueryHandle {
         return this;
     }
     orWhere(arg0, arg1, arg2) {
-        this.basicConditionQuery.where(arg0, arg1, arg2);
+        this.basicConditionQuery.orWhere(arg0, arg1, arg2);
         return this;
     }
     andWhere(arg0, arg1, arg2) {
-        this.basicConditionQuery.where(arg0, arg1, arg2);
-        return this;
+        return this.where(arg0, arg1, arg2);
     }
     whereNot(field, values) {
         return this.where(field, Operator_1.Operator.NotEquals, values);
@@ -63,7 +62,7 @@ class ConditionQueryHandle {
         return this.whereNotNull(field);
     }
     orWhereNotNull(field) {
-        return this.orWhere(field, Operator_1.Operator.Equals, this.convention.getNullValueFor(field));
+        return this.orWhere(field, Operator_1.Operator.NotEquals, this.convention.getNullValueFor(field));
     }
     whereBetween(field, range) {
         return this.where(field, Operator_1.Operator.GreaterThanOrEquals, range[0]).where(field, Operator_1.Operator.LessThanOrEquals, range[1]);

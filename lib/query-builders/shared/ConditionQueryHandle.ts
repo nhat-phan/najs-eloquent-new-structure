@@ -32,15 +32,13 @@ export class ConditionQueryHandle implements IConditionQuery {
   orWhere(field: string, value: any): this
   orWhere(field: string, operator: OperatorType, value: any): this
   orWhere(arg0: any, arg1?: any, arg2?: any): this {
-    this.basicConditionQuery.where(arg0, arg1, arg2)
+    this.basicConditionQuery.orWhere(arg0, arg1, arg2)
 
     return this
   }
 
   andWhere(arg0: any, arg1?: any, arg2?: any): this {
-    this.basicConditionQuery.where(arg0, arg1, arg2)
-
-    return this
+    return this.where(arg0, arg1, arg2)
   }
 
   whereNot(field: string, values: any): this {
@@ -100,7 +98,7 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   orWhereNotNull(field: string) {
-    return this.orWhere(field, Operator.Equals, this.convention.getNullValueFor(field))
+    return this.orWhere(field, Operator.NotEquals, this.convention.getNullValueFor(field))
   }
 
   whereBetween(field: string, range: Range): this {

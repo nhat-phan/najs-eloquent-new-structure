@@ -5,7 +5,7 @@ var Operator;
     Operator["And"] = "and";
     Operator["Or"] = "or";
     Operator["GreaterThan"] = ">";
-    Operator["LessThan"] = ">";
+    Operator["LessThan"] = "<";
     Operator["Equals"] = "=";
     Operator["NotEquals"] = "<>";
     Operator["GreaterThanOrEquals"] = ">=";

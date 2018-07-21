@@ -9,10 +9,10 @@ class QueryCondition {
         this.isSubQuery = false;
         this.queries = [];
     }
-    static create(convention, operator, arg0, arg1, arg2) {
+    static create(convention, bool, arg0, arg1, arg2) {
         const condition = new QueryCondition();
         condition.convention = convention;
-        condition.buildQuery(operator, arg0, arg1, arg2);
+        condition.buildQuery(bool, arg0, arg1, arg2);
         return condition;
     }
     getConditionQueryHandle() {
