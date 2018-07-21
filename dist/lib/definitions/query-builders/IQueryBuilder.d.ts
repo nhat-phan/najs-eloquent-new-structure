@@ -7,4 +7,7 @@ declare namespace NajsEloquent.QueryBuilder {
     }
     interface IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> extends QueryGrammar.IQuery, QueryGrammar.IConditionQuery, QueryGrammar.IAdvancedQuery<any> {
     }
+    type QueryBuilderInternal = IQueryBuilder & {
+        handler: NajsEloquent.QueryBuilder.IQueryBuilderHandle;
+    };
 }

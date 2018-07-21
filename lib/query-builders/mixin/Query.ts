@@ -1,39 +1,38 @@
-/// <reference path="../QueryBuilder.ts" />
 /// <reference path="../../definitions/query-grammars/IQuery.ts" />
-import QueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
+import QueryBuilder = NajsEloquent.QueryBuilder.QueryBuilderInternal
 
 export const Query: NajsEloquent.QueryGrammar.IQuery = {
   select(this: QueryBuilder, ...fields: Array<string | string[]>) {
-    this['handler'].getBasicQuery().select(...fields)
-    this['handler'].markUsed()
+    this.handler.getBasicQuery().select(...fields)
+    this.handler.markUsed()
 
     return this
   },
 
   limit(this: QueryBuilder, record: number) {
-    this['handler'].getBasicQuery().limit(record)
-    this['handler'].markUsed()
+    this.handler.getBasicQuery().limit(record)
+    this.handler.markUsed()
 
     return this
   },
 
   orderBy(this: QueryBuilder, field: string, direction?: 'asc' | 'desc') {
-    this['handler'].getBasicQuery().orderBy(field, direction!)
-    this['handler'].markUsed()
+    this.handler.getBasicQuery().orderBy(field, direction!)
+    this.handler.markUsed()
 
     return this
   },
 
   queryName(this: QueryBuilder, name: string) {
-    this['handler'].setQueryName(name)
-    this['handler'].markUsed()
+    this.handler.setQueryName(name)
+    this.handler.markUsed()
 
     return this
   },
 
   setLogGroup(this: QueryBuilder, group: string) {
-    this['handler'].setLogGroup(group)
-    this['handler'].markUsed()
+    this.handler.setLogGroup(group)
+    this.handler.markUsed()
 
     return this
   },
@@ -47,22 +46,22 @@ export const Query: NajsEloquent.QueryGrammar.IQuery = {
   },
 
   withTrashed(this: QueryBuilder) {
-    if (this['handler'].hasSoftDeletes()) {
-      this['handler'].markSoftDeleteState('should-not-add')
-      this['handler'].markUsed()
+    if (this.handler.hasSoftDeletes()) {
+      this.handler.markSoftDeleteState('should-not-add')
+      this.handler.markUsed()
     }
 
     return this
   },
 
   onlyTrashed(this: QueryBuilder) {
-    if (this['handler'].hasSoftDeletes()) {
-      this['handler'].markSoftDeleteState('should-not-add')
-      const model = this['handler'].getModel()
+    if (this.handler.hasSoftDeletes()) {
+      this.handler.markSoftDeleteState('should-not-add')
+      const model = this.handler.getModel()
       const softDeletesFeature = model.getDriver().getSoftDeletesFeature()
       const softDeletesSetting = softDeletesFeature.getSoftDeletesSetting(model)
       this.whereNotNull(softDeletesSetting.deletedAt)
-      this['handler'].markUsed()
+      this.handler.markUsed()
     }
 
     return this

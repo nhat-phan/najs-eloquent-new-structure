@@ -4,10 +4,10 @@ const NotFoundError_1 = require("../../errors/NotFoundError");
 exports.AdvancedQuery = {
     async first(id) {
         if (typeof id !== 'undefined') {
-            this.where(this['handler'].getPrimaryKeyName(), id);
+            this.where(this.handler.getPrimaryKeyName(), id);
         }
-        const result = await this['handler'].getQueryExecutor().first();
-        return result ? this['handler'].createInstance(result) : result;
+        const result = await this.handler.getQueryExecutor().first();
+        return result ? this.handler.createInstance(result) : result;
     },
     async find(id) {
         return this.first(id);
@@ -16,16 +16,16 @@ exports.AdvancedQuery = {
         if (arguments.length !== 0) {
             this.select(...fields);
         }
-        return this['handler'].createCollection(await this['handler'].getQueryExecutor().get());
+        return this.handler.createCollection(await this.handler.getQueryExecutor().get());
     },
     async all() {
         return this.get();
     },
     async count() {
-        return this['handler'].getQueryExecutor().count();
+        return this.handler.getQueryExecutor().count();
     },
     async pluck(valueKey, indexKey) {
-        const indexKeyName = typeof indexKey === 'undefined' ? this['handler'].getPrimaryKeyName() : indexKey;
+        const indexKeyName = typeof indexKey === 'undefined' ? this.handler.getPrimaryKeyName() : indexKey;
         const result = await this.select(valueKey, indexKeyName).get();
         return result.reduce(function (memo, item) {
             memo[item[indexKeyName]] = item[valueKey];
@@ -38,7 +38,7 @@ exports.AdvancedQuery = {
     async findOrFail(id) {
         const result = await this.find(id);
         if (result === null) {
-            throw new NotFoundError_1.NotFoundError(this['handler'].getModel().getModelName());
+            throw new NotFoundError_1.NotFoundError(this.handler.getModel().getModelName());
         }
         return result;
     },

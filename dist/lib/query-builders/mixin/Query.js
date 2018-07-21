@@ -2,28 +2,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Query = {
     select(...fields) {
-        this['handler'].getBasicQuery().select(...fields);
-        this['handler'].markUsed();
+        this.handler.getBasicQuery().select(...fields);
+        this.handler.markUsed();
         return this;
     },
     limit(record) {
-        this['handler'].getBasicQuery().limit(record);
-        this['handler'].markUsed();
+        this.handler.getBasicQuery().limit(record);
+        this.handler.markUsed();
         return this;
     },
     orderBy(field, direction) {
-        this['handler'].getBasicQuery().orderBy(field, direction);
-        this['handler'].markUsed();
+        this.handler.getBasicQuery().orderBy(field, direction);
+        this.handler.markUsed();
         return this;
     },
     queryName(name) {
-        this['handler'].setQueryName(name);
-        this['handler'].markUsed();
+        this.handler.setQueryName(name);
+        this.handler.markUsed();
         return this;
     },
     setLogGroup(group) {
-        this['handler'].setLogGroup(group);
-        this['handler'].markUsed();
+        this.handler.setLogGroup(group);
+        this.handler.markUsed();
         return this;
     },
     orderByAsc(field) {
@@ -33,20 +33,20 @@ exports.Query = {
         return this.orderBy(field, 'desc');
     },
     withTrashed() {
-        if (this['handler'].hasSoftDeletes()) {
-            this['handler'].markSoftDeleteState('should-not-add');
-            this['handler'].markUsed();
+        if (this.handler.hasSoftDeletes()) {
+            this.handler.markSoftDeleteState('should-not-add');
+            this.handler.markUsed();
         }
         return this;
     },
     onlyTrashed() {
-        if (this['handler'].hasSoftDeletes()) {
-            this['handler'].markSoftDeleteState('should-not-add');
-            const model = this['handler'].getModel();
+        if (this.handler.hasSoftDeletes()) {
+            this.handler.markSoftDeleteState('should-not-add');
+            const model = this.handler.getModel();
             const softDeletesFeature = model.getDriver().getSoftDeletesFeature();
             const softDeletesSetting = softDeletesFeature.getSoftDeletesSetting(model);
             this.whereNotNull(softDeletesSetting.deletedAt);
-            this['handler'].markUsed();
+            this.handler.markUsed();
         }
         return this;
     }

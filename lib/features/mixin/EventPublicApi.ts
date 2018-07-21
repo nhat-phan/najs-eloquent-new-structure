@@ -1,20 +1,21 @@
 /// <reference path="../../definitions/model/IModel.ts" />
 /// <reference path="../../definitions/model/IModelEvent.ts" />
+import Model = NajsEloquent.Model.ModelInternal
 
 export const EventPublicApi: NajsEloquent.Model.IModelEvent = {
-  fire(this: NajsEloquent.Model.IModel, eventName: string, args: any): Promise<void> {
-    return this['driver'].getEventFeature().fire(this, eventName, args)
+  fire(this: Model, eventName: string, args: any): Promise<void> {
+    return this.driver.getEventFeature().fire(this, eventName, args)
   },
 
-  emit(this: NajsEloquent.Model.IModel, eventName: string, eventData?: any, serial?: boolean): Promise<void> {
-    return this['driver']
+  emit(this: Model, eventName: string, eventData?: any, serial?: boolean): Promise<void> {
+    return this.driver
       .getEventFeature()
       .getEventEmitter(this)
       .emit(eventName, eventData, serial)
   },
 
-  on(this: NajsEloquent.Model.IModel, eventName: string, listener: Function) {
-    this['driver']
+  on(this: Model, eventName: string, listener: Function) {
+    this.driver
       .getEventFeature()
       .getEventEmitter(this)
       .on(eventName, listener)
@@ -22,8 +23,8 @@ export const EventPublicApi: NajsEloquent.Model.IModelEvent = {
     return this
   },
 
-  off(this: NajsEloquent.Model.IModel, eventName: string, listener: Function) {
-    this['driver']
+  off(this: Model, eventName: string, listener: Function) {
+    this.driver
       .getEventFeature()
       .getEventEmitter(this)
       .off(eventName, listener)
@@ -31,8 +32,8 @@ export const EventPublicApi: NajsEloquent.Model.IModelEvent = {
     return this
   },
 
-  once(this: NajsEloquent.Model.IModel, eventName: string, listener: Function) {
-    this['driver']
+  once(this: Model, eventName: string, listener: Function) {
+    this.driver
       .getEventFeature()
       .getEventEmitter(this)
       .once(eventName, listener)

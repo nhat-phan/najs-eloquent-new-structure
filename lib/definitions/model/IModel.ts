@@ -48,4 +48,9 @@ namespace NajsEloquent.Model {
      */
     getModelName(): string
   }
+
+  export type ModelInternal<T = any> = IModel<T> & {
+    driver: Najs.Contracts.Eloquent.Driver<T>
+    attributes: T
+  }
 }

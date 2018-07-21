@@ -1,16 +1,16 @@
 /// <reference path="../QueryBuilder.ts" />
 /// <reference path="../../definitions/query-grammars/IAdvancedQuery.ts" />
-import QueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
+import QueryBuilder = NajsEloquent.QueryBuilder.QueryBuilderInternal
 
 import { NotFoundError } from '../../errors/NotFoundError'
 
 export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
   async first(this: QueryBuilder, id?: any) {
     if (typeof id !== 'undefined') {
-      this.where(this['handler'].getPrimaryKeyName(), id)
+      this.where(this.handler.getPrimaryKeyName(), id)
     }
-    const result = await this['handler'].getQueryExecutor().first()
-    return result ? this['handler'].createInstance(result) : result
+    const result = await this.handler.getQueryExecutor().first()
+    return result ? this.handler.createInstance(result) : result
   },
 
   async find(this: QueryBuilder, id?: any) {
@@ -21,7 +21,7 @@ export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
     if (arguments.length !== 0) {
       this.select(...fields)
     }
-    return this['handler'].createCollection(await this['handler'].getQueryExecutor().get())
+    return this.handler.createCollection(await this.handler.getQueryExecutor().get())
   },
 
   async all(this: QueryBuilder): Promise<CollectJs.Collection<any>> {
@@ -29,11 +29,11 @@ export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
   },
 
   async count(this: QueryBuilder): Promise<number> {
-    return this['handler'].getQueryExecutor().count()
+    return this.handler.getQueryExecutor().count()
   },
 
   async pluck(this: QueryBuilder, valueKey: string, indexKey?: string): Promise<object> {
-    const indexKeyName = typeof indexKey === 'undefined' ? this['handler'].getPrimaryKeyName() : indexKey
+    const indexKeyName = typeof indexKey === 'undefined' ? this.handler.getPrimaryKeyName() : indexKey
     const result = await this.select(valueKey, indexKeyName).get()
 
     return result.reduce(function(memo: Object, item: Object) {
@@ -49,7 +49,7 @@ export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
   async findOrFail(this: QueryBuilder, id: any) {
     const result = await this.find(id)
     if (result === null) {
-      throw new NotFoundError(this['handler'].getModel().getModelName())
+      throw new NotFoundError(this.handler.getModel().getModelName())
     }
     return result
   },
