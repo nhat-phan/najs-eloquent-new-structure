@@ -1,7 +1,7 @@
 /// <reference path="../../definitions/query-grammars/IBasicConditionQuery.d.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.d.ts" />
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition;
-import Operator = NajsEloquent.QueryGrammar.Operator;
+import OperatorType = NajsEloquent.QueryGrammar.Operator;
 import Range = NajsEloquent.QueryGrammar.Range;
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
@@ -12,10 +12,10 @@ export declare class ConditionQueryHandle implements IConditionQuery {
     constructor(basicConditionQuery: IBasicConditionQuery, convention: IConvention);
     where(conditionBuilder: SubCondition): this;
     where(field: string, value: any): this;
-    where(field: string, operator: Operator, value: any): this;
+    where(field: string, operator: OperatorType, value: any): this;
     orWhere(conditionBuilder: SubCondition): this;
     orWhere(field: string, value: any): this;
-    orWhere(field: string, operator: Operator, value: any): this;
+    orWhere(field: string, operator: OperatorType, value: any): this;
     andWhere(arg0: any, arg1?: any, arg2?: any): this;
     whereNot(field: string, values: any): this;
     andWhereNot(field: string, values: any): this;

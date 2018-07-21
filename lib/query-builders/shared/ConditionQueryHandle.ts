@@ -2,11 +2,13 @@
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
 
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
-import Operator = NajsEloquent.QueryGrammar.Operator
+import OperatorType = NajsEloquent.QueryGrammar.Operator
 import Range = NajsEloquent.QueryGrammar.Range
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IConvention = NajsEloquent.QueryBuilder.IConvention
+
+import { Operator } from './Operator'
 
 export class ConditionQueryHandle implements IConditionQuery {
   protected basicConditionQuery: IBasicConditionQuery
@@ -19,7 +21,7 @@ export class ConditionQueryHandle implements IConditionQuery {
 
   where(conditionBuilder: SubCondition): this
   where(field: string, value: any): this
-  where(field: string, operator: Operator, value: any): this
+  where(field: string, operator: OperatorType, value: any): this
   where(arg0: any, arg1?: any, arg2?: any): this {
     this.basicConditionQuery.where(arg0, arg1, arg2)
 
@@ -28,7 +30,7 @@ export class ConditionQueryHandle implements IConditionQuery {
 
   orWhere(conditionBuilder: SubCondition): this
   orWhere(field: string, value: any): this
-  orWhere(field: string, operator: Operator, value: any): this
+  orWhere(field: string, operator: OperatorType, value: any): this
   orWhere(arg0: any, arg1?: any, arg2?: any): this {
     this.basicConditionQuery.where(arg0, arg1, arg2)
 
@@ -42,7 +44,7 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   whereNot(field: string, values: any): this {
-    return this.where(field, '<>', values)
+    return this.where(field, Operator.NotEquals, values)
   }
 
   andWhereNot(field: string, values: any): this {
@@ -50,11 +52,11 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   orWhereNot(field: string, values: any): this {
-    return this.orWhere(field, '<>', values)
+    return this.orWhere(field, Operator.NotEquals, values)
   }
 
   whereIn(field: string, values: Array<any>): this {
-    return this.where(field, 'in', values)
+    return this.where(field, Operator.In, values)
   }
 
   andWhereIn(field: string, values: Array<any>): this {
@@ -62,11 +64,11 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   orWhereIn(field: string, values: Array<any>): this {
-    return this.orWhere(field, 'in', values)
+    return this.orWhere(field, Operator.In, values)
   }
 
   whereNotIn(field: string, values: Array<any>): this {
-    return this.where(field, 'not-in', values)
+    return this.where(field, Operator.NotIn, values)
   }
 
   andWhereNotIn(field: string, values: Array<any>): this {
@@ -74,11 +76,11 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   orWhereNotIn(field: string, values: Array<any>): this {
-    return this.orWhere(field, 'not-in', values)
+    return this.orWhere(field, Operator.NotIn, values)
   }
 
   whereNull(field: string) {
-    return this.where(field, '=', this.convention.getNullValueFor(field))
+    return this.where(field, Operator.Equals, this.convention.getNullValueFor(field))
   }
 
   andWhereNull(field: string) {
@@ -86,11 +88,11 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   orWhereNull(field: string) {
-    return this.orWhere(field, '=', this.convention.getNullValueFor(field))
+    return this.orWhere(field, Operator.Equals, this.convention.getNullValueFor(field))
   }
 
   whereNotNull(field: string) {
-    return this.where(field, '<>', this.convention.getNullValueFor(field))
+    return this.where(field, Operator.NotEquals, this.convention.getNullValueFor(field))
   }
 
   andWhereNotNull(field: string) {
@@ -98,11 +100,11 @@ export class ConditionQueryHandle implements IConditionQuery {
   }
 
   orWhereNotNull(field: string) {
-    return this.orWhere(field, '<>', this.convention.getNullValueFor(field))
+    return this.orWhere(field, Operator.Equals, this.convention.getNullValueFor(field))
   }
 
   whereBetween(field: string, range: Range): this {
-    return this.where(field, '>=', range[0]).where(field, '<=', range[1])
+    return this.where(field, Operator.GreaterThanOrEquals, range[0]).where(field, Operator.LessThanOrEquals, range[1])
   }
 
   andWhereBetween(field: string, range: Range): this {
@@ -111,13 +113,13 @@ export class ConditionQueryHandle implements IConditionQuery {
 
   orWhereBetween(field: string, range: Range): this {
     return this.orWhere(function(subQuery) {
-      subQuery.where(field, '>=', range[0]).where(field, '<=', range[1])
+      subQuery.where(field, Operator.GreaterThanOrEquals, range[0]).where(field, Operator.LessThanOrEquals, range[1])
     })
   }
 
   whereNotBetween(field: string, range: Range): this {
     return this.where(function(subQuery) {
-      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
+      subQuery.where(field, Operator.LessThan, range[0]).orWhere(field, Operator.GreaterThan, range[1])
     })
   }
 
@@ -127,7 +129,7 @@ export class ConditionQueryHandle implements IConditionQuery {
 
   orWhereNotBetween(field: string, range: Range): this {
     return this.orWhere(function(subQuery) {
-      subQuery.where(field, '<', range[0]).orWhere(field, '>', range[1])
+      subQuery.where(field, Operator.LessThan, range[0]).orWhere(field, Operator.GreaterThan, range[1])
     })
   }
 }
