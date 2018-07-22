@@ -17,6 +17,9 @@ export declare const NajsEloquent: {
     QueryBuilder: {
         MongodbConditionConverter: string;
     };
+    QueryLog: {
+        FlipFlopQueryLog: string;
+    };
 };
 export declare const QueryFunctions: {
     BasicQuery: string[];

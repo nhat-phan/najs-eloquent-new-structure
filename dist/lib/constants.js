@@ -19,6 +19,9 @@ exports.NajsEloquent = {
     },
     QueryBuilder: {
         MongodbConditionConverter: 'NajsEloquent.QueryBuilder.MongodbConditionConverter'
+    },
+    QueryLog: {
+        FlipFlopQueryLog: 'NajsEloquent.QueryLog.FlipFlopQueryLog'
     }
 };
 exports.QueryFunctions = {
