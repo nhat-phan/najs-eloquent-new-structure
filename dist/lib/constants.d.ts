@@ -14,6 +14,9 @@ export declare const NajsEloquent: {
     Provider: {
         DriverProvider: string;
     };
+    QueryBuilder: {
+        MongodbConditionConverter: string;
+    };
 };
 export declare const QueryFunctions: {
     BasicQuery: string[];

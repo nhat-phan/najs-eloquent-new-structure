@@ -16,6 +16,9 @@ exports.NajsEloquent = {
     },
     Provider: {
         DriverProvider: 'NajsEloquent.Provider.DriverProvider'
+    },
+    QueryBuilder: {
+        MongodbConditionConverter: 'NajsEloquent.QueryBuilder.MongodbConditionConverter'
     }
 };
 exports.QueryFunctions = {
