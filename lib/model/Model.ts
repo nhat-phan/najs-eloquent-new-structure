@@ -3,12 +3,16 @@
 import { getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
 
-export interface Model<T> extends NajsEloquent.Model.IModel<T> {}
-export class Model<T> {
-  constructor(data?: T | object, isGuarded?: boolean) {
+export interface Model extends NajsEloquent.Model.IModel {}
+export class Model {
+  constructor(data?: object, isGuarded?: boolean) {
+    return this.makeDriver().makeModel<any>(this, data, isGuarded)
+  }
+
+  protected makeDriver<T>(): Najs.Contracts.Eloquent.Driver<T> {
     this.driver = EloquentDriverProvider.create(this)
 
-    return this.driver.makeModel(this, data, isGuarded)
+    return this.driver
   }
 
   getDriver() {

@@ -6,7 +6,7 @@
 /// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.d.ts" />
 declare namespace Najs.Contracts.Eloquent {
-    interface Driver<T> extends Najs.Contracts.Autoload {
+    interface Driver<T = any> extends Najs.Contracts.Autoload {
         getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
         getSettingFeature(): NajsEloquent.Feature.ISettingFeature;
         getEventFeature(): NajsEloquent.Feature.IEventFeature;

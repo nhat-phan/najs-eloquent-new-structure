@@ -9,7 +9,7 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
     return NajsEloquent.Feature.RecordManager
   }
 
-  initialize(model: NajsEloquent.Model.IModel<Record>, isGuarded: boolean, data?: T | object): void {
+  initialize(model: NajsEloquent.Model.ModelInternal<Record>, isGuarded: boolean, data?: T | object): void {
     if (data instanceof Record) {
       model['attributes'] = data
       return
@@ -29,15 +29,15 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
     model.fill(data)
   }
 
-  getAttribute(model: NajsEloquent.Model.IModel<Record>, key: string): any {
+  getAttribute(model: NajsEloquent.Model.ModelInternal<Record>, key: string): any {
     return model['attributes'].getAttribute(key)
   }
 
-  setAttribute<T>(model: NajsEloquent.Model.IModel<Record>, key: string, value: T): boolean {
+  setAttribute<T>(model: NajsEloquent.Model.ModelInternal<Record>, key: string, value: T): boolean {
     return model['attributes'].setAttribute(key, value)
   }
 
-  hasAttribute(model: NajsEloquent.Model.IModel<Record>, key: string): boolean {
+  hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean {
     return true
   }
 
@@ -48,18 +48,18 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
       .getSettingProperty(model, 'primaryKey', 'id')
   }
 
-  toObject(model: NajsEloquent.Model.IModel<T>): object {
+  toObject(model: NajsEloquent.Model.ModelInternal<Record>): object {
     return model['attributes'].toObject()
   }
 
-  markModified(model: NajsEloquent.Model.IModel<T>, keys: ArrayLike<Array<string | string[]>>): void {
+  markModified(model: NajsEloquent.Model.ModelInternal<Record>, keys: ArrayLike<Array<string | string[]>>): void {
     const attributes = flatten(flatten(keys))
     for (const attribute of attributes) {
       model['attributes'].markModified(attribute)
     }
   }
 
-  isModified(model: NajsEloquent.Model.IModel<T>, keys: ArrayLike<Array<string | string[]>>): boolean {
+  isModified(model: NajsEloquent.Model.ModelInternal<Record>, keys: ArrayLike<Array<string | string[]>>): boolean {
     const attributes = flatten(flatten(keys))
     const modified = model['attributes'].getModified()
     for (const attribute of attributes) {
@@ -70,7 +70,7 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
     return true
   }
 
-  getModified(model: NajsEloquent.Model.IModel<T>): string[] {
+  getModified(model: NajsEloquent.Model.ModelInternal<Record>): string[] {
     return model['attributes'].getModified()
   }
 }

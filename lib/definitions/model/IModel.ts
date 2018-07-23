@@ -7,9 +7,9 @@
 /// <reference path="./IModelSoftDeletes.ts" />
 
 namespace NajsEloquent.Model {
-  export type ModelDefinition<T = any> = string | { new (): IModel<T> }
+  export type ModelDefinition = string | { new (): IModel }
 
-  export declare class IModel<T = any> {
+  export declare class IModel {
     /**
      * Contains metadata data which shared for all model instances
      */
@@ -18,7 +18,7 @@ namespace NajsEloquent.Model {
     /**
      * The driver associated with the model.
      */
-    protected driver: Najs.Contracts.Eloquent.Driver<T>
+    protected driver: Najs.Contracts.Eloquent.Driver
 
     /**
      * The model's class setting
@@ -28,11 +28,11 @@ namespace NajsEloquent.Model {
     /**
      * The model's attributes.
      */
-    protected attributes: T
+    protected attributes: object
   }
 
-  export interface IModel<T = any>
-    extends IModelRecord<T>,
+  export interface IModel
+    extends IModelRecord,
       IModelEvent,
       IModelFillable,
       IModelSerialization,
@@ -41,7 +41,7 @@ namespace NajsEloquent.Model {
     /**
      * Get driver which is used by the model.
      */
-    getDriver(): Najs.Contracts.Eloquent.Driver<T>
+    getDriver<T>(): Najs.Contracts.Eloquent.Driver<T>
 
     /**
      * Get model name.
@@ -49,7 +49,7 @@ namespace NajsEloquent.Model {
     getModelName(): string
   }
 
-  export type ModelInternal<T = any> = IModel<T> & {
+  export type ModelInternal<T = any> = IModel & {
     driver: Najs.Contracts.Eloquent.Driver<T>
     attributes: T
   }

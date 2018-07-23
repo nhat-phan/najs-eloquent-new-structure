@@ -18,7 +18,7 @@ export abstract class FeatureBase {
   }
 
   useRecordManagerOf<T>(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.IRecordManager<T> {
-    return model.getDriver().getRecordManager()
+    return model.getDriver<T>().getRecordManager()
   }
 
   useFillableFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.IFillableFeature {

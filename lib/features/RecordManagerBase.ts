@@ -2,6 +2,8 @@
 /// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/features/IRecordManager.ts" />
 
+import Model = NajsEloquent.Model.ModelInternal
+
 import { isFunction } from 'lodash'
 import { array_unique } from '../util/functions'
 import { snakeCase } from 'lodash'
@@ -14,23 +16,23 @@ import { RecordManagerPublicApi } from './mixin/RecordManagerPublicApi'
  *   - finding accessors/mutators and getters/setters of model
  */
 export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IRecordManager<T> {
-  abstract initialize(model: NajsEloquent.Model.IModel, isGuarded: boolean, data?: T | object): void
+  abstract initialize(model: Model, isGuarded: boolean, data?: T | object): void
 
-  abstract getAttribute(model: NajsEloquent.Model.IModel, key: string): any
+  abstract getAttribute(model: Model, key: string): any
 
-  abstract setAttribute<T>(model: NajsEloquent.Model.IModel, key: string, value: T): boolean
+  abstract setAttribute<T>(model: Model, key: string, value: T): boolean
 
-  abstract hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean
+  abstract hasAttribute(model: Model, key: string): boolean
 
-  abstract getPrimaryKeyName(model: NajsEloquent.Model.IModel): string
+  abstract getPrimaryKeyName(model: Model): string
 
-  abstract toObject(model: NajsEloquent.Model.IModel): object
+  abstract toObject(model: Model): object
 
-  abstract markModified(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
+  abstract markModified(model: Model, keys: ArrayLike<Array<string | string[]>>): void
 
-  abstract isModified(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
+  abstract isModified(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean
 
-  abstract getModified(model: NajsEloquent.Model.IModel): string[]
+  abstract getModified(model: Model): string[]
 
   abstract getClassName(): string
 
@@ -38,31 +40,31 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
     return 'RecordManager'
   }
 
-  getRecordName(model: NajsEloquent.Model.IModel): string {
+  getRecordName(model: Model): string {
     return snakeCase(plural(model.getModelName()))
   }
 
-  getRecord(model: NajsEloquent.Model.IModel): T {
+  getRecord(model: Model<T>): T {
     return model['attributes']
   }
 
-  formatAttributeName(model: NajsEloquent.Model.IModel, name: string): string {
+  formatAttributeName(model: Model, name: string): string {
     return snakeCase(name)
   }
 
-  getPrimaryKey(model: NajsEloquent.Model.IModel) {
+  getPrimaryKey(model: Model) {
     return this.getAttribute(model, this.getPrimaryKeyName(model))
   }
 
-  setPrimaryKey<K>(model: NajsEloquent.Model.IModel, value: K): boolean {
+  setPrimaryKey<K>(model: Model, value: K): boolean {
     return this.setAttribute(model, this.getPrimaryKeyName(model), value)
   }
 
-  getKnownAttributes(model: NajsEloquent.Model.IModel): string[] {
+  getKnownAttributes(model: Model): string[] {
     return model['sharedMetadata']['knownAttributes']
   }
 
-  getDynamicAttributes(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.DynamicAttributeSetting[] {
+  getDynamicAttributes(model: Model): NajsEloquent.Feature.DynamicAttributeSetting[] {
     return model['sharedMetadata']['dynamicAttributes']
   }
 

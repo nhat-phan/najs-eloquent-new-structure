@@ -1,8 +1,9 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
-export interface Model<T> extends NajsEloquent.Model.IModel<T> {
+export interface Model extends NajsEloquent.Model.IModel {
 }
-export declare class Model<T> {
-    constructor(data?: T | object, isGuarded?: boolean);
-    getDriver(): Najs.Contracts.Eloquent.Driver<T>;
+export declare class Model {
+    constructor(data?: object, isGuarded?: boolean);
+    protected makeDriver<T>(): Najs.Contracts.Eloquent.Driver<T>;
+    getDriver(): Najs.Contracts.Eloquent.Driver<any>;
     getModelName(): string;
 }

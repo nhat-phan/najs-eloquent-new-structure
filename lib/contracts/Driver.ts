@@ -8,7 +8,7 @@
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 
 namespace Najs.Contracts.Eloquent {
-  export interface Driver<T> extends Najs.Contracts.Autoload {
+  export interface Driver<T = any> extends Najs.Contracts.Autoload {
     getRecordManager(): NajsEloquent.Feature.IRecordManager<T>
 
     getSettingFeature(): NajsEloquent.Feature.ISettingFeature

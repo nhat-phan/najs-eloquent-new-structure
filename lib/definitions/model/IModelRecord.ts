@@ -1,5 +1,5 @@
 namespace NajsEloquent.Model {
-  export interface IModelRecord<T> {
+  export interface IModelRecord<T = any> {
     /**
      * Get the record's name, i.e
      *  - With MySQL it is a table's name

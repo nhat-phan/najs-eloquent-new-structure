@@ -31,15 +31,15 @@ export const SerializationPublicApi: NajsEloquent.Model.IModelSerialization = {
     return this.driver.getSerializationFeature().isHidden(this, arguments)
   },
 
-  toObject(this: Model): object {
-    return this.driver.getSerializationFeature().toObject(this)
+  toObject<T extends object = object>(this: Model): T {
+    return this.driver.getSerializationFeature().toObject(this) as T
   },
 
-  toJSON(this: Model): object {
-    return this.driver.getSerializationFeature().toJson(this)
+  toJSON<T extends object = object>(this: Model): T {
+    return this.driver.getSerializationFeature().toJson(this) as T
   },
 
-  toJson(this: Model): object {
-    return this.driver.getSerializationFeature().toJson(this)
+  toJson<T extends object = object>(this: Model): T {
+    return this.driver.getSerializationFeature().toJson(this) as T
   }
 }

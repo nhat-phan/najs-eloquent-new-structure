@@ -8,7 +8,7 @@ EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
 describe('Model Fillable Feature', function() {
   describe('No Setting', function() {
-    class ModelFillableNoSetting extends Model<any> {
+    class ModelFillableNoSetting extends Model {
       getClassName() {
         return 'ModelFillableNoSetting'
       }

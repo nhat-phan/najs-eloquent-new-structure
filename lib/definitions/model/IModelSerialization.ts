@@ -53,16 +53,16 @@ namespace NajsEloquent.Model {
     /**
      * Convert the model instance to a plain object, visible and hidden are not applied.
      */
-    toObject(): object
+    toObject<T extends object = object>(): T
 
     /**
      * Convert the model instance to JSON object.
      */
-    toJSON(): object
+    toJSON<T extends object = object>(): T
 
     /**
      * Convert the model instance to JSON object.
      */
-    toJson(): object
+    toJson<T extends object = object>(): T
   }
 }
