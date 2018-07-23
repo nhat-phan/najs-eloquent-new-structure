@@ -14,6 +14,10 @@ export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.Dr
     }
   } = {}
 
+  protected driverInstances: {
+    [key: string]: any
+  } = {}
+
   protected binding: {
     [key: string]: string
   } = {}
@@ -36,9 +40,11 @@ export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.Dr
   }
 
   protected createDriver<T>(model: Object, driverClass: string, isGuarded: boolean): Najs.Contracts.Eloquent.Driver<T> {
-    const driver = make<Najs.Contracts.Eloquent.Driver<T>>(driverClass, [model, isGuarded])
-    // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
-    return driver
+    if (typeof this.driverInstances[driverClass] === 'undefined') {
+      this.driverInstances[driverClass] = make<Najs.Contracts.Eloquent.Driver<T>>(driverClass, [model, isGuarded])
+      // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
+    }
+    return this.driverInstances[driverClass]
   }
 
   create<T extends Object = {}>(model: Object, isGuarded: boolean = true): Najs.Contracts.Eloquent.Driver<T> {

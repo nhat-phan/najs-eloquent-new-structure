@@ -86,6 +86,14 @@ describe('DriverProvider', function () {
             expect(makeStub.calledWith('DriverClass', [model]));
             makeStub.restore();
         });
+        it('just create instance of driver 1 time', function () {
+            const model = {};
+            const driver = {};
+            EloquentDriverProviderFacade_1.EloquentDriverProvider['driverInstances']['test'] = driver;
+            const result = EloquentDriverProviderFacade_1.EloquentDriverProvider['createDriver'](model, 'test');
+            expect(driver === result).toBe(true);
+            expect(EloquentDriverProviderFacade_1.EloquentDriverProvider['createDriver'](model, 'test') === result).toBe(true);
+        });
     });
     describe('.findDriverClassName()', function () {
         it('returns .findDefaultDriver() if there is no binding of model', function () {

@@ -8,6 +8,7 @@ class DriverProvider extends najs_facade_1.Facade {
     constructor() {
         super(...arguments);
         this.drivers = {};
+        this.driverInstances = {};
         this.binding = {};
     }
     getClassName() {
@@ -26,9 +27,11 @@ class DriverProvider extends najs_facade_1.Facade {
         return first;
     }
     createDriver(model, driverClass, isGuarded) {
-        const driver = najs_binding_1.make(driverClass, [model, isGuarded]);
-        // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
-        return driver;
+        if (typeof this.driverInstances[driverClass] === 'undefined') {
+            this.driverInstances[driverClass] = najs_binding_1.make(driverClass, [model, isGuarded]);
+            // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
+        }
+        return this.driverInstances[driverClass];
     }
     create(model, isGuarded = true) {
         return this.createDriver(model, this.findDriverClassName(model), isGuarded);

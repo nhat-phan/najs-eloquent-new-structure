@@ -1,7 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
-import { DriverProvider } from '../../lib/providers/DriverProvider';
+import { DriverProvider } from '../../lib/providers/DriverProvider'
 import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
 
 class FakeDriver {
@@ -11,7 +11,7 @@ class FakeDriver {
 }
 
 describe('DriverProvider', function() {
-  it ('implements IAutoload under name "NajsEloquent.Provider.DriverProvider"', function() {
+  it('implements IAutoload under name "NajsEloquent.Provider.DriverProvider"', function() {
     const instance = new DriverProvider()
     expect(instance.getClassName()).toEqual('NajsEloquent.Provider.DriverProvider')
   })
@@ -102,6 +102,15 @@ describe('DriverProvider', function() {
       EloquentDriverProvider['createDriver'](model, 'DriverClass')
       expect(makeStub.calledWith('DriverClass', [model]))
       makeStub.restore()
+    })
+
+    it('just create instance of driver 1 time', function() {
+      const model = {}
+      const driver = {}
+      EloquentDriverProvider['driverInstances']['test'] = driver
+      const result = EloquentDriverProvider['createDriver'](model, 'test')
+      expect(driver === result).toBe(true)
+      expect(EloquentDriverProvider['createDriver'](model, 'test') === result).toBe(true)
     })
   })
 

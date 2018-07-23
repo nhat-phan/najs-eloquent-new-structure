@@ -8,6 +8,9 @@ export declare class DriverProvider extends Facade implements Najs.Contracts.Elo
             isDefault: boolean;
         };
     };
+    protected driverInstances: {
+        [key: string]: any;
+    };
     protected binding: {
         [key: string]: string;
     };
