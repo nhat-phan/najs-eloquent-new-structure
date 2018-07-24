@@ -1,4 +1,6 @@
+/// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilder.ts" />
+import IModel = NajsEloquent.Model.IModel
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 
 import { Query } from './mixin/Query'
@@ -6,11 +8,12 @@ import { ConditionQuery } from './mixin/ConditionQuery'
 import { AdvancedQuery } from './mixin/AdvancedQuery'
 import { QueryBuilderHandleBase } from './QueryBuilderHandleBase'
 
-export interface QueryBuilder<T extends QueryBuilderHandleBase = QueryBuilderHandleBase> extends IQueryBuilder<T> {}
-export class QueryBuilder<T extends QueryBuilderHandleBase = QueryBuilderHandleBase> {
-  protected handler: T
+export interface QueryBuilder<T extends IModel, Handle extends QueryBuilderHandleBase = QueryBuilderHandleBase>
+  extends IQueryBuilder<T, Handle> {}
+export class QueryBuilder<T extends IModel, Handle extends QueryBuilderHandleBase = QueryBuilderHandleBase> {
+  protected handler: Handle
 
-  constructor(handler: T) {
+  constructor(handler: Handle) {
     this.handler = handler
   }
 }

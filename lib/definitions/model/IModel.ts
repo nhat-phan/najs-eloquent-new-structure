@@ -47,6 +47,8 @@ namespace NajsEloquent.Model {
      * Get model name.
      */
     getModelName(): string
+
+    query(): NajsEloquent.QueryBuilder.IQueryBuilder<this>
   }
 
   export type ModelInternal<T = any> = IModel & {

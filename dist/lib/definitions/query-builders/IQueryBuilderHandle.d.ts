@@ -4,14 +4,8 @@
 /// <reference path="../query-grammars/IBasicQuery.d.ts" />
 /// <reference path="../query-grammars/IConditionQuery.d.ts" />
 declare namespace NajsEloquent.QueryBuilder {
-    class IQueryBuilderHandle<T extends Model.IModel = Model.IModel> {
-        protected model: T;
-        protected queryName: string;
-        protected logGroup: string;
-        protected used: boolean;
-    }
-    interface IQueryBuilderHandle<T extends Model.IModel = Model.IModel> {
-        getModel(): T;
+    interface IQueryBuilderHandle {
+        getModel(): Model.IModel;
         getBasicQuery(): QueryGrammar.IBasicQuery;
         getConditionQuery(): QueryGrammar.IConditionQuery;
         getQueryConvention(): IConvention;
@@ -26,7 +20,7 @@ declare namespace NajsEloquent.QueryBuilder {
         hasSoftDeletes(): boolean;
         markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
         shouldAddSoftDeleteCondition(): boolean;
-        createCollection(result: object[]): CollectJs.Collection<T>;
-        createInstance(result: object): T;
+        createCollection(result: object[]): CollectJs.Collection<Model.IModel>;
+        createInstance(result: object): Model.IModel;
     }
 }

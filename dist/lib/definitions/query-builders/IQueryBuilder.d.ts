@@ -1,13 +1,14 @@
 /// <reference path="IQueryBuilderHandle.d.ts" />
+/// <reference path="../model/IModel.d.ts" />
 /// <reference path="../query-grammars/IQuery.d.ts" />
 /// <reference path="../query-grammars/IConditionQuery.d.ts" />
 declare namespace NajsEloquent.QueryBuilder {
-    class IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> {
+    class IQueryBuilder<T extends Model.IModel, Handle extends IQueryBuilderHandle = IQueryBuilderHandle> {
         protected handler: Handle;
     }
-    interface IQueryBuilder<Handle extends IQueryBuilderHandle = IQueryBuilderHandle> extends QueryGrammar.IQuery, QueryGrammar.IConditionQuery, QueryGrammar.IAdvancedQuery<any> {
+    interface IQueryBuilder<T extends Model.IModel, Handle extends IQueryBuilderHandle = IQueryBuilderHandle> extends QueryGrammar.IQuery, QueryGrammar.IConditionQuery, QueryGrammar.IAdvancedQuery<T> {
     }
-    type QueryBuilderInternal = IQueryBuilder & {
+    type QueryBuilderInternal = IQueryBuilder<any> & {
         handler: NajsEloquent.QueryBuilder.IQueryBuilderHandle;
     };
 }

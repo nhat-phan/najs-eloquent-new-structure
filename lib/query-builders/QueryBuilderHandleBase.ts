@@ -12,15 +12,14 @@ import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IQueryBuilderHandle = NajsEloquent.QueryBuilder.IQueryBuilderHandle
 
-export interface QueryBuilderHandleBase<T extends IModel = IModel> extends IQueryBuilderHandle<T> {}
-export abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
-  protected model: T
+export abstract class QueryBuilderHandleBase implements IQueryBuilderHandle {
+  protected model: IModel
   protected queryName: string
   protected logGroup: string
   protected used: boolean
   protected softDeleteState: 'should-add' | 'should-not-add' | 'added'
 
-  constructor(model: T) {
+  constructor(model: IModel) {
     this.model = model
     this.used = false
     this.softDeleteState = 'should-add'
@@ -31,7 +30,7 @@ export abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
   abstract getQueryConvention(): IConvention
   abstract getQueryExecutor(): IExecutor
 
-  getModel(): T {
+  getModel(): IModel {
     return this.model
   }
 

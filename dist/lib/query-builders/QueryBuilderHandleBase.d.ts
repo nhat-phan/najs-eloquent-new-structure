@@ -10,20 +10,18 @@ import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
 import IQueryBuilderHandle = NajsEloquent.QueryBuilder.IQueryBuilderHandle;
-export interface QueryBuilderHandleBase<T extends IModel = IModel> extends IQueryBuilderHandle<T> {
-}
-export declare abstract class QueryBuilderHandleBase<T extends IModel = IModel> {
-    protected model: T;
+export declare abstract class QueryBuilderHandleBase implements IQueryBuilderHandle {
+    protected model: IModel;
     protected queryName: string;
     protected logGroup: string;
     protected used: boolean;
     protected softDeleteState: 'should-add' | 'should-not-add' | 'added';
-    constructor(model: T);
+    constructor(model: IModel);
     abstract getBasicQuery(): IBasicQuery;
     abstract getConditionQuery(): IConditionQuery;
     abstract getQueryConvention(): IConvention;
     abstract getQueryExecutor(): IExecutor;
-    getModel(): T;
+    getModel(): IModel;
     getPrimaryKeyName(): string;
     setQueryName(name: string): void;
     getQueryName(): string;
