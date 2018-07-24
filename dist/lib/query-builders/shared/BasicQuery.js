@@ -11,6 +11,28 @@ class BasicQuery {
         this.conditions = [];
         this.convention = convention;
     }
+    getConditions() {
+        return this.conditions.map(item => item.toObject());
+    }
+    getRawConditions() {
+        return this.conditions;
+    }
+    getLimit() {
+        return this.limitNumber;
+    }
+    getOrdering() {
+        return this.ordering;
+    }
+    getSelect() {
+        return this.fields.select;
+    }
+    clearSelect() {
+        delete this.fields.select;
+    }
+    clearOrdering() {
+        delete this.ordering;
+        this.ordering = {};
+    }
     select(...fields) {
         const names = functions_1.array_unique(lodash_1.flatten(fields)).map(this.convention.formatFieldName);
         if (typeof this.fields.select === 'undefined') {

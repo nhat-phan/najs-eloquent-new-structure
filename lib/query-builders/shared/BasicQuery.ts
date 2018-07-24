@@ -33,6 +33,35 @@ export class BasicQuery implements IBasicQuery, IBasicConditionQuery {
     this.convention = convention
   }
 
+  getConditions() {
+    return this.conditions.map(item => item.toObject())
+  }
+
+  getRawConditions() {
+    return this.conditions
+  }
+
+  getLimit() {
+    return this.limitNumber
+  }
+
+  getOrdering() {
+    return this.ordering
+  }
+
+  getSelect() {
+    return this.fields.select
+  }
+
+  clearSelect() {
+    delete this.fields.select
+  }
+
+  clearOrdering() {
+    delete this.ordering
+    this.ordering = {}
+  }
+
   select(...fields: Array<string | string[]>): this {
     const names = array_unique(flatten(fields)).map(this.convention.formatFieldName)
     if (typeof this.fields.select === 'undefined') {

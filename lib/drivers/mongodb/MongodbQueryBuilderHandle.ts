@@ -13,6 +13,8 @@ import { QueryBuilderHandleBase } from '../../query-builders/QueryBuilderHandleB
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
 import { ConditionQueryHandle } from '../../query-builders/shared/ConditionQueryHandle'
+import { MongodbExecutor } from './MongodbExecutor'
+import { MongodbQueryLog } from './MongodbQueryLog'
 
 export class MongodbQueryBuilderHandle extends QueryBuilderHandleBase {
   protected basicQuery: BasicQuery
@@ -39,6 +41,6 @@ export class MongodbQueryBuilderHandle extends QueryBuilderHandleBase {
   }
 
   getQueryExecutor(): IExecutor {
-    return <any>{}
+    return new MongodbExecutor(this, this.basicQuery, new MongodbQueryLog())
   }
 }

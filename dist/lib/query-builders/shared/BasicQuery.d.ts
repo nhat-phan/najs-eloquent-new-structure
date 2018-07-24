@@ -20,6 +20,13 @@ export declare class BasicQuery implements IBasicQuery, IBasicConditionQuery {
     protected conditions: QueryCondition[];
     protected convention: IConvention;
     constructor(convention: IConvention);
+    getConditions(): Object[];
+    getRawConditions(): QueryCondition[];
+    getLimit(): number;
+    getOrdering(): Object;
+    getSelect(): string[] | undefined;
+    clearSelect(): void;
+    clearOrdering(): void;
     select(...fields: Array<string | string[]>): this;
     orderBy(field: string, direction?: 'asc' | 'desc'): this;
     limit(records: number): this;
