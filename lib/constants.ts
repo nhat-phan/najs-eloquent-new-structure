@@ -14,7 +14,8 @@ export const NajsEloquent = {
     SoftDeletesFeature: 'NajsEloquent.Feature.SoftDeletesFeature'
   },
   Provider: {
-    DriverProvider: 'NajsEloquent.Provider.DriverProvider'
+    DriverProvider: 'NajsEloquent.Provider.DriverProvider',
+    MongodbProvider: 'NajsEloquent.Provider.MongodbProvider'
   },
   QueryBuilder: {
     MongodbConditionConverter: 'NajsEloquent.QueryBuilder.MongodbConditionConverter'
