@@ -30,6 +30,7 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
     const result = this.collection.find(query, options).toArray()
     return this.logRaw(query, options, 'find')
       .raw('.toArray()')
+      .action('get()')
       .end(result)
   }
 
@@ -38,7 +39,9 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
     const options = this.getQueryOptions()
 
     const result = this.collection.findOne(query, options)
-    return this.logRaw(query, options, 'findOne').end(result)
+    return this.logRaw(query, options, 'findOne')
+      .action('first()')
+      .end(result)
   }
 
   async count(): Promise<number> {
@@ -54,7 +57,9 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
     const options = this.getQueryOptions()
 
     const result = this.collection.count(query, options)
-    return this.logRaw(query, options, 'count').end(result)
+    return this.logRaw(query, options, 'count')
+      .action('count()')
+      .end(result)
   }
 
   async update(data: Object): Promise<any> {

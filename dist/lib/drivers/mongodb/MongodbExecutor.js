@@ -18,13 +18,16 @@ class MongodbExecutor {
         const result = this.collection.find(query, options).toArray();
         return this.logRaw(query, options, 'find')
             .raw('.toArray()')
+            .action('get()')
             .end(result);
     }
     async first() {
         const query = this.getQuery();
         const options = this.getQueryOptions();
         const result = this.collection.findOne(query, options);
-        return this.logRaw(query, options, 'findOne').end(result);
+        return this.logRaw(query, options, 'findOne')
+            .action('first()')
+            .end(result);
     }
     async count() {
         if (this.basicQuery.getSelect()) {
@@ -36,7 +39,9 @@ class MongodbExecutor {
         const query = this.getQuery();
         const options = this.getQueryOptions();
         const result = this.collection.count(query, options);
-        return this.logRaw(query, options, 'count').end(result);
+        return this.logRaw(query, options, 'count')
+            .action('count()')
+            .end(result);
     }
     async update(data) {
         return {};
