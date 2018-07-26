@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const functions_1 = require("./util/functions");
 exports.NajsEloquent = {
     Driver: {
-        DummyDriver: 'NajsEloquent.Driver.DummyDriver'
+        DummyDriver: 'NajsEloquent.Driver.DummyDriver',
+        MongodbDriver: 'NajsEloquent.Driver.MongodbDriver'
     },
     Feature: {
         SettingFeature: 'NajsEloquent.Feature.SettingFeature',

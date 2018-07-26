@@ -6,6 +6,7 @@
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/query-builders/IQueryBuilder.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../features/SettingFeature");
 require("../features/EventFeature");

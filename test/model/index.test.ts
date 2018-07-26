@@ -1,48 +1,13 @@
 import 'jest'
-import '../../lib'
+import { Model } from '../../lib/model/Model'
+import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
+import { DummyDriver } from '../../lib/drivers/dummy/DummyDriver'
 
-class Driver {
-  proxy: boolean
+EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
-  make(model: Model) {
-    if (this.proxy) {
-      return new Proxy(model, {
-        get(target: any, key: any) {
-          console.log('use proxy', key)
-          return target[key]
-        }
-      })
-    }
-
-    return model
-  }
-
-  setProxy(proxy: boolean) {
-    this.proxy = proxy
-  }
-}
-
-const driver = new Driver()
-
-class Model {
-  protected driver: any
-
-  constructor() {
-    this.driver = driver
-    return driver.make(this)
-  }
-}
-
-describe('Test', function() {
+describe('Model', function() {
   it('should works', function() {
-    const a = new Model()
-    console.log(a)
-    console.log(a['driver'] === driver)
-    console.log(a instanceof Model)
-
-    driver.setProxy(true)
-    const b = new Model()
-    console.log(b['test'])
-    console.log(b instanceof Model)
+    const test = new Model()
+    test.query()
   })
 })

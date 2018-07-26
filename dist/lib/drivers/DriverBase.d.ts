@@ -4,6 +4,9 @@
 /// <reference path="../definitions/features/IFillableFeature.d.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.d.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
+/// <reference path="../definitions/query-builders/IQueryBuilder.d.ts" />
+import IModel = NajsEloquent.Model.IModel;
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import '../features/SettingFeature';
 import '../features/EventFeature';
 import '../features/FillableFeature';
@@ -28,6 +31,7 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     constructor();
     abstract getClassName(): string;
     abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
+    abstract newQuery<M extends IModel>(model: M, name?: string): IQueryBuilder<M>;
     getSettingFeature(): NajsEloquent.Feature.ISettingFeature;
     getEventFeature(): NajsEloquent.Feature.IEventFeature;
     getFillableFeature(): NajsEloquent.Feature.IFillableFeature;
@@ -35,8 +39,8 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     getTimestampsFeature(): NajsEloquent.Feature.ITimestampsFeature;
     getSoftDeletesFeature(): NajsEloquent.Feature.ISoftDeletesFeature;
     getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter;
-    makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
-    attachPublicApiIfNeeded(model: NajsEloquent.Model.IModel): void;
+    makeModel<M extends IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
+    attachPublicApiIfNeeded(model: IModel): void;
     getSharedFeatures(): NajsEloquent.Feature.IFeature[];
     getCustomFeatures(): NajsEloquent.Feature.IFeature[];
     getFeatures(): NajsEloquent.Feature.IFeature[];

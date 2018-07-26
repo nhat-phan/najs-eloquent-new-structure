@@ -22,4 +22,8 @@ export class Model {
   getModelName() {
     return getClassName(this)
   }
+
+  query(name?: string) {
+    return this.driver.newQuery<any>(this, name)
+  }
 }

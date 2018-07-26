@@ -1,6 +1,7 @@
 export declare const NajsEloquent: {
     Driver: {
         DummyDriver: string;
+        MongodbDriver: string;
     };
     Feature: {
         SettingFeature: string;

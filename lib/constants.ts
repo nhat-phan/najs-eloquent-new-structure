@@ -2,7 +2,8 @@ import { array_unique } from './util/functions'
 
 export const NajsEloquent = {
   Driver: {
-    DummyDriver: 'NajsEloquent.Driver.DummyDriver'
+    DummyDriver: 'NajsEloquent.Driver.DummyDriver',
+    MongodbDriver: 'NajsEloquent.Driver.MongodbDriver'
   },
   Feature: {
     SettingFeature: 'NajsEloquent.Feature.SettingFeature',

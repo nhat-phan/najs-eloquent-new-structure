@@ -4,10 +4,12 @@
 import '../../features/RecordManager';
 import { DriverBase } from '../DriverBase';
 import { Record } from '../../features/Record';
-export declare class DummyDriver<T extends Record = Record> extends DriverBase<T> {
+import { MongodbQueryBuilder } from './MongodbQueryBuilder';
+import { MongodbQueryBuilderHandle } from './MongodbQueryBuilderHandle';
+export declare class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
     protected recordManager: NajsEloquent.Feature.IRecordManager<T>;
     constructor();
     getClassName(): string;
     getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
-    newQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<M>;
+    newQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): MongodbQueryBuilder<M, MongodbQueryBuilderHandle>;
 }

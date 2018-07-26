@@ -36,7 +36,14 @@ declare namespace NajsEloquent.Model {
          * Get model name.
          */
         getModelName(): string;
+        /**
+         * Start new query of model.
+         */
         query(): NajsEloquent.QueryBuilder.IQueryBuilder<this>;
+        /**
+         * Start new query of model with name.
+         */
+        query(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<this>;
     }
     type ModelInternal<T = any> = IModel & {
         driver: Najs.Contracts.Eloquent.Driver<T>;

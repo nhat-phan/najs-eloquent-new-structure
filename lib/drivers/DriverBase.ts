@@ -5,6 +5,10 @@
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/query-builders/IQueryBuilder.ts" />
+
+import IModel = NajsEloquent.Model.IModel
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 
 import '../features/SettingFeature'
 import '../features/EventFeature'
@@ -16,7 +20,7 @@ import { make } from 'najs-binding'
 import { EventEmitterFactory } from 'najs-event'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { find_base_prototypes } from '../util/functions'
-import { NajsEloquent } from '../constants'
+import { NajsEloquent as NajsEloquentClasses } from '../constants'
 
 /**
  * Base class of all drivers, handling:
@@ -36,12 +40,12 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   constructor() {
     this.attachedModels = {}
-    this.settingFeature = make(NajsEloquent.Feature.SettingFeature)
-    this.eventFeature = make(NajsEloquent.Feature.EventFeature)
-    this.fillableFeature = make(NajsEloquent.Feature.FillableFeature)
-    this.serializationFeature = make(NajsEloquent.Feature.SerializationFeature)
-    this.timestampsFeature = make(NajsEloquent.Feature.TimestampsFeature)
-    this.softDeletesFeature = make(NajsEloquent.Feature.SoftDeletesFeature)
+    this.settingFeature = make(NajsEloquentClasses.Feature.SettingFeature)
+    this.eventFeature = make(NajsEloquentClasses.Feature.EventFeature)
+    this.fillableFeature = make(NajsEloquentClasses.Feature.FillableFeature)
+    this.serializationFeature = make(NajsEloquentClasses.Feature.SerializationFeature)
+    this.timestampsFeature = make(NajsEloquentClasses.Feature.TimestampsFeature)
+    this.softDeletesFeature = make(NajsEloquentClasses.Feature.SoftDeletesFeature)
 
     if (typeof DriverBase.globalEventEmitter === 'undefined') {
       DriverBase.globalEventEmitter = EventEmitterFactory.create(true)
@@ -51,6 +55,8 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   abstract getClassName(): string
 
   abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>
+
+  abstract newQuery<M extends IModel>(model: M, name?: string): IQueryBuilder<M>
 
   getSettingFeature() {
     return this.settingFeature
@@ -80,7 +86,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     return DriverBase.globalEventEmitter
   }
 
-  makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded: boolean = true): M {
+  makeModel<M extends IModel>(model: M, data?: T | object | string, isGuarded: boolean = true): M {
     if (data === CREATE_SAMPLE) {
       return model
     }
@@ -91,7 +97,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     return model
   }
 
-  attachPublicApiIfNeeded(model: NajsEloquent.Model.IModel) {
+  attachPublicApiIfNeeded(model: IModel) {
     if (typeof this.attachedModels[model.getModelName()] !== 'undefined') {
       return
     }

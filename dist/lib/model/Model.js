@@ -17,5 +17,8 @@ class Model {
     getModelName() {
         return najs_binding_1.getClassName(this);
     }
+    query(name) {
+        return this.driver.newQuery(this, name);
+    }
 }
 exports.Model = Model;
