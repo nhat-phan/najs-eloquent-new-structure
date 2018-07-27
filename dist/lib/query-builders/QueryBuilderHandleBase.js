@@ -1,5 +1,7 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/query-builders/IConvention.ts" />
 /// <reference path="../definitions/query-builders/IExecutor.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilderHandle.ts" />
@@ -24,11 +26,11 @@ class QueryBuilderHandleBase {
     getQueryName() {
         return this.queryName;
     }
-    getLogGroup() {
-        return this.logGroup;
-    }
     setLogGroup(group) {
         this.logGroup = group;
+    }
+    getLogGroup() {
+        return this.logGroup;
     }
     markUsed() {
         this.used = true;
@@ -42,16 +44,39 @@ class QueryBuilderHandleBase {
             .getSoftDeletesFeature()
             .hasSoftDeletes(this.model);
     }
+    getSoftDeletesSetting() {
+        return this.model
+            .getDriver()
+            .getSoftDeletesFeature()
+            .getSoftDeletesSetting(this.model);
+    }
+    hasTimestamps() {
+        return this.model
+            .getDriver()
+            .getTimestampsFeature()
+            .hasTimestamps(this.model);
+    }
+    getTimestampsSetting() {
+        return this.model
+            .getDriver()
+            .getTimestampsFeature()
+            .getTimestampsSetting(this.model);
+    }
     markSoftDeleteState(state) {
         this.softDeleteState = state;
+    }
+    getSoftDeleteState() {
+        return this.softDeleteState;
     }
     shouldAddSoftDeleteCondition() {
         return this.softDeleteState === 'should-add' && this.hasSoftDeletes();
     }
     createCollection(result) {
+        // TODO: implement
         return {};
     }
     createInstance(result) {
+        // TODO: implement
         return {};
     }
 }

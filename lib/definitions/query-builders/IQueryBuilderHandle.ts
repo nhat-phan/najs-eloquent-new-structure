@@ -32,7 +32,15 @@ namespace NajsEloquent.QueryBuilder {
 
     hasSoftDeletes(): boolean
 
+    getSoftDeletesSetting(): Feature.ISoftDeletesSetting
+
+    hasTimestamps(): boolean
+
+    getTimestampsSetting(): Feature.ITimestampsSetting
+
     markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void
+
+    getSoftDeleteState(): string
 
     shouldAddSoftDeleteCondition(): boolean
 

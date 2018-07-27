@@ -78,9 +78,9 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
 
   getQuery(): object {
     if (this.queryHandle.shouldAddSoftDeleteCondition()) {
-      const model = this.queryHandle.getModel()
-      const settingFeature = model.getDriver().getSoftDeletesFeature()
-      this.queryHandle.getConditionQuery().whereNull(settingFeature.getSoftDeletesSetting(model).deletedAt)
+      const settings = this.queryHandle.getSoftDeletesSetting()
+      this.queryHandle.getConditionQuery().whereNull(settings.deletedAt)
+      this.queryHandle.markSoftDeleteState('added')
     }
 
     const conditions = this.basicQuery.getConditions()

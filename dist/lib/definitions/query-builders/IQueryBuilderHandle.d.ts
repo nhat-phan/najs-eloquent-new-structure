@@ -18,7 +18,11 @@ declare namespace NajsEloquent.QueryBuilder {
         markUsed(): void;
         isUsed(): boolean;
         hasSoftDeletes(): boolean;
+        getSoftDeletesSetting(): Feature.ISoftDeletesSetting;
+        hasTimestamps(): boolean;
+        getTimestampsSetting(): Feature.ITimestampsSetting;
         markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
+        getSoftDeleteState(): string;
         shouldAddSoftDeleteCondition(): boolean;
         createCollection(result: object[]): CollectJs.Collection<Model.IModel>;
         createInstance(result: object): Model.IModel;

@@ -1,4 +1,6 @@
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/query-builders/IConvention.ts" />
 /// <reference path="../definitions/query-builders/IExecutor.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilderHandle.ts" />
@@ -46,12 +48,12 @@ export abstract class QueryBuilderHandleBase implements IQueryBuilderHandle {
     return this.queryName
   }
 
-  getLogGroup(): string {
-    return this.logGroup
-  }
-
   setLogGroup(group: string): void {
     this.logGroup = group
+  }
+
+  getLogGroup(): string {
+    return this.logGroup
   }
 
   markUsed(): void {
@@ -69,8 +71,33 @@ export abstract class QueryBuilderHandleBase implements IQueryBuilderHandle {
       .hasSoftDeletes(this.model)
   }
 
+  getSoftDeletesSetting(): NajsEloquent.Feature.ISoftDeletesSetting {
+    return this.model
+      .getDriver()
+      .getSoftDeletesFeature()
+      .getSoftDeletesSetting(this.model)
+  }
+
+  hasTimestamps(): boolean {
+    return this.model
+      .getDriver()
+      .getTimestampsFeature()
+      .hasTimestamps(this.model)
+  }
+
+  getTimestampsSetting(): NajsEloquent.Feature.ITimestampsSetting {
+    return this.model
+      .getDriver()
+      .getTimestampsFeature()
+      .getTimestampsSetting(this.model)
+  }
+
   markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void {
     this.softDeleteState = state
+  }
+
+  getSoftDeleteState(): string {
+    return this.softDeleteState
   }
 
   shouldAddSoftDeleteCondition(): boolean {
@@ -78,10 +105,12 @@ export abstract class QueryBuilderHandleBase implements IQueryBuilderHandle {
   }
 
   createCollection(result: object[]): any {
+    // TODO: implement
     return {}
   }
 
   createInstance(result: object): any {
+    // TODO: implement
     return {}
   }
 }

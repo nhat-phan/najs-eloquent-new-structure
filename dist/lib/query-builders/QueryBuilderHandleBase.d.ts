@@ -1,4 +1,6 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.d.ts" />
+/// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 /// <reference path="../definitions/query-builders/IConvention.d.ts" />
 /// <reference path="../definitions/query-builders/IExecutor.d.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilderHandle.d.ts" />
@@ -25,12 +27,16 @@ export declare abstract class QueryBuilderHandleBase implements IQueryBuilderHan
     getPrimaryKeyName(): string;
     setQueryName(name: string): void;
     getQueryName(): string;
-    getLogGroup(): string;
     setLogGroup(group: string): void;
+    getLogGroup(): string;
     markUsed(): void;
     isUsed(): boolean;
     hasSoftDeletes(): boolean;
+    getSoftDeletesSetting(): NajsEloquent.Feature.ISoftDeletesSetting;
+    hasTimestamps(): boolean;
+    getTimestampsSetting(): NajsEloquent.Feature.ITimestampsSetting;
     markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
+    getSoftDeleteState(): string;
     shouldAddSoftDeleteCondition(): boolean;
     createCollection(result: object[]): any;
     createInstance(result: object): any;
