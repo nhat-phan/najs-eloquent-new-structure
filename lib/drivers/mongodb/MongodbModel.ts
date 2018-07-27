@@ -1,9 +1,9 @@
 import { Model } from '../../model/Model'
 import { MongodbQueryBuilder } from './MongodbQueryBuilder'
-import { MongodbQueryBuilderHandle } from './MongodbQueryBuilderHandle'
+import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 
 export class MongodbModel extends Model {
-  query(): MongodbQueryBuilder<this, MongodbQueryBuilderHandle> {
-    return super.query() as MongodbQueryBuilder<this, MongodbQueryBuilderHandle>
+  query(): MongodbQueryBuilder<this, MongodbQueryBuilderHandler> {
+    return super.query() as MongodbQueryBuilder<this, MongodbQueryBuilderHandler>
   }
 }

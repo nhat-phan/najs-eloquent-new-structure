@@ -4,11 +4,11 @@
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/query-builders/IConvention.ts" />
 /// <reference path="../definitions/query-builders/IExecutor.ts" />
-/// <reference path="../definitions/query-builders/IQueryBuilderHandle.ts" />
+/// <reference path="../definitions/query-builders/IQueryBuilderHandler.ts" />
 /// <reference path="../definitions/query-grammars/IBasicQuery.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-class QueryBuilderHandleBase {
+class QueryBuilderHandlerBase {
     constructor(model) {
         this.model = model;
         this.used = false;
@@ -80,4 +80,4 @@ class QueryBuilderHandleBase {
         return {};
     }
 }
-exports.QueryBuilderHandleBase = QueryBuilderHandleBase;
+exports.QueryBuilderHandlerBase = QueryBuilderHandlerBase;

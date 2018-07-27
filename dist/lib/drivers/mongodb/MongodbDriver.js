@@ -8,7 +8,7 @@ const najs_binding_1 = require("najs-binding");
 const DriverBase_1 = require("../DriverBase");
 const constants_1 = require("../../constants");
 const MongodbQueryBuilder_1 = require("./MongodbQueryBuilder");
-const MongodbQueryBuilderHandle_1 = require("./MongodbQueryBuilderHandle");
+const MongodbQueryBuilderHandler_1 = require("./MongodbQueryBuilderHandler");
 class MongodbDriver extends DriverBase_1.DriverBase {
     constructor() {
         super();
@@ -21,7 +21,7 @@ class MongodbDriver extends DriverBase_1.DriverBase {
         return this.recordManager;
     }
     newQuery(model, name) {
-        const query = new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandle_1.MongodbQueryBuilderHandle(model));
+        const query = new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model));
         if (name) {
             query.queryName(name);
         }

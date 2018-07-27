@@ -5,12 +5,12 @@ const najs_binding_1 = require("najs-binding");
 const lodash_1 = require("lodash");
 const MongodbConditionConverter_1 = require("../../query-builders/shared/MongodbConditionConverter");
 class MongodbExecutor {
-    constructor(queryHandle, basicQuery, logger) {
-        this.queryHandle = queryHandle;
+    constructor(queryHandler, basicQuery, logger) {
+        this.queryHandler = queryHandler;
         this.basicQuery = basicQuery;
         this.logger = logger;
-        this.collectionName = this.queryHandle.getModel().getRecordName();
-        this.logger.name(this.queryHandle.getQueryName());
+        this.collectionName = this.queryHandler.getModel().getRecordName();
+        this.logger.name(this.queryHandler.getQueryName());
     }
     async get() {
         const query = this.getQuery();
@@ -53,10 +53,10 @@ class MongodbExecutor {
         return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')');
     }
     getQuery() {
-        if (this.queryHandle.shouldAddSoftDeleteCondition()) {
-            const settings = this.queryHandle.getSoftDeletesSetting();
-            this.queryHandle.getConditionQuery().whereNull(settings.deletedAt);
-            this.queryHandle.markSoftDeleteState('added');
+        if (this.queryHandler.shouldAddSoftDeleteCondition()) {
+            const settings = this.queryHandler.getSoftDeletesSetting();
+            this.queryHandler.getConditionQuery().whereNull(settings.deletedAt);
+            this.queryHandler.markSoftDeleteState('added');
         }
         const conditions = this.basicQuery.getConditions();
         return this.logger

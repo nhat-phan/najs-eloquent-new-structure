@@ -1,8 +1,8 @@
 /// <reference path="../../definitions/model/IModel.ts" />
 import IModel = NajsEloquent.Model.IModel
 import { QueryBuilder } from '../../query-builders/QueryBuilder'
-import { KnexQueryBuilderHandle } from './KnexQueryBuilderHandle'
+import { KnexQueryBuilderHandler } from './KnexQueryBuilderHandler'
 
-export class KnexQueryBuilder<T extends IModel, Handle extends KnexQueryBuilderHandle> extends QueryBuilder<T, Handle> {
+export class KnexQueryBuilder<T extends IModel, H extends KnexQueryBuilderHandler> extends QueryBuilder<T, H> {
   doSomething() {}
 }

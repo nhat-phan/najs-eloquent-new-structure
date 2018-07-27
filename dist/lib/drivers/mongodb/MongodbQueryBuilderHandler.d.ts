@@ -8,10 +8,10 @@ import IExecutor = NajsEloquent.QueryBuilder.IExecutor;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
-import { QueryBuilderHandleBase } from '../../query-builders/QueryBuilderHandleBase';
+import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { ConditionQueryHandle } from '../../query-builders/shared/ConditionQueryHandle';
-export declare class MongodbQueryBuilderHandle extends QueryBuilderHandleBase {
+export declare class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
     protected basicQuery: BasicQuery;
     protected conditionQuery: ConditionQueryHandle;
     protected convention: IConvention;

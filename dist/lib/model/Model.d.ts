@@ -6,5 +6,5 @@ export declare class Model {
     protected makeDriver<T>(): Najs.Contracts.Eloquent.Driver<T>;
     getDriver(): Najs.Contracts.Eloquent.Driver<any>;
     getModelName(): string;
-    query(name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<any, NajsEloquent.QueryBuilder.IQueryBuilderHandle>;
+    query(name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<any, NajsEloquent.QueryBuilder.IQueryBuilderHandler>;
 }

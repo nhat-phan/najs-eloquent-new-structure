@@ -2,10 +2,10 @@
 /// <reference path="../definitions/query-builders/IQueryBuilder.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
-import { QueryBuilderHandleBase } from './QueryBuilderHandleBase';
-export interface QueryBuilder<T extends IModel, Handle extends QueryBuilderHandleBase = QueryBuilderHandleBase> extends IQueryBuilder<T, Handle> {
+import { QueryBuilderHandlerBase } from './QueryBuilderHandlerBase';
+export interface QueryBuilder<T extends IModel, H extends QueryBuilderHandlerBase = QueryBuilderHandlerBase> extends IQueryBuilder<T, H> {
 }
-export declare class QueryBuilder<T extends IModel, Handle extends QueryBuilderHandleBase = QueryBuilderHandleBase> {
-    protected handler: Handle;
-    constructor(handler: Handle);
+export declare class QueryBuilder<T extends IModel, H extends QueryBuilderHandlerBase = QueryBuilderHandlerBase> {
+    protected handler: H;
+    constructor(handler: H);
 }

@@ -5,22 +5,22 @@ import { isEmpty } from 'lodash'
 import { Collection } from 'mongodb'
 import { MongodbQueryLog } from './MongodbQueryLog'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
-import { MongodbQueryBuilderHandle } from './MongodbQueryBuilderHandle'
+import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { MongodbConditionConverter } from '../../query-builders/shared/MongodbConditionConverter'
 
 export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   protected logger: MongodbQueryLog
   protected basicQuery: BasicQuery
-  protected queryHandle: MongodbQueryBuilderHandle
+  protected queryHandler: MongodbQueryBuilderHandler
   protected collection: Collection
   protected collectionName: string
 
-  constructor(queryHandle: MongodbQueryBuilderHandle, basicQuery: BasicQuery, logger: MongodbQueryLog) {
-    this.queryHandle = queryHandle
+  constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog) {
+    this.queryHandler = queryHandler
     this.basicQuery = basicQuery
     this.logger = logger
-    this.collectionName = this.queryHandle.getModel().getRecordName()
-    this.logger.name(this.queryHandle.getQueryName())
+    this.collectionName = this.queryHandler.getModel().getRecordName()
+    this.logger.name(this.queryHandler.getQueryName())
   }
 
   async get(): Promise<object[]> {
@@ -77,10 +77,10 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   }
 
   getQuery(): object {
-    if (this.queryHandle.shouldAddSoftDeleteCondition()) {
-      const settings = this.queryHandle.getSoftDeletesSetting()
-      this.queryHandle.getConditionQuery().whereNull(settings.deletedAt)
-      this.queryHandle.markSoftDeleteState('added')
+    if (this.queryHandler.shouldAddSoftDeleteCondition()) {
+      const settings = this.queryHandler.getSoftDeletesSetting()
+      this.queryHandler.getConditionQuery().whereNull(settings.deletedAt)
+      this.queryHandler.markSoftDeleteState('added')
     }
 
     const conditions = this.basicQuery.getConditions()

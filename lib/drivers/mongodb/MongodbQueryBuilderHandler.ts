@@ -9,14 +9,14 @@ import IExecutor = NajsEloquent.QueryBuilder.IExecutor
 import IConvention = NajsEloquent.QueryBuilder.IConvention
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
-import { QueryBuilderHandleBase } from '../../query-builders/QueryBuilderHandleBase'
+import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
 import { ConditionQueryHandle } from '../../query-builders/shared/ConditionQueryHandle'
 import { MongodbExecutor } from './MongodbExecutor'
 import { MongodbQueryLog } from './MongodbQueryLog'
 
-export class MongodbQueryBuilderHandle extends QueryBuilderHandleBase {
+export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected basicQuery: BasicQuery
   protected conditionQuery: ConditionQueryHandle
   protected convention: IConvention

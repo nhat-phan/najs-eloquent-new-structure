@@ -8,7 +8,7 @@ import { DriverBase } from '../DriverBase'
 import { Record } from '../../features/Record'
 import { NajsEloquent } from '../../constants'
 import { MongodbQueryBuilder } from './MongodbQueryBuilder'
-import { MongodbQueryBuilderHandle } from './MongodbQueryBuilderHandle'
+import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 
 export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
   protected recordManager: NajsEloquent.Feature.IRecordManager<T>
@@ -30,13 +30,13 @@ export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
   newQuery<M extends NajsEloquent.Model.IModel>(
     model: M,
     name?: string
-  ): MongodbQueryBuilder<M, MongodbQueryBuilderHandle> {
-    const query = new MongodbQueryBuilder(new MongodbQueryBuilderHandle(model))
+  ): MongodbQueryBuilder<M, MongodbQueryBuilderHandler> {
+    const query = new MongodbQueryBuilder(new MongodbQueryBuilderHandler(model))
 
     if (name) {
       query.queryName(name)
     }
-    return query as MongodbQueryBuilder<M, MongodbQueryBuilderHandle>
+    return query as MongodbQueryBuilder<M, MongodbQueryBuilderHandler>
   }
 }
 register(MongodbDriver, NajsEloquent.Driver.MongodbDriver)

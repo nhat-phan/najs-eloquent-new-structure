@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
-const QueryBuilderHandleBase_1 = require("../../lib/query-builders/QueryBuilderHandleBase");
-describe('QueryBuilderHandleBase', function () {
+const QueryBuilderHandlerBase_1 = require("../../lib/query-builders/QueryBuilderHandlerBase");
+describe('QueryBuilderHandlerBase', function () {
     function makeInstance(model) {
-        return Reflect.construct(QueryBuilderHandleBase_1.QueryBuilderHandleBase, [model]);
+        return Reflect.construct(QueryBuilderHandlerBase_1.QueryBuilderHandlerBase, [model]);
     }
     describe('constructor()', function () {
         it('assigns model to property model, init used = false & softDeleteState = should-add', function () {

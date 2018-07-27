@@ -4,7 +4,7 @@
 /// <reference path="../query-grammars/IBasicQuery.d.ts" />
 /// <reference path="../query-grammars/IConditionQuery.d.ts" />
 declare namespace NajsEloquent.QueryBuilder {
-    interface IQueryBuilderHandle {
+    interface IQueryBuilderHandler {
         getModel(): Model.IModel;
         getBasicQuery(): QueryGrammar.IBasicQuery;
         getConditionQuery(): QueryGrammar.IConditionQuery;

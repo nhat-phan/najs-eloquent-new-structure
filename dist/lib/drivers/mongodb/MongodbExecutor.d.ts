@@ -1,15 +1,15 @@
 import { Collection } from 'mongodb';
 import { MongodbQueryLog } from './MongodbQueryLog';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
-import { MongodbQueryBuilderHandle } from './MongodbQueryBuilderHandle';
+import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler';
 import { MongodbConditionConverter } from '../../query-builders/shared/MongodbConditionConverter';
 export declare class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
     protected logger: MongodbQueryLog;
     protected basicQuery: BasicQuery;
-    protected queryHandle: MongodbQueryBuilderHandle;
+    protected queryHandler: MongodbQueryBuilderHandler;
     protected collection: Collection;
     protected collectionName: string;
-    constructor(queryHandle: MongodbQueryBuilderHandle, basicQuery: BasicQuery, logger: MongodbQueryLog);
+    constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog);
     get(): Promise<object[]>;
     first(): Promise<object | null>;
     count(): Promise<number>;

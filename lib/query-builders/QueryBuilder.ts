@@ -7,14 +7,14 @@ import { Query } from './mixin/Query'
 import { ConditionQuery } from './mixin/ConditionQuery'
 import { ExecuteQuery } from './mixin/ExecuteQuery'
 import { AdvancedQuery } from './mixin/AdvancedQuery'
-import { QueryBuilderHandleBase } from './QueryBuilderHandleBase'
+import { QueryBuilderHandlerBase } from './QueryBuilderHandlerBase'
 
-export interface QueryBuilder<T extends IModel, Handle extends QueryBuilderHandleBase = QueryBuilderHandleBase>
-  extends IQueryBuilder<T, Handle> {}
-export class QueryBuilder<T extends IModel, Handle extends QueryBuilderHandleBase = QueryBuilderHandleBase> {
-  protected handler: Handle
+export interface QueryBuilder<T extends IModel, H extends QueryBuilderHandlerBase = QueryBuilderHandlerBase>
+  extends IQueryBuilder<T, H> {}
+export class QueryBuilder<T extends IModel, H extends QueryBuilderHandlerBase = QueryBuilderHandlerBase> {
+  protected handler: H
 
-  constructor(handler: Handle) {
+  constructor(handler: H) {
     this.handler = handler
   }
 }

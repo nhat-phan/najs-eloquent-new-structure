@@ -1,9 +1,9 @@
 import 'jest'
-import { QueryBuilderHandleBase } from '../../lib/query-builders/QueryBuilderHandleBase'
+import { QueryBuilderHandlerBase } from '../../lib/query-builders/QueryBuilderHandlerBase'
 
-describe('QueryBuilderHandleBase', function() {
-  function makeInstance(model: any): QueryBuilderHandleBase {
-    return Reflect.construct(QueryBuilderHandleBase, [model])
+describe('QueryBuilderHandlerBase', function() {
+  function makeInstance(model: any): QueryBuilderHandlerBase {
+    return Reflect.construct(QueryBuilderHandlerBase, [model])
   }
 
   describe('constructor()', function() {

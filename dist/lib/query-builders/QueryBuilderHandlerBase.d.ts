@@ -3,7 +3,7 @@
 /// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 /// <reference path="../definitions/query-builders/IConvention.d.ts" />
 /// <reference path="../definitions/query-builders/IExecutor.d.ts" />
-/// <reference path="../definitions/query-builders/IQueryBuilderHandle.d.ts" />
+/// <reference path="../definitions/query-builders/IQueryBuilderHandler.d.ts" />
 /// <reference path="../definitions/query-grammars/IBasicQuery.d.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
@@ -11,8 +11,8 @@ import IExecutor = NajsEloquent.QueryBuilder.IExecutor;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
-import IQueryBuilderHandle = NajsEloquent.QueryBuilder.IQueryBuilderHandle;
-export declare abstract class QueryBuilderHandleBase implements IQueryBuilderHandle {
+import IQueryBuilderHandler = NajsEloquent.QueryBuilder.IQueryBuilderHandler;
+export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
     protected model: IModel;
     protected queryName: string;
     protected logGroup: string;
