@@ -57,10 +57,7 @@ export const Query: NajsEloquent.QueryGrammar.IQuery = {
   onlyTrashed(this: QueryBuilder) {
     if (this.handler.hasSoftDeletes()) {
       this.handler.markSoftDeleteState('should-not-add')
-      const model = this.handler.getModel()
-      const softDeletesFeature = model.getDriver().getSoftDeletesFeature()
-      const softDeletesSetting = softDeletesFeature.getSoftDeletesSetting(model)
-      this.whereNotNull(softDeletesSetting.deletedAt)
+      this.whereNotNull(this.handler.getSoftDeletesSetting().deletedAt)
       this.handler.markUsed()
     }
 
