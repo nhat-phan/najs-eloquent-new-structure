@@ -34,13 +34,13 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
       .end(result)
   }
 
-  async first(): Promise<object | null> {
+  async find(): Promise<object | null> {
     const query = this.getQuery()
     const options = this.getQueryOptions()
 
     const result = this.collection.findOne(query, options)
     return this.logRaw(query, options, 'findOne')
-      .action('first()')
+      .action('find()')
       .end(result)
   }
 

@@ -1,17 +1,7 @@
 /// <reference path="../collect.js/index.d.ts" />
 
 namespace NajsEloquent.QueryGrammar {
-  export interface IExecuteQuery<T extends object = object> {
-    /**
-     * Execute query and return the records as a Collection.
-     */
-    get(): Promise<T[]>
-
-    /**
-     * Execute query and returns the first record.
-     */
-    first(): Promise<T | null>
-
+  export interface IExecuteQuery {
     /**
      * Execute query and returns count of records.
      */

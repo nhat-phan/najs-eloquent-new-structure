@@ -4,14 +4,6 @@
 import QueryBuilder = NajsEloquent.QueryBuilder.QueryBuilderInternal
 
 export const ExecuteQuery: NajsEloquent.QueryGrammar.IExecuteQuery = {
-  async get(this: QueryBuilder): Promise<object[]> {
-    return this.handler.getQueryExecutor().get()
-  },
-
-  async first(this: QueryBuilder): Promise<object | null> {
-    return this.handler.getQueryExecutor().first()
-  },
-
   async count(this: QueryBuilder): Promise<number> {
     return this.handler.getQueryExecutor().count()
   },

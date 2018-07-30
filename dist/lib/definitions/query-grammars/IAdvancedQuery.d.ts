@@ -30,10 +30,6 @@ declare namespace NajsEloquent.QueryGrammar {
          */
         all(): Promise<CollectJs.Collection<Model>>;
         /**
-         * Execute query and returns count of records.
-         */
-        count(): Promise<number>;
-        /**
          * Execute query and returns "pluck" result.
          */
         pluck(valueKey: string): Promise<object>;

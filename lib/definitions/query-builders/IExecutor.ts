@@ -10,7 +10,7 @@ namespace NajsEloquent.QueryBuilder {
     /**
      * Execute query and returns the first record.
      */
-    first(): Promise<T | null>
+    find(): Promise<T | null>
 
     /**
      * Execute query and returns count of records.

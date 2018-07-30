@@ -5,7 +5,7 @@ const Sinon = require("sinon");
 const ExecuteQuery_1 = require("../../../lib/query-builders/mixin/ExecuteQuery");
 const isPromise_1 = require("../../../lib/util/isPromise");
 describe('ExecuteQuery', function () {
-    const functions = ['get', 'first', 'count', 'update', 'delete', 'restore', 'execute'];
+    const functions = ['count', 'update', 'delete', 'restore', 'execute'];
     for (const func of functions) {
         describe(`.${func}()`, function () {
             it(`calls and returns to handler.getQueryExecutor().${func}()`, async function () {

@@ -3,12 +3,6 @@
 /// <reference path="../../definitions/query-grammars/IExecuteQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExecuteQuery = {
-    async get() {
-        return this.handler.getQueryExecutor().get();
-    },
-    async first() {
-        return this.handler.getQueryExecutor().first();
-    },
     async count() {
         return this.handler.getQueryExecutor().count();
     },

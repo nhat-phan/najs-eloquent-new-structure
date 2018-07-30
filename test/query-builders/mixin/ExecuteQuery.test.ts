@@ -4,7 +4,7 @@ import { ExecuteQuery } from '../../../lib/query-builders/mixin/ExecuteQuery'
 import { isPromise } from '../../../lib/util/isPromise'
 
 describe('ExecuteQuery', function() {
-  const functions = ['get', 'first', 'count', 'update', 'delete', 'restore', 'execute']
+  const functions = ['count', 'update', 'delete', 'restore', 'execute']
 
   for (const func of functions) {
     describe(`.${func}()`, function() {

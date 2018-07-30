@@ -11,7 +11,7 @@ export declare class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecu
     protected collectionName: string;
     constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog);
     get(): Promise<object[]>;
-    first(): Promise<object | null>;
+    find(): Promise<object | null>;
     count(): Promise<number>;
     update(data: Object): Promise<any>;
     delete(): Promise<any>;
