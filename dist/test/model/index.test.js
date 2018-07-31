@@ -9,5 +9,9 @@ describe('Model', function () {
     it('should works', function () {
         const test = new Model_1.Model();
         test.query();
+        try {
+            test.query('test');
+        }
+        catch (error) { }
     });
 });

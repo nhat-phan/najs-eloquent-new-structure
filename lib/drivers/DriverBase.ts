@@ -56,7 +56,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>
 
-  abstract newQuery<M extends IModel>(model: M, name?: string): IQueryBuilder<M>
+  abstract newQuery<M extends IModel>(model: M): IQueryBuilder<M>
 
   getSettingFeature() {
     return this.settingFeature

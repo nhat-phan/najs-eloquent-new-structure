@@ -18,7 +18,8 @@ class Model {
         return najs_binding_1.getClassName(this);
     }
     query(name) {
-        return this.driver.newQuery(this, name);
+        const query = this.driver.newQuery(this);
+        return typeof name !== 'undefined' ? query.queryName(name) : query;
     }
 }
 exports.Model = Model;

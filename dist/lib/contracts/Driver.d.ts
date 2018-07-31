@@ -16,6 +16,6 @@ declare namespace Najs.Contracts.Eloquent {
         getSoftDeletesFeature(): NajsEloquent.Feature.ISoftDeletesFeature;
         getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter;
         makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
-        newQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<M>;
+        newQuery<M extends NajsEloquent.Model.IModel>(model: M): NajsEloquent.QueryBuilder.IQueryBuilder<M>;
     }
 }

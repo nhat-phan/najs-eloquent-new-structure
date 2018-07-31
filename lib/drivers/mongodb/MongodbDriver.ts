@@ -27,16 +27,8 @@ export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
     return this.recordManager
   }
 
-  newQuery<M extends NajsEloquent.Model.IModel>(
-    model: M,
-    name?: string
-  ): MongodbQueryBuilder<M, MongodbQueryBuilderHandler> {
-    const query = new MongodbQueryBuilder(new MongodbQueryBuilderHandler(model))
-
-    if (name) {
-      query.queryName(name)
-    }
-    return query as MongodbQueryBuilder<M, MongodbQueryBuilderHandler>
+  newQuery<M extends NajsEloquent.Model.IModel>(model: M): MongodbQueryBuilder<M, MongodbQueryBuilderHandler> {
+    return new MongodbQueryBuilder(new MongodbQueryBuilderHandler(model))
   }
 }
 register(MongodbDriver, NajsEloquent.Driver.MongodbDriver)

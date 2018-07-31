@@ -20,12 +20,8 @@ class MongodbDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.recordManager;
     }
-    newQuery(model, name) {
-        const query = new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model));
-        if (name) {
-            query.queryName(name);
-        }
-        return query;
+    newQuery(model) {
+        return new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model));
     }
 }
 exports.MongodbDriver = MongodbDriver;

@@ -31,7 +31,7 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     constructor();
     abstract getClassName(): string;
     abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
-    abstract newQuery<M extends IModel>(model: M, name?: string): IQueryBuilder<M>;
+    abstract newQuery<M extends IModel>(model: M): IQueryBuilder<M>;
     getSettingFeature(): NajsEloquent.Feature.ISettingFeature;
     getEventFeature(): NajsEloquent.Feature.IEventFeature;
     getFillableFeature(): NajsEloquent.Feature.IFillableFeature;

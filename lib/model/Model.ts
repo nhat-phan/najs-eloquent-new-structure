@@ -24,6 +24,8 @@ export class Model {
   }
 
   query(name?: string) {
-    return this.driver.newQuery<any>(this, name)
+    const query = this.driver.newQuery<any>(this)
+
+    return typeof name !== 'undefined' ? query.queryName(name) : query
   }
 }
