@@ -67,7 +67,7 @@ describe('MongodbQueryLog', function () {
             const result = {};
             const logger = new MongodbQueryLog_1.MongodbQueryLog();
             expect(logger.end(result) === result).toBe(true);
-            expect(QueryLogFacade_1.QueryLog.pull()[0].query).toEqual({ raw: '', queryBuilderData: {}, result: result });
+            expect(QueryLogFacade_1.QueryLog.pull()[0].data).toEqual({ raw: '', queryBuilderData: {}, result: result });
         });
     });
 });

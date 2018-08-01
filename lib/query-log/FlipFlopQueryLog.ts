@@ -77,12 +77,12 @@ export class FlipFlopQueryLog extends Facade implements Najs.Contracts.Eloquent.
     return this
   }
 
-  push(query: any, group: string = 'all'): any {
+  push(data: any, group: string = 'all'): any {
     if (!this.enabled) {
       return this
     }
     this[this.circle].push({
-      query: query,
+      data: data,
       when: Moment(),
       group: group
     })

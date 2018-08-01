@@ -2,7 +2,6 @@ import { Collection } from 'mongodb';
 import { MongodbQueryLog } from './MongodbQueryLog';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler';
-import { MongodbConditionConverter } from '../../query-builders/shared/MongodbConditionConverter';
 export declare class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
     protected logger: MongodbQueryLog;
     protected basicQuery: BasicQuery;
@@ -18,7 +17,6 @@ export declare class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecu
     restore(): Promise<any>;
     execute(): Promise<any>;
     logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog;
-    getQuery(): object;
-    resolveMongodbConditionConverter(conditions: object[]): MongodbConditionConverter;
-    getQueryOptions(): object | undefined;
+    makeQuery(): object;
+    makeQueryOptions(): object | undefined;
 }

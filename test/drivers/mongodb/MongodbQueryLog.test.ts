@@ -76,7 +76,7 @@ describe('MongodbQueryLog', function() {
       const logger = new MongodbQueryLog()
       expect(logger.end(result) === result).toBe(true)
 
-      expect(QueryLog.pull()[0].query).toEqual({ raw: '', queryBuilderData: {}, result: result })
+      expect(QueryLog.pull()[0].data).toEqual({ raw: '', queryBuilderData: {}, result: result })
     })
   })
 })

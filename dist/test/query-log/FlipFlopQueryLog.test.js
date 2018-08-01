@@ -93,8 +93,8 @@ describe('FlipFlopQueryLog', function () {
             QueryLog.push('first');
             const logs = QueryLog.pull();
             expect(logs).toHaveLength(2);
-            expect(logs[0].query).toEqual('first');
-            expect(logs[1].query).toEqual('second');
+            expect(logs[0].data).toEqual('first');
+            expect(logs[1].data).toEqual('second');
         });
         it('returns all logs group is undefined', function () {
             QueryLog.clear().enable();
@@ -104,8 +104,8 @@ describe('FlipFlopQueryLog', function () {
             QueryLog.push('first', 'all');
             const logs = QueryLog.pull();
             expect(logs).toHaveLength(2);
-            expect(logs[0].query).toEqual('first');
-            expect(logs[1].query).toEqual('second');
+            expect(logs[0].data).toEqual('first');
+            expect(logs[1].data).toEqual('second');
         });
         it('filters by group if provided', function () {
             QueryLog.clear().enable();
@@ -115,10 +115,10 @@ describe('FlipFlopQueryLog', function () {
             QueryLog.push('first', 'all');
             let logs = QueryLog.pull('test');
             expect(logs).toHaveLength(1);
-            expect(logs[0].query).toEqual('second');
+            expect(logs[0].data).toEqual('second');
             logs = QueryLog.pull('all');
             expect(logs).toHaveLength(1);
-            expect(logs[0].query).toEqual('first');
+            expect(logs[0].data).toEqual('first');
         });
         it('filters by since if provided', function () {
             QueryLog.clear().enable();
@@ -130,8 +130,8 @@ describe('FlipFlopQueryLog', function () {
             QueryLog.push('first', 'all');
             const logs = QueryLog.pull(Moment('2018-01-03'));
             expect(logs).toHaveLength(2);
-            expect(logs[0].query).toEqual('second');
-            expect(logs[1].query).toEqual('third');
+            expect(logs[0].data).toEqual('second');
+            expect(logs[1].data).toEqual('third');
         });
         it('filters by until if provided', function () {
             QueryLog.clear().enable();
@@ -143,7 +143,7 @@ describe('FlipFlopQueryLog', function () {
             QueryLog.push('first', 'all');
             const logs = QueryLog.pull(Moment('2018-01-03'), Moment('2018-01-07'));
             expect(logs).toHaveLength(1);
-            expect(logs[0].query).toEqual('second');
+            expect(logs[0].data).toEqual('second');
         });
         it('transforms the query if provided', function () {
             QueryLog.clear().enable();
@@ -151,10 +151,10 @@ describe('FlipFlopQueryLog', function () {
             QueryLog.push('second', 'test');
             Moment.now = () => new Date(2018, 0, 1);
             QueryLog.push('first', 'all');
-            const logs = QueryLog.pull((item) => ({ query: item.query + '-test', when: item.when, group: item.group }));
+            const logs = QueryLog.pull((item) => ({ data: item.data + '-test', when: item.when, group: item.group }));
             expect(logs).toHaveLength(2);
-            expect(logs[0].query).toEqual('first-test');
-            expect(logs[1].query).toEqual('second-test');
+            expect(logs[0].data).toEqual('first-test');
+            expect(logs[1].data).toEqual('second-test');
         });
         it('put back to the other pipe if not match', function () {
             QueryLog.clear().enable();

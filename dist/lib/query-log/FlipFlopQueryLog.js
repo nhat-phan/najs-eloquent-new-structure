@@ -61,12 +61,12 @@ class FlipFlopQueryLog extends najs_facade_1.Facade {
         this.circle = 'flip';
         return this;
     }
-    push(query, group = 'all') {
+    push(data, group = 'all') {
         if (!this.enabled) {
             return this;
         }
         this[this.circle].push({
-            query: query,
+            data: data,
             when: Moment(),
             group: group
         });
