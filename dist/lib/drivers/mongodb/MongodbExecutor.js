@@ -23,14 +23,12 @@ class MongodbExecutor {
             .end(result);
     }
     async find() {
-        // const query = this.getQuery()
-        // const options = this.getQueryOptions()
-        // const result = await this.collection.findOne(query, options)
-        // return this.logRaw(query, options, 'findOne')
-        //   .action('find')
-        //   .end(result)
-        // tslint:disable-next-line
-        return null;
+        const query = this.makeQuery();
+        const options = this.makeQueryOptions();
+        const result = await this.collection.findOne(query, options);
+        return this.logRaw(query, options, 'findOne')
+            .action('find')
+            .end(result);
     }
     async count() {
         // if (this.basicQuery.getSelect()) {

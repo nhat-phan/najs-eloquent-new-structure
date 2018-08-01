@@ -177,11 +177,109 @@ describe('MongodbExecutor', function () {
         });
     });
     describe('.find()', function () {
-        // TODO: write test for find
-        it('should be implemented', function () {
+        it('finds first document of collection and return an instance of Eloquent<T>', async function () {
             const handler = makeQueryBuilderHandler('users');
-            handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().find();
+            expect_query_log({
+                raw: 'db.users.findOne({})',
+                action: 'find'
+            }, result);
+            expect_match_user(result, dataset[0]);
         });
+        it('finds first document of collection and return an instance of Eloquent<T>', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).orderBy('_id', 'desc');
+            const result = await handler.getQueryExecutor().find();
+            expect_query_log({
+                raw: 'db.users.findOne({}, {"sort":[["_id",-1]]})',
+                options: { sort: [['_id', -1]] },
+                action: 'find'
+            }, result);
+            expect_match_user(result, dataset[6]);
+        });
+        it('returns null if no result', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('first_name', 'no-one');
+            const result = await handler.getQueryExecutor().find();
+            expect_query_log({
+                raw: 'db.users.findOne({"first_name":"no-one"})',
+                query: { first_name: 'no-one' },
+                action: 'find'
+            }, result);
+            expect(result).toBeNull();
+        });
+        it('can find data by query builder, case 1', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('age', 1000);
+            const result = await handler.getQueryExecutor().find();
+            expect_query_log({
+                raw: 'db.users.findOne({"age":1000})',
+                query: { age: 1000 },
+                action: 'find'
+            }, result);
+            expect_match_user(result, dataset[3]);
+        });
+        it('can find data by query builder, case 2', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('age', 40)
+                .orWhere('first_name', 'jane');
+            const result = await handler.getQueryExecutor().find();
+            expect_query_log({
+                raw: 'db.users.findOne({"$or":[{"age":40},{"first_name":"jane"}]})',
+                query: { $or: [{ age: 40 }, { first_name: 'jane' }] },
+                action: 'find'
+            }, result);
+            expect_match_user(result, dataset[1]);
+        });
+        it('can find data by query builder, case 3', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const result = await handler.getQueryExecutor().find();
+            expect_query_log({
+                raw: 'db.users.findOne({"first_name":"tony","last_name":"stewart"})',
+                query: { first_name: 'tony', last_name: 'stewart' },
+                action: 'find'
+            }, result);
+            expect_match_user(result, dataset[5]);
+        });
+        // it('can find data by .native() before using query functions of query builder', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query
+        //     .native(function(collection) {
+        //       return collection.findOne({
+        //         first_name: 'tony'
+        //       })
+        //     })
+        //     .execute()
+        //   expect_match_user(result, dataset[2])
+        // })
+        // it('can find data by native() after using query functions of query builder', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query
+        //     .where('age', 40)
+        //     .orWhere('age', 1000)
+        //     .native(function(collection, conditions) {
+        //       return collection.findOne(conditions, { sort: [['last_name', -1]] })
+        //     })
+        //     .execute()
+        //   expect_match_user(result, dataset[5])
+        // })
+        // it('can find data by native() and modified after using query functions of query builder', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query
+        //     .where('age', 40)
+        //     .orWhere('age', 1000)
+        //     .native(function(collection) {
+        //       return collection.findOne({
+        //         first_name: 'thor'
+        //       })
+        //     })
+        //     .execute()
+        //   expect_match_user(result, dataset[3])
+        // })
     });
     describe('.count()', function () {
         // TODO: write test for count

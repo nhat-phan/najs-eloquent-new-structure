@@ -36,15 +36,13 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   }
 
   async find(): Promise<object | null> {
-    // const query = this.getQuery()
-    // const options = this.getQueryOptions()
-    // const result = await this.collection.findOne(query, options)
-    // return this.logRaw(query, options, 'findOne')
-    //   .action('find')
-    //   .end(result)
+    const query = this.makeQuery()
+    const options = this.makeQueryOptions()
 
-    // tslint:disable-next-line
-    return null
+    const result = await this.collection.findOne(query, options)
+    return this.logRaw(query, options, 'findOne')
+      .action('find')
+      .end(result)
   }
 
   async count(): Promise<number> {
