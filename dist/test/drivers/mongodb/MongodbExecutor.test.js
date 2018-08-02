@@ -6,6 +6,7 @@ const MongodbProviderFacade_1 = require("../../../lib/facades/global/MongodbProv
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
 const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderHandler");
+const Moment = require('moment');
 describe('MongodbExecutor', function () {
     const dataset = [
         { first_name: 'john', last_name: 'doe', age: 30 },
@@ -60,6 +61,13 @@ describe('MongodbExecutor', function () {
                         getSoftDeletesFeature() {
                             return {
                                 hasSoftDeletes() {
+                                    return false;
+                                }
+                            };
+                        },
+                        getTimestampsFeature() {
+                            return {
+                                hasTimestamps() {
                                     return false;
                                 }
                             };
@@ -355,10 +363,142 @@ describe('MongodbExecutor', function () {
         });
     });
     describe('.update()', function () {
-        // TODO: write test for update
-        it('should be implemented', function () {
+        it('can update data of collection, returns update result of mongodb', async function () {
+            let handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('first_name', 'peter');
+            const result = await handler.getQueryExecutor().update({ $set: { age: 19 } });
+            expect_query_log({
+                raw: 'db.users.updateMany({"first_name":"peter"}, {"$set":{"age":19}})',
+                query: { first_name: 'peter' },
+                action: 'update'
+            }, result);
+            expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
+            handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('first_name', 'peter');
+            const updatedResult = await handler.getQueryExecutor().find();
+            expect_match_user(updatedResult, Object.assign({}, dataset[6], { age: 19 }));
+        });
+        it('returns empty update result if no row matched', async function () {
             const handler = makeQueryBuilderHandler('users');
-            handler.getQueryExecutor().update({});
+            makeQueryBuilder(handler).where('first_name', 'no-one');
+            const result = await handler.getQueryExecutor().update({ $set: { age: 19 } });
+            expect_query_log({
+                raw: 'db.users.updateMany({"first_name":"no-one"}, {"$set":{"age":19}})',
+                query: { first_name: 'no-one' },
+                action: 'update'
+            }, result);
+            expect(result).toEqual({ n: 0, nModified: 0, ok: 1 });
+        });
+        it('can update data by query builder, case 1', async function () {
+            let handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('age', 1000);
+            const result = await handler.getQueryExecutor().update({ $set: { age: 1001 } });
+            expect_query_log({
+                raw: 'db.users.updateMany({"age":1000}, {"$set":{"age":1001}})',
+                query: { age: 1000 },
+                action: 'update'
+            }, result);
+            expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
+            handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('first_name', 'thor');
+            const updatedResult = await handler.getQueryExecutor().find();
+            expect_match_user(updatedResult, Object.assign({}, dataset[3], { age: 1001 }));
+        });
+        it('can update data by query builder, case 2: multiple documents', async function () {
+            let handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .orWhere('first_name', 'jane');
+            const result = await handler.getQueryExecutor().update({ $inc: { age: 1 } });
+            expect_query_log({
+                raw: 'db.users.updateMany({"$or":[{"first_name":"tony"},{"first_name":"jane"}]}, {"$inc":{"age":1}})',
+                query: { $or: [{ first_name: 'tony' }, { first_name: 'jane' }] },
+                action: 'update'
+            }, result);
+            expect(result).toEqual({ n: 3, nModified: 3, ok: 1 });
+            handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .orWhere('first_name', 'jane');
+            const updatedResults = await handler.getQueryExecutor().get();
+            expect_match_user(updatedResults[0], Object.assign({}, dataset[1], { age: 26 }));
+            expect_match_user(updatedResults[1], Object.assign({}, dataset[2], { age: 41 }));
+            expect_match_user(updatedResults[2], Object.assign({}, dataset[5], { age: 41 }));
+        });
+        it('can update data by query builder, case 3', async function () {
+            let handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const result = await handler.getQueryExecutor().update({ $inc: { age: 1 } });
+            expect_query_log({
+                raw: 'db.users.updateMany({"first_name":"tony","last_name":"stewart"}, {"$inc":{"age":1}})',
+                query: { first_name: 'tony', last_name: 'stewart' },
+                action: 'update'
+            }, result);
+            expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
+            handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const updatedResult = await handler.getQueryExecutor().find();
+            expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 42 }));
+        });
+        it('auto add updatedAt field to $set if timestamps options is on', async function () {
+            const now = new Date(1988, 4, 16);
+            Moment.now = () => now;
+            function makeHandler() {
+                return new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler({
+                    getDriver() {
+                        return {
+                            getSoftDeletesFeature() {
+                                return {
+                                    hasSoftDeletes() {
+                                        return false;
+                                    }
+                                };
+                            },
+                            getTimestampsFeature() {
+                                return {
+                                    hasTimestamps() {
+                                        return true;
+                                    },
+                                    getTimestampsSetting() {
+                                        return { createdAt: 'created_at', updatedAt: 'updated_at' };
+                                    }
+                                };
+                            }
+                        };
+                    },
+                    getRecordName() {
+                        return 'users';
+                    }
+                });
+            }
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const result = await handler.getQueryExecutor().update({ $inc: { age: 1 } });
+            expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
+            handler = makeHandler();
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const updatedResult = await handler.getQueryExecutor().find();
+            expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 43, updated_at: now }));
+            handler = makeHandler();
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const result2 = await handler.getQueryExecutor().update({ $set: { age: 44 } });
+            expect(result2).toEqual({ n: 1, nModified: 1, ok: 1 });
+            handler = makeHandler();
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const updatedResult2 = await handler.getQueryExecutor().find();
+            expect_match_user(updatedResult2, Object.assign({}, dataset[5], { age: 44, updated_at: now }));
         });
     });
     describe('.delete()', function () {
@@ -367,6 +507,76 @@ describe('MongodbExecutor', function () {
             const handler = makeQueryBuilderHandler('users');
             handler.getQueryExecutor().delete();
         });
+        // it('can delete data of collection, returns delete result of mongodb', async function() {
+        //   const handler = makeQueryBuilderHandler('users')
+        //   makeQueryBuilder(handler).where('first_name', 'peter')
+        //   const result = await handler.getQueryExecutor().delete()
+        //   expect_query_log({ raw: 'db.users.deleteMany({"first_name":"peter"})' }, result)
+        //   expect(result).toEqual({ n: 1, ok: 1 })
+        //   const count = await makeQueryBuilderHandler('users')
+        //     .getQueryExecutor()
+        //     .count()
+        //   expect(count).toEqual(6)
+        // })
+        // it('can delete data by query builder, case 1', async function() {
+        //   const handler = makeQueryBuilderHandler('users')
+        //   makeQueryBuilder(handler).where('age', 1001)
+        //   const result = await handler.getQueryExecutor().delete()
+        //   expect_query_log(
+        //     {
+        //       raw: 'db.users.deleteMany({"age":1001})'
+        //     },
+        //     result
+        //   )
+        //   expect(result).toEqual({ n: 1, ok: 1 })
+        //   const count = await makeQueryBuilderHandler('users')
+        //     .getQueryExecutor()
+        //     .count()
+        //   expect(count).toEqual(5)
+        // })
+        // it('can delete data by query builder, case 2: multiple documents', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query
+        //     .where('first_name', 'tony')
+        //     .orWhere('first_name', 'jane')
+        //     .delete()
+        //   expect_query_log('raw', 'db.users.deleteMany({"$or":[{"first_name":"tony"},{"first_name":"jane"}]})')
+        //   expect(result).toEqual({ n: 3, ok: 1 })
+        //   const count = await new MongodbQueryBuilder('User', collectionUsers).count()
+        //   expect(count).toEqual(2)
+        // })
+        // it('can delete data by query builder, case 3', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query
+        //     .where('first_name', 'john')
+        //     .where('last_name', 'doe')
+        //     .delete()
+        //   expect_query_log('raw', 'db.users.deleteMany({"first_name":"john","last_name":"doe"})')
+        //   expect(result).toEqual({ n: 1, ok: 1 })
+        //   const count = await new MongodbQueryBuilder('User', collectionUsers).count()
+        //   expect(count).toEqual(1)
+        // })
+        // it('can not call delete without using any .where() statement', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query.delete()
+        //   expect(result).toEqual({ n: 0, ok: 1 })
+        // })
+        // it('can not call delete if query is empty', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query.select('any').delete()
+        //   expect(result).toEqual({ n: 0, ok: 1 })
+        // })
+        // it('can delete by native() function', async function() {
+        //   const query = new MongodbQueryBuilder('User', collectionUsers)
+        //   const result = await query
+        //     .native(function(collection) {
+        //       return collection.remove({})
+        //     })
+        //     .execute()
+        //   expect(result).toEqual({ n: 1, ok: 1 })
+        //   const count = await new MongodbQueryBuilder('User', collectionUsers).count()
+        //   expect(count).toEqual(0)
+        // })
     });
     describe('.restore()', function () {
         // TODO: write test for restore

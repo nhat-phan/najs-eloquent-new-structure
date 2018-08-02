@@ -7,6 +7,7 @@ import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { MongodbProviderFacade } from '../../facades/global/MongodbProviderFacade'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
+import * as Moment from 'moment'
 
 export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   protected logger: MongodbQueryLog
@@ -63,10 +64,40 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   }
 
   async update(data: Object): Promise<any> {
-    return {}
+    const query = this.makeQuery()
+
+    if (this.queryHandler.hasTimestamps()) {
+      if (typeof data['$set'] === 'undefined') {
+        data['$set'] = {}
+      }
+      data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate()
+    }
+
+    const result = await this.collection.updateMany(query, data).then(function(response) {
+      return response.result
+    })
+    return this.logger
+      .raw('db.', this.collection.collectionName, '.updateMany(', query, ', ', data, ')')
+      .action('update')
+      .end(result)
   }
 
-  async delete(): Promise<any> {}
+  async delete(): Promise<any> {
+    // if (!this.queryHandler.isUsed()) {
+    //   return Promise.resolve({ n: 0, ok: 1 })
+    // }
+    // const query = this.makeQuery()
+    // if (isEmpty(query)) {
+    //   return Promise.resolve({ n: 0, ok: 1 })
+    // }
+    // const result = await this.collection.deleteMany(query).then(function(response) {
+    //   return response.result
+    // })
+    // return this.logger
+    //   .raw('db.', this.collection.collectionName, '.deleteMany(', query, ')')
+    //   .action('delete')
+    //   .end(result)
+  }
 
   async restore(): Promise<any> {}
 

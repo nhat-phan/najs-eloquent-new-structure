@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const MongodbProviderFacade_1 = require("../../facades/global/MongodbProviderFacade");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
+const Moment = require("moment");
 class MongodbExecutor {
     constructor(queryHandler, basicQuery, logger) {
         this.queryHandler = queryHandler;
@@ -45,9 +46,37 @@ class MongodbExecutor {
             .end(result);
     }
     async update(data) {
-        return {};
+        const query = this.makeQuery();
+        if (this.queryHandler.hasTimestamps()) {
+            if (typeof data['$set'] === 'undefined') {
+                data['$set'] = {};
+            }
+            data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate();
+        }
+        const result = await this.collection.updateMany(query, data).then(function (response) {
+            return response.result;
+        });
+        return this.logger
+            .raw('db.', this.collection.collectionName, '.updateMany(', query, ', ', data, ')')
+            .action('update')
+            .end(result);
     }
-    async delete() { }
+    async delete() {
+        // if (!this.queryHandler.isUsed()) {
+        //   return Promise.resolve({ n: 0, ok: 1 })
+        // }
+        // const query = this.makeQuery()
+        // if (isEmpty(query)) {
+        //   return Promise.resolve({ n: 0, ok: 1 })
+        // }
+        // const result = await this.collection.deleteMany(query).then(function(response) {
+        //   return response.result
+        // })
+        // return this.logger
+        //   .raw('db.', this.collection.collectionName, '.deleteMany(', query, ')')
+        //   .action('delete')
+        //   .end(result)
+    }
     async restore() { }
     async execute() { }
     logRaw(query, options, func) {
