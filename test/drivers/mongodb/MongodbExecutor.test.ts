@@ -370,10 +370,109 @@ describe('MongodbExecutor', function() {
   })
 
   describe('.count()', function() {
-    // TODO: write test for count
-    it('should be implemented', function() {
+    it('counts all data of collection and returns a Number', async function() {
       const handler = makeQueryBuilderHandler('users')
-      handler.getQueryExecutor().count()
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: 'db.users.count({})',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(7)
+    })
+
+    it('returns 0 if no result', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      makeQueryBuilder(handler).where('first_name', 'no-one')
+
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: 'db.users.count({"first_name":"no-one"})',
+          query: { first_name: 'no-one' },
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(0)
+    })
+
+    it('overrides select even .select was used', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      makeQueryBuilder(handler).select('abc', 'def')
+
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: 'db.users.count({})',
+          options: undefined,
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(7)
+    })
+
+    it('overrides ordering even .orderBy was used', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      makeQueryBuilder(handler).orderBy('abc')
+
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: 'db.users.count({})',
+          options: undefined,
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(7)
+    })
+
+    it('can count items by query builder, case 1', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      makeQueryBuilder(handler)
+        .where('age', 18)
+        .orWhere('first_name', 'tony')
+
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: 'db.users.count({"$or":[{"age":18},{"first_name":"tony"}]})',
+          query: { $or: [{ age: 18 }, { first_name: 'tony' }] },
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(2)
+    })
+
+    it('can count items by query builder, case 2', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      makeQueryBuilder(handler)
+        .where('age', 1000)
+        .orWhere('first_name', 'captain')
+        .orderBy('last_name')
+        .limit(10)
+
+      const result = await handler.getQueryExecutor().count()
+      expect_query_log(
+        {
+          raw: 'db.users.count({"$or":[{"age":1000},{"first_name":"captain"}]}, {"limit":10})',
+          query: { $or: [{ age: 1000 }, { first_name: 'captain' }] },
+          options: { limit: 10 },
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(2)
     })
   })
 

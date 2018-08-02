@@ -46,19 +46,20 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   }
 
   async count(): Promise<number> {
-    // if (this.basicQuery.getSelect()) {
-    //   this.basicQuery.clearSelect()
-    // }
-    // if (!isEmpty(this.basicQuery.getOrdering())) {
-    //   this.basicQuery.clearOrdering()
-    // }
-    // const query = this.getQuery()
-    // const options = this.getQueryOptions()
-    // const result = await this.collection.count(query, options)
-    // return this.logRaw(query, options, 'count')
-    //   .action('count()')
-    //   .end(result)
-    return 0
+    if (this.basicQuery.getSelect()) {
+      this.basicQuery.clearSelect()
+    }
+    if (!isEmpty(this.basicQuery.getOrdering())) {
+      this.basicQuery.clearOrdering()
+    }
+
+    const query = this.makeQuery()
+    const options = this.makeQueryOptions()
+
+    const result = await this.collection.count(query, options)
+    return this.logRaw(query, options, 'count')
+      .action('count')
+      .end(result)
   }
 
   async update(data: Object): Promise<any> {
