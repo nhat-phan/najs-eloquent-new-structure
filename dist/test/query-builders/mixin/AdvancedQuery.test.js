@@ -5,11 +5,11 @@ const Sinon = require("sinon");
 const NotFoundError_1 = require("../../../lib/errors/NotFoundError");
 const AdvancedQuery_1 = require("../../../lib/query-builders/mixin/AdvancedQuery");
 describe('AdvancedQuery', function () {
-    describe('.find()', function () {
-        it('calls this.handler.getQueryExecutor().find() to find result, and returns if result is falsy', async function () {
+    describe('.first()', function () {
+        it('calls this.handler.getQueryExecutor().first() to find result, and returns if result is falsy', async function () {
             const queryExecutor = {
-                find() {
-                    return 'find-result';
+                first() {
+                    return 'first-result';
                 }
             };
             const builder = {
@@ -28,17 +28,17 @@ describe('AdvancedQuery', function () {
             };
             const whereSpy = Sinon.spy(builder, 'where');
             const createInstanceSpy = Sinon.spy(builder.handler, 'createInstance');
-            const findStub = Sinon.stub(queryExecutor, 'find');
-            findStub.returns(Promise.resolve(undefined));
-            expect(await AdvancedQuery_1.AdvancedQuery.find.call(builder)).toBeUndefined();
+            const firstStub = Sinon.stub(queryExecutor, 'first');
+            firstStub.returns(Promise.resolve(undefined));
+            expect(await AdvancedQuery_1.AdvancedQuery.first.call(builder)).toBeUndefined();
             expect(whereSpy.called).toBe(false);
-            expect(findStub.calledWith()).toBe(true);
+            expect(firstStub.calledWith()).toBe(true);
             expect(createInstanceSpy.called).toBe(false);
         });
         it('calls this.handler.createInstance() if result is not falsy', async function () {
             const queryExecutor = {
-                find() {
-                    return 'find-result';
+                first() {
+                    return 'first-result';
                 }
             };
             const builder = {
@@ -57,17 +57,17 @@ describe('AdvancedQuery', function () {
             };
             const whereSpy = Sinon.spy(builder, 'where');
             const createInstanceSpy = Sinon.spy(builder.handler, 'createInstance');
-            const findStub = Sinon.stub(queryExecutor, 'find');
-            findStub.returns(Promise.resolve('any'));
-            expect(await AdvancedQuery_1.AdvancedQuery.find.call(builder)).toEqual('instance');
+            const firstStub = Sinon.stub(queryExecutor, 'first');
+            firstStub.returns(Promise.resolve('any'));
+            expect(await AdvancedQuery_1.AdvancedQuery.first.call(builder)).toEqual('instance');
             expect(whereSpy.called).toBe(false);
-            expect(findStub.calledWith()).toBe(true);
+            expect(firstStub.calledWith()).toBe(true);
             expect(createInstanceSpy.calledWith('any')).toBe(true);
         });
         it('calls .where() and passes id if param exist', async function () {
             const queryExecutor = {
-                find() {
-                    return 'find-result';
+                first() {
+                    return 'first-result';
                 }
             };
             const builder = {
@@ -86,19 +86,19 @@ describe('AdvancedQuery', function () {
             };
             const whereSpy = Sinon.spy(builder, 'where');
             const createInstanceSpy = Sinon.spy(builder.handler, 'createInstance');
-            const findStub = Sinon.stub(queryExecutor, 'find');
-            findStub.returns(Promise.resolve('any'));
-            expect(await AdvancedQuery_1.AdvancedQuery.find.call(builder, 'test')).toEqual('instance');
+            const firstStub = Sinon.stub(queryExecutor, 'first');
+            firstStub.returns(Promise.resolve('any'));
+            expect(await AdvancedQuery_1.AdvancedQuery.first.call(builder, 'test')).toEqual('instance');
             expect(whereSpy.calledWith('primary-key', 'test')).toBe(true);
-            expect(findStub.calledWith()).toBe(true);
+            expect(firstStub.calledWith()).toBe(true);
             expect(createInstanceSpy.calledWith('any')).toBe(true);
         });
     });
-    describe('.first()', function () {
-        it('just an alias of .find()', async function () {
-            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'find');
+    describe('.find()', function () {
+        it('just an alias of .first()', async function () {
+            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'first');
             stub.returns('result');
-            expect(await AdvancedQuery_1.AdvancedQuery.first('any')).toEqual('result');
+            expect(await AdvancedQuery_1.AdvancedQuery.find('any')).toEqual('result');
             expect(stub.calledWith('any')).toBe(true);
             stub.restore();
         });
@@ -243,23 +243,23 @@ describe('AdvancedQuery', function () {
         });
     });
     describe('.findById()', function () {
-        it('just an alias of .find()', async function () {
-            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'find');
+        it('just an alias of .first()', async function () {
+            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'first');
             stub.returns('result');
             expect(await AdvancedQuery_1.AdvancedQuery.findById('any')).toEqual('result');
             expect(stub.calledWith('any')).toBe(true);
             stub.restore();
         });
     });
-    describe('.findOrFail()', function () {
-        it('calls this.find() and returns the result if exists', async function () {
-            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'find');
+    describe('.firstOrFail()', function () {
+        it('calls this.first() and returns the result if exists', async function () {
+            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'first');
             stub.returns('result');
-            expect(await AdvancedQuery_1.AdvancedQuery.findOrFail('any')).toEqual('result');
+            expect(await AdvancedQuery_1.AdvancedQuery.firstOrFail('any')).toEqual('result');
             expect(stub.calledWith('any')).toBe(true);
             stub.restore();
         });
-        it('calls this.find() and throws NotFoundError if there is no result', async function () {
+        it('calls this.first() and throws NotFoundError if there is no result', async function () {
             const builder = {
                 handler: {
                     getModel() {
@@ -270,10 +270,10 @@ describe('AdvancedQuery', function () {
                         };
                     }
                 },
-                find() { }
+                first() { }
             };
             try {
-                await AdvancedQuery_1.AdvancedQuery.findOrFail.call(builder, 'any');
+                await AdvancedQuery_1.AdvancedQuery.firstOrFail.call(builder, 'any');
             }
             catch (error) {
                 expect(error).toBeInstanceOf(NotFoundError_1.NotFoundError);
@@ -283,11 +283,11 @@ describe('AdvancedQuery', function () {
             expect('should not reach this line').toEqual('hm');
         });
     });
-    describe('.firstOrFail()', function () {
+    describe('.findOrFail()', function () {
         it('just an alias of .findOrFail()', async function () {
-            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'findOrFail');
+            const stub = Sinon.stub(AdvancedQuery_1.AdvancedQuery, 'firstOrFail');
             stub.returns('result');
-            expect(await AdvancedQuery_1.AdvancedQuery.firstOrFail('any')).toEqual('result');
+            expect(await AdvancedQuery_1.AdvancedQuery.findOrFail('any')).toEqual('result');
             expect(stub.calledWith('any')).toBe(true);
             stub.restore();
         });

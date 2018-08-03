@@ -5,16 +5,16 @@ import QueryBuilder = NajsEloquent.QueryBuilder.QueryBuilderInternal
 import { NotFoundError } from '../../errors/NotFoundError'
 
 export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
-  async find(this: QueryBuilder, id?: any) {
+  async first(this: QueryBuilder, id?: any) {
     if (typeof id !== 'undefined') {
       this.where(this.handler.getPrimaryKeyName(), id)
     }
-    const result = await this.handler.getQueryExecutor().find()
+    const result = await this.handler.getQueryExecutor().first()
     return result ? this.handler.createInstance(result) : result
   },
 
-  async first(this: QueryBuilder, id?: any) {
-    return this.find(id)
+  async find(this: QueryBuilder, id?: any) {
+    return this.first(id)
   },
 
   async get(this: QueryBuilder, ...fields: Array<string | string[]>): Promise<CollectJs.Collection<any>> {
@@ -40,18 +40,18 @@ export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
   },
 
   async findById(this: QueryBuilder, id: any) {
-    return this.find(id)
+    return this.first(id)
   },
 
   async findOrFail(this: QueryBuilder, id: any) {
-    const result = await this.find(id)
+    return this.firstOrFail(id)
+  },
+
+  async firstOrFail(this: QueryBuilder, id: any) {
+    const result = await this.first(id)
     if (!result) {
       throw new NotFoundError(this.handler.getModel().getModelName())
     }
     return result
-  },
-
-  async firstOrFail(this: QueryBuilder, id: any) {
-    return this.findOrFail(id)
   }
 }

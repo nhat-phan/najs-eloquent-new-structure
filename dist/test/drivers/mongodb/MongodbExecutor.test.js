@@ -187,43 +187,43 @@ describe('MongodbExecutor', function () {
     describe('.find()', function () {
         it('finds first document of collection and return an instance of Eloquent<T>', async function () {
             const handler = makeQueryBuilderHandler('users');
-            const result = await handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().first();
             expect_query_log({
                 raw: 'db.users.findOne({})',
-                action: 'find'
+                action: 'first'
             }, result);
             expect_match_user(result, dataset[0]);
         });
         it('finds first document of collection and return an instance of Eloquent<T>', async function () {
             const handler = makeQueryBuilderHandler('users');
             makeQueryBuilder(handler).orderBy('_id', 'desc');
-            const result = await handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().first();
             expect_query_log({
                 raw: 'db.users.findOne({}, {"sort":[["_id",-1]]})',
                 options: { sort: [['_id', -1]] },
-                action: 'find'
+                action: 'first'
             }, result);
             expect_match_user(result, dataset[6]);
         });
         it('returns null if no result', async function () {
             const handler = makeQueryBuilderHandler('users');
             makeQueryBuilder(handler).where('first_name', 'no-one');
-            const result = await handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().first();
             expect_query_log({
                 raw: 'db.users.findOne({"first_name":"no-one"})',
                 query: { first_name: 'no-one' },
-                action: 'find'
+                action: 'first'
             }, result);
             expect(result).toBeNull();
         });
         it('can find data by query builder, case 1', async function () {
             const handler = makeQueryBuilderHandler('users');
             makeQueryBuilder(handler).where('age', 1000);
-            const result = await handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().first();
             expect_query_log({
                 raw: 'db.users.findOne({"age":1000})',
                 query: { age: 1000 },
-                action: 'find'
+                action: 'first'
             }, result);
             expect_match_user(result, dataset[3]);
         });
@@ -232,11 +232,11 @@ describe('MongodbExecutor', function () {
             makeQueryBuilder(handler)
                 .where('age', 40)
                 .orWhere('first_name', 'jane');
-            const result = await handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().first();
             expect_query_log({
                 raw: 'db.users.findOne({"$or":[{"age":40},{"first_name":"jane"}]})',
                 query: { $or: [{ age: 40 }, { first_name: 'jane' }] },
-                action: 'find'
+                action: 'first'
             }, result);
             expect_match_user(result, dataset[1]);
         });
@@ -245,11 +245,11 @@ describe('MongodbExecutor', function () {
             makeQueryBuilder(handler)
                 .where('first_name', 'tony')
                 .where('last_name', 'stewart');
-            const result = await handler.getQueryExecutor().find();
+            const result = await handler.getQueryExecutor().first();
             expect_query_log({
                 raw: 'db.users.findOne({"first_name":"tony","last_name":"stewart"})',
                 query: { first_name: 'tony', last_name: 'stewart' },
-                action: 'find'
+                action: 'first'
             }, result);
             expect_match_user(result, dataset[5]);
         });
@@ -375,7 +375,7 @@ describe('MongodbExecutor', function () {
             expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
             handler = makeQueryBuilderHandler('users');
             makeQueryBuilder(handler).where('first_name', 'peter');
-            const updatedResult = await handler.getQueryExecutor().find();
+            const updatedResult = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult, Object.assign({}, dataset[6], { age: 19 }));
         });
         it('returns empty update result if no row matched', async function () {
@@ -401,7 +401,7 @@ describe('MongodbExecutor', function () {
             expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
             handler = makeQueryBuilderHandler('users');
             makeQueryBuilder(handler).where('first_name', 'thor');
-            const updatedResult = await handler.getQueryExecutor().find();
+            const updatedResult = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult, Object.assign({}, dataset[3], { age: 1001 }));
         });
         it('can update data by query builder, case 2: multiple documents', async function () {
@@ -441,7 +441,7 @@ describe('MongodbExecutor', function () {
             makeQueryBuilder(handler)
                 .where('first_name', 'tony')
                 .where('last_name', 'stewart');
-            const updatedResult = await handler.getQueryExecutor().find();
+            const updatedResult = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 42 }));
         });
         it('auto add updatedAt field to $set if timestamps options is on', async function () {
@@ -485,7 +485,7 @@ describe('MongodbExecutor', function () {
             makeQueryBuilder(handler)
                 .where('first_name', 'tony')
                 .where('last_name', 'stewart');
-            const updatedResult = await handler.getQueryExecutor().find();
+            const updatedResult = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 43, updated_at: now }));
             handler = makeHandler();
             makeQueryBuilder(handler)
@@ -497,7 +497,7 @@ describe('MongodbExecutor', function () {
             makeQueryBuilder(handler)
                 .where('first_name', 'tony')
                 .where('last_name', 'stewart');
-            const updatedResult2 = await handler.getQueryExecutor().find();
+            const updatedResult2 = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult2, Object.assign({}, dataset[5], { age: 44, updated_at: now }));
         });
     });

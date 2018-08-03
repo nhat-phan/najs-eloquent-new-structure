@@ -23,12 +23,12 @@ class MongodbExecutor {
             .action('get')
             .end(result);
     }
-    async find() {
+    async first() {
         const query = this.makeQuery();
         const options = this.makeQueryOptions();
         const result = await this.collection.findOne(query, options);
         return this.logRaw(query, options, 'findOne')
-            .action('find')
+            .action('first')
             .end(result);
     }
     async count() {
