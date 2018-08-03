@@ -10,10 +10,10 @@ import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
 import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
-import { ConditionQueryHandle } from '../../query-builders/shared/ConditionQueryHandle';
+import { ConditionQueryHandler } from '../../query-builders/shared/ConditionQueryHandler';
 export declare class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
     protected basicQuery: BasicQuery;
-    protected conditionQuery: ConditionQueryHandle;
+    protected conditionQuery: ConditionQueryHandler;
     protected convention: IConvention;
     constructor(model: IModel);
     getBasicQuery(): IBasicQuery;

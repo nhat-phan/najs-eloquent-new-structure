@@ -8,7 +8,7 @@ import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IConvention = NajsEloquent.QueryBuilder.IConvention
 
 import { isFunction } from 'lodash'
-import { ConditionQueryHandle } from './ConditionQueryHandle'
+import { ConditionQueryHandler } from './ConditionQueryHandler'
 
 export class QueryCondition implements IBasicConditionQuery {
   convention: IConvention
@@ -38,8 +38,8 @@ export class QueryCondition implements IBasicConditionQuery {
     return condition
   }
 
-  getConditionQueryHandle(): IConditionQuery {
-    return new ConditionQueryHandle(this, this.convention)
+  getConditionQueryHandler(): IConditionQuery {
+    return new ConditionQueryHandler(this, this.convention)
   }
 
   toObject(): Object {
@@ -91,7 +91,7 @@ export class QueryCondition implements IBasicConditionQuery {
     const query = new QueryCondition()
     query.convention = this.convention
     query.isSubQuery = true
-    arg0.call(undefined, query.getConditionQueryHandle())
+    arg0.call(undefined, query.getConditionQueryHandler())
     for (const instance of query.queries) {
       queryCondition.queries.push(instance)
     }

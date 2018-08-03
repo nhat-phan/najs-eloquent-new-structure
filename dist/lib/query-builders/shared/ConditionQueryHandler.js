@@ -3,7 +3,7 @@
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const Operator_1 = require("./Operator");
-class ConditionQueryHandle {
+class ConditionQueryHandler {
     constructor(basicConditionQuery, convention) {
         this.basicConditionQuery = basicConditionQuery;
         this.convention = convention;
@@ -89,4 +89,4 @@ class ConditionQueryHandle {
         });
     }
 }
-exports.ConditionQueryHandle = ConditionQueryHandle;
+exports.ConditionQueryHandler = ConditionQueryHandler;

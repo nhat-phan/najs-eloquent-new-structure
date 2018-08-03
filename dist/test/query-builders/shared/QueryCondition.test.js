@@ -4,7 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const QueryCondition_1 = require("../../../lib/query-builders/shared/QueryCondition");
 const DefaultConvention_1 = require("../../../lib/query-builders/shared/DefaultConvention");
-const ConditionQueryHandle_1 = require("../../../lib/query-builders/shared/ConditionQueryHandle");
+const ConditionQueryHandler_1 = require("../../../lib/query-builders/shared/ConditionQueryHandler");
 describe('QueryCondition', function () {
     const convention = new DefaultConvention_1.DefaultConvention();
     describe('constructor()', function () {
@@ -25,11 +25,11 @@ describe('QueryCondition', function () {
             spy.restore();
         });
     });
-    describe('.getConditionQueryHandle()', function () {
+    describe('.getConditionQueryHandler()', function () {
         it('creates an ConditionQueryHandle instance with it-self and the its convention', function () {
             const query = QueryCondition_1.QueryCondition.create(convention, 'and', 'a', '=', 'b');
-            const handle = query.getConditionQueryHandle();
-            expect(handle).toBeInstanceOf(ConditionQueryHandle_1.ConditionQueryHandle);
+            const handle = query.getConditionQueryHandler();
+            expect(handle).toBeInstanceOf(ConditionQueryHandler_1.ConditionQueryHandler);
             expect(handle['basicConditionQuery'] === query).toBe(true);
             expect(handle['convention'] === convention).toBe(true);
         });

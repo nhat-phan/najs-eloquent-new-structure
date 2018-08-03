@@ -6,7 +6,7 @@ import Range = NajsEloquent.QueryGrammar.Range;
 import IBasicConditionQuery = NajsEloquent.QueryGrammar.IBasicConditionQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
-export declare class ConditionQueryHandle implements IConditionQuery {
+export declare class ConditionQueryHandler implements IConditionQuery {
     protected basicConditionQuery: IBasicConditionQuery;
     protected convention: IConvention;
     constructor(basicConditionQuery: IBasicConditionQuery, convention: IConvention);

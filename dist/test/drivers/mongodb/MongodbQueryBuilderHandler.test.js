@@ -6,7 +6,7 @@ const QueryBuilderHandlerBase_1 = require("../../../lib/query-builders/QueryBuil
 const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderHandler");
 const BasicQuery_1 = require("../../../lib/query-builders/shared/BasicQuery");
 const MongodbExecutor_1 = require("../../../lib/drivers/mongodb/MongodbExecutor");
-const ConditionQueryHandle_1 = require("../../../lib/query-builders/shared/ConditionQueryHandle");
+const ConditionQueryHandler_1 = require("../../../lib/query-builders/shared/ConditionQueryHandler");
 const MongodbConvention_1 = require("../../../lib/query-builders/shared/MongodbConvention");
 describe('MongodbQueryBuilderHandler', function () {
     it('extends QueryBuilderHandlerBase', function () {
@@ -31,7 +31,7 @@ describe('MongodbQueryBuilderHandler', function () {
         it('makes 3 instances, 3. conditionQuery = ConditionQueryHandle which wrap "basicQuery"', function () {
             const model = {};
             const handler = new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model);
-            expect(handler.getConditionQuery()).toBeInstanceOf(ConditionQueryHandle_1.ConditionQueryHandle);
+            expect(handler.getConditionQuery()).toBeInstanceOf(ConditionQueryHandler_1.ConditionQueryHandler);
             expect(handler.getConditionQuery()['basicConditionQuery'] === handler.getBasicQuery()).toBe(true);
         });
     });

@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { QueryCondition } from '../../../lib/query-builders/shared/QueryCondition'
 import { DefaultConvention } from '../../../lib/query-builders/shared/DefaultConvention'
-import { ConditionQueryHandle } from '../../../lib/query-builders/shared/ConditionQueryHandle'
+import { ConditionQueryHandler } from '../../../lib/query-builders/shared/ConditionQueryHandler'
 
 describe('QueryCondition', function() {
   const convention = new DefaultConvention()
@@ -27,11 +27,11 @@ describe('QueryCondition', function() {
     })
   })
 
-  describe('.getConditionQueryHandle()', function() {
+  describe('.getConditionQueryHandler()', function() {
     it('creates an ConditionQueryHandle instance with it-self and the its convention', function() {
       const query = QueryCondition.create(convention, 'and', 'a', '=', 'b')
-      const handle = query.getConditionQueryHandle()
-      expect(handle).toBeInstanceOf(ConditionQueryHandle)
+      const handle = query.getConditionQueryHandler()
+      expect(handle).toBeInstanceOf(ConditionQueryHandler)
       expect(handle['basicConditionQuery'] === query).toBe(true)
       expect(handle['convention'] === convention).toBe(true)
     })

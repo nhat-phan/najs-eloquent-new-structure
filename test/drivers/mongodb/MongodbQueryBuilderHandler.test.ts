@@ -4,7 +4,7 @@ import { QueryBuilderHandlerBase } from '../../../lib/query-builders/QueryBuilde
 import { MongodbQueryBuilderHandler } from '../../../lib/drivers/mongodb/MongodbQueryBuilderHandler'
 import { BasicQuery } from '../../../lib/query-builders/shared/BasicQuery'
 import { MongodbExecutor } from '../../../lib/drivers/mongodb/MongodbExecutor'
-import { ConditionQueryHandle } from '../../../lib/query-builders/shared/ConditionQueryHandle'
+import { ConditionQueryHandler } from '../../../lib/query-builders/shared/ConditionQueryHandler'
 import { MongodbConvention } from '../../../lib/query-builders/shared/MongodbConvention'
 
 describe('MongodbQueryBuilderHandler', function() {
@@ -34,7 +34,7 @@ describe('MongodbQueryBuilderHandler', function() {
     it('makes 3 instances, 3. conditionQuery = ConditionQueryHandle which wrap "basicQuery"', function() {
       const model: any = {}
       const handler = new MongodbQueryBuilderHandler(model)
-      expect(handler.getConditionQuery()).toBeInstanceOf(ConditionQueryHandle)
+      expect(handler.getConditionQuery()).toBeInstanceOf(ConditionQueryHandler)
       expect(handler.getConditionQuery()['basicConditionQuery'] === handler.getBasicQuery()).toBe(true)
     })
   })

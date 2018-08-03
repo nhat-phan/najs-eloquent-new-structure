@@ -12,20 +12,20 @@ import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
-import { ConditionQueryHandle } from '../../query-builders/shared/ConditionQueryHandle'
+import { ConditionQueryHandler } from '../../query-builders/shared/ConditionQueryHandler'
 import { MongodbExecutor } from './MongodbExecutor'
 import { MongodbQueryLog } from './MongodbQueryLog'
 
 export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected basicQuery: BasicQuery
-  protected conditionQuery: ConditionQueryHandle
+  protected conditionQuery: ConditionQueryHandler
   protected convention: IConvention
 
   constructor(model: IModel) {
     super(model)
     this.convention = new MongodbConvention()
     this.basicQuery = new BasicQuery(this.convention)
-    this.conditionQuery = new ConditionQueryHandle(this.basicQuery, this.convention)
+    this.conditionQuery = new ConditionQueryHandler(this.basicQuery, this.convention)
   }
 
   getBasicQuery(): IBasicQuery {

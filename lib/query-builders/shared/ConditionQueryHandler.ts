@@ -10,7 +10,7 @@ import IConvention = NajsEloquent.QueryBuilder.IConvention
 
 import { Operator } from './Operator'
 
-export class ConditionQueryHandle implements IConditionQuery {
+export class ConditionQueryHandler implements IConditionQuery {
   protected basicConditionQuery: IBasicConditionQuery
   protected convention: IConvention
 

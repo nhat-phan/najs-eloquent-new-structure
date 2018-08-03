@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const QueryBuilderHandlerBase_1 = require("../../query-builders/QueryBuilderHandlerBase");
 const BasicQuery_1 = require("../../query-builders/shared/BasicQuery");
 const MongodbConvention_1 = require("../../query-builders/shared/MongodbConvention");
-const ConditionQueryHandle_1 = require("../../query-builders/shared/ConditionQueryHandle");
+const ConditionQueryHandler_1 = require("../../query-builders/shared/ConditionQueryHandler");
 const MongodbExecutor_1 = require("./MongodbExecutor");
 const MongodbQueryLog_1 = require("./MongodbQueryLog");
 class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderHandlerBase {
@@ -16,7 +16,7 @@ class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderH
         super(model);
         this.convention = new MongodbConvention_1.MongodbConvention();
         this.basicQuery = new BasicQuery_1.BasicQuery(this.convention);
-        this.conditionQuery = new ConditionQueryHandle_1.ConditionQueryHandle(this.basicQuery, this.convention);
+        this.conditionQuery = new ConditionQueryHandler_1.ConditionQueryHandler(this.basicQuery, this.convention);
     }
     getBasicQuery() {
         return this.basicQuery;

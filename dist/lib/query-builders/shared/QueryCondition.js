@@ -3,7 +3,7 @@
 /// <reference path="../../definitions/query-grammars/IConditionQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
-const ConditionQueryHandle_1 = require("./ConditionQueryHandle");
+const ConditionQueryHandler_1 = require("./ConditionQueryHandler");
 class QueryCondition {
     constructor() {
         this.isSubQuery = false;
@@ -15,8 +15,8 @@ class QueryCondition {
         condition.buildQuery(bool, arg0, arg1, arg2);
         return condition;
     }
-    getConditionQueryHandle() {
-        return new ConditionQueryHandle_1.ConditionQueryHandle(this, this.convention);
+    getConditionQueryHandler() {
+        return new ConditionQueryHandler_1.ConditionQueryHandler(this, this.convention);
     }
     toObject() {
         const result = {
@@ -66,7 +66,7 @@ class QueryCondition {
         const query = new QueryCondition();
         query.convention = this.convention;
         query.isSubQuery = true;
-        arg0.call(undefined, query.getConditionQueryHandle());
+        arg0.call(undefined, query.getConditionQueryHandler());
         for (const instance of query.queries) {
             queryCondition.queries.push(instance);
         }
