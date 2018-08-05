@@ -184,7 +184,7 @@ describe('MongodbExecutor', function () {
             expect_match_user(result[2], dataset[2]);
         });
     });
-    describe('.find()', function () {
+    describe('.first()', function () {
         it('finds first document of collection and return an instance of Eloquent<T>', async function () {
             const handler = makeQueryBuilderHandler('users');
             const result = await handler.getQueryExecutor().first();
@@ -502,70 +502,77 @@ describe('MongodbExecutor', function () {
         });
     });
     describe('.delete()', function () {
-        // TODO: write test for delete
-        it('should be implemented', function () {
+        it('can delete data of collection, returns delete result of mongodb', async function () {
             const handler = makeQueryBuilderHandler('users');
-            handler.getQueryExecutor().delete();
+            makeQueryBuilder(handler).where('first_name', 'peter');
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: 'db.users.deleteMany({"first_name":"peter"})',
+                query: { first_name: 'peter' },
+                action: 'delete'
+            }, result);
+            expect(result).toEqual({ n: 1, ok: 1 });
+            const count = await makeQueryBuilderHandler('users')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(6);
         });
-        // it('can delete data of collection, returns delete result of mongodb', async function() {
-        //   const handler = makeQueryBuilderHandler('users')
-        //   makeQueryBuilder(handler).where('first_name', 'peter')
-        //   const result = await handler.getQueryExecutor().delete()
-        //   expect_query_log({ raw: 'db.users.deleteMany({"first_name":"peter"})' }, result)
-        //   expect(result).toEqual({ n: 1, ok: 1 })
-        //   const count = await makeQueryBuilderHandler('users')
-        //     .getQueryExecutor()
-        //     .count()
-        //   expect(count).toEqual(6)
-        // })
-        // it('can delete data by query builder, case 1', async function() {
-        //   const handler = makeQueryBuilderHandler('users')
-        //   makeQueryBuilder(handler).where('age', 1001)
-        //   const result = await handler.getQueryExecutor().delete()
-        //   expect_query_log(
-        //     {
-        //       raw: 'db.users.deleteMany({"age":1001})'
-        //     },
-        //     result
-        //   )
-        //   expect(result).toEqual({ n: 1, ok: 1 })
-        //   const count = await makeQueryBuilderHandler('users')
-        //     .getQueryExecutor()
-        //     .count()
-        //   expect(count).toEqual(5)
-        // })
-        // it('can delete data by query builder, case 2: multiple documents', async function() {
-        //   const query = new MongodbQueryBuilder('User', collectionUsers)
-        //   const result = await query
-        //     .where('first_name', 'tony')
-        //     .orWhere('first_name', 'jane')
-        //     .delete()
-        //   expect_query_log('raw', 'db.users.deleteMany({"$or":[{"first_name":"tony"},{"first_name":"jane"}]})')
-        //   expect(result).toEqual({ n: 3, ok: 1 })
-        //   const count = await new MongodbQueryBuilder('User', collectionUsers).count()
-        //   expect(count).toEqual(2)
-        // })
-        // it('can delete data by query builder, case 3', async function() {
-        //   const query = new MongodbQueryBuilder('User', collectionUsers)
-        //   const result = await query
-        //     .where('first_name', 'john')
-        //     .where('last_name', 'doe')
-        //     .delete()
-        //   expect_query_log('raw', 'db.users.deleteMany({"first_name":"john","last_name":"doe"})')
-        //   expect(result).toEqual({ n: 1, ok: 1 })
-        //   const count = await new MongodbQueryBuilder('User', collectionUsers).count()
-        //   expect(count).toEqual(1)
-        // })
-        // it('can not call delete without using any .where() statement', async function() {
-        //   const query = new MongodbQueryBuilder('User', collectionUsers)
-        //   const result = await query.delete()
-        //   expect(result).toEqual({ n: 0, ok: 1 })
-        // })
-        // it('can not call delete if query is empty', async function() {
-        //   const query = new MongodbQueryBuilder('User', collectionUsers)
-        //   const result = await query.select('any').delete()
-        //   expect(result).toEqual({ n: 0, ok: 1 })
-        // })
+        it('can delete data by query builder, case 1', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).where('age', 1001);
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: 'db.users.deleteMany({"age":1001})',
+                query: { age: 1001 },
+                action: 'delete'
+            }, result);
+            expect(result).toEqual({ n: 1, ok: 1 });
+            const count = await makeQueryBuilderHandler('users')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(5);
+        });
+        it('can delete data by query builder, case 2: multiple documents', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .orWhere('first_name', 'jane');
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: 'db.users.deleteMany({"$or":[{"first_name":"tony"},{"first_name":"jane"}]})',
+                query: { $or: [{ first_name: 'tony' }, { first_name: 'jane' }] },
+                action: 'delete'
+            }, result);
+            expect(result).toEqual({ n: 3, ok: 1 });
+            const count = await makeQueryBuilderHandler('users')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(2);
+        });
+        it('can delete data by query builder, case 3', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'john')
+                .where('last_name', 'doe');
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({ raw: 'db.users.deleteMany({"first_name":"john","last_name":"doe"})' }, result);
+            expect(result).toEqual({ n: 1, ok: 1 });
+            const count = await makeQueryBuilderHandler('users')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(1);
+        });
+        it('can not call delete without using any .where() statement', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            const result = await handler.getQueryExecutor().delete();
+            expect(result).toEqual({ n: 0, ok: 1 });
+        });
+        it('can not call delete if query is empty', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler).select('any');
+            const result = await handler.getQueryExecutor().delete();
+            expect(result).toEqual({ n: 0, ok: 1 });
+        });
         // it('can delete by native() function', async function() {
         //   const query = new MongodbQueryBuilder('User', collectionUsers)
         //   const result = await query

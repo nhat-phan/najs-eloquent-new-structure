@@ -83,20 +83,20 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   }
 
   async delete(): Promise<any> {
-    // if (!this.queryHandler.isUsed()) {
-    //   return Promise.resolve({ n: 0, ok: 1 })
-    // }
-    // const query = this.makeQuery()
-    // if (isEmpty(query)) {
-    //   return Promise.resolve({ n: 0, ok: 1 })
-    // }
-    // const result = await this.collection.deleteMany(query).then(function(response) {
-    //   return response.result
-    // })
-    // return this.logger
-    //   .raw('db.', this.collection.collectionName, '.deleteMany(', query, ')')
-    //   .action('delete')
-    //   .end(result)
+    if (!this.queryHandler.isUsed()) {
+      return Promise.resolve({ n: 0, ok: 1 })
+    }
+    const query = this.makeQuery()
+    if (isEmpty(query)) {
+      return Promise.resolve({ n: 0, ok: 1 })
+    }
+    const result = await this.collection.deleteMany(query).then(function(response) {
+      return response.result
+    })
+    return this.logger
+      .raw('db.', this.collection.collectionName, '.deleteMany(', query, ')')
+      .action('delete')
+      .end(result)
   }
 
   async restore(): Promise<any> {}
