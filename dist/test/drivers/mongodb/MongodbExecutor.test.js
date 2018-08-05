@@ -586,10 +586,82 @@ describe('MongodbExecutor', function () {
         // })
     });
     describe('.restore()', function () {
-        // TODO: write test for restore
-        it('should be implemented', function () {
+        it('does nothing if Model do not support SoftDeletes', async function () {
             const handler = makeQueryBuilderHandler('users');
-            handler.getQueryExecutor().restore();
+            makeQueryBuilder(handler).where('first_name', 'peter');
+            const result = await handler.getQueryExecutor().restore();
+            expect(QueryLogFacade_1.QueryLog.pull()).toHaveLength(0);
+            expect(result).toEqual({ n: 0, nModified: 0, ok: 1 });
+        });
+        function makeHandler() {
+            return new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler({
+                getDriver() {
+                    return {
+                        getSoftDeletesFeature() {
+                            return {
+                                hasSoftDeletes() {
+                                    return true;
+                                },
+                                getSoftDeletesSetting() {
+                                    return { deletedAt: 'deleted_at' };
+                                }
+                            };
+                        },
+                        getTimestampsFeature() {
+                            return {
+                                hasTimestamps() {
+                                    return false;
+                                }
+                            };
+                        }
+                    };
+                },
+                getRecordName() {
+                    return 'roles';
+                }
+            });
+        }
+        it('can not call restore if query is empty', async function () {
+            const handler = makeHandler();
+            makeQueryBuilder(handler).withTrashed();
+            const result = await handler.getQueryExecutor().restore();
+            expect(QueryLogFacade_1.QueryLog.pull()).toHaveLength(0);
+            expect(result).toEqual({ n: 0, nModified: 0, ok: 1 });
+        });
+        it('can restore data by query builder, case 1', async function () {
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .onlyTrashed()
+                .where('name', 'role-0');
+            const result = await handler.getQueryExecutor().restore();
+            expect_query_log({
+                raw: 'db.roles.updateMany({"deleted_at":{"$ne":null},"name":"role-0"}, {"$set":{"deleted_at":null}})',
+                // tslint:disable-next-line
+                query: { deleted_at: { $ne: null }, name: 'role-0' },
+                action: 'restore'
+            }, result);
+            expect(result).toEqual({ n: 1, nModified: 1, ok: 1 });
+            handler = makeHandler();
+            const count = await handler.getQueryExecutor().count();
+            expect(count).toEqual(1);
+        });
+        it('can restore data by query builder, case 2: multiple documents', async function () {
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .withTrashed()
+                .where('name', 'role-1')
+                .orWhere('name', 'role-2')
+                .orWhere('name', 'role-3');
+            const result = await handler.getQueryExecutor().restore();
+            expect_query_log({
+                raw: 'db.roles.updateMany({"$or":[{"name":"role-1"},{"name":"role-2"},{"name":"role-3"}]}, {"$set":{"deleted_at":null}})',
+                query: { $or: [{ name: 'role-1' }, { name: 'role-2' }, { name: 'role-3' }] },
+                action: 'restore'
+            }, result);
+            expect(result).toEqual({ n: 3, nModified: 3, ok: 1 });
+            handler = makeHandler();
+            const count = await handler.getQueryExecutor().count();
+            expect(count).toEqual(4);
         });
     });
     describe('.execute()', function () {

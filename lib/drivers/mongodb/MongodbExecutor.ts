@@ -77,29 +77,53 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
       return response.result
     })
     return this.logger
-      .raw('db.', this.collection.collectionName, '.updateMany(', query, ', ', data, ')')
+      .raw('db.', this.collectionName, '.updateMany(', query, ', ', data, ')')
       .action('update')
       .end(result)
   }
 
   async delete(): Promise<any> {
     if (!this.queryHandler.isUsed()) {
-      return Promise.resolve({ n: 0, ok: 1 })
+      return { n: 0, ok: 1 }
     }
+
     const query = this.makeQuery()
     if (isEmpty(query)) {
-      return Promise.resolve({ n: 0, ok: 1 })
+      return { n: 0, ok: 1 }
     }
+
     const result = await this.collection.deleteMany(query).then(function(response) {
       return response.result
     })
     return this.logger
-      .raw('db.', this.collection.collectionName, '.deleteMany(', query, ')')
+      .raw('db.', this.collectionName, '.deleteMany(', query, ')')
       .action('delete')
       .end(result)
   }
 
-  async restore(): Promise<any> {}
+  async restore(): Promise<any> {
+    if (!this.queryHandler.hasSoftDeletes()) {
+      return { n: 0, nModified: 0, ok: 1 }
+    }
+
+    const query = this.makeQuery()
+    if (isEmpty(query)) {
+      return { n: 0, nModified: 0, ok: 1 }
+    }
+
+    const fieldName = this.queryHandler.getSoftDeletesSetting().deletedAt
+    const data = {
+      $set: { [fieldName]: this.queryHandler.getQueryConvention().getNullValueFor(fieldName) }
+    }
+
+    const result = await this.collection.updateMany(query, data).then(function(response) {
+      return response.result
+    })
+    return this.logger
+      .raw('db.', this.collectionName, '.updateMany(', query, ', ', data, ')')
+      .action('restore')
+      .end(result)
+  }
 
   async execute(): Promise<any> {}
 
