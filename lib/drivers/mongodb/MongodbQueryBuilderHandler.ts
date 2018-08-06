@@ -5,7 +5,6 @@
 /// <reference path="../../definitions/query-builders/IExecutor.ts" />
 
 import IModel = NajsEloquent.Model.IModel
-import IExecutor = NajsEloquent.QueryBuilder.IExecutor
 import IConvention = NajsEloquent.QueryBuilder.IConvention
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
@@ -40,7 +39,7 @@ export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
     return this.convention
   }
 
-  getQueryExecutor(): IExecutor {
+  getQueryExecutor(): MongodbExecutor {
     return new MongodbExecutor(this, this.basicQuery, new MongodbQueryLog())
   }
 }

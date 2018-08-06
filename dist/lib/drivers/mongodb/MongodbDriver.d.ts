@@ -8,6 +8,7 @@ import { MongodbQueryBuilder } from './MongodbQueryBuilder';
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler';
 export declare class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
     protected recordManager: NajsEloquent.Feature.IRecordManager<T>;
+    static Name: string;
     constructor();
     getClassName(): string;
     getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;

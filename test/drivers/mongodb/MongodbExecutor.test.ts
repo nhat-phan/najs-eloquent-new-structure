@@ -854,11 +854,40 @@ describe('MongodbExecutor', function() {
     })
   })
 
+  describe('.native()', function() {
+    it('passes instance of collection, conditions, and options to handler', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      makeQueryBuilder(handler)
+        .where('a', 1)
+        .limit(10)
+
+      const executor = handler.getQueryExecutor() as MongodbExecutor
+
+      const result = executor.native(async function(passed, conditions, options) {
+        expect(conditions).toEqual({ a: 1 })
+        expect(options).toEqual({ limit: 10 })
+        expect(passed === executor['collection']).toBe(true)
+        return { result: 'anything' }
+      })
+      expect(result === executor).toBe(true)
+    })
+  })
+
   describe('.execute()', function() {
     // TODO: write test for execute
     it('should be implemented', function() {
       const handler = makeQueryBuilderHandler('users')
       handler.getQueryExecutor().execute()
+    })
+  })
+
+  describe('.getCollection()', function() {
+    it('simply returns an collection property', function() {
+      const handler = makeQueryBuilderHandler('users')
+      const executor = handler.getQueryExecutor() as MongodbExecutor
+      const collection = {}
+      executor['collection'] = collection as any
+      expect(executor.getCollection() === collection).toBe(true)
     })
   })
 

@@ -1,5 +1,4 @@
 "use strict";
-/// <reference path="../contracts/DriverProvider.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_facade_1 = require("najs-facade");
 const najs_binding_1 = require("najs-binding");
@@ -32,6 +31,15 @@ class DriverProvider extends najs_facade_1.Facade {
             // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
         }
         return this.driverInstances[driverClass];
+    }
+    has(driver) {
+        for (const name in this.drivers) {
+            const item = this.drivers[name];
+            if (item.driverClassName === najs_binding_1.getClassName(driver)) {
+                return true;
+            }
+        }
+        return false;
     }
     create(model, isGuarded = true) {
         return this.createDriver(model, this.findDriverClassName(model), isGuarded);

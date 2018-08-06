@@ -1,10 +1,10 @@
 /// <reference path="../contracts/DriverProvider.ts" />
-
+import Driver = Najs.Contracts.Eloquent.Driver
 import { Facade } from 'najs-facade'
 import { register, make, getClassName } from 'najs-binding'
 import { NajsEloquent } from '../constants'
 
-export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.DriverProvider {
+export class DriverProvider extends Facade implements DriverProvider {
   static className: string = NajsEloquent.Provider.DriverProvider
 
   protected drivers: {
@@ -39,15 +39,25 @@ export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.Dr
     return first
   }
 
-  protected createDriver<T>(model: Object, driverClass: string, isGuarded: boolean): Najs.Contracts.Eloquent.Driver<T> {
+  protected createDriver<T>(model: Object, driverClass: string, isGuarded: boolean): Driver<T> {
     if (typeof this.driverInstances[driverClass] === 'undefined') {
-      this.driverInstances[driverClass] = make<Najs.Contracts.Eloquent.Driver<T>>(driverClass, [model, isGuarded])
+      this.driverInstances[driverClass] = make<Driver<T>>(driverClass, [model, isGuarded])
       // driver.createStaticMethods(<any>Object.getPrototypeOf(model).constructor)
     }
     return this.driverInstances[driverClass]
   }
 
-  create<T extends Object = {}>(model: Object, isGuarded: boolean = true): Najs.Contracts.Eloquent.Driver<T> {
+  has(driver: Function): boolean {
+    for (const name in this.drivers) {
+      const item = this.drivers[name]
+      if (item.driverClassName === getClassName(driver)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  create<T extends Object = {}>(model: Object, isGuarded: boolean = true): Driver<T> {
     return this.createDriver(model, this.findDriverClassName(model), isGuarded)
   }
 

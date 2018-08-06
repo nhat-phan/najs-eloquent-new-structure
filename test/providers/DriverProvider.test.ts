@@ -155,6 +155,23 @@ describe('DriverProvider', function() {
     })
   })
 
+  describe('.has()', function() {
+    it('returns false if the driver is not register under any name', function() {
+      class AnyDriver {
+        static className = 'AnyDriver'
+      }
+      expect(EloquentDriverProvider.has(AnyDriver)).toBe(false)
+    })
+
+    it('returns true if the given driver is registered under any name', function() {
+      class RegisteredDriver {
+        static className = 'RegisteredDriver'
+      }
+      EloquentDriverProvider.register(RegisteredDriver, 'any')
+      expect(EloquentDriverProvider.has(RegisteredDriver)).toBe(true)
+    })
+  })
+
   describe('.create()', function() {
     it('creates a driver instance with class name provided by .findDriverClassName()', function() {
       const createDriverSpy = Sinon.spy(EloquentDriverProvider, <any>'createDriver')

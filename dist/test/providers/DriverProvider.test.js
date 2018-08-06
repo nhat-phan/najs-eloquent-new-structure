@@ -129,6 +129,21 @@ describe('DriverProvider', function () {
             expect(EloquentDriverProviderFacade_1.EloquentDriverProvider['binding']).toEqual({ model: 'driver-override' });
         });
     });
+    describe('.has()', function () {
+        it('returns false if the driver is not register under any name', function () {
+            class AnyDriver {
+            }
+            AnyDriver.className = 'AnyDriver';
+            expect(EloquentDriverProviderFacade_1.EloquentDriverProvider.has(AnyDriver)).toBe(false);
+        });
+        it('returns true if the given driver is registered under any name', function () {
+            class RegisteredDriver {
+            }
+            RegisteredDriver.className = 'RegisteredDriver';
+            EloquentDriverProviderFacade_1.EloquentDriverProvider.register(RegisteredDriver, 'any');
+            expect(EloquentDriverProviderFacade_1.EloquentDriverProvider.has(RegisteredDriver)).toBe(true);
+        });
+    });
     describe('.create()', function () {
         it('creates a driver instance with class name provided by .findDriverClassName()', function () {
             const createDriverSpy = Sinon.spy(EloquentDriverProviderFacade_1.EloquentDriverProvider, 'createDriver');

@@ -15,6 +15,7 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
   protected queryHandler: MongodbQueryBuilderHandler
   protected collection: Collection
   protected collectionName: string
+  protected nativeHandlePromise: any
 
   constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog) {
     this.queryHandler = queryHandler
@@ -125,7 +126,20 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
       .end(result)
   }
 
+  native(
+    handler: (collection: Collection, conditions: object, options?: object) => Promise<any>
+  ): { execute(): Promise<any> } {
+    const query = this.makeQuery()
+    const options = this.makeQueryOptions()
+    this.nativeHandlePromise = handler(this.collection, query, options)
+    return this
+  }
+
   async execute(): Promise<any> {}
+
+  getCollection() {
+    return this.collection
+  }
 
   logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog {
     return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')')

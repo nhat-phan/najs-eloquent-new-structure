@@ -97,7 +97,16 @@ class MongodbExecutor {
             .action('restore')
             .end(result);
     }
+    native(handler) {
+        const query = this.makeQuery();
+        const options = this.makeQueryOptions();
+        this.nativeHandlePromise = handler(this.collection, query, options);
+        return this;
+    }
     async execute() { }
+    getCollection() {
+        return this.collection;
+    }
     logRaw(query, options, func) {
         return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')');
     }

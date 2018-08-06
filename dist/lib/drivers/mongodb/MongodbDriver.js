@@ -24,5 +24,6 @@ class MongodbDriver extends DriverBase_1.DriverBase {
         return new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model));
     }
 }
+MongodbDriver.Name = 'mongodb';
 exports.MongodbDriver = MongodbDriver;
 najs_binding_1.register(MongodbDriver, constants_1.NajsEloquent.Driver.MongodbDriver);
