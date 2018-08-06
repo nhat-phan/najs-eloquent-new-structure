@@ -103,7 +103,15 @@ class MongodbExecutor {
         this.nativeHandlePromise = handler(this.collection, query, options);
         return this;
     }
-    async execute() { }
+    async execute() {
+        if (this.nativeHandlePromise) {
+            return this.nativeHandlePromise.then((response) => {
+                this.nativeHandlePromise = undefined;
+                return response.result || response;
+            });
+        }
+        return this.get();
+    }
     getCollection() {
         return this.collection;
     }

@@ -1,4 +1,5 @@
 import 'jest'
+import * as Sinon from 'sinon'
 import { init_mongodb, delete_collection_use_mongodb } from '../../util'
 import { MongodbProviderFacade } from '../../../lib/facades/global/MongodbProviderFacade'
 import { QueryLog } from '../../../lib/facades/global/QueryLogFacade'
@@ -327,43 +328,44 @@ describe('MongodbExecutor', function() {
       expect_match_user(result, dataset[5])
     })
 
-    // it('can find data by .native() before using query functions of query builder', async function() {
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .native(function(collection) {
-    //       return collection.findOne({
-    //         first_name: 'tony'
-    //       })
-    //     })
-    //     .execute()
-    //   expect_match_user(result, dataset[2])
-    // })
+    it('can find data by .native() before using query functions of query builder', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      const result = await makeQueryBuilder(handler)
+        .native(function(collection) {
+          return collection.findOne({
+            first_name: 'tony'
+          })
+        })
+        .execute()
 
-    // it('can find data by native() after using query functions of query builder', async function() {
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .where('age', 40)
-    //     .orWhere('age', 1000)
-    //     .native(function(collection, conditions) {
-    //       return collection.findOne(conditions, { sort: [['last_name', -1]] })
-    //     })
-    //     .execute()
-    //   expect_match_user(result, dataset[5])
-    // })
+      expect_match_user(result, dataset[2])
+    })
 
-    // it('can find data by native() and modified after using query functions of query builder', async function() {
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .where('age', 40)
-    //     .orWhere('age', 1000)
-    //     .native(function(collection) {
-    //       return collection.findOne({
-    //         first_name: 'thor'
-    //       })
-    //     })
-    //     .execute()
-    //   expect_match_user(result, dataset[3])
-    // })
+    it('can find data by native() after using query functions of query builder', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      const result = await makeQueryBuilder(handler)
+        .where('age', 40)
+        .orWhere('age', 1000)
+        .native(function(collection, conditions) {
+          return collection.findOne(conditions, { sort: [['last_name', -1]] })
+        })
+        .execute()
+      expect_match_user(result, dataset[5])
+    })
+
+    it('can find data by native() and modified after using query functions of query builder', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      const result = await await makeQueryBuilder(handler)
+        .where('age', 40)
+        .orWhere('age', 1000)
+        .native(function(collection) {
+          return collection.findOne({
+            first_name: 'thor'
+          })
+        })
+        .execute()
+      expect_match_user(result, dataset[3])
+    })
   })
 
   describe('.count()', function() {
@@ -742,17 +744,21 @@ describe('MongodbExecutor', function() {
       expect(result).toEqual({ n: 0, ok: 1 })
     })
 
-    // it('can delete by native() function', async function() {
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .native(function(collection) {
-    //       return collection.remove({})
-    //     })
-    //     .execute()
-    //   expect(result).toEqual({ n: 1, ok: 1 })
-    //   const count = await new MongodbQueryBuilder('User', collectionUsers).count()
-    //   expect(count).toEqual(0)
-    // })
+    it('can delete by native() function', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      const result = await makeQueryBuilder(handler)
+        .native(function(collection) {
+          return collection.remove({})
+        })
+        .execute()
+
+      expect(result).toEqual({ n: 1, ok: 1 })
+
+      const count = await makeQueryBuilderHandler('users')
+        .getQueryExecutor()
+        .count()
+      expect(count).toEqual(0)
+    })
   })
 
   describe('.restore()', function() {
@@ -874,10 +880,28 @@ describe('MongodbExecutor', function() {
   })
 
   describe('.execute()', function() {
-    // TODO: write test for execute
-    it('should be implemented', function() {
+    it('calls .get() if there is no result from .native()', async function() {
       const handler = makeQueryBuilderHandler('users')
-      handler.getQueryExecutor().execute()
+      const executor = handler.getQueryExecutor()
+      const getStub = Sinon.stub(executor, 'get')
+      getStub.returns(Promise.resolve('anything'))
+
+      makeQueryBuilder(handler).where('test', 'true')
+      expect(await executor.execute()).toEqual('anything')
+      expect(getStub.calledWith()).toBe(true)
+    })
+
+    it('resolve promise "nativeHandlePromise" and return response or response.result', async function() {
+      const handler = makeQueryBuilderHandler('users')
+      const executor = handler.getQueryExecutor()
+
+      executor['nativeHandlePromise'] = Promise.resolve('anything')
+      expect(await executor.execute()).toEqual('anything')
+      expect(executor['nativeHandlePromise']).toBeUndefined()
+
+      executor['nativeHandlePromise'] = Promise.resolve({ result: 'anything' })
+      expect(await executor.execute()).toEqual('anything')
+      expect(executor['nativeHandlePromise']).toBeUndefined()
     })
   })
 

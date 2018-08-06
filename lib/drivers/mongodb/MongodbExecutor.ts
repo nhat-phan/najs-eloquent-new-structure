@@ -135,7 +135,15 @@ export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
     return this
   }
 
-  async execute(): Promise<any> {}
+  async execute(): Promise<any> {
+    if (this.nativeHandlePromise) {
+      return this.nativeHandlePromise.then((response: any) => {
+        this.nativeHandlePromise = undefined
+        return response.result || response
+      })
+    }
+    return this.get()
+  }
 
   getCollection() {
     return this.collection
