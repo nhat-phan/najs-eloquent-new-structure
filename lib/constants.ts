@@ -6,9 +6,9 @@ export const NajsEloquent = {
     MongodbDriver: 'NajsEloquent.Driver.MongodbDriver'
   },
   Feature: {
+    RecordManager: 'NajsEloquent.Feature.RecordManager',
     SettingFeature: 'NajsEloquent.Feature.SettingFeature',
     EventFeature: 'NajsEloquent.Feature.EventFeature',
-    RecordManager: 'NajsEloquent.Feature.RecordManager',
     FillableFeature: 'NajsEloquent.Feature.FillableFeature',
     SerializationFeature: 'NajsEloquent.Feature.SerializationFeature',
     TimestampsFeature: 'NajsEloquent.Feature.TimestampsFeature',
@@ -23,6 +23,9 @@ export const NajsEloquent = {
   },
   QueryLog: {
     FlipFlopQueryLog: 'NajsEloquent.QueryLog.FlipFlopQueryLog'
+  },
+  Relation: {
+    RelationDataBucket: 'NajsEloquent.Feature.RelationDataBucket'
   }
 }
 

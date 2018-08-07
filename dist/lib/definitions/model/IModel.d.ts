@@ -5,6 +5,7 @@
 /// <reference path="IModelSerialization.d.ts" />
 /// <reference path="IModelTimestamps.d.ts" />
 /// <reference path="IModelSoftDeletes.d.ts" />
+/// <reference path="../relations/IRelationDataBucket.d.ts" />
 declare namespace NajsEloquent.Model {
     type ModelDefinition = string | {
         new (): IModel;
@@ -29,6 +30,10 @@ declare namespace NajsEloquent.Model {
     }
     interface IModel extends IModelRecord, IModelEvent, IModelFillable, IModelSerialization, IModelTimestamps, IModelSoftDeletes {
         /**
+         * Primary key of the model
+         */
+        id?: any;
+        /**
          * Get driver which is used by the model.
          */
         getDriver<T>(): Najs.Contracts.Eloquent.Driver<T>;
@@ -47,6 +52,7 @@ declare namespace NajsEloquent.Model {
     }
     type ModelInternal<T = any> = IModel & {
         driver: Najs.Contracts.Eloquent.Driver<T>;
+        relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<T>;
         attributes: T;
     };
 }

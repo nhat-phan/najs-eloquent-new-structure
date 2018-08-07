@@ -4,9 +4,9 @@ export declare const NajsEloquent: {
         MongodbDriver: string;
     };
     Feature: {
+        RecordManager: string;
         SettingFeature: string;
         EventFeature: string;
-        RecordManager: string;
         FillableFeature: string;
         SerializationFeature: string;
         TimestampsFeature: string;
@@ -21,6 +21,9 @@ export declare const NajsEloquent: {
     };
     QueryLog: {
         FlipFlopQueryLog: string;
+    };
+    Relation: {
+        RelationDataBucket: string;
     };
 };
 export declare const QueryFunctions: {

@@ -8,6 +8,7 @@
 /// <reference path="../definitions/query-grammars/IBasicQuery.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const factory_1 = require("../util/factory");
 class QueryBuilderHandlerBase {
     constructor(model) {
         this.model = model;
@@ -72,8 +73,7 @@ class QueryBuilderHandlerBase {
         return this.softDeleteState === 'should-add' && this.hasSoftDeletes();
     }
     createCollection(result) {
-        // TODO: implement
-        return {};
+        return factory_1.make_collection(result, this.createInstance);
     }
     createInstance(result) {
         // TODO: implement

@@ -38,6 +38,6 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
     getSoftDeleteState(): string;
     shouldAddSoftDeleteCondition(): boolean;
-    createCollection(result: object[]): any;
-    createInstance(result: object): any;
+    createCollection(result: object[]): CollectJs.Collection<IModel>;
+    createInstance(result: object): IModel;
 }

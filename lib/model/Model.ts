@@ -5,6 +5,8 @@ import { EloquentDriverProvider } from '../facades/global/EloquentDriverProvider
 
 export interface Model extends NajsEloquent.Model.IModel {}
 export class Model {
+  public id?: any
+
   constructor(data?: object, isGuarded?: boolean) {
     return this.makeDriver().makeModel<any>(this, data, isGuarded)
   }

@@ -13,6 +13,7 @@ import IConvention = NajsEloquent.QueryBuilder.IConvention
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IQueryBuilderHandler = NajsEloquent.QueryBuilder.IQueryBuilderHandler
+import { make_collection } from '../util/factory'
 
 export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
   protected model: IModel
@@ -104,13 +105,12 @@ export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
     return this.softDeleteState === 'should-add' && this.hasSoftDeletes()
   }
 
-  createCollection(result: object[]): any {
-    // TODO: implement
-    return {}
+  createCollection(result: object[]) {
+    return make_collection(result, this.createInstance)
   }
 
-  createInstance(result: object): any {
+  createInstance(result: object): IModel {
     // TODO: implement
-    return {}
+    return <any>{}
   }
 }

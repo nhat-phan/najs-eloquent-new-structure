@@ -5,6 +5,7 @@
 /// <reference path="./IModelSerialization.ts" />
 /// <reference path="./IModelTimestamps.ts" />
 /// <reference path="./IModelSoftDeletes.ts" />
+/// <reference path="../relations/IRelationDataBucket.ts" />
 var NajsEloquent;
 (function (NajsEloquent) {
     var Model;
