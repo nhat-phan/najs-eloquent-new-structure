@@ -7,7 +7,7 @@ const CollectionPrototype = Object.getPrototypeOf(collect([]))
 describe('make_collection()', function() {
   it('makes an instance of collection from collect() of the collect.js library', function() {
     const data = [1, 2, 3]
-    const result = make_collection(data)
+    const result = make_collection<number>(data)
     expect(result.all() === data).toBe(true)
     expect(Object.getPrototypeOf(result) === CollectionPrototype).toBe(true)
   })

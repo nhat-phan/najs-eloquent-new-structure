@@ -26,7 +26,7 @@ exports.NajsEloquent = {
         FlipFlopQueryLog: 'NajsEloquent.QueryLog.FlipFlopQueryLog'
     },
     Relation: {
-        RelationDataBucket: 'NajsEloquent.Feature.RelationDataBucket'
+        RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket'
     }
 };
 exports.QueryFunctions = {

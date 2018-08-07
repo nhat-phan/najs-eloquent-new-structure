@@ -1,6 +1,7 @@
 /// <reference path="../definitions/relations/IRelationDataBucket.d.ts" />
 /// <reference path="../../../lib/definitions/collect.js/index.d.ts" />
-export declare class RelationDataBucket<T = {}> implements NajsEloquent.Relation.IRelationDataBucket<T> {
+import Autoload = Najs.Contracts.Autoload;
+export declare class RelationDataBucket<T = {}> implements Autoload, NajsEloquent.Relation.IRelationDataBucket<T> {
     protected bucket: {
         [key in string]: CollectJs.Collection<T>;
     };

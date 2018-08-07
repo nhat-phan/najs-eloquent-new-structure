@@ -1,6 +1,4 @@
 "use strict";
-/// <reference path="../definitions/relations/IRelationDataBucket.ts" />
-/// <reference path="../definitions/collect.js/index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
@@ -19,6 +17,7 @@ class RelationDataBucket {
     }
     makeModel(model, record) {
         const instance = najs_binding_1.make(najs_binding_1.getClassName(model), [record, false]);
+        // TODO: fix here, use RelationFeature instead of export the attribute out of instance
         instance.relationDataBucket = this;
         return instance;
     }
@@ -27,8 +26,8 @@ class RelationDataBucket {
     }
     createKeyForModel(model) {
         const key = model.getRecordName();
-        if (typeof this.bucket[key] === undefined) {
-            this.bucket[key] = factory_1.make_collection([]);
+        if (typeof this.bucket[key] === 'undefined') {
+            this.bucket[key] = factory_1.make_collection({});
         }
         return key;
     }
