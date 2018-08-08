@@ -1,17 +1,20 @@
 /// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 /// <reference path="../definitions/collect.js/index.d.ts" />
+
 import Autoload = Najs.Contracts.Autoload
 import { register, make, getClassName } from 'najs-binding'
 import { NajsEloquent } from '../constants'
 import { make_collection } from '../util/factory'
-
-function relationFeatureOf(model: NajsEloquent.Model.IModel) {
-  return model.getDriver().getRelationFeature()
-}
+import { relationFeatureOf } from '../util/accessors'
+import { GenericData } from '../util/GenericData'
 
 export class RelationDataBucket<T = {}> implements Autoload, NajsEloquent.Relation.IRelationDataBucket<T> {
-  protected bucket: { [key in string]: CollectJs.Collection<T> }
-
+  protected bucket: {
+    [key in string]: {
+      records: CollectJs.Collection<T>
+      metadata: GenericData
+    }
+  }
   constructor() {
     this.bucket = {}
   }
@@ -32,11 +35,22 @@ export class RelationDataBucket<T = {}> implements Autoload, NajsEloquent.Relati
   }
 
   getRecords<M extends NajsEloquent.Model.IModel = NajsEloquent.Model.IModel>(model: M): CollectJs.Collection<T> {
+    return this.bucket[this.createKey(model)].records
+  }
+
+  getMetadata(model: NajsEloquent.Model.IModel): GenericData {
+    return this.bucket[this.createKey(model)].metadata
+  }
+
+  createKey(model: NajsEloquent.Model.IModel): string {
     const key = relationFeatureOf(model).createKeyForDataBucket(model)
     if (typeof this.bucket[key] === 'undefined') {
-      this.bucket[key] = make_collection<T>({} as any)
+      this.bucket[key] = {
+        records: make_collection<T>({} as any),
+        metadata: new GenericData({})
+      }
     }
-    return this.bucket[key]
+    return key
   }
 }
 register(RelationDataBucket, NajsEloquent.Relation.RelationDataBucket)

@@ -7,8 +7,8 @@
 /// <reference path="IModelSoftDeletes.d.ts" />
 /// <reference path="../relations/IRelationDataBucket.d.ts" />
 declare namespace NajsEloquent.Model {
-    type ModelDefinition = string | {
-        new (): IModel;
+    type ModelDefinition<T extends IModel = IModel> = string | {
+        new (): T;
     };
     class IModel {
         /**

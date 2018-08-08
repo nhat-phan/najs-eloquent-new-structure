@@ -8,7 +8,7 @@
 /// <reference path="../relations/IRelationDataBucket.ts" />
 
 namespace NajsEloquent.Model {
-  export type ModelDefinition = string | { new (): IModel }
+  export type ModelDefinition<T extends IModel = IModel> = string | { new (): T }
 
   export declare class IModel {
     /**

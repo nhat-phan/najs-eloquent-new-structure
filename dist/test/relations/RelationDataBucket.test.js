@@ -70,7 +70,7 @@ describe('RelationDataBucket', function () {
         });
     });
     describe('.getRecords()', function () {
-        it('simply returns .bucket[key] with the key created from RelationFeature.createKeyForDataBucket()', function () {
+        it('simply returns property records in .bucket[key] with the key created from .createKey()', function () {
             const relationFeature = {
                 createKeyForDataBucket(model) {
                     return 'anything';
@@ -87,7 +87,49 @@ describe('RelationDataBucket', function () {
             };
             const dataBucket = new RelationDataBucket_1.RelationDataBucket();
             expect(dataBucket.getRecords(model).all()).toEqual({});
-            expect(dataBucket.getRecords(model).all()).toEqual({});
+            expect(dataBucket.getRecords(model) === dataBucket['bucket']['anything'].records).toBe(true);
+        });
+    });
+    describe('.getMetadata()', function () {
+        it('simply returns property metadata in .bucket[key] with the key created from .createKey()', function () {
+            const relationFeature = {
+                createKeyForDataBucket(model) {
+                    return 'anything';
+                }
+            };
+            const model = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                }
+            };
+            const dataBucket = new RelationDataBucket_1.RelationDataBucket();
+            expect(dataBucket.getMetadata(model).all()).toEqual({});
+            expect(dataBucket.getMetadata(model) === dataBucket['bucket']['anything'].metadata).toBe(true);
+        });
+    });
+    describe('.createKey()', function () {
+        it('calls RelationFeature.createKeyForDataBucket() to create key, then init data in bucket and returns a key', function () {
+            const relationFeature = {
+                createKeyForDataBucket(model) {
+                    return 'anything';
+                }
+            };
+            const model = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                }
+            };
+            const dataBucket = new RelationDataBucket_1.RelationDataBucket();
+            expect(dataBucket.createKey(model)).toEqual('anything');
+            expect(dataBucket['bucket']['anything']).not.toBeUndefined();
         });
     });
 });

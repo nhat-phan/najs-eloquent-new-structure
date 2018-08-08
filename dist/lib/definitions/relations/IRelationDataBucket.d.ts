@@ -1,3 +1,4 @@
+/// <reference path="IRelation.d.ts" />
 /// <reference path="../model/IModel.d.ts" />
 /// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 declare namespace NajsEloquent.Relation {
@@ -21,5 +22,11 @@ declare namespace NajsEloquent.Relation {
          * @param {Model} model
          */
         getRecords(model: Model.IModel): CollectJs.Collection<T>;
+        /**
+         * Get metadata object of given model.
+         *
+         * @param {Model} model
+         */
+        getMetadata(model: Model.IModel): Util.IDataReader & Util.IDataWriter;
     }
 }

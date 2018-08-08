@@ -1,3 +1,4 @@
+/// <reference path="./IRelation.ts" />
 /// <reference path="../model/IModel.ts" />
 /// <reference path="../collect.js/index.d.ts" />
 
@@ -24,5 +25,12 @@ namespace NajsEloquent.Relation {
      * @param {Model} model
      */
     getRecords(model: Model.IModel): CollectJs.Collection<T>
+
+    /**
+     * Get metadata object of given model.
+     *
+     * @param {Model} model
+     */
+    getMetadata(model: Model.IModel): Util.IDataReader & Util.IDataWriter
   }
 }
