@@ -7,8 +7,7 @@ export declare class RelationDataBucket<T = {}> implements Autoload, NajsEloquen
     };
     constructor();
     getClassName(): string;
-    gather(model: NajsEloquent.Model.IModel): this;
+    add(model: NajsEloquent.Model.IModel): this;
     makeModel<M extends NajsEloquent.Model.IModel = NajsEloquent.Model.IModel>(model: M, record: T): M;
     getRecords<M extends NajsEloquent.Model.IModel = NajsEloquent.Model.IModel>(model: M): CollectJs.Collection<T>;
-    createKeyForModel<M extends NajsEloquent.Model.IModel = NajsEloquent.Model.IModel>(model: M): string;
 }

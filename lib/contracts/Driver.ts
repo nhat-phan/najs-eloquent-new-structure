@@ -6,6 +6,7 @@
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/IRelationFeature.ts" />
 
 namespace Najs.Contracts.Eloquent {
   export interface Driver<T = any> extends Najs.Contracts.Autoload {
@@ -24,6 +25,8 @@ namespace Najs.Contracts.Eloquent {
     getSoftDeletesFeature(): NajsEloquent.Feature.ISoftDeletesFeature
 
     getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter
+
+    getRelationFeature(): NajsEloquent.Feature.IRelationFeature
 
     makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M
 

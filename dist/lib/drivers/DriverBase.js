@@ -6,6 +6,8 @@
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/IRelationFeature.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilder.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../features/SettingFeature");
@@ -14,6 +16,7 @@ require("../features/FillableFeature");
 require("../features/SerializationFeature");
 require("../features/TimestampsFeature");
 require("../features/SoftDeletesFeature");
+require("../features/RelationFeature");
 const najs_binding_1 = require("najs-binding");
 const najs_event_1 = require("najs-event");
 const ClassSetting_1 = require("../util/ClassSetting");
@@ -34,6 +37,7 @@ class DriverBase {
         this.serializationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SerializationFeature);
         this.timestampsFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.TimestampsFeature);
         this.softDeletesFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SoftDeletesFeature);
+        this.relationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.RelationFeature);
         if (typeof DriverBase.globalEventEmitter === 'undefined') {
             DriverBase.globalEventEmitter = najs_event_1.EventEmitterFactory.create(true);
         }
@@ -58,6 +62,9 @@ class DriverBase {
     }
     getGlobalEventEmitter() {
         return DriverBase.globalEventEmitter;
+    }
+    getRelationFeature() {
+        return this.relationFeature;
     }
     makeModel(model, data, isGuarded = true) {
         if (data === ClassSetting_1.CREATE_SAMPLE) {
@@ -89,7 +96,8 @@ class DriverBase {
             this.getFillableFeature(),
             this.getSerializationFeature(),
             this.getTimestampsFeature(),
-            this.getSoftDeletesFeature()
+            this.getSoftDeletesFeature(),
+            this.getRelationFeature()
         ];
     }
     getCustomFeatures() {

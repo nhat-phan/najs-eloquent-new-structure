@@ -106,11 +106,14 @@ export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
   }
 
   createCollection(result: object[]) {
-    return make_collection(result, this.createInstance)
+    return make_collection(result, item => this.createInstance(item))
   }
 
   createInstance(result: object): IModel {
-    // TODO: implement
-    return <any>{}
+    const relationFeature = this.model.getDriver().getRelationFeature()
+    const bucket = relationFeature.getDataBucket(this.model) || relationFeature.makeDataBucket(this.model)
+    const model = bucket.makeModel(this.model, result)
+    bucket.add(model)
+    return model
   }
 }

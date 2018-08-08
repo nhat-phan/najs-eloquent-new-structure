@@ -1,4 +1,5 @@
 import 'jest'
+import * as Sinon from 'sinon'
 import { QueryBuilderHandlerBase } from '../../lib/query-builders/QueryBuilderHandlerBase'
 
 describe('QueryBuilderHandlerBase', function() {
@@ -260,20 +261,87 @@ describe('QueryBuilderHandlerBase', function() {
   })
 
   describe('.createCollection()', function() {
-    it('do something', function() {
-      // TODO: implement test
-      const model = {}
+    it('simply calls make_collection() with result an this.createInstance as a mapper', function() {
+      const model: any = {}
       const query = makeInstance(model)
-      query.createCollection([])
+      const createInstanceStub = Sinon.stub(query, 'createInstance')
+      createInstanceStub.returns({})
+
+      const a = {},
+        b = {}
+      query.createCollection([a, b])
+      expect(createInstanceStub.calledTwice).toBe(true)
+      expect(createInstanceStub.firstCall.calledWith(a)).toBe(true)
+      expect(createInstanceStub.secondCall.calledWith(b)).toBe(true)
     })
   })
 
   describe('.createInstance()', function() {
-    it('do something', function() {
-      // TODO: implement test
-      const model = {}
+    it('makes dataBucket from RelationFeature then calls .makeModel from bucket and push the model to bucket', function() {
+      const instance = {}
+      const dataBucket = {
+        makeModel() {
+          return instance
+        },
+        add() {}
+      }
+      const relationFeature = {
+        getDataBucket() {
+          return undefined
+        },
+        makeDataBucket() {
+          return dataBucket
+        }
+      }
+      const model = {
+        getDriver() {
+          return {
+            getRelationFeature() {
+              return relationFeature
+            }
+          }
+        }
+      }
       const query = makeInstance(model)
-      query.createInstance({})
+      const makeModelSpy = Sinon.spy(dataBucket, 'makeModel')
+      const addSpy = Sinon.spy(dataBucket, 'add')
+
+      const result = {}
+      expect(query.createInstance(result) === instance).toBe(true)
+      expect(makeModelSpy.calledWith(model, result)).toBe(true)
+      expect(addSpy.calledWith(instance)).toBe(true)
+    })
+
+    it('makes can reuse current bucket if it already exists', function() {
+      const instance = {}
+      const dataBucket = {
+        makeModel() {
+          return instance
+        },
+        add() {}
+      }
+      const relationFeature = {
+        getDataBucket() {
+          return dataBucket
+        }
+      }
+      const model = {
+        getDriver() {
+          return {
+            getRelationFeature() {
+              return relationFeature
+            }
+          }
+        }
+      }
+      const query = makeInstance(model)
+      const makeModelSpy = Sinon.spy(dataBucket, 'makeModel')
+      const addSpy = Sinon.spy(dataBucket, 'add')
+
+      const result = {}
+      expect(query.createInstance(result) === instance).toBe(true)
+      expect(makeModelSpy.calledWith(model, result)).toBe(true)
+      expect(addSpy.calledWith(instance)).toBe(true)
     })
   })
 })

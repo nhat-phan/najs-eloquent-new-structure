@@ -4,6 +4,7 @@ require("jest");
 const Sinon = require("sinon");
 const NajsBinding = require("najs-binding");
 const RelationDataBucket_1 = require("../../lib/relations/RelationDataBucket");
+const factory_1 = require("../../lib/util/factory");
 describe('RelationDataBucket', function () {
     it('implements Autoload under name "NajsEloquent.Relation.RelationDataBucket"', function () {
         const dataBucket = new RelationDataBucket_1.RelationDataBucket();
@@ -15,13 +16,10 @@ describe('RelationDataBucket', function () {
             expect(dataBucket['bucket']).toEqual({});
         });
     });
-    describe('.gather()', function () {
-        it('is chainable, it calls collect.put() and save the record to right bucket', function () {
+    describe('.add()', function () {
+        it('is chainable, it calls this.getRecords() then .put() the record of model to bucket', function () {
             const record = {};
             const model = {
-                getRecordName() {
-                    return 'name';
-                },
                 getPrimaryKey() {
                     return 'key';
                 },
@@ -29,16 +27,32 @@ describe('RelationDataBucket', function () {
                     return record;
                 }
             };
+            const collection = factory_1.make_collection({});
             const dataBucket = new RelationDataBucket_1.RelationDataBucket();
-            expect(dataBucket.gather(model) === dataBucket).toBe(true);
-            expect(dataBucket.getRecords(model).all()).toEqual({
+            const getRecordsStub = Sinon.stub(dataBucket, 'getRecords');
+            getRecordsStub.returns(collection);
+            expect(dataBucket.add(model) === dataBucket).toBe(true);
+            expect(collection.all()).toEqual({
                 key: record
             });
         });
     });
     describe('.makeModel()', function () {
         it('uses make() to create model instance then assign the relationDataBucket to it', function () {
-            const model = {};
+            const relationFeature = {
+                setDataBucket(model, bucket) {
+                    model['relationDataBucket'] = bucket;
+                }
+            };
+            const model = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                }
+            };
             const makeStub = Sinon.stub(NajsBinding, 'make');
             makeStub.returns(model);
             class ModelClass {
@@ -56,29 +70,24 @@ describe('RelationDataBucket', function () {
         });
     });
     describe('.getRecords()', function () {
-        it('simply returns .bucket[key] with the key created from .createKeyForModel', function () {
+        it('simply returns .bucket[key] with the key created from RelationFeature.createKeyForDataBucket()', function () {
+            const relationFeature = {
+                createKeyForDataBucket(model) {
+                    return 'anything';
+                }
+            };
             const model = {
-                getRecordName() {
-                    return 'test';
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
                 }
             };
             const dataBucket = new RelationDataBucket_1.RelationDataBucket();
             expect(dataBucket.getRecords(model).all()).toEqual({});
             expect(dataBucket.getRecords(model).all()).toEqual({});
-        });
-    });
-    describe('.createKeyForModel()', function () {
-        it('creates key, then creates an empty collection in bucket if not found and return the key', function () {
-            const model = {
-                getRecordName() {
-                    return 'test';
-                }
-            };
-            const dataBucket = new RelationDataBucket_1.RelationDataBucket();
-            expect(dataBucket.createKeyForModel(model)).toEqual('test');
-            expect(dataBucket.getRecords(model).count()).toBe(0);
-            dataBucket.getRecords(model).put('1', 'any');
-            expect(dataBucket.getRecords(model).count()).toBe(1);
         });
     });
 });

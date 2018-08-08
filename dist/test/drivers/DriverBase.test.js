@@ -11,6 +11,7 @@ const EventFeature_1 = require("../../lib/features/EventFeature");
 const FillableFeature_1 = require("../../lib/features/FillableFeature");
 const SerializationFeature_1 = require("../../lib/features/SerializationFeature");
 const TimestampsFeature_1 = require("../../lib/features/TimestampsFeature");
+const SoftDeletesFeature_1 = require("../../lib/features/SoftDeletesFeature");
 describe('DriverBase', function () {
     function createDriver() {
         return new DummyDriver_1.DummyDriver();
@@ -25,11 +26,13 @@ describe('DriverBase', function () {
             expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature_1.FillableFeature);
             expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature_1.SerializationFeature);
             expect(driverBase['timestampsFeature']).toBeInstanceOf(TimestampsFeature_1.TimestampsFeature);
+            expect(driverBase['softDeletesFeature']).toBeInstanceOf(SoftDeletesFeature_1.SoftDeletesFeature);
             expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true);
             expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.EventFeature')).toBe(true);
             expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true);
             expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true);
             expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true);
+            expect(makeSpy.getCall(5).calledWith('NajsEloquent.Feature.SoftDeletesFeature')).toBe(true);
             makeSpy.restore();
         });
     });
@@ -79,6 +82,14 @@ describe('DriverBase', function () {
             const driverBase = createDriver();
             driverBase['softDeletesFeature'] = softDeletesFeature;
             expect(driverBase.getSoftDeletesFeature() === softDeletesFeature).toBe(true);
+        });
+    });
+    describe('.getRelationFeature()', function () {
+        it('simply returns "relationFeature" property', function () {
+            const relationFeature = {};
+            const driverBase = createDriver();
+            driverBase['relationFeature'] = relationFeature;
+            expect(driverBase.getRelationFeature() === relationFeature).toBe(true);
         });
     });
     describe('.getGlobalEventEmitter()', function () {
@@ -156,7 +167,7 @@ describe('DriverBase', function () {
                 prototype: Test.prototype,
                 bases: bases
             });
-            expect(attachFeatureIfNeededSpy.callCount).toEqual(7);
+            expect(attachFeatureIfNeededSpy.callCount).toEqual(8);
             expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true);
             attachFeatureIfNeededSpy.restore();
         });
@@ -169,7 +180,8 @@ describe('DriverBase', function () {
                 driver['fillableFeature'],
                 driver['serializationFeature'],
                 driver['timestampsFeature'],
-                driver['softDeletesFeature']
+                driver['softDeletesFeature'],
+                driver['relationFeature']
             ]);
         });
     });

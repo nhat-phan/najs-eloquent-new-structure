@@ -5,12 +5,17 @@
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/IRelationFeature.ts" />
 
 export abstract class FeatureBase {
   abstract getPublicApi(): object
 
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     Object.assign(prototype, this.getPublicApi())
+  }
+
+  useInternalOf(model: NajsEloquent.Model.IModel): NajsEloquent.Model.ModelInternal {
+    return model as NajsEloquent.Model.ModelInternal
   }
 
   useSettingFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature {
@@ -35,5 +40,9 @@ export abstract class FeatureBase {
 
   useSoftDeletesFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISoftDeletesFeature {
     return model.getDriver().getSoftDeletesFeature()
+  }
+
+  useRelationFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.IRelationFeature {
+    return model.getDriver().getRelationFeature()
   }
 }

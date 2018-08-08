@@ -11,6 +11,7 @@ export declare const NajsEloquent: {
         SerializationFeature: string;
         TimestampsFeature: string;
         SoftDeletesFeature: string;
+        RelationFeature: string;
     };
     Provider: {
         DriverProvider: string;

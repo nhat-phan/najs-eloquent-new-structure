@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
 const factory_1 = require("../util/factory");
+function relationFeatureOf(model) {
+    return model.getDriver().getRelationFeature();
+}
 class RelationDataBucket {
     constructor() {
         this.bucket = {};
@@ -10,26 +13,21 @@ class RelationDataBucket {
     getClassName() {
         return constants_1.NajsEloquent.Relation.RelationDataBucket;
     }
-    gather(model) {
-        const key = this.createKeyForModel(model);
-        this.bucket[key].put(model.getPrimaryKey(), model.getRecord());
+    add(model) {
+        this.getRecords(model).put(model.getPrimaryKey(), model.getRecord());
         return this;
     }
     makeModel(model, record) {
         const instance = najs_binding_1.make(najs_binding_1.getClassName(model), [record, false]);
-        // TODO: fix here, use RelationFeature instead of export the attribute out of instance
-        instance.relationDataBucket = this;
+        relationFeatureOf(instance).setDataBucket(instance, this);
         return instance;
     }
     getRecords(model) {
-        return this.bucket[this.createKeyForModel(model)];
-    }
-    createKeyForModel(model) {
-        const key = model.getRecordName();
+        const key = relationFeatureOf(model).createKeyForDataBucket(model);
         if (typeof this.bucket[key] === 'undefined') {
             this.bucket[key] = factory_1.make_collection({});
         }
-        return key;
+        return this.bucket[key];
     }
 }
 exports.RelationDataBucket = RelationDataBucket;

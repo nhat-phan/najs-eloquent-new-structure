@@ -27,6 +27,14 @@ describe('FeatureBase', function() {
     })
   })
 
+  describe('.useInternalOf()', function() {
+    it('is an helper just returns a definition with internal property/methods', function() {
+      const model: any = {}
+
+      expect(featureInstance.useInternalOf(model) === model).toBe(true)
+    })
+  })
+
   describe('.useSettingFeatureOf()', function() {
     it('is an helper to reduce repetition code. It returns SettingFeature from a driver', function() {
       const feature = {}
@@ -126,6 +134,23 @@ describe('FeatureBase', function() {
       }
 
       expect(featureInstance.useSoftDeletesFeatureOf(model) === feature).toBe(true)
+    })
+  })
+
+  describe('.useRelationFeatureOf()', function() {
+    it('is an helper to reduce repetition code. It returns RecordManager from a driver', function() {
+      const feature = {}
+      const model: any = {
+        getDriver() {
+          return {
+            getRelationFeature() {
+              return feature
+            }
+          }
+        }
+      }
+
+      expect(featureInstance.useRelationFeatureOf(model) === feature).toBe(true)
     })
   })
 })

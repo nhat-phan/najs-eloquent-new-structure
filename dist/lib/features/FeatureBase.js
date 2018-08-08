@@ -6,10 +6,14 @@
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/IRelationFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class FeatureBase {
     attachPublicApi(prototype, bases, driver) {
         Object.assign(prototype, this.getPublicApi());
+    }
+    useInternalOf(model) {
+        return model;
     }
     useSettingFeatureOf(model) {
         return model.getDriver().getSettingFeature();
@@ -28,6 +32,9 @@ class FeatureBase {
     }
     useSoftDeletesFeatureOf(model) {
         return model.getDriver().getSoftDeletesFeature();
+    }
+    useRelationFeatureOf(model) {
+        return model.getDriver().getRelationFeature();
     }
 }
 exports.FeatureBase = FeatureBase;

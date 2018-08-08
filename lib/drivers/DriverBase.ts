@@ -5,6 +5,8 @@
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
+/// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
+/// <reference path="../definitions/features/IRelationFeature.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilder.ts" />
 
 import IModel = NajsEloquent.Model.IModel
@@ -16,6 +18,7 @@ import '../features/FillableFeature'
 import '../features/SerializationFeature'
 import '../features/TimestampsFeature'
 import '../features/SoftDeletesFeature'
+import '../features/RelationFeature'
 import { make } from 'najs-binding'
 import { EventEmitterFactory } from 'najs-event'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
@@ -36,6 +39,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   protected serializationFeature: NajsEloquent.Feature.ISerializationFeature
   protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature
   protected softDeletesFeature: NajsEloquent.Feature.ISoftDeletesFeature
+  protected relationFeature: NajsEloquent.Feature.IRelationFeature
   protected static globalEventEmitter: Najs.Contracts.Event.AsyncEventEmitter
 
   constructor() {
@@ -46,6 +50,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     this.serializationFeature = make(NajsEloquentClasses.Feature.SerializationFeature)
     this.timestampsFeature = make(NajsEloquentClasses.Feature.TimestampsFeature)
     this.softDeletesFeature = make(NajsEloquentClasses.Feature.SoftDeletesFeature)
+    this.relationFeature = make(NajsEloquentClasses.Feature.RelationFeature)
 
     if (typeof DriverBase.globalEventEmitter === 'undefined') {
       DriverBase.globalEventEmitter = EventEmitterFactory.create(true)
@@ -86,6 +91,10 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     return DriverBase.globalEventEmitter
   }
 
+  getRelationFeature() {
+    return this.relationFeature
+  }
+
   makeModel<M extends IModel>(model: M, data?: T | object | string, isGuarded: boolean = true): M {
     if (data === CREATE_SAMPLE) {
       return model
@@ -123,7 +132,8 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
       this.getFillableFeature(),
       this.getSerializationFeature(),
       this.getTimestampsFeature(),
-      this.getSoftDeletesFeature()
+      this.getSoftDeletesFeature(),
+      this.getRelationFeature()
     ]
   }
 

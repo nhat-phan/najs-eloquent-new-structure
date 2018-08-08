@@ -73,11 +73,14 @@ class QueryBuilderHandlerBase {
         return this.softDeleteState === 'should-add' && this.hasSoftDeletes();
     }
     createCollection(result) {
-        return factory_1.make_collection(result, this.createInstance);
+        return factory_1.make_collection(result, item => this.createInstance(item));
     }
     createInstance(result) {
-        // TODO: implement
-        return {};
+        const relationFeature = this.model.getDriver().getRelationFeature();
+        const bucket = relationFeature.getDataBucket(this.model) || relationFeature.makeDataBucket(this.model);
+        const model = bucket.makeModel(this.model, result);
+        bucket.add(model);
+        return model;
     }
 }
 exports.QueryBuilderHandlerBase = QueryBuilderHandlerBase;

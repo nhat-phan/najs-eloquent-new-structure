@@ -9,6 +9,7 @@ import { EventFeature } from '../../lib/features/EventFeature'
 import { FillableFeature } from '../../lib/features/FillableFeature'
 import { SerializationFeature } from '../../lib/features/SerializationFeature'
 import { TimestampsFeature } from '../../lib/features/TimestampsFeature'
+import { SoftDeletesFeature } from '../../lib/features/SoftDeletesFeature'
 
 describe('DriverBase', function() {
   function createDriver(): DriverBase<any> {
@@ -26,11 +27,13 @@ describe('DriverBase', function() {
       expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature)
       expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature)
       expect(driverBase['timestampsFeature']).toBeInstanceOf(TimestampsFeature)
+      expect(driverBase['softDeletesFeature']).toBeInstanceOf(SoftDeletesFeature)
       expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true)
       expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.EventFeature')).toBe(true)
       expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
       expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true)
       expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true)
+      expect(makeSpy.getCall(5).calledWith('NajsEloquent.Feature.SoftDeletesFeature')).toBe(true)
       makeSpy.restore()
     })
   })
@@ -86,6 +89,15 @@ describe('DriverBase', function() {
       const driverBase = createDriver()
       driverBase['softDeletesFeature'] = softDeletesFeature
       expect(driverBase.getSoftDeletesFeature() === softDeletesFeature).toBe(true)
+    })
+  })
+
+  describe('.getRelationFeature()', function() {
+    it('simply returns "relationFeature" property', function() {
+      const relationFeature: any = {}
+      const driverBase = createDriver()
+      driverBase['relationFeature'] = relationFeature
+      expect(driverBase.getRelationFeature() === relationFeature).toBe(true)
     })
   })
 
@@ -180,7 +192,7 @@ describe('DriverBase', function() {
         prototype: Test.prototype,
         bases: bases
       })
-      expect(attachFeatureIfNeededSpy.callCount).toEqual(7)
+      expect(attachFeatureIfNeededSpy.callCount).toEqual(8)
       expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true)
 
       attachFeatureIfNeededSpy.restore()
@@ -195,7 +207,8 @@ describe('DriverBase', function() {
         driver['fillableFeature'],
         driver['serializationFeature'],
         driver['timestampsFeature'],
-        driver['softDeletesFeature']
+        driver['softDeletesFeature'],
+        driver['relationFeature']
       ])
     })
   })

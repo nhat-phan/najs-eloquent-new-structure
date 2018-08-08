@@ -4,11 +4,11 @@
 namespace NajsEloquent.Relation {
   export interface IRelationDataBucket<T = {}> {
     /**
-     * Gather the model to bucket.
+     * add the model to bucket.
      *
      * @param {Model} model
      */
-    gather(model: Model.IModel): this
+    add(model: Model.IModel): this
 
     /**
      * Create new model instance and push the record to eager bucket under given model.
@@ -24,12 +24,5 @@ namespace NajsEloquent.Relation {
      * @param {Model} model
      */
     getRecords(model: Model.IModel): CollectJs.Collection<T>
-
-    /**
-     * Create unique key for given model.
-     *
-     * @param {Model} model
-     */
-    createKeyForModel(model: Model.IModel): string
   }
 }

@@ -12,7 +12,8 @@ export const NajsEloquent = {
     FillableFeature: 'NajsEloquent.Feature.FillableFeature',
     SerializationFeature: 'NajsEloquent.Feature.SerializationFeature',
     TimestampsFeature: 'NajsEloquent.Feature.TimestampsFeature',
-    SoftDeletesFeature: 'NajsEloquent.Feature.SoftDeletesFeature'
+    SoftDeletesFeature: 'NajsEloquent.Feature.SoftDeletesFeature',
+    RelationFeature: 'NajsEloquent.Feature.RelationFeature'
   },
   Provider: {
     DriverProvider: 'NajsEloquent.Provider.DriverProvider',
