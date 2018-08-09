@@ -5,6 +5,7 @@
 /// <reference path="./IModelSerialization.ts" />
 /// <reference path="./IModelTimestamps.ts" />
 /// <reference path="./IModelSoftDeletes.ts" />
+/// <reference path="./IModelRelation.ts" />
 /// <reference path="../relations/IRelationDataBucket.ts" />
 
 namespace NajsEloquent.Model {
@@ -30,6 +31,21 @@ namespace NajsEloquent.Model {
      * The model's attributes.
      */
     protected attributes: object
+
+    /**
+     * The model's relation definitions.
+     */
+    protected readonly relationDefinitions: NajsEloquent.Relation.RelationDefinitions
+
+    /**
+     * The model's relation data bucket.
+     */
+    protected relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<any>
+
+    /**
+     * The model's relations data.
+     */
+    protected relations: { [name in string]: NajsEloquent.Relation.IRelationData<any> }
   }
 
   export interface IModel
@@ -38,7 +54,8 @@ namespace NajsEloquent.Model {
       IModelFillable,
       IModelSerialization,
       IModelTimestamps,
-      IModelSoftDeletes {
+      IModelSoftDeletes,
+      IModelRelation {
     /**
      * Primary key of the model
      */
@@ -68,7 +85,11 @@ namespace NajsEloquent.Model {
   export type ModelInternal<T = any> = IModel & {
     driver: Najs.Contracts.Eloquent.Driver<T>
 
+    relationDefinitions: NajsEloquent.Relation.RelationDefinitions
+
     relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<T>
+
+    relations: { [name in string]: NajsEloquent.Relation.IRelationData<any> }
 
     attributes: T
   }

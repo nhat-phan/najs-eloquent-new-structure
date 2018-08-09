@@ -5,6 +5,7 @@ const najs_binding_1 = require("najs-binding");
 const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
 class Model {
     constructor(data, isGuarded) {
+        this.relations = {};
         return this.makeDriver().makeModel(this, data, isGuarded);
     }
     makeDriver() {

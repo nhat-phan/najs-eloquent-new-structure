@@ -3,11 +3,12 @@
 import IModel = NajsEloquent.Model.IModel;
 import IRelation = NajsEloquent.Relation.IRelation;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
-import RelationData = NajsEloquent.Relation.RelationData;
+import IRelationData = NajsEloquent.Relation.IRelationData;
 import { RelationUtilities } from './RelationUtilities';
 export declare abstract class RelationBase<T> {
     protected name: string;
     protected rootModel: IModel;
+    protected loadChains: string[];
     protected utils: RelationUtilities<T>;
     constructor(rootModel: IModel, name: string, utilities?: RelationUtilities<T>);
     abstract getClassName(): string;
@@ -16,7 +17,9 @@ export declare abstract class RelationBase<T> {
     abstract lazyLoad(): Promise<T | undefined | null>;
     abstract eagerLoad(): Promise<T | undefined | null>;
     abstract isInverseOf<K>(relation: IRelation<K>): boolean;
-    getRelationData(): RelationData<T>;
+    getName(): string;
+    getRelationData(): IRelationData<T>;
+    with(...relations: Array<string | string[]>): this;
     isLoaded(): boolean;
     getData(): T | undefined | null;
     load(): Promise<T | undefined | null>;

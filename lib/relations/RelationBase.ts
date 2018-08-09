@@ -4,20 +4,22 @@
 import IModel = NajsEloquent.Model.IModel
 import IRelation = NajsEloquent.Relation.IRelation
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
-import RelationData = NajsEloquent.Relation.RelationData
+import IRelationData = NajsEloquent.Relation.IRelationData
 
-import { RelationState } from './RelationState'
+import { flatten } from 'lodash'
 import { relationFeatureOf } from '../util/accessors'
 import { RelationUtilities } from './RelationUtilities'
 
 export abstract class RelationBase<T> {
   protected name: string
   protected rootModel: IModel
+  protected loadChains: string[]
   protected utils: RelationUtilities<T>
 
   constructor(rootModel: IModel, name: string, utilities?: RelationUtilities<T>) {
     this.rootModel = rootModel
     this.name = name
+    this.loadChains = []
     this.utils = utilities || new RelationUtilities(this)
   }
 
@@ -33,15 +35,22 @@ export abstract class RelationBase<T> {
 
   abstract isInverseOf<K>(relation: IRelation<K>): boolean
 
-  getRelationData(): RelationData<T> {
-    return <any>{}
+  getName() {
+    return this.name
+  }
+
+  getRelationData(): IRelationData<T> {
+    return relationFeatureOf(this.rootModel).findDataByName<T>(this.rootModel, this.name)
+  }
+
+  with(...relations: Array<string | string[]>): this {
+    this.loadChains = flatten(arguments).filter(item => item !== '')
+
+    return this
   }
 
   isLoaded(): boolean {
-    return (
-      this.getRelationData().state === RelationState.Loaded ||
-      this.utils.isRelationLoadedInDataBucket(this.rootModel, this.name)
-    )
+    return this.getRelationData().isLoaded() || this.utils.isRelationLoadedInDataBucket(this.rootModel, this.name)
   }
 
   getData(): T | undefined | null {
@@ -50,8 +59,8 @@ export abstract class RelationBase<T> {
     }
 
     const relationData = this.getRelationData()
-    if (relationData.state === RelationState.Built) {
-      return relationData.data
+    if (relationData.isBuilt()) {
+      return relationData.getData()
     }
 
     // TODO: here
@@ -60,8 +69,8 @@ export abstract class RelationBase<T> {
 
   async load(): Promise<T | undefined | null> {
     const relationData = this.getRelationData()
-    if (relationData.state === RelationState.Built) {
-      return relationData.data
+    if (relationData.isBuilt()) {
+      return relationData.getData()
     }
 
     // here

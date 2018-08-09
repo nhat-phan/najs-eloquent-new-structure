@@ -25,6 +25,7 @@ export declare const NajsEloquent: {
     };
     Relation: {
         RelationDataBucket: string;
+        HasOne: string;
     };
 };
 export declare const QueryFunctions: {

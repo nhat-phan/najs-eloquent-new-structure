@@ -12,6 +12,15 @@ namespace NajsEloquent.Feature {
     makeDataBucket(model: Model.IModel): Relation.IRelationDataBucket
 
     /**
+     * Make a relation factory instance.
+     *
+     * @param {Model} model
+     * @param {string} accessor
+     * @param {boolean} isSample
+     */
+    makeFactory(model: Model.IModel, accessor: string): Relation.IRelationFactory
+
+    /**
      * Set attached data bucket of model instance.
      *
      * @param {Model} model
@@ -32,5 +41,42 @@ namespace NajsEloquent.Feature {
      * @param {Model} model
      */
     createKeyForDataBucket(model: Model.IModel): string
+
+    /**
+     * Get defined relations of given model.
+     *
+     * @param {Model} model
+     */
+    getDefinitions(model: Model.IModel): Relation.RelationDefinitions
+
+    /**
+     * Build a defined relations data for given model.
+     *
+     * @param {Model} model
+     * @param {object} prototype
+     * @param {object[]} bases
+     */
+    buildDefinitions(model: Model.IModel, prototype: object, bases: object[]): Relation.RelationDefinitions
+
+    /**
+     * Find a relation of give model by given name.
+     *
+     * @param {Model} model
+     * @param {string} name
+     */
+    findByName<T = {}>(model: Model.IModel, name: string): Relation.IRelation<T>
+
+    /**
+     * Find relation data by given name.
+     */
+    findDataByName<T>(model: Model.IModel, name: string): Relation.IRelationData<T>
+
+    /**
+     * Define an relation accessor for given model.
+     *
+     * @param {Model} model
+     * @param {string} accessor
+     */
+    defineAccessor(model: Model.IModel, accessor: string): void
   }
 }

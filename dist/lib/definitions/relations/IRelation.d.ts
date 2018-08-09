@@ -1,17 +1,20 @@
 /// <reference path="../model/IModel.d.ts" />
 declare namespace NajsEloquent.Relation {
-    type RelationMap = {
-        mapTo: string;
-        type: 'getter' | 'function';
+    type RelationDefinition = {
+        accessor: string;
+        target: string;
+        targetType: 'getter' | 'function';
     };
-    type RelationState = 'unload' | 'loaded' | 'built';
-    type RelationData<T = any> = {
-        factory: IRelationFactory;
-        state: RelationState;
-        loadType?: 'lazy' | 'eager';
-        data?: T;
+    type RelationDefinitions = {
+        [name in string]: RelationDefinition;
     };
     interface IRelation<T> {
+        /**
+         * Set sub-relation with will be loaded when current relation load.
+         *
+         * @param relations
+         */
+        with(...relations: Array<string | string[]>): this;
         /**
          * Get new query based on the relation.
          */

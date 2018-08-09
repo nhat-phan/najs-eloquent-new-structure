@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
+const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const RelationFeature_1 = require("../../lib/features/RelationFeature");
 const RelationDataBucket_1 = require("../../lib/relations/RelationDataBucket");
+const RelationPublicApi_1 = require("../../lib/features/mixin/RelationPublicApi");
+const RelationData_1 = require("../../lib/relations/RelationData");
 describe('RelationFeature', function () {
     const feature = new RelationFeature_1.RelationFeature();
     it('extends FeatureBase and implements Autoload under name "NajsEloquent.Feature.RelationFeature"', function () {
@@ -16,14 +19,20 @@ describe('RelationFeature', function () {
         });
     });
     describe('.getPublicApi()', function () {
-        it('returns an empty object', function () {
-            expect(feature.getPublicApi()).toEqual({});
+        it('returns an RelationPublicApi object', function () {
+            expect(feature.getPublicApi() === RelationPublicApi_1.RelationPublicApi).toBe(true);
         });
     });
     describe('.makeDataBucket()', function () {
         it('simply returns an instance of RelationDataBucket', function () {
             const model = {};
             expect(feature.makeDataBucket(model)).toBeInstanceOf(RelationDataBucket_1.RelationDataBucket);
+        });
+    });
+    describe('.makeFactory()', function () {
+        it('do nothing for now', function () {
+            const model = {};
+            feature.makeFactory(model, 'test');
         });
     });
     describe('.getDataBucket()', function () {
@@ -59,6 +68,54 @@ describe('RelationFeature', function () {
                 }
             };
             expect(feature.createKeyForDataBucket(model)).toEqual('anything');
+        });
+    });
+    describe('.getDefinitions()', function () {
+        it('simply returns an property "relationDefinitions" of model', function () {
+            const relationDefinitions = {};
+            const model = {
+                relationDefinitions: relationDefinitions
+            };
+            expect(feature.getDefinitions(model) === relationDefinitions).toBe(true);
+        });
+    });
+    describe('.buildDefinitions()', function () {
+        it('returns an empty object for now', function () {
+            expect(feature.buildDefinitions({}, {}, [])).toEqual({});
+        });
+    });
+    describe('.findByName()', function () {
+        it('returns an empty object for now', function () {
+            expect(feature.findByName({}, 'test')).toEqual({});
+        });
+    });
+    describe('.findDataByName()', function () {
+        it('returns an instance if given name is found in "relations" property', function () {
+            const data = {};
+            const model = {
+                relations: {
+                    test: data
+                }
+            };
+            expect(feature.findDataByName(model, 'test') === data).toBe(true);
+        });
+        it('create an instance of RelationData, then call defineAccessor if name not found in "relations"', function () {
+            const model = {
+                relations: {}
+            };
+            const makeFactorySpy = Sinon.spy(feature, 'makeFactory');
+            const defineAccessorSpy = Sinon.spy(feature, 'defineAccessor');
+            expect(feature.findDataByName(model, 'test')).toBeInstanceOf(RelationData_1.RelationData);
+            expect(makeFactorySpy.calledWith(model, 'test')).toBe(true);
+            expect(defineAccessorSpy.calledWith(model, 'test')).toBe(true);
+            makeFactorySpy.restore();
+            defineAccessorSpy.restore();
+        });
+    });
+    describe('.defineAccessor()', function () {
+        it('do nothing for now', function () {
+            const model = {};
+            feature.defineAccessor(model, 'test');
         });
     });
 });

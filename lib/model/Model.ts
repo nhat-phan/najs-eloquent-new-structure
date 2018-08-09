@@ -8,6 +8,8 @@ export class Model {
   public id?: any
 
   constructor(data?: object, isGuarded?: boolean) {
+    this.relations = {}
+
     return this.makeDriver().makeModel<any>(this, data, isGuarded)
   }
 
