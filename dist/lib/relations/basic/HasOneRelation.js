@@ -3,11 +3,11 @@
 /// <reference path="../../definitions/relations/IHasOne.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
-const RelationBase_1 = require("../RelationBase");
+const Relation_1 = require("../Relation");
 const constants_1 = require("../../constants");
-class HasOne extends RelationBase_1.RelationBase {
+class HasOneRelation extends Relation_1.Relation {
     getClassName() {
-        return constants_1.NajsEloquent.Relation.HasOne;
+        return constants_1.NajsEloquent.Relation.HasOneRelation;
     }
     getType() {
         return 'HasOne';
@@ -25,5 +25,5 @@ class HasOne extends RelationBase_1.RelationBase {
         return false;
     }
 }
-exports.HasOne = HasOne;
-najs_binding_1.register(HasOne, constants_1.NajsEloquent.Relation.HasOne);
+exports.HasOneRelation = HasOneRelation;
+najs_binding_1.register(HasOneRelation, constants_1.NajsEloquent.Relation.HasOneRelation);

@@ -4,7 +4,7 @@
 import IModel = NajsEloquent.Model.IModel
 import RelationDefinition = NajsEloquent.Relation.RelationDefinition
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
-import { RelationBase } from './RelationBase'
+import { Relation } from './Relation'
 
 export class RelationDefinitionFinder {
   model: IModel
@@ -62,7 +62,7 @@ export class RelationDefinitionFinder {
     try {
       if (typeof descriptor.value === 'function') {
         const relation = descriptor.value!.call(this.model)
-        if (relation instanceof RelationBase) {
+        if (relation instanceof Relation) {
           return {
             target: target,
             accessor: relation.getName(),
@@ -73,7 +73,7 @@ export class RelationDefinitionFinder {
 
       if (typeof descriptor.get === 'function') {
         const relation = descriptor.value!.call(this.model)
-        if (relation instanceof RelationBase) {
+        if (relation instanceof Relation) {
           return {
             accessor: relation.getName(),
             target: target,

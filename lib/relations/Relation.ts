@@ -8,19 +8,18 @@ import IRelationData = NajsEloquent.Relation.IRelationData
 
 import { flatten } from 'lodash'
 import { relationFeatureOf } from '../util/accessors'
-import { RelationUtilities } from './RelationUtilities'
+import { RelationUtilities as Utils } from './RelationUtilities'
+import { array_unique } from '../util/functions'
 
-export abstract class RelationBase<T> {
+export abstract class Relation<T> {
   protected name: string
   protected rootModel: IModel
   protected loadChains: string[]
-  protected utils: RelationUtilities<T>
 
-  constructor(rootModel: IModel, name: string, utilities?: RelationUtilities<T>) {
+  constructor(rootModel: IModel, name: string) {
     this.rootModel = rootModel
     this.name = name
     this.loadChains = []
-    this.utils = utilities || new RelationUtilities(this)
   }
 
   abstract getClassName(): string
@@ -43,41 +42,41 @@ export abstract class RelationBase<T> {
     return relationFeatureOf(this.rootModel).findDataByName<T>(this.rootModel, this.name)
   }
 
+  getDataBucket(): IRelationDataBucket | undefined {
+    return relationFeatureOf(this.rootModel).getDataBucket(this.rootModel)
+  }
+
   with(...relations: Array<string | string[]>): this {
-    this.loadChains = flatten(arguments).filter(item => item !== '')
+    this.loadChains = array_unique(this.loadChains, flatten(arguments).filter(item => item !== ''))
 
     return this
   }
 
   isLoaded(): boolean {
-    return this.getRelationData().isLoaded() || this.utils.isRelationLoadedInDataBucket(this.rootModel, this.name)
+    return this.getRelationData().isLoaded() || Utils.isLoadedInDataBucket(this, this.rootModel, this.name)
   }
 
   getData(): T | undefined | null {
-    if (this.isLoaded()) {
-      return undefined
-    }
+    // if (this.isLoaded()) {
+    //   return undefined
+    // }
 
-    const relationData = this.getRelationData()
-    if (relationData.isBuilt()) {
-      return relationData.getData()
-    }
+    // const relationData = this.getRelationData()
+    // if (relationData.isBuilt()) {
+    //   return relationData.getData()
+    // }
 
     // TODO: here
     return undefined
   }
 
   async load(): Promise<T | undefined | null> {
-    const relationData = this.getRelationData()
-    if (relationData.isBuilt()) {
-      return relationData.getData()
-    }
+    // const relationData = this.getRelationData()
+    // if (relationData.isBuilt()) {
+    //   return relationData.getData()
+    // }
 
     // here
     return undefined
-  }
-
-  getDataBucket(): IRelationDataBucket | undefined {
-    return relationFeatureOf(this.rootModel).getDataBucket(this.rootModel)
   }
 }

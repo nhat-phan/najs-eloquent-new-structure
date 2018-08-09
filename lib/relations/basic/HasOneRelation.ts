@@ -2,12 +2,12 @@
 /// <reference path="../../definitions/relations/IHasOne.ts" />
 
 import { register } from 'najs-binding'
-import { RelationBase } from '../RelationBase'
+import { Relation } from '../Relation'
 import { NajsEloquent } from '../../constants'
 
-export class HasOne<T> extends RelationBase<T> implements NajsEloquent.Relation.IHasOne<T> {
+export class HasOneRelation<T> extends Relation<T> implements NajsEloquent.Relation.IHasOne<T> {
   getClassName(): string {
-    return NajsEloquent.Relation.HasOne
+    return NajsEloquent.Relation.HasOneRelation
   }
 
   getType(): string {
@@ -30,4 +30,4 @@ export class HasOne<T> extends RelationBase<T> implements NajsEloquent.Relation.
     return false
   }
 }
-register(HasOne, NajsEloquent.Relation.HasOne)
+register(HasOneRelation, NajsEloquent.Relation.HasOneRelation)

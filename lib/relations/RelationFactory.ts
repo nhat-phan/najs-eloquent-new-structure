@@ -8,8 +8,8 @@ import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelation = NajsEloquent.Relation.IRelation
 import IHasOne = NajsEloquent.Relation.IHasOne
 
-import './basic/HasOne'
-import { HasOne } from './basic/HasOne'
+import './basic/HasOneRelation'
+import { HasOneRelation as HasOne } from './basic/HasOneRelation'
 import { make } from 'najs-binding'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
 
@@ -23,10 +23,6 @@ export class RelationFactory {
     this.name = name
   }
 
-  hasOne<T extends IModel>(model: string | ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T> {
-    return this.make<HasOne<T>>(NajsEloquentClasses.Relation.HasOne, [])
-  }
-
   make<T extends IRelation<any>>(className: string, params: any[], modifier?: (relation: T) => void): T {
     if (!this.relation) {
       this.relation = make<T>(className, [this.rootModel, this.name, ...params])
@@ -37,5 +33,9 @@ export class RelationFactory {
     }
 
     return this.relation as T
+  }
+
+  hasOne<T extends IModel>(model: string | ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T> {
+    return this.make<HasOne<T>>(NajsEloquentClasses.Relation.HasOneRelation, [])
   }
 }

@@ -4,13 +4,11 @@ import IModel = NajsEloquent.Model.IModel;
 import IRelation = NajsEloquent.Relation.IRelation;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IRelationData = NajsEloquent.Relation.IRelationData;
-import { RelationUtilities } from './RelationUtilities';
-export declare abstract class RelationBase<T> {
+export declare abstract class Relation<T> {
     protected name: string;
     protected rootModel: IModel;
     protected loadChains: string[];
-    protected utils: RelationUtilities<T>;
-    constructor(rootModel: IModel, name: string, utilities?: RelationUtilities<T>);
+    constructor(rootModel: IModel, name: string);
     abstract getClassName(): string;
     abstract getType(): string;
     abstract buildData(): T | undefined | null;
@@ -19,9 +17,9 @@ export declare abstract class RelationBase<T> {
     abstract isInverseOf<K>(relation: IRelation<K>): boolean;
     getName(): string;
     getRelationData(): IRelationData<T>;
+    getDataBucket(): IRelationDataBucket | undefined;
     with(...relations: Array<string | string[]>): this;
     isLoaded(): boolean;
     getData(): T | undefined | null;
     load(): Promise<T | undefined | null>;
-    getDataBucket(): IRelationDataBucket | undefined;
 }

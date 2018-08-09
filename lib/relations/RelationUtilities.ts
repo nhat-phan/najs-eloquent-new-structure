@@ -1,19 +1,9 @@
-import { RelationBase } from './RelationBase'
+import { Relation } from './Relation'
 import IModel = NajsEloquent.Model.IModel
 
-export class RelationUtilities<T> {
-  protected relation: RelationBase<T>
-
-  constructor(relation: RelationBase<T>) {
-    this.relation = relation
-  }
-
-  extractSamplesFrom(result: CollectJs.Collection<Model>): Model[] {
-    return []
-  }
-
-  isRelationLoadedInDataBucket(model: IModel, relationName: string) {
-    const bucket = this.relation.getDataBucket()
+export const RelationUtilities = {
+  isLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string) {
+    const bucket = relation.getDataBucket()
     if (!bucket) {
       return false
     }
@@ -22,12 +12,12 @@ export class RelationUtilities<T> {
       bucket
         .getMetadata(model)
         .get<string[]>('loaded', [])
-        .indexOf(relationName) !== -1
+        .indexOf(name) !== -1
     )
-  }
+  },
 
-  setRelationLoadedInDataBucket(model: IModel, relationName: string) {
-    const bucket = this.relation.getDataBucket()
+  markLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string) {
+    const bucket = relation.getDataBucket()
     if (!bucket) {
       return
     }
@@ -37,6 +27,6 @@ export class RelationUtilities<T> {
     if (!metadata.exists('loaded')) {
       metadata.set('loaded', [])
     }
-    metadata.get<string[]>('loaded').push(relationName)
+    metadata.get<string[]>('loaded').push(name)
   }
 }

@@ -28,7 +28,7 @@ exports.NajsEloquent = {
     },
     Relation: {
         RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket',
-        HasOne: 'NajsEloquent.Relation.HasOne'
+        HasOneRelation: 'NajsEloquent.Relation.HasOneRelation'
     }
 };
 exports.QueryFunctions = {

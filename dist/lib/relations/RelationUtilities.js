@@ -1,24 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class RelationUtilities {
-    constructor(relation) {
-        this.relation = relation;
-    }
-    extractSamplesFrom(result) {
-        return [];
-    }
-    isRelationLoadedInDataBucket(model, relationName) {
-        const bucket = this.relation.getDataBucket();
+exports.RelationUtilities = {
+    isLoadedInDataBucket(relation, model, name) {
+        const bucket = relation.getDataBucket();
         if (!bucket) {
             return false;
         }
         return (bucket
             .getMetadata(model)
             .get('loaded', [])
-            .indexOf(relationName) !== -1);
-    }
-    setRelationLoadedInDataBucket(model, relationName) {
-        const bucket = this.relation.getDataBucket();
+            .indexOf(name) !== -1);
+    },
+    markLoadedInDataBucket(relation, model, name) {
+        const bucket = relation.getDataBucket();
         if (!bucket) {
             return;
         }
@@ -26,7 +20,6 @@ class RelationUtilities {
         if (!metadata.exists('loaded')) {
             metadata.set('loaded', []);
         }
-        metadata.get('loaded').push(relationName);
+        metadata.get('loaded').push(name);
     }
-}
-exports.RelationUtilities = RelationUtilities;
+};

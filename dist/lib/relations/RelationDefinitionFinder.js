@@ -2,7 +2,7 @@
 /// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/relations/IRelation.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-const RelationBase_1 = require("./RelationBase");
+const Relation_1 = require("./Relation");
 class RelationDefinitionFinder {
     constructor(model, prototype, bases) {
         this.model = model;
@@ -45,7 +45,7 @@ class RelationDefinitionFinder {
         try {
             if (typeof descriptor.value === 'function') {
                 const relation = descriptor.value.call(this.model);
-                if (relation instanceof RelationBase_1.RelationBase) {
+                if (relation instanceof Relation_1.Relation) {
                     return {
                         target: target,
                         accessor: relation.getName(),
@@ -55,7 +55,7 @@ class RelationDefinitionFinder {
             }
             if (typeof descriptor.get === 'function') {
                 const relation = descriptor.value.call(this.model);
-                if (relation instanceof RelationBase_1.RelationBase) {
+                if (relation instanceof Relation_1.Relation) {
                     return {
                         accessor: relation.getName(),
                         target: target,

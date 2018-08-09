@@ -1,7 +1,7 @@
 /// <reference path="../../definitions/relations/IRelation.d.ts" />
 /// <reference path="../../definitions/relations/IHasOne.d.ts" />
-import { RelationBase } from '../RelationBase';
-export declare class HasOne<T> extends RelationBase<T> implements NajsEloquent.Relation.IHasOne<T> {
+import { Relation } from '../Relation';
+export declare class HasOneRelation<T> extends Relation<T> implements NajsEloquent.Relation.IHasOne<T> {
     getClassName(): string;
     getType(): string;
     buildData(): T | undefined | null;
