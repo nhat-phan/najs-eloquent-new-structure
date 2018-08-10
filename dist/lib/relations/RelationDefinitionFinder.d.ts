@@ -9,5 +9,7 @@ export declare class RelationDefinitionFinder {
     constructor(model: IModel, prototype: object, bases: object[]);
     getDefinitions(): {};
     findDefinitionsInPrototype(prototype: object): {};
-    findDefinition(target: string, descriptor: PropertyDescriptor): RelationDefinition | undefined;
+    findDefinition(target: string, descriptor: PropertyDescriptor, className?: string): RelationDefinition | undefined;
+    warning(definition: RelationDefinition, definedDefinition: RelationDefinition): void;
+    formatTargetName(definition: RelationDefinition): string;
 }

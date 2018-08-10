@@ -13,7 +13,9 @@ import { FeatureBase } from './FeatureBase'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
 import { RelationDataBucket } from '../relations/RelationDataBucket'
 import { RelationData } from '../relations/RelationData'
+import { RelationFactory } from '../relations/RelationFactory'
 import { RelationPublicApi } from './mixin/RelationPublicApi'
+import { RelationDefinitionFinder } from '../relations/RelationDefinitionFinder'
 // import { parse_string_with_dot_notation } from '../util/functions'
 
 export class RelationFeature extends FeatureBase implements NajsEloquent.Feature.IRelationFeature {
@@ -23,6 +25,10 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
 
   // attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
   //   Object.assign(prototype, this.getPublicApi())
+
+  //   Object.defineProperty(prototype, 'relationDefinitions', {
+  //     value: this.buildDefinitions(Object.create(prototype), prototype, bases)
+  //   })
   // }
 
   getFeatureName(): string {
@@ -38,8 +44,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   makeFactory(model: IModel, accessor: string): IRelationFactory {
-    return {} as any
-    // return new RelationFactory(this, name, false)
+    return new RelationFactory(model, accessor)
   }
 
   getDataBucket(model: NajsEloquent.Model.IModel): IRelationDataBucket | undefined {
@@ -59,7 +64,9 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   buildDefinitions(model: IModel, prototype: object, bases: object[]): RelationDefinitions {
-    return {}
+    const finder = new RelationDefinitionFinder(model, prototype, bases)
+
+    return finder.getDefinitions()
   }
 
   findByName<T = {}>(model: IModel, name: string): IRelation<T> {

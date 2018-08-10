@@ -4,7 +4,26 @@
 import IModel = NajsEloquent.Model.IModel
 import RelationDefinition = NajsEloquent.Relation.RelationDefinition
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
+
+import { Model } from '../model/Model'
 import { Relation } from './Relation'
+import { EventPublicApi } from '../features/mixin/EventPublicApi'
+import { FillablePublicApi } from '../features/mixin/FillablePublicApi'
+import { RecordManagerPublicApi } from '../features/mixin/RecordManagerPublicApi'
+import { RelationPublicApi } from '../features/mixin/RelationPublicApi'
+import { SerializationPublicApi } from '../features/mixin/SerializationPublicApi'
+import { SoftDeletesPublicApi } from '../features/mixin/SoftDeletesPublicApi'
+import { TimestampsPublicApi } from '../features/mixin/TimestampsPublicApi'
+
+const PublicApiList = ['constructor', 'sharedMetadata'].concat(
+  Object.getOwnPropertyNames(EventPublicApi),
+  Object.getOwnPropertyNames(FillablePublicApi),
+  Object.getOwnPropertyNames(RecordManagerPublicApi),
+  Object.getOwnPropertyNames(RelationPublicApi),
+  Object.getOwnPropertyNames(SerializationPublicApi),
+  Object.getOwnPropertyNames(SoftDeletesPublicApi),
+  Object.getOwnPropertyNames(TimestampsPublicApi)
+)
 
 export class RelationDefinitionFinder {
   model: IModel
@@ -20,21 +39,25 @@ export class RelationDefinitionFinder {
   getDefinitions() {
     return [this.prototype, ...this.bases]
       .map(prototype => {
+        if (prototype === Model.prototype || prototype === Object.prototype) {
+          return {}
+        }
         return this.findDefinitionsInPrototype(prototype)
       })
       .reduce((memo: RelationDefinitions, definitions: RelationDefinitions) => {
-        const names = Object.keys(definitions)
-
-        if (names.length === 0) {
+        const targets = Object.keys(definitions)
+        if (targets.length === 0) {
           return memo
         }
 
-        for (const name in names) {
-          if (typeof memo[name] === 'undefined') {
+        for (const target of targets) {
+          const definition = definitions[target]
+          if (typeof memo[definition.accessor] !== 'undefined') {
+            this.warning(definition, memo[definition.accessor])
             continue
           }
 
-          memo[name] = definitions[name]
+          memo[definition.accessor] = definition
         }
 
         return memo
@@ -44,12 +67,13 @@ export class RelationDefinitionFinder {
   findDefinitionsInPrototype(prototype: object) {
     const descriptors = Object.getOwnPropertyDescriptors(prototype)
 
+    const className = typeof prototype['getClassName'] === 'function' ? prototype['getClassName']() : undefined
     return Object.keys(descriptors).reduce((value, name) => {
-      if (name === 'constructor') {
+      if (name === '' || PublicApiList.indexOf(name) !== -1) {
         return value
       }
 
-      const definition = this.findDefinition(name, descriptors[name])
+      const definition = this.findDefinition(name, descriptors[name], className)
       if (definition) {
         value[name] = definition
       }
@@ -58,7 +82,7 @@ export class RelationDefinitionFinder {
     }, {})
   }
 
-  findDefinition(target: string, descriptor: PropertyDescriptor): RelationDefinition | undefined {
+  findDefinition(target: string, descriptor: PropertyDescriptor, className?: string): RelationDefinition | undefined {
     try {
       if (typeof descriptor.value === 'function') {
         const relation = descriptor.value!.call(this.model)
@@ -66,25 +90,40 @@ export class RelationDefinitionFinder {
           return {
             target: target,
             accessor: relation.getName(),
-            targetType: 'function'
+            targetType: 'function',
+            targetClass: className
           }
         }
       }
 
       if (typeof descriptor.get === 'function') {
-        const relation = descriptor.value!.call(this.model)
+        const relation = descriptor.get!.call(this.model)
         if (relation instanceof Relation) {
           return {
             accessor: relation.getName(),
             target: target,
-            targetType: 'getter'
+            targetType: 'getter',
+            targetClass: className
           }
         }
       }
     } catch (error) {
       // console.error(error)
     }
-
     return undefined
+  }
+
+  warning(definition: RelationDefinition, definedDefinition: RelationDefinition) {
+    console.warn(
+      `The ${this.formatTargetName(definition)} redefines a relation on property`,
+      `"${definition.accessor}"`,
+      `which already defined by ${this.formatTargetName(definedDefinition)}`
+    )
+  }
+
+  formatTargetName(definition: RelationDefinition) {
+    const target = definition.targetType === 'function' ? `${definition.target}()` : `${definition.target}`
+    const className = !!definition.targetClass ? definition.targetClass + '.' : ''
+    return `"${className + target}"`
   }
 }

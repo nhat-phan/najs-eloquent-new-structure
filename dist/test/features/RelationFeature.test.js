@@ -7,6 +7,8 @@ const RelationFeature_1 = require("../../lib/features/RelationFeature");
 const RelationDataBucket_1 = require("../../lib/relations/RelationDataBucket");
 const RelationPublicApi_1 = require("../../lib/features/mixin/RelationPublicApi");
 const RelationData_1 = require("../../lib/relations/RelationData");
+const RelationFactory_1 = require("../../lib/relations/RelationFactory");
+const RelationDefinitionFinder_1 = require("../../lib/relations/RelationDefinitionFinder");
 describe('RelationFeature', function () {
     const feature = new RelationFeature_1.RelationFeature();
     it('extends FeatureBase and implements Autoload under name "NajsEloquent.Feature.RelationFeature"', function () {
@@ -30,9 +32,12 @@ describe('RelationFeature', function () {
         });
     });
     describe('.makeFactory()', function () {
-        it('do nothing for now', function () {
+        it('makes and returns an instance of RelationFactory', function () {
             const model = {};
-            feature.makeFactory(model, 'test');
+            const factory = feature.makeFactory(model, 'test');
+            expect(factory).toBeInstanceOf(RelationFactory_1.RelationFactory);
+            expect(factory['rootModel'] === model).toBe(true);
+            expect(factory['name'] === 'test').toBe(true);
         });
     });
     describe('.getDataBucket()', function () {
@@ -80,8 +85,14 @@ describe('RelationFeature', function () {
         });
     });
     describe('.buildDefinitions()', function () {
-        it('returns an empty object for now', function () {
-            expect(feature.buildDefinitions({}, {}, [])).toEqual({});
+        it('creates an instance of RelationDefinitionFinder then calls .getDefinitions()', function () {
+            const model = {};
+            const prototype = {};
+            const bases = [];
+            const stub = Sinon.stub(RelationDefinitionFinder_1.RelationDefinitionFinder.prototype, 'getDefinitions');
+            stub.returns('anything');
+            expect(feature.buildDefinitions(model, prototype, bases)).toEqual('anything');
+            stub.restore();
         });
     });
     describe('.findByName()', function () {

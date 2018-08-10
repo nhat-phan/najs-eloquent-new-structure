@@ -4,6 +4,7 @@ declare namespace NajsEloquent.Relation {
         accessor: string;
         target: string;
         targetType: 'getter' | 'function';
+        targetClass?: string;
     };
     type RelationDefinitions = {
         [name in string]: RelationDefinition;

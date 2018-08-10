@@ -5,6 +5,8 @@ import { RelationFeature } from '../../lib/features/RelationFeature'
 import { RelationDataBucket } from '../../lib/relations/RelationDataBucket'
 import { RelationPublicApi } from '../../lib/features/mixin/RelationPublicApi'
 import { RelationData } from '../../lib/relations/RelationData'
+import { RelationFactory } from '../../lib/relations/RelationFactory'
+import { RelationDefinitionFinder } from '../../lib/relations/RelationDefinitionFinder'
 
 describe('RelationFeature', function() {
   const feature = new RelationFeature()
@@ -34,9 +36,12 @@ describe('RelationFeature', function() {
   })
 
   describe('.makeFactory()', function() {
-    it('do nothing for now', function() {
+    it('makes and returns an instance of RelationFactory', function() {
       const model: any = {}
-      feature.makeFactory(model, 'test')
+      const factory = feature.makeFactory(model, 'test')
+      expect(factory).toBeInstanceOf(RelationFactory)
+      expect(factory['rootModel'] === model).toBe(true)
+      expect(factory['name'] === 'test').toBe(true)
     })
   })
 
@@ -91,8 +96,15 @@ describe('RelationFeature', function() {
   })
 
   describe('.buildDefinitions()', function() {
-    it('returns an empty object for now', function() {
-      expect(feature.buildDefinitions({} as any, {}, [])).toEqual({})
+    it('creates an instance of RelationDefinitionFinder then calls .getDefinitions()', function() {
+      const model: any = {}
+      const prototype: any = {}
+      const bases: any = []
+      const stub = Sinon.stub(RelationDefinitionFinder.prototype, 'getDefinitions')
+      stub.returns('anything')
+
+      expect(feature.buildDefinitions(model, prototype, bases)).toEqual('anything')
+      stub.restore()
     })
   })
 

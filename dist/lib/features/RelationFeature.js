@@ -7,7 +7,9 @@ const FeatureBase_1 = require("./FeatureBase");
 const constants_1 = require("../constants");
 const RelationDataBucket_1 = require("../relations/RelationDataBucket");
 const RelationData_1 = require("../relations/RelationData");
+const RelationFactory_1 = require("../relations/RelationFactory");
 const RelationPublicApi_1 = require("./mixin/RelationPublicApi");
+const RelationDefinitionFinder_1 = require("../relations/RelationDefinitionFinder");
 // import { parse_string_with_dot_notation } from '../util/functions'
 class RelationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
@@ -15,6 +17,9 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     }
     // attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
     //   Object.assign(prototype, this.getPublicApi())
+    //   Object.defineProperty(prototype, 'relationDefinitions', {
+    //     value: this.buildDefinitions(Object.create(prototype), prototype, bases)
+    //   })
     // }
     getFeatureName() {
         return 'Relation';
@@ -26,8 +31,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         return new RelationDataBucket_1.RelationDataBucket();
     }
     makeFactory(model, accessor) {
-        return {};
-        // return new RelationFactory(this, name, false)
+        return new RelationFactory_1.RelationFactory(model, accessor);
     }
     getDataBucket(model) {
         return this.useInternalOf(model).relationDataBucket;
@@ -42,7 +46,8 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         return this.useInternalOf(model).relationDefinitions;
     }
     buildDefinitions(model, prototype, bases) {
-        return {};
+        const finder = new RelationDefinitionFinder_1.RelationDefinitionFinder(model, prototype, bases);
+        return finder.getDefinitions();
     }
     findByName(model, name) {
         // const internalModel = this.useInternalOf(model)
