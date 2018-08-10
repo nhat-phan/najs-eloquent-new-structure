@@ -114,6 +114,8 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     const prototype = Object.getPrototypeOf(model)
     const bases = find_base_prototypes(prototype, Object.prototype)
 
+    this.definePropertiesBeforeAttachFeatures(model, prototype, bases)
+
     this.attachedModels[model.getModelName()] = {
       prototype: prototype,
       bases: bases
@@ -123,6 +125,25 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     for (const feature of features) {
       this.attachFeatureIfNeeded(feature, prototype, bases)
     }
+
+    this.definePropertiesAfterAttachFeatures(model, prototype, bases)
+  }
+
+  definePropertiesBeforeAttachFeatures(model: IModel, prototype: object, bases: object[]) {
+    if (typeof prototype['sharedMetadata'] === 'undefined') {
+      prototype['sharedMetadata'] = {}
+    }
+
+    if (typeof prototype['sharedMetadata']['features'] === 'undefined') {
+      prototype['sharedMetadata']['features'] = {}
+    }
+  }
+
+  definePropertiesAfterAttachFeatures(model: IModel, prototype: object, bases: object[]) {
+    const relationDefinitions = this.getRelationFeature().buildDefinitions(model, prototype, bases)
+    Object.defineProperty(prototype, 'relationDefinitions', {
+      value: relationDefinitions
+    })
   }
 
   getSharedFeatures(): NajsEloquent.Feature.IFeature[] {
@@ -149,14 +170,6 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   }
 
   attachFeatureIfNeeded(feature: NajsEloquent.Feature.IFeature, prototype: object, bases: object[]) {
-    if (typeof prototype['sharedMetadata'] === 'undefined') {
-      prototype['sharedMetadata'] = {}
-    }
-
-    if (typeof prototype['sharedMetadata']['features'] === 'undefined') {
-      prototype['sharedMetadata']['features'] = {}
-    }
-
     if (!prototype['sharedMetadata']['features'][feature.getFeatureName()]) {
       feature.attachPublicApi(prototype, bases, this)
       prototype['sharedMetadata']['features'][feature.getFeatureName()] = true

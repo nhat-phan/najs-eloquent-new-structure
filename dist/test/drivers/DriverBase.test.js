@@ -159,6 +159,8 @@ describe('DriverBase', function () {
                     return 'Test';
                 }
             }
+            const definePropertiesBeforeAttachFeaturesSpy = Sinon.spy(driver, 'definePropertiesBeforeAttachFeatures');
+            const definePropertiesAfterAttachFeatures = Sinon.spy(driver, 'definePropertiesAfterAttachFeatures');
             const attachFeatureIfNeededSpy = Sinon.spy(driver, 'attachFeatureIfNeeded');
             const bases = [A.prototype, Object.prototype];
             driver['attachedModels'] = {};
@@ -169,7 +171,54 @@ describe('DriverBase', function () {
             });
             expect(attachFeatureIfNeededSpy.callCount).toEqual(8);
             expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true);
+            expect(definePropertiesBeforeAttachFeaturesSpy.called).toBe(true);
+            expect(definePropertiesAfterAttachFeatures.called).toBe(true);
+            definePropertiesBeforeAttachFeaturesSpy.restore();
+            definePropertiesAfterAttachFeatures.restore();
             attachFeatureIfNeededSpy.restore();
+        });
+    });
+    describe('.definePropertiesBeforeAttachFeatures()', function () {
+        it('defines an empty object to prototype.sharedMetadata.features', function () {
+            const prototype = {};
+            driver.definePropertiesBeforeAttachFeatures({}, prototype, []);
+            expect(prototype).toEqual({
+                sharedMetadata: { features: {} }
+            });
+        });
+        it('defines an empty object to prototype.sharedMetadata.features if needed case 1', function () {
+            const prototype = { sharedMetadata: {} };
+            driver.definePropertiesBeforeAttachFeatures({}, prototype, []);
+            expect(prototype).toEqual({
+                sharedMetadata: { features: {} }
+            });
+        });
+        it('defines an empty object to prototype.sharedMetadata.features if needed case 2', function () {
+            const prototype = { sharedMetadata: { features: { test: 1 } } };
+            driver.definePropertiesBeforeAttachFeatures({}, prototype, []);
+            expect(prototype).toEqual({
+                sharedMetadata: { features: { test: 1 } }
+            });
+        });
+    });
+    describe('.definePropertiesAfterAttachFeatures()', function () {
+        it('calls RelationFeature.buildDefinitions() then define a property "relationDefinitions" to prototype', function () {
+            const getRelationFeatureStub = Sinon.stub(driver, 'getRelationFeature');
+            getRelationFeatureStub.returns({
+                buildDefinitions() {
+                    return 'anything';
+                }
+            });
+            const prototype = {};
+            driver.definePropertiesAfterAttachFeatures({}, prototype, []);
+            expect(Object.getOwnPropertyDescriptor(prototype, 'relationDefinitions')).toEqual({
+                value: 'anything',
+                writable: false,
+                enumerable: false,
+                configurable: false
+            });
+            expect(prototype['relationDefinitions']).toEqual('anything');
+            getRelationFeatureStub.restore();
         });
     });
     describe('.getSharedFeatures()', function () {
@@ -218,9 +267,8 @@ describe('DriverBase', function () {
         };
         it('initialize the sharedMetadata/sharedMetadata.features if needed', function () {
             const prototype = {};
+            driver.definePropertiesBeforeAttachFeatures({}, prototype, []);
             driver.attachFeatureIfNeeded(featureOne, prototype, []);
-            expect(prototype['sharedMetadata']).not.toBeUndefined();
-            expect(prototype['sharedMetadata']['features']).not.toBeUndefined();
             expect(prototype['sharedMetadata']['features']).toEqual({ one: true });
             driver.attachFeatureIfNeeded(featureTwo, prototype, []);
             expect(prototype['sharedMetadata']['features']).toEqual({ one: true, two: true });
@@ -229,6 +277,7 @@ describe('DriverBase', function () {
             const attachPublicApiSpy = Sinon.spy(featureOne, 'attachPublicApi');
             const prototype = {};
             const bases = [];
+            driver.definePropertiesBeforeAttachFeatures({}, prototype, bases);
             driver.attachFeatureIfNeeded(featureOne, prototype, bases);
             driver.attachFeatureIfNeeded(featureOne, prototype, bases);
             driver.attachFeatureIfNeeded(featureOne, prototype, bases);

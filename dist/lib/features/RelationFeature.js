@@ -77,7 +77,20 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         }
         return internalModel.relations[name];
     }
-    defineAccessor(model, accessor) { }
+    defineAccessor(model, accessor) {
+        // const prototype = Object.getPrototypeOf(model)
+        // const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, accessor)
+        // if (!propertyDescriptor) {
+        //   Object.defineProperty(prototype, accessor, {
+        //     get: function(this: IModel) {
+        //       const relation = this.getDriver()
+        //         .getRelationFeature()
+        //         .findByName(this, accessor)
+        //       return relation.getData()
+        //     }
+        //   })
+        // }
+    }
 }
 exports.RelationFeature = RelationFeature;
 najs_binding_1.register(RelationFeature, constants_1.NajsEloquent.Feature.RelationFeature);

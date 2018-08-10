@@ -80,6 +80,7 @@ class DriverBase {
         }
         const prototype = Object.getPrototypeOf(model);
         const bases = functions_1.find_base_prototypes(prototype, Object.prototype);
+        this.definePropertiesBeforeAttachFeatures(model, prototype, bases);
         this.attachedModels[model.getModelName()] = {
             prototype: prototype,
             bases: bases
@@ -88,6 +89,21 @@ class DriverBase {
         for (const feature of features) {
             this.attachFeatureIfNeeded(feature, prototype, bases);
         }
+        this.definePropertiesAfterAttachFeatures(model, prototype, bases);
+    }
+    definePropertiesBeforeAttachFeatures(model, prototype, bases) {
+        if (typeof prototype['sharedMetadata'] === 'undefined') {
+            prototype['sharedMetadata'] = {};
+        }
+        if (typeof prototype['sharedMetadata']['features'] === 'undefined') {
+            prototype['sharedMetadata']['features'] = {};
+        }
+    }
+    definePropertiesAfterAttachFeatures(model, prototype, bases) {
+        const relationDefinitions = this.getRelationFeature().buildDefinitions(model, prototype, bases);
+        Object.defineProperty(prototype, 'relationDefinitions', {
+            value: relationDefinitions
+        });
     }
     getSharedFeatures() {
         return [
@@ -110,12 +126,6 @@ class DriverBase {
         ]);
     }
     attachFeatureIfNeeded(feature, prototype, bases) {
-        if (typeof prototype['sharedMetadata'] === 'undefined') {
-            prototype['sharedMetadata'] = {};
-        }
-        if (typeof prototype['sharedMetadata']['features'] === 'undefined') {
-            prototype['sharedMetadata']['features'] = {};
-        }
         if (!prototype['sharedMetadata']['features'][feature.getFeatureName()]) {
             feature.attachPublicApi(prototype, bases, this);
             prototype['sharedMetadata']['features'][feature.getFeatureName()] = true;

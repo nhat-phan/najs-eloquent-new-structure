@@ -46,6 +46,8 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     getRelationFeature(): NajsEloquent.Feature.IRelationFeature;
     makeModel<M extends IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
     attachPublicApiIfNeeded(model: IModel): void;
+    definePropertiesBeforeAttachFeatures(model: IModel, prototype: object, bases: object[]): void;
+    definePropertiesAfterAttachFeatures(model: IModel, prototype: object, bases: object[]): void;
     getSharedFeatures(): NajsEloquent.Feature.IFeature[];
     getCustomFeatures(): NajsEloquent.Feature.IFeature[];
     getFeatures(): NajsEloquent.Feature.IFeature[];
