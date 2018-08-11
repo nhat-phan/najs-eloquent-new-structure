@@ -17,6 +17,7 @@ export declare abstract class RecordManagerBase<T> implements NajsEloquent.Featu
     abstract markModified(model: Model, keys: ArrayLike<Array<string | string[]>>): void;
     abstract isModified(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean;
     abstract getModified(model: Model): string[];
+    abstract isNew(model: Model): boolean;
     abstract getClassName(): string;
     getFeatureName(): string;
     getRecordName(model: Model): string;

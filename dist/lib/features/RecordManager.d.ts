@@ -11,4 +11,5 @@ export declare class RecordManager<T extends Record> extends RecordManagerBase<T
     markModified(model: NajsEloquent.Model.ModelInternal<Record>, keys: ArrayLike<Array<string | string[]>>): void;
     isModified(model: NajsEloquent.Model.ModelInternal<Record>, keys: ArrayLike<Array<string | string[]>>): boolean;
     getModified(model: NajsEloquent.Model.ModelInternal<Record>): string[];
+    isNew(model: NajsEloquent.Model.ModelInternal<Record>): boolean;
 }

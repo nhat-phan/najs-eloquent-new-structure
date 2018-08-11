@@ -57,7 +57,7 @@ export abstract class Relation<T> {
   }
 
   getData(): T | undefined | null {
-    // if (this.isLoaded()) {
+    // if (!this.isLoaded()) {
     //   return undefined
     // }
 
@@ -66,17 +66,12 @@ export abstract class Relation<T> {
     //   return relationData.getData()
     // }
 
-    // TODO: here
+    // // return this.setInverseRelationsLoadedStatus(this.buildData())
+    // return this.buildData()
     return undefined
   }
 
   async load(): Promise<T | undefined | null> {
-    // const relationData = this.getRelationData()
-    // if (relationData.isBuilt()) {
-    //   return relationData.getData()
-    // }
-
-    // here
     return undefined
   }
 }

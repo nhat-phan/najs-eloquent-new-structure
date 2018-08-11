@@ -11,30 +11,30 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
 
   initialize(model: NajsEloquent.Model.ModelInternal<Record>, isGuarded: boolean, data?: T | object): void {
     if (data instanceof Record) {
-      model['attributes'] = data
+      model.attributes = data
       return
     }
 
     if (typeof data !== 'object') {
-      model['attributes'] = new Record()
+      model.attributes = new Record()
       return
     }
 
     if (!isGuarded) {
-      model['attributes'] = new Record(data as object)
+      model.attributes = new Record(data as object)
       return
     }
 
-    model['attributes'] = new Record()
+    model.attributes = new Record()
     model.fill(data)
   }
 
   getAttribute(model: NajsEloquent.Model.ModelInternal<Record>, key: string): any {
-    return model['attributes'].getAttribute(key)
+    return model.attributes.getAttribute(key)
   }
 
   setAttribute<T>(model: NajsEloquent.Model.ModelInternal<Record>, key: string, value: T): boolean {
-    return model['attributes'].setAttribute(key, value)
+    return model.attributes.setAttribute(key, value)
   }
 
   hasAttribute(model: NajsEloquent.Model.IModel, key: string): boolean {
@@ -49,19 +49,19 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
   }
 
   toObject(model: NajsEloquent.Model.ModelInternal<Record>): object {
-    return model['attributes'].toObject()
+    return model.attributes.toObject()
   }
 
   markModified(model: NajsEloquent.Model.ModelInternal<Record>, keys: ArrayLike<Array<string | string[]>>): void {
     const attributes = flatten(flatten(keys))
     for (const attribute of attributes) {
-      model['attributes'].markModified(attribute)
+      model.attributes.markModified(attribute)
     }
   }
 
   isModified(model: NajsEloquent.Model.ModelInternal<Record>, keys: ArrayLike<Array<string | string[]>>): boolean {
     const attributes = flatten(flatten(keys))
-    const modified = model['attributes'].getModified()
+    const modified = model.attributes.getModified()
     for (const attribute of attributes) {
       if (modified.indexOf(attribute) === -1) {
         return false
@@ -71,7 +71,11 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
   }
 
   getModified(model: NajsEloquent.Model.ModelInternal<Record>): string[] {
-    return model['attributes'].getModified()
+    return model.attributes.getModified()
+  }
+
+  isNew(model: NajsEloquent.Model.ModelInternal<Record>): boolean {
+    return !this.getPrimaryKey(model)
   }
 }
 register(RecordManager, NajsEloquent.Feature.RecordManager)

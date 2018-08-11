@@ -55,5 +55,9 @@ export const RecordManagerPublicApi: NajsEloquent.Model.IModelRecord<any> = {
 
   getModified(this: Model): string[] {
     return this.driver.getRecordManager().getModified(this)
+  },
+
+  isNew(this: Model): boolean {
+    return this.driver.getRecordManager().isNew(this)
   }
 }

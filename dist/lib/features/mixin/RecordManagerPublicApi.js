@@ -39,5 +39,8 @@ exports.RecordManagerPublicApi = {
     },
     getModified() {
         return this.driver.getRecordManager().getModified(this);
+    },
+    isNew() {
+        return this.driver.getRecordManager().isNew(this);
     }
 };

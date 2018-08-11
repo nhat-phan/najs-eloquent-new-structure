@@ -34,6 +34,10 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   abstract getModified(model: Model): string[]
 
+  abstract isNew(model: Model): boolean
+
+  // abstract getRecordExecutor(): boolean
+
   abstract getClassName(): string
 
   getFeatureName(): string {
@@ -45,7 +49,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
   }
 
   getRecord(model: Model<T>): T {
-    return model['attributes']
+    return model.attributes
   }
 
   formatAttributeName(model: Model, name: string): string {

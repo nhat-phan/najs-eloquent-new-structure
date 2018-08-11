@@ -48,6 +48,7 @@ export class SoftDeletesFeature extends FeatureBase implements NajsEloquent.Feat
   async forceDelete(model: NajsEloquent.Model.IModel): Promise<boolean> {
     await model.fire(ModelEvent.Deleting)
     // TODO: implement delete
+    // this.useRecordManagerOf(model).delete(model)
     await model.fire(ModelEvent.Deleted)
 
     return true

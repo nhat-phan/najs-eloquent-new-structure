@@ -123,5 +123,50 @@ namespace NajsEloquent.Feature {
      * Get modified fields name.
      */
     getModified(model: Model.IModel): string[]
+
+    /**
+     * Determine the model is new or not.
+     */
+    isNew(model: Model.IModel): boolean
+
+    // /**
+    //  * Get the record executor instance
+    //  */
+    // getRecordExecutor(): IRecordExecutor<T>
+
+    // /**
+    //  * Create the given model.
+    //  *
+    //  * @param {Model} model
+    //  */
+    // save<R = any>(model: Model.IModel): Promise<R>
+
+    // /**
+    //  * Create the given model.
+    //  *
+    //  * @param {Model} model
+    //  */
+    // create<R = any>(model: Model.IModel): Promise<R>
+
+    // /**
+    //  * Create the given model.
+    //  *
+    //  * @param {Model} model
+    //  */
+    // update<R = any>(model: Model.IModel): Promise<R>
+
+    // /**
+    //  * Delete the given model.
+    //  *
+    //  * @param {Model} model
+    //  */
+    // delete<R = any>(model: Model.IModel, useSoftDelete: boolean): Promise<R>
+
+    // /**
+    //  * Restore the given model.
+    //  *
+    //  * @param {Model} model
+    //  */
+    // restore<R = any>(model: Model.IModel): Promise<R>
   }
 }

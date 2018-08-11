@@ -29,22 +29,18 @@ class Relation {
         return this.getRelationData().isLoaded() || RelationUtilities_1.RelationUtilities.isLoadedInDataBucket(this, this.rootModel, this.name);
     }
     getData() {
-        // if (this.isLoaded()) {
+        // if (!this.isLoaded()) {
         //   return undefined
         // }
         // const relationData = this.getRelationData()
         // if (relationData.isBuilt()) {
         //   return relationData.getData()
         // }
-        // TODO: here
+        // // return this.setInverseRelationsLoadedStatus(this.buildData())
+        // return this.buildData()
         return undefined;
     }
     async load() {
-        // const relationData = this.getRelationData()
-        // if (relationData.isBuilt()) {
-        //   return relationData.getData()
-        // }
-        // here
         return undefined;
     }
 }

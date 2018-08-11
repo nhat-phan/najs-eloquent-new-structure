@@ -209,4 +209,29 @@ describe('RecordManager', function() {
       expect(stub.calledWith()).toBe(true)
     })
   })
+
+  describe('.isNew()', function() {
+    it('returns true if .getPrimaryKey() returns falsy values, otherwise returns false', function() {
+      const dataset = [
+        { input: undefined, output: true },
+        // tslint:disable-next-line
+        { input: null, output: true },
+        { input: '', output: true },
+        { input: 0, output: true },
+        { input: false, output: true },
+        { input: true, output: false },
+        { input: 1, output: false },
+        { input: 'any', output: false }
+      ]
+      for (const data of dataset) {
+        const model: any = {}
+        const stub = Sinon.stub(RecordManager.prototype, 'getPrimaryKey')
+        stub.returns(data.input)
+
+        expect(recordManager.isNew(model)).toBe(data.output)
+        expect(stub.calledWith(model)).toBe(true)
+        stub.restore()
+      }
+    })
+  })
 })

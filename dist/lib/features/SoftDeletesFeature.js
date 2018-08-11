@@ -32,6 +32,7 @@ class SoftDeletesFeature extends FeatureBase_1.FeatureBase {
     async forceDelete(model) {
         await model.fire(ModelEvent_1.ModelEvent.Deleting);
         // TODO: implement delete
+        // this.useRecordManagerOf(model).delete(model)
         await model.fire(ModelEvent_1.ModelEvent.Deleted);
         return true;
     }

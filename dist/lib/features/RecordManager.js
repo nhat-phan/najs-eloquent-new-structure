@@ -11,25 +11,25 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
     }
     initialize(model, isGuarded, data) {
         if (data instanceof Record_1.Record) {
-            model['attributes'] = data;
+            model.attributes = data;
             return;
         }
         if (typeof data !== 'object') {
-            model['attributes'] = new Record_1.Record();
+            model.attributes = new Record_1.Record();
             return;
         }
         if (!isGuarded) {
-            model['attributes'] = new Record_1.Record(data);
+            model.attributes = new Record_1.Record(data);
             return;
         }
-        model['attributes'] = new Record_1.Record();
+        model.attributes = new Record_1.Record();
         model.fill(data);
     }
     getAttribute(model, key) {
-        return model['attributes'].getAttribute(key);
+        return model.attributes.getAttribute(key);
     }
     setAttribute(model, key, value) {
-        return model['attributes'].setAttribute(key, value);
+        return model.attributes.setAttribute(key, value);
     }
     hasAttribute(model, key) {
         return true;
@@ -41,17 +41,17 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
             .getSettingProperty(model, 'primaryKey', 'id');
     }
     toObject(model) {
-        return model['attributes'].toObject();
+        return model.attributes.toObject();
     }
     markModified(model, keys) {
         const attributes = lodash_1.flatten(lodash_1.flatten(keys));
         for (const attribute of attributes) {
-            model['attributes'].markModified(attribute);
+            model.attributes.markModified(attribute);
         }
     }
     isModified(model, keys) {
         const attributes = lodash_1.flatten(lodash_1.flatten(keys));
-        const modified = model['attributes'].getModified();
+        const modified = model.attributes.getModified();
         for (const attribute of attributes) {
             if (modified.indexOf(attribute) === -1) {
                 return false;
@@ -60,7 +60,10 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
         return true;
     }
     getModified(model) {
-        return model['attributes'].getModified();
+        return model.attributes.getModified();
+    }
+    isNew(model) {
+        return !this.getPrimaryKey(model);
     }
 }
 exports.RecordManager = RecordManager;

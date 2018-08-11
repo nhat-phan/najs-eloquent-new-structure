@@ -68,5 +68,9 @@ declare namespace NajsEloquent.Model {
          * Get modified fields name.
          */
         getModified(): string[];
+        /**
+         * Determine the model is new or not.
+         */
+        isNew(model: Model.IModel): boolean;
     }
 }

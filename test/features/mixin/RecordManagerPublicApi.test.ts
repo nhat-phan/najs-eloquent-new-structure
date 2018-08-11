@@ -39,6 +39,9 @@ describe('RecordManagerPublicApi', function() {
     },
     getModified() {
       return 'getModified-result'
+    },
+    isNew() {
+      return 'isNew-result'
     }
   }
 
@@ -181,6 +184,17 @@ describe('RecordManagerPublicApi', function() {
       stub.returns('anything')
 
       expect(RecordManagerPublicApi.getModified.call(model)).toEqual('anything')
+      expect(stub.calledWith(model)).toBe(true)
+      stub.restore()
+    })
+  })
+
+  describe('.isNew()', function() {
+    it('calls and returns RecordManager.isNew()', function() {
+      const stub = Sinon.stub(recordManager, 'isNew')
+      stub.returns('anything')
+
+      expect(RecordManagerPublicApi.isNew.call(model)).toEqual('anything')
       expect(stub.calledWith(model)).toBe(true)
       stub.restore()
     })

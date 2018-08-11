@@ -21,7 +21,7 @@ class RecordManagerBase {
         return lodash_2.snakeCase(pluralize_1.plural(model.getModelName()));
     }
     getRecord(model) {
-        return model['attributes'];
+        return model.attributes;
     }
     formatAttributeName(model, name) {
         return lodash_2.snakeCase(name);
