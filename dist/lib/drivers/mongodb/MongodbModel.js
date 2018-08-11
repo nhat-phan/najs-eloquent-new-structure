@@ -8,11 +8,11 @@ class MongodbModel extends Model_1.Model {
         binding_1.bind_driver_if_needed(this.getModelName(), MongodbDriver_1.MongodbDriver.name, MongodbDriver_1.MongodbDriver);
         return super.makeDriver();
     }
-    query() {
-        return super.query();
+    newQuery() {
+        return super.newQuery();
     }
     getNativeCollection() {
-        return this.query().collection();
+        return this.newQuery().collection();
     }
 }
 exports.MongodbModel = MongodbModel;

@@ -14,11 +14,11 @@ export class MongodbModel extends Model {
     return super.makeDriver()
   }
 
-  query(): MongodbQueryBuilder<this, MongodbQueryBuilderHandler> {
-    return super.query() as MongodbQueryBuilder<this, MongodbQueryBuilderHandler>
+  newQuery(): MongodbQueryBuilder<this, MongodbQueryBuilderHandler> {
+    return super.newQuery() as MongodbQueryBuilder<this, MongodbQueryBuilderHandler>
   }
 
   getNativeCollection<T>(): Collection<T> {
-    return this.query().collection()
+    return this.newQuery().collection()
   }
 }

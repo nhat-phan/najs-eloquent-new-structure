@@ -9,9 +9,9 @@ EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 describe('Model', function() {
   it('should works', function() {
     const test = new Model()
-    test.query()
+    test.newQuery()
     try {
-      test.query('test')
+      test.newQuery('test')
     } catch (error) {}
   })
 

@@ -9,9 +9,9 @@ EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.Dum
 describe('Model', function () {
     it('should works', function () {
         const test = new Model_1.Model();
-        test.query();
+        test.newQuery();
         try {
-            test.query('test');
+            test.newQuery('test');
         }
         catch (error) { }
     });

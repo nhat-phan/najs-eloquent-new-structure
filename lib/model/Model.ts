@@ -27,7 +27,7 @@ export class Model {
     return getClassName(this)
   }
 
-  query(name?: string) {
+  newQuery(name?: string) {
     const query = this.driver.newQuery<any>(this)
 
     return typeof name !== 'undefined' ? query.queryName(name) : query

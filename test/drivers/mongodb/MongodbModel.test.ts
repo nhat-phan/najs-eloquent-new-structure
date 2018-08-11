@@ -17,15 +17,15 @@ describe('MongodbModel', function() {
     expect(model).toBeInstanceOf(Model)
   })
 
-  describe('.query()', function() {
+  describe('.newQuery()', function() {
     it('returns an instance of MongodbQueryBuilder', function() {
       const model = new User()
-      expect(model.query()).toBeInstanceOf(MongodbQueryBuilder)
+      expect(model.newQuery()).toBeInstanceOf(MongodbQueryBuilder)
     })
   })
 
   describe('.getNativeCollection()', function() {
-    it('calls and returns .query().collection()', function() {
+    it('calls and returns .newQuery().collection()', function() {
       const collection = {}
       const fakeQuery = {
         collection() {
@@ -33,8 +33,8 @@ describe('MongodbModel', function() {
         }
       }
       const model = new User()
-      const queryStub = Sinon.stub(model, 'query')
-      queryStub.returns(fakeQuery)
+      const newQueryStub = Sinon.stub(model, 'newQuery')
+      newQueryStub.returns(fakeQuery)
 
       expect(model.getNativeCollection() === collection).toBe(true)
     })

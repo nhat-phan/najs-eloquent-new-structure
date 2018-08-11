@@ -74,12 +74,12 @@ namespace NajsEloquent.Model {
     /**
      * Start new query of model.
      */
-    query(): NajsEloquent.QueryBuilder.IQueryBuilder<this>
+    newQuery(): NajsEloquent.QueryBuilder.IQueryBuilder<this>
 
     /**
      * Start new query of model with name.
      */
-    query(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<this>
+    newQuery(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<this>
   }
 
   export type ModelInternal<T = any> = IModel & {
