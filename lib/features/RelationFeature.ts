@@ -15,21 +15,14 @@ import { RelationDataBucket } from '../relations/RelationDataBucket'
 import { RelationData } from '../relations/RelationData'
 import { RelationFactory } from '../relations/RelationFactory'
 import { RelationPublicApi } from './mixin/RelationPublicApi'
+import { RelationNotDefinedError } from '../errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../relations/RelationDefinitionFinder'
-// import { parse_string_with_dot_notation } from '../util/functions'
+import { parse_string_with_dot_notation } from '../util/functions'
 
 export class RelationFeature extends FeatureBase implements NajsEloquent.Feature.IRelationFeature {
   getPublicApi(): object {
     return RelationPublicApi
   }
-
-  // attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-  //   Object.assign(prototype, this.getPublicApi())
-
-  //   Object.defineProperty(prototype, 'relationDefinitions', {
-  //     value: this.buildDefinitions(Object.create(prototype), prototype, bases)
-  //   })
-  // }
 
   getFeatureName(): string {
     return 'Relation'
@@ -70,27 +63,26 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   findByName<T = {}>(model: IModel, name: string): IRelation<T> {
-    // const internalModel = this.useInternalOf(model)
+    const internalModel = this.useInternalOf(model)
 
-    // const info = parse_string_with_dot_notation(name)
-    // if (
-    //   typeof internalModel.relationDefinitions === 'undefined' ||
-    //   typeof internalModel.relationDefinitions[info.first] === 'undefined'
-    // ) {
-    //   throw new Error(`Relation "${info.first}" is not found in model "${internalModel.getModelName()}".`)
-    // }
+    const info = parse_string_with_dot_notation(name)
+    if (
+      typeof internalModel.relationDefinitions === 'undefined' ||
+      typeof internalModel.relationDefinitions[info.first] === 'undefined'
+    ) {
+      throw new RelationNotDefinedError(info.first, internalModel.getModelName())
+    }
 
-    // const definition = internalModel.relationDefinitions[info.first]
-    // const relation: IRelation<T> =
-    //   definition.targetType === 'getter'
-    //     ? internalModel[definition.target]
-    //     : internalModel[definition.target].call(this)
+    const definition = internalModel.relationDefinitions[info.first]
+    const relation: IRelation<T> =
+      definition.targetType === 'getter'
+        ? internalModel[definition.target]
+        : internalModel[definition.target].call(this)
 
-    // if (info.afterFirst) {
-    //   relation.with(info.afterFirst)
-    // }
-    // return relation
-    return {} as any
+    if (info.afterFirst) {
+      relation.with(info.afterFirst)
+    }
+    return relation
   }
 
   findDataByName<T>(model: IModel, name: string): IRelationData<T> {
@@ -110,10 +102,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     // if (!propertyDescriptor) {
     //   Object.defineProperty(prototype, accessor, {
     //     get: function(this: IModel) {
-    //       const relation = this.getDriver()
-    //         .getRelationFeature()
-    //         .findByName(this, accessor)
-    //       return relation.getData()
+    //       return this.getRelationByName(accessor).getData()
     //     }
     //   })
     // }

@@ -6,6 +6,7 @@ import { RelationDataBucket } from '../../lib/relations/RelationDataBucket'
 import { RelationPublicApi } from '../../lib/features/mixin/RelationPublicApi'
 import { RelationData } from '../../lib/relations/RelationData'
 import { RelationFactory } from '../../lib/relations/RelationFactory'
+import { RelationNotDefinedError } from '../../lib/errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../../lib/relations/RelationDefinitionFinder'
 
 describe('RelationFeature', function() {
@@ -109,8 +110,103 @@ describe('RelationFeature', function() {
   })
 
   describe('.findByName()', function() {
-    it('returns an empty object for now', function() {
-      expect(feature.findByName({} as any, 'test')).toEqual({})
+    it('throws a RelationNotDefinedError if the relationDefinitions of model is not found', function() {
+      const model: any = {
+        getModelName() {
+          return 'Test'
+        }
+      }
+
+      try {
+        feature.findByName(model, 'any')
+      } catch (error) {
+        expect(error).toBeInstanceOf(RelationNotDefinedError)
+        expect(error.message).toEqual('Relation any is not defined in model Test.')
+        return
+      }
+      expect('should not reach here').toEqual('hm')
+    })
+
+    it('throws a RelationNotDefinedError if the name is not found in relationDefinitions', function() {
+      const model: any = {
+        relationDefinitions: {
+          test: true
+        },
+
+        getModelName() {
+          return 'Test'
+        }
+      }
+
+      try {
+        feature.findByName(model, 'any')
+      } catch (error) {
+        expect(error).toBeInstanceOf(RelationNotDefinedError)
+        expect(error.message).toEqual('Relation any is not defined in model Test.')
+        return
+      }
+      expect('should not reach here').toEqual('hm')
+    })
+
+    it('gets definitions in relationDefinition, then trigger the target type "getter"', function() {
+      const relation: any = {}
+      const model: any = {
+        relationDefinitions: {
+          test: {
+            accessor: 'test',
+            target: 'relation',
+            targetType: 'getter'
+          }
+        },
+
+        get relation() {
+          return relation
+        }
+      }
+
+      expect(feature.findByName(model, 'test') === relation).toBe(true)
+    })
+
+    it('gets definitions in relationDefinition, then trigger the target type "function"', function() {
+      const relation: any = {}
+      const model: any = {
+        relationDefinitions: {
+          test: {
+            accessor: 'test',
+            target: 'getRelation',
+            targetType: 'function'
+          }
+        },
+
+        getRelation() {
+          return relation
+        }
+      }
+
+      expect(feature.findByName(model, 'test') === relation).toBe(true)
+    })
+
+    it('splits input by dot, and find the relation by first part, then passes the rest to relation.with()', function() {
+      const relation: any = {
+        with() {}
+      }
+      const model: any = {
+        relationDefinitions: {
+          test: {
+            accessor: 'test',
+            target: 'getRelation',
+            targetType: 'function'
+          }
+        },
+
+        getRelation() {
+          return relation
+        }
+      }
+
+      const withSpy = Sinon.spy(relation, 'with')
+      expect(feature.findByName(model, 'test.a.b') === relation).toBe(true)
+      expect(withSpy.calledWith('a.b')).toBe(true)
     })
   })
 

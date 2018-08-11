@@ -9,18 +9,13 @@ const RelationDataBucket_1 = require("../relations/RelationDataBucket");
 const RelationData_1 = require("../relations/RelationData");
 const RelationFactory_1 = require("../relations/RelationFactory");
 const RelationPublicApi_1 = require("./mixin/RelationPublicApi");
+const RelationNotDefinedError_1 = require("../errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../relations/RelationDefinitionFinder");
-// import { parse_string_with_dot_notation } from '../util/functions'
+const functions_1 = require("../util/functions");
 class RelationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return RelationPublicApi_1.RelationPublicApi;
     }
-    // attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    //   Object.assign(prototype, this.getPublicApi())
-    //   Object.defineProperty(prototype, 'relationDefinitions', {
-    //     value: this.buildDefinitions(Object.create(prototype), prototype, bases)
-    //   })
-    // }
     getFeatureName() {
         return 'Relation';
     }
@@ -50,24 +45,20 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         return finder.getDefinitions();
     }
     findByName(model, name) {
-        // const internalModel = this.useInternalOf(model)
-        // const info = parse_string_with_dot_notation(name)
-        // if (
-        //   typeof internalModel.relationDefinitions === 'undefined' ||
-        //   typeof internalModel.relationDefinitions[info.first] === 'undefined'
-        // ) {
-        //   throw new Error(`Relation "${info.first}" is not found in model "${internalModel.getModelName()}".`)
-        // }
-        // const definition = internalModel.relationDefinitions[info.first]
-        // const relation: IRelation<T> =
-        //   definition.targetType === 'getter'
-        //     ? internalModel[definition.target]
-        //     : internalModel[definition.target].call(this)
-        // if (info.afterFirst) {
-        //   relation.with(info.afterFirst)
-        // }
-        // return relation
-        return {};
+        const internalModel = this.useInternalOf(model);
+        const info = functions_1.parse_string_with_dot_notation(name);
+        if (typeof internalModel.relationDefinitions === 'undefined' ||
+            typeof internalModel.relationDefinitions[info.first] === 'undefined') {
+            throw new RelationNotDefinedError_1.RelationNotDefinedError(info.first, internalModel.getModelName());
+        }
+        const definition = internalModel.relationDefinitions[info.first];
+        const relation = definition.targetType === 'getter'
+            ? internalModel[definition.target]
+            : internalModel[definition.target].call(this);
+        if (info.afterFirst) {
+            relation.with(info.afterFirst);
+        }
+        return relation;
     }
     findDataByName(model, name) {
         const internalModel = this.useInternalOf(model);
@@ -83,10 +74,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         // if (!propertyDescriptor) {
         //   Object.defineProperty(prototype, accessor, {
         //     get: function(this: IModel) {
-        //       const relation = this.getDriver()
-        //         .getRelationFeature()
-        //         .findByName(this, accessor)
-        //       return relation.getData()
+        //       return this.getRelationByName(accessor).getData()
         //     }
         //   })
         // }
