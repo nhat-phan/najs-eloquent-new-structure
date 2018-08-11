@@ -97,15 +97,15 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   defineAccessor(model: IModel, accessor: string): void {
-    // const prototype = Object.getPrototypeOf(model)
-    // const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, accessor)
-    // if (!propertyDescriptor) {
-    //   Object.defineProperty(prototype, accessor, {
-    //     get: function(this: IModel) {
-    //       return this.getRelationByName(accessor).getData()
-    //     }
-    //   })
-    // }
+    const prototype = Object.getPrototypeOf(model)
+    const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, accessor)
+    if (!propertyDescriptor) {
+      Object.defineProperty(prototype, accessor, {
+        get: function(this: IModel) {
+          return this.getRelationByName(accessor).getData()
+        }
+      })
+    }
   }
 }
 register(RelationFeature, NajsEloquentClasses.Feature.RelationFeature)

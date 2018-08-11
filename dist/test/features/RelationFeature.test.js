@@ -209,9 +209,30 @@ describe('RelationFeature', function () {
         });
     });
     describe('.defineAccessor()', function () {
-        it('do nothing for now', function () {
-            const model = {};
+        it('does nothing if the accessor already defined in prototype', function () {
+            class A {
+                get test() {
+                    return 'anything';
+                }
+            }
+            const model = new A();
             feature.defineAccessor(model, 'test');
+            expect(model.test).toEqual('anything');
+        });
+        it('defines an accessor which call this.getRelationByName(accessor).getData() in model prototype', function () {
+            class B {
+                getRelationByName(name) {
+                    return {
+                        getData() {
+                            return name + '-data';
+                        }
+                    };
+                }
+            }
+            const model = new B();
+            feature.defineAccessor(model, 'test');
+            expect(model.test).toEqual('test-data');
+            expect(model['not-found']).toBeUndefined();
         });
     });
 });
