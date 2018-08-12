@@ -3,7 +3,7 @@ import { init_mongodb } from '../../util'
 import { QueryBuilderHandlerBase } from '../../../lib/query-builders/QueryBuilderHandlerBase'
 import { MongodbQueryBuilderHandler } from '../../../lib/drivers/mongodb/MongodbQueryBuilderHandler'
 import { BasicQuery } from '../../../lib/query-builders/shared/BasicQuery'
-import { MongodbExecutor } from '../../../lib/drivers/mongodb/MongodbExecutor'
+import { MongodbQueryExecutor } from '../../../lib/drivers/mongodb/MongodbQueryExecutor'
 import { ConditionQueryHandler } from '../../../lib/query-builders/shared/ConditionQueryHandler'
 import { MongodbConvention } from '../../../lib/query-builders/shared/MongodbConvention'
 
@@ -64,7 +64,7 @@ describe('MongodbQueryBuilderHandler', function() {
   })
 
   describe('.getQueryExecutor()', function() {
-    it('creates and returns new instance of MongodbExecutor', function() {
+    it('creates and returns new instance of MongodbQueryExecutor', function() {
       const model: any = {
         getRecordName() {
           return 'model'
@@ -74,7 +74,7 @@ describe('MongodbQueryBuilderHandler', function() {
       const executor1 = handler.getQueryExecutor()
       const executor2 = handler.getQueryExecutor()
       expect(executor1 === executor2).toBe(false)
-      expect(executor1).toBeInstanceOf(MongodbExecutor)
+      expect(executor1).toBeInstanceOf(MongodbQueryExecutor)
     })
   })
 })

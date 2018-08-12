@@ -2,12 +2,12 @@
 /// <reference path="../definitions/features/ISoftDeletesFeature.d.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 /// <reference path="../definitions/query-builders/IConvention.d.ts" />
-/// <reference path="../definitions/query-builders/IExecutor.d.ts" />
+/// <reference path="../definitions/query-builders/IQueryExecutor.d.ts" />
 /// <reference path="../definitions/query-builders/IQueryBuilderHandler.d.ts" />
 /// <reference path="../definitions/query-grammars/IBasicQuery.d.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
-import IExecutor = NajsEloquent.QueryBuilder.IExecutor;
+import IQueryExecutor = NajsEloquent.QueryBuilder.IQueryExecutor;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery;
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
@@ -22,7 +22,7 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     abstract getBasicQuery(): IBasicQuery;
     abstract getConditionQuery(): IConditionQuery;
     abstract getQueryConvention(): IConvention;
-    abstract getQueryExecutor(): IExecutor;
+    abstract getQueryExecutor(): IQueryExecutor;
     getModel(): IModel;
     getPrimaryKeyName(): string;
     setQueryName(name: string): void;

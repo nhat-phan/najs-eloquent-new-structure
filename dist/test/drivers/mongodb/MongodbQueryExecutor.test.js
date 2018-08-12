@@ -8,7 +8,7 @@ const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
 const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderHandler");
 const Moment = require('moment');
-describe('MongodbExecutor', function () {
+describe('MongodbQueryExecutor', function () {
     const dataset = [
         { first_name: 'john', last_name: 'doe', age: 30 },
         { first_name: 'jane', last_name: 'doe', age: 25 },

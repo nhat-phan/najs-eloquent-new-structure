@@ -3,13 +3,13 @@
 /// <reference path="../../definitions/query-grammars/IBasicQuery.ts" />
 /// <reference path="../../definitions/query-grammars/IConditionQuery.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
-/// <reference path="../../definitions/query-builders/IExecutor.ts" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const QueryBuilderHandlerBase_1 = require("../../query-builders/QueryBuilderHandlerBase");
 const BasicQuery_1 = require("../../query-builders/shared/BasicQuery");
 const MongodbConvention_1 = require("../../query-builders/shared/MongodbConvention");
 const ConditionQueryHandler_1 = require("../../query-builders/shared/ConditionQueryHandler");
-const MongodbExecutor_1 = require("./MongodbExecutor");
+const MongodbQueryExecutor_1 = require("./MongodbQueryExecutor");
 const MongodbQueryLog_1 = require("./MongodbQueryLog");
 class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderHandlerBase {
     constructor(model) {
@@ -28,7 +28,7 @@ class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderH
         return this.convention;
     }
     getQueryExecutor() {
-        return new MongodbExecutor_1.MongodbExecutor(this, this.basicQuery, new MongodbQueryLog_1.MongodbQueryLog());
+        return new MongodbQueryExecutor_1.MongodbQueryExecutor(this, this.basicQuery, new MongodbQueryLog_1.MongodbQueryLog());
     }
 }
 exports.MongodbQueryBuilderHandler = MongodbQueryBuilderHandler;

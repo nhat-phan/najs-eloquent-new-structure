@@ -5,7 +5,7 @@ const util_1 = require("../../util");
 const QueryBuilderHandlerBase_1 = require("../../../lib/query-builders/QueryBuilderHandlerBase");
 const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderHandler");
 const BasicQuery_1 = require("../../../lib/query-builders/shared/BasicQuery");
-const MongodbExecutor_1 = require("../../../lib/drivers/mongodb/MongodbExecutor");
+const MongodbQueryExecutor_1 = require("../../../lib/drivers/mongodb/MongodbQueryExecutor");
 const ConditionQueryHandler_1 = require("../../../lib/query-builders/shared/ConditionQueryHandler");
 const MongodbConvention_1 = require("../../../lib/query-builders/shared/MongodbConvention");
 describe('MongodbQueryBuilderHandler', function () {
@@ -57,7 +57,7 @@ describe('MongodbQueryBuilderHandler', function () {
         });
     });
     describe('.getQueryExecutor()', function () {
-        it('creates and returns new instance of MongodbExecutor', function () {
+        it('creates and returns new instance of MongodbQueryExecutor', function () {
             const model = {
                 getRecordName() {
                     return 'model';
@@ -67,7 +67,7 @@ describe('MongodbQueryBuilderHandler', function () {
             const executor1 = handler.getQueryExecutor();
             const executor2 = handler.getQueryExecutor();
             expect(executor1 === executor2).toBe(false);
-            expect(executor1).toBeInstanceOf(MongodbExecutor_1.MongodbExecutor);
+            expect(executor1).toBeInstanceOf(MongodbQueryExecutor_1.MongodbQueryExecutor);
         });
     });
 });

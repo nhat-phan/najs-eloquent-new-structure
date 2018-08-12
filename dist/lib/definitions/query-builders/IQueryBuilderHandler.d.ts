@@ -1,4 +1,4 @@
-/// <reference path="IExecutor.d.ts" />
+/// <reference path="IQueryExecutor.d.ts" />
 /// <reference path="../model/IModel.d.ts" />
 /// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 /// <reference path="../query-grammars/IBasicQuery.d.ts" />
@@ -9,7 +9,7 @@ declare namespace NajsEloquent.QueryBuilder {
         getBasicQuery(): QueryGrammar.IBasicQuery;
         getConditionQuery(): QueryGrammar.IConditionQuery;
         getQueryConvention(): IConvention;
-        getQueryExecutor(): IExecutor;
+        getQueryExecutor(): IQueryExecutor;
         getPrimaryKeyName(): string;
         setQueryName(name: string): void;
         getQueryName(): string;

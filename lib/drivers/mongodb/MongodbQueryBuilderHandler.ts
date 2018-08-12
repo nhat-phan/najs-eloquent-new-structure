@@ -2,7 +2,7 @@
 /// <reference path="../../definitions/query-grammars/IBasicQuery.ts" />
 /// <reference path="../../definitions/query-grammars/IConditionQuery.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
-/// <reference path="../../definitions/query-builders/IExecutor.ts" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import IConvention = NajsEloquent.QueryBuilder.IConvention
@@ -12,7 +12,7 @@ import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandle
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
 import { ConditionQueryHandler } from '../../query-builders/shared/ConditionQueryHandler'
-import { MongodbExecutor } from './MongodbExecutor'
+import { MongodbQueryExecutor } from './MongodbQueryExecutor'
 import { MongodbQueryLog } from './MongodbQueryLog'
 
 export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
@@ -39,7 +39,7 @@ export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
     return this.convention
   }
 
-  getQueryExecutor(): MongodbExecutor {
-    return new MongodbExecutor(this, this.basicQuery, new MongodbQueryLog())
+  getQueryExecutor(): MongodbQueryExecutor {
+    return new MongodbQueryExecutor(this, this.basicQuery, new MongodbQueryLog())
   }
 }

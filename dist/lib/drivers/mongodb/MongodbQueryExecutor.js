@@ -1,11 +1,11 @@
 "use strict";
-/// <reference path="../../definitions/query-builders/IExecutor" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const MongodbProviderFacade_1 = require("../../facades/global/MongodbProviderFacade");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
 const Moment = require("moment");
-class MongodbExecutor {
+class MongodbQueryExecutor {
     constructor(queryHandler, basicQuery, logger) {
         this.queryHandler = queryHandler;
         this.basicQuery = basicQuery;
@@ -151,4 +151,4 @@ class MongodbExecutor {
         return this.logger.options(lodash_1.isEmpty(options) ? undefined : options);
     }
 }
-exports.MongodbExecutor = MongodbExecutor;
+exports.MongodbQueryExecutor = MongodbQueryExecutor;

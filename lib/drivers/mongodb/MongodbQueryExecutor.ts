@@ -1,4 +1,4 @@
-/// <reference path="../../definitions/query-builders/IExecutor" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor" />
 
 import { isEmpty } from 'lodash'
 import { Collection } from 'mongodb'
@@ -9,7 +9,7 @@ import { MongodbProviderFacade } from '../../facades/global/MongodbProviderFacad
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import * as Moment from 'moment'
 
-export class MongodbExecutor implements NajsEloquent.QueryBuilder.IExecutor {
+export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected logger: MongodbQueryLog
   protected basicQuery: BasicQuery
   protected queryHandler: MongodbQueryBuilderHandler

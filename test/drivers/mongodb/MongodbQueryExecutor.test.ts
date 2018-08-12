@@ -5,10 +5,10 @@ import { MongodbProviderFacade } from '../../../lib/facades/global/MongodbProvid
 import { QueryLog } from '../../../lib/facades/global/QueryLogFacade'
 import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
 import { MongodbQueryBuilderHandler } from '../../../lib/drivers/mongodb/MongodbQueryBuilderHandler'
-import { MongodbExecutor } from '../../../lib/drivers/mongodb/MongodbExecutor'
+import { MongodbQueryExecutor } from '../../../lib/drivers/mongodb/MongodbQueryExecutor'
 const Moment = require('moment')
 
-describe('MongodbExecutor', function() {
+describe('MongodbQueryExecutor', function() {
   const dataset = [
     { first_name: 'john', last_name: 'doe', age: 30 },
     { first_name: 'jane', last_name: 'doe', age: 25 },
@@ -867,7 +867,7 @@ describe('MongodbExecutor', function() {
         .where('a', 1)
         .limit(10)
 
-      const executor = handler.getQueryExecutor() as MongodbExecutor
+      const executor = handler.getQueryExecutor() as MongodbQueryExecutor
 
       const result = executor.native(async function(passed, conditions, options) {
         expect(conditions).toEqual({ a: 1 })
@@ -908,7 +908,7 @@ describe('MongodbExecutor', function() {
   describe('.getCollection()', function() {
     it('simply returns an collection property', function() {
       const handler = makeQueryBuilderHandler('users')
-      const executor = handler.getQueryExecutor() as MongodbExecutor
+      const executor = handler.getQueryExecutor() as MongodbQueryExecutor
       const collection = {}
       executor['collection'] = collection as any
       expect(executor.getCollection() === collection).toBe(true)
@@ -918,13 +918,13 @@ describe('MongodbExecutor', function() {
   describe('.makeQueryOptions()', function() {
     it('undefined if there is no option', function() {
       const handler = makeQueryBuilderHandler('users')
-      expect((handler.getQueryExecutor() as MongodbExecutor).makeQueryOptions()).toBe(undefined)
+      expect((handler.getQueryExecutor() as MongodbQueryExecutor).makeQueryOptions()).toBe(undefined)
     })
 
     it('adds this.limit to property "limit"', function() {
       const handler = makeQueryBuilderHandler('users')
       makeQueryBuilder(handler).limit(10)
-      expect((handler.getQueryExecutor() as MongodbExecutor).makeQueryOptions()).toEqual({ limit: 10 })
+      expect((handler.getQueryExecutor() as MongodbQueryExecutor).makeQueryOptions()).toEqual({ limit: 10 })
     })
 
     it('builds this.ordering and adds to property "sort"', function() {
@@ -934,7 +934,7 @@ describe('MongodbExecutor', function() {
         .orderByDesc('b')
         .orderBy('c', 'asc')
         .orderBy('c', 'desc')
-      expect((handler.getQueryExecutor() as MongodbExecutor).makeQueryOptions()).toEqual({
+      expect((handler.getQueryExecutor() as MongodbQueryExecutor).makeQueryOptions()).toEqual({
         sort: [['a', 1], ['b', -1], ['c', -1]]
       })
     })
@@ -942,7 +942,7 @@ describe('MongodbExecutor', function() {
     it('builds this.fields.select and adds to property "projection"', function() {
       const handler = makeQueryBuilderHandler('users')
       makeQueryBuilder(handler).select('a', 'b', 'c')
-      expect((handler.getQueryExecutor() as MongodbExecutor).makeQueryOptions()).toEqual({
+      expect((handler.getQueryExecutor() as MongodbQueryExecutor).makeQueryOptions()).toEqual({
         projection: { a: 1, b: 1, c: 1 }
       })
     })
