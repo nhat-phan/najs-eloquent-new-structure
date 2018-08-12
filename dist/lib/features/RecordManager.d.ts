@@ -1,3 +1,5 @@
+/// <reference path="../definitions/model/IModel.d.ts" />
+/// <reference path="../definitions/features/IRecordExecutor.d.ts" />
 import { RecordManagerBase } from './RecordManagerBase';
 import { Record } from './Record';
 export declare class RecordManager<T extends Record> extends RecordManagerBase<T> {

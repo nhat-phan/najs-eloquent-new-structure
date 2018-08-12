@@ -14,6 +14,12 @@ const RecordManagerPublicApi_1 = require("./mixin/RecordManagerPublicApi");
  *   - finding accessors/mutators and getters/setters of model
  */
 class RecordManagerBase {
+    constructor(executorFactory) {
+        this.executorFactory = executorFactory;
+    }
+    getRecordExecutor(model) {
+        return this.executorFactory.makeRecordExecutor(model, model.attributes);
+    }
     getFeatureName() {
         return 'RecordManager';
     }

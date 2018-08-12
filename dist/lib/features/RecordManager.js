@@ -1,4 +1,6 @@
 "use strict";
+/// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/features/IRecordExecutor.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const najs_binding_1 = require("najs-binding");

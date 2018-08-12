@@ -7,7 +7,10 @@ import { RecordManagerBase } from '../../lib/features/RecordManagerBase'
 import { SettingFeature } from './../../lib/features/SettingFeature'
 
 describe('RecordManager', function() {
-  const recordManager = new RecordManager()
+  const executorFactory: any = {
+    makeRecordExecutor(model: any, record: any) {}
+  }
+  const recordManager = new RecordManager(executorFactory)
 
   it('extends RecordManagerBase and implements Autoload under name "NajsEloquent.Feature.RecordManager"', function() {
     expect(recordManager).toBeInstanceOf(RecordManagerBase)

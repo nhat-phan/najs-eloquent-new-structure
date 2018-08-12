@@ -5,7 +5,28 @@ const Sinon = require("sinon");
 const RecordManager_1 = require("../../lib/features/RecordManager");
 const RecordManagerPublicApi_1 = require("../../lib/features/mixin/RecordManagerPublicApi");
 describe('RecordManagerBase', function () {
-    const recordManager = new RecordManager_1.RecordManager();
+    const executorFactory = {
+        makeRecordExecutor(model, record) { }
+    };
+    const recordManager = new RecordManager_1.RecordManager(executorFactory);
+    describe('constructor()', function () {
+        it('needs executorFactory to initialize', function () {
+            expect(recordManager['executorFactory'] === executorFactory).toBe(true);
+        });
+    });
+    describe('.getRecordExecutor()', function () {
+        it('calls and returns this.executorFactory.makeRecordExecutor() with model and model.attribute', function () {
+            const stub = Sinon.stub(executorFactory, 'makeRecordExecutor');
+            stub.returns('anything');
+            const attributes = {};
+            const model = {
+                attributes: attributes
+            };
+            expect(recordManager.getRecordExecutor(model)).toEqual('anything');
+            expect(stub.calledWith(model, attributes)).toBe(true);
+            stub.restore();
+        });
+    });
     describe('.getFeatureName()', function () {
         it('returns literally string "RecordManager"', function () {
             expect(recordManager.getFeatureName()).toEqual('RecordManager');

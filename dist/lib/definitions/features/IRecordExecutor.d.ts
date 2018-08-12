@@ -6,24 +6,24 @@ declare namespace NajsEloquent.Feature {
          *
          * @param {Model} model
          */
-        create<R = any>(model: Model.IModel, record: T): Promise<R>;
+        create<R = any>(): Promise<R>;
         /**
          * Create the given model.
          *
          * @param {Model} model
          */
-        update<R = any>(model: Model.IModel, record: T): Promise<R>;
+        update<R = any>(): Promise<R>;
         /**
          * Delete the given model.
          *
          * @param {Model} model
          */
-        delete<R = any>(model: Model.IModel, record: T, useSoftDelete: boolean): Promise<R>;
+        delete<R = any>(useSoftDelete: boolean): Promise<R>;
         /**
          * Restore the given model.
          *
          * @param {Model} model
          */
-        restore<R = any>(model: Model.IModel, record: T): Promise<R>;
+        restore<R = any>(record: T): Promise<R>;
     }
 }

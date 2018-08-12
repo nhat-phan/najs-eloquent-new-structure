@@ -43,4 +43,18 @@ exports.RecordManagerPublicApi = {
     isNew() {
         return this.driver.getRecordManager().isNew(this);
     }
+    // save(this: Model): Promise<any> {
+    //   const recordManager = this.driver.getRecordManager()
+    //   if (recordManager.isNew(this)) {
+    //     return recordManager.getRecordExecutor(this).create()
+    //   }
+    //   return recordManager.getRecordExecutor(this).update()
+    // },
+    // delete(this: Model): Promise<any> {
+    //   const softDeletesFeature = this.driver.getSoftDeletesFeature()
+    //   return this.driver
+    //     .getRecordManager()
+    //     .getRecordExecutor(this)
+    //     .delete(softDeletesFeature.hasSoftDeletes(this))
+    // }
 };

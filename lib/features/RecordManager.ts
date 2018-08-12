@@ -1,3 +1,6 @@
+/// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/features/IRecordExecutor.ts" />
+
 import { flatten } from 'lodash'
 import { register } from 'najs-binding'
 import { RecordManagerBase } from './RecordManagerBase'

@@ -36,9 +36,17 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   abstract isNew(model: Model): boolean
 
-  // abstract getRecordExecutor(): boolean
-
   abstract getClassName(): string
+
+  protected executorFactory: NajsEloquent.Feature.IRecordExecutorFactory<T>
+
+  constructor(executorFactory: NajsEloquent.Feature.IRecordExecutorFactory<T>) {
+    this.executorFactory = executorFactory
+  }
+
+  getRecordExecutor(model: NajsEloquent.Model.ModelInternal<T>): NajsEloquent.Feature.IRecordExecutor<T> {
+    return this.executorFactory.makeRecordExecutor(model, model.attributes)
+  }
 
   getFeatureName(): string {
     return 'RecordManager'

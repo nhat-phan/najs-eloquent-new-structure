@@ -9,6 +9,10 @@ declare namespace NajsEloquent.Feature {
     };
     interface IRecordManager<T> extends IFeature {
         /**
+         * Get the record executor instance
+         */
+        getRecordExecutor(model: Model.IModel): IRecordExecutor<T>;
+        /**
          * Initialize driver for a model.
          *
          * @param {Model} model

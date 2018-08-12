@@ -8,7 +8,10 @@ const RecordManager_1 = require("../../lib/features/RecordManager");
 const RecordManagerBase_1 = require("../../lib/features/RecordManagerBase");
 const SettingFeature_1 = require("./../../lib/features/SettingFeature");
 describe('RecordManager', function () {
-    const recordManager = new RecordManager_1.RecordManager();
+    const executorFactory = {
+        makeRecordExecutor(model, record) { }
+    };
+    const recordManager = new RecordManager_1.RecordManager(executorFactory);
     it('extends RecordManagerBase and implements Autoload under name "NajsEloquent.Feature.RecordManager"', function () {
         expect(recordManager).toBeInstanceOf(RecordManagerBase_1.RecordManagerBase);
         expect(recordManager.getClassName()).toEqual('NajsEloquent.Feature.RecordManager');
