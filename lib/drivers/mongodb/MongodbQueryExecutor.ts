@@ -140,6 +140,10 @@ export class MongodbQueryExecutor extends MongodbExecutor implements NajsEloquen
     return this.get()
   }
 
+  getCollection() {
+    return this.collection
+  }
+
   makeQuery(): object {
     ExecutorUtils.addSoftDeleteConditionIfNeeded(this.queryHandler)
 
@@ -177,5 +181,9 @@ export class MongodbQueryExecutor extends MongodbExecutor implements NajsEloquen
     }
 
     return this.logger.options(isEmpty(options) ? undefined : options)
+  }
+
+  logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog {
+    return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')')
   }
 }

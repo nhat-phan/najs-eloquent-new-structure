@@ -14,12 +14,4 @@ export class MongodbExecutor {
     this.collectionName = model.getRecordName()
     this.collection = MongodbProviderFacade.getDatabase().collection(this.collectionName)
   }
-
-  getCollection() {
-    return this.collection
-  }
-
-  logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog {
-    return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')')
-  }
 }

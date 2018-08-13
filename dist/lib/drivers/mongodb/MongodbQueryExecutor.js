@@ -110,6 +110,9 @@ class MongodbQueryExecutor extends MongodbExecutor_1.MongodbExecutor {
         }
         return this.get();
     }
+    getCollection() {
+        return this.collection;
+    }
     makeQuery() {
         ExecutorUtils_1.ExecutorUtils.addSoftDeleteConditionIfNeeded(this.queryHandler);
         const conditions = this.basicQuery.getConditions();
@@ -141,6 +144,9 @@ class MongodbQueryExecutor extends MongodbExecutor_1.MongodbExecutor {
             }, {});
         }
         return this.logger.options(lodash_1.isEmpty(options) ? undefined : options);
+    }
+    logRaw(query, options, func) {
+        return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')');
     }
 }
 exports.MongodbQueryExecutor = MongodbQueryExecutor;

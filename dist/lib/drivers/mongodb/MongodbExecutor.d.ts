@@ -6,6 +6,4 @@ export declare class MongodbExecutor {
     protected collection: Collection;
     protected collectionName: string;
     constructor(model: NajsEloquent.Model.IModel, logger: MongodbQueryLog);
-    getCollection(): Collection<any>;
-    logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog;
 }

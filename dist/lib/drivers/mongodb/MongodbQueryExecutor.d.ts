@@ -18,6 +18,8 @@ export declare class MongodbQueryExecutor extends MongodbExecutor implements Naj
         execute(): Promise<any>;
     };
     execute(): Promise<any>;
+    getCollection(): Collection<any>;
     makeQuery(): object;
     makeQueryOptions(): object | undefined;
+    logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog;
 }

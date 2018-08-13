@@ -1,7 +1,7 @@
 /// <reference path="../model/IModel.ts" />
 
 namespace NajsEloquent.Feature {
-  export interface IRecordExecutor<T> extends IFeature {
+  export interface IRecordExecutor<T> {
     /**
      * Create the given model.
      *
