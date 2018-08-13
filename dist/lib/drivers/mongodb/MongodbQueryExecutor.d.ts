@@ -1,13 +1,11 @@
+import { MongodbExecutor } from './MongodbExecutor';
 import { Collection } from 'mongodb';
 import { MongodbQueryLog } from './MongodbQueryLog';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler';
-export declare class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
-    protected logger: MongodbQueryLog;
+export declare class MongodbQueryExecutor extends MongodbExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
     protected basicQuery: BasicQuery;
     protected queryHandler: MongodbQueryBuilderHandler;
-    protected collection: Collection;
-    protected collectionName: string;
     protected nativeHandlePromise: any;
     constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog);
     get(): Promise<object[]>;
@@ -20,8 +18,6 @@ export declare class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.I
         execute(): Promise<any>;
     };
     execute(): Promise<any>;
-    getCollection(): Collection<any>;
-    logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog;
     makeQuery(): object;
     makeQueryOptions(): object | undefined;
 }

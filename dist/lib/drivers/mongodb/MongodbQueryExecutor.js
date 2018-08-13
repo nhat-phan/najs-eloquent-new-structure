@@ -1,17 +1,15 @@
 "use strict";
 /// <reference path="../../definitions/query-builders/IQueryExecutor" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const MongodbExecutor_1 = require("./MongodbExecutor");
 const lodash_1 = require("lodash");
-const MongodbProviderFacade_1 = require("../../facades/global/MongodbProviderFacade");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
 const Moment = require("moment");
-class MongodbQueryExecutor {
+class MongodbQueryExecutor extends MongodbExecutor_1.MongodbExecutor {
     constructor(queryHandler, basicQuery, logger) {
+        super(queryHandler.getModel(), logger);
         this.queryHandler = queryHandler;
         this.basicQuery = basicQuery;
-        this.logger = logger;
-        this.collectionName = this.queryHandler.getModel().getRecordName();
-        this.collection = MongodbProviderFacade_1.MongodbProviderFacade.getDatabase().collection(this.collectionName);
         this.logger.name(this.queryHandler.getQueryName());
     }
     async get() {
@@ -111,12 +109,6 @@ class MongodbQueryExecutor {
             });
         }
         return this.get();
-    }
-    getCollection() {
-        return this.collection;
-    }
-    logRaw(query, options, func) {
-        return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')');
     }
     makeQuery() {
         ExecutorUtils_1.ExecutorUtils.addSoftDeleteConditionIfNeeded(this.queryHandler);

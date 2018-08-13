@@ -1,28 +1,23 @@
 /// <reference path="../../definitions/query-builders/IQueryExecutor" />
 
+import { MongodbExecutor } from './MongodbExecutor'
 import { isEmpty } from 'lodash'
 import { Collection } from 'mongodb'
 import { MongodbQueryLog } from './MongodbQueryLog'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
-import { MongodbProviderFacade } from '../../facades/global/MongodbProviderFacade'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import * as Moment from 'moment'
 
-export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
-  protected logger: MongodbQueryLog
+export class MongodbQueryExecutor extends MongodbExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected basicQuery: BasicQuery
   protected queryHandler: MongodbQueryBuilderHandler
-  protected collection: Collection
-  protected collectionName: string
   protected nativeHandlePromise: any
 
   constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog) {
+    super(queryHandler.getModel(), logger)
     this.queryHandler = queryHandler
     this.basicQuery = basicQuery
-    this.logger = logger
-    this.collectionName = this.queryHandler.getModel().getRecordName()
-    this.collection = MongodbProviderFacade.getDatabase().collection(this.collectionName)
     this.logger.name(this.queryHandler.getQueryName())
   }
 
@@ -143,14 +138,6 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
       })
     }
     return this.get()
-  }
-
-  getCollection() {
-    return this.collection
-  }
-
-  logRaw(query: object, options: object | undefined, func: string): MongodbQueryLog {
-    return this.logger.raw('db.', this.collectionName, `.${func}(`, query).raw(options ? ', ' : '', options, ')')
   }
 
   makeQuery(): object {
