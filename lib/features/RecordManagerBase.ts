@@ -38,13 +38,13 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
 
   abstract getClassName(): string
 
-  protected executorFactory: NajsEloquent.Driver.IExecutorFactory<T>
+  protected executorFactory: NajsEloquent.Driver.IExecutorFactory
 
-  constructor(executorFactory: NajsEloquent.Driver.IExecutorFactory<T>) {
+  constructor(executorFactory: NajsEloquent.Driver.IExecutorFactory) {
     this.executorFactory = executorFactory
   }
 
-  getRecordExecutor(model: NajsEloquent.Model.ModelInternal<T>): NajsEloquent.Feature.IRecordExecutor<T> {
+  getRecordExecutor(model: NajsEloquent.Model.ModelInternal<T>): NajsEloquent.Feature.IRecordExecutor {
     return this.executorFactory.makeRecordExecutor(model, model.attributes)
   }
 

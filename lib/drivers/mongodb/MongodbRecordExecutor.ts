@@ -2,15 +2,16 @@
 
 import Model = NajsEloquent.Model.IModel
 import { Collection } from 'mongodb'
+import { Record } from '../Record'
 import { MongodbQueryLog } from './MongodbQueryLog'
 
-export class MongodbRecordExecutor<T> implements NajsEloquent.Feature.IRecordExecutor<T> {
+export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecutor {
   protected model: NajsEloquent.Model.IModel
-  protected record: object
+  protected record: Record
   protected logger: MongodbQueryLog
   protected collection: Collection
 
-  constructor(model: Model, record: object, collection: Collection, logger: MongodbQueryLog) {
+  constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog) {
     this.model = model
     this.record = record
     this.collection = collection
@@ -29,7 +30,7 @@ export class MongodbRecordExecutor<T> implements NajsEloquent.Feature.IRecordExe
     return {} as R
   }
 
-  async restore<R = any>(record: T): Promise<R> {
+  async restore<R = any>(): Promise<R> {
     return {} as R
   }
 }

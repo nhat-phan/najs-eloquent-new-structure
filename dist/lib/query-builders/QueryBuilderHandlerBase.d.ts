@@ -7,6 +7,7 @@
 /// <reference path="../definitions/query-grammars/IBasicQuery.d.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
+import IExecutorFactory = NajsEloquent.Driver.IExecutorFactory;
 import IQueryExecutor = NajsEloquent.QueryBuilder.IQueryExecutor;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery;
@@ -14,15 +15,16 @@ import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery;
 import IQueryBuilderHandler = NajsEloquent.QueryBuilder.IQueryBuilderHandler;
 export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
     protected model: IModel;
+    protected executorFactory: IExecutorFactory;
     protected queryName: string;
     protected logGroup: string;
     protected used: boolean;
     protected softDeleteState: 'should-add' | 'should-not-add' | 'added';
-    constructor(model: IModel);
+    constructor(model: IModel, executorFactory: IExecutorFactory);
     abstract getBasicQuery(): IBasicQuery;
     abstract getConditionQuery(): IConditionQuery;
     abstract getQueryConvention(): IConvention;
-    abstract getQueryExecutor(): IQueryExecutor;
+    getQueryExecutor(): IQueryExecutor;
     getModel(): IModel;
     getPrimaryKeyName(): string;
     setQueryName(name: string): void;

@@ -17,7 +17,7 @@ class MongodbRecordExecutor {
     async delete(useSoftDelete) {
         return {};
     }
-    async restore(record) {
+    async restore() {
         return {};
     }
 }

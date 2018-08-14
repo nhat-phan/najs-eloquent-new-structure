@@ -1,7 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import { register } from 'najs-binding'
-import { Record } from '../../lib/features/Record'
+import { Record } from '../../lib/drivers/Record'
 import { RecordManager } from '../../lib/features/RecordManager'
 import { RecordManagerBase } from '../../lib/features/RecordManagerBase'
 import { SettingFeature } from './../../lib/features/SettingFeature'

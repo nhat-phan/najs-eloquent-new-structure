@@ -1,5 +1,5 @@
 import 'jest'
-import { Record } from '../../lib/features/Record'
+import { Record } from '../../lib/drivers/Record'
 
 describe('Record', function() {
   describe('constructor()', function() {

@@ -19,9 +19,9 @@ export declare abstract class RecordManagerBase<T> implements NajsEloquent.Featu
     abstract getModified(model: Model): string[];
     abstract isNew(model: Model): boolean;
     abstract getClassName(): string;
-    protected executorFactory: NajsEloquent.Driver.IExecutorFactory<T>;
-    constructor(executorFactory: NajsEloquent.Driver.IExecutorFactory<T>);
-    getRecordExecutor(model: NajsEloquent.Model.ModelInternal<T>): NajsEloquent.Feature.IRecordExecutor<T>;
+    protected executorFactory: NajsEloquent.Driver.IExecutorFactory;
+    constructor(executorFactory: NajsEloquent.Driver.IExecutorFactory);
+    getRecordExecutor(model: NajsEloquent.Model.ModelInternal<T>): NajsEloquent.Feature.IRecordExecutor;
     getFeatureName(): string;
     getRecordName(model: Model): string;
     getRecord(model: Model<T>): T;

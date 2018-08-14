@@ -4,16 +4,31 @@ require("jest");
 const Sinon = require("sinon");
 const QueryBuilderHandlerBase_1 = require("../../lib/query-builders/QueryBuilderHandlerBase");
 describe('QueryBuilderHandlerBase', function () {
-    function makeInstance(model) {
-        return Reflect.construct(QueryBuilderHandlerBase_1.QueryBuilderHandlerBase, [model]);
+    const executorFactory = {
+        makeQueryExecutor() { }
+    };
+    function makeInstance(model, factory) {
+        return Reflect.construct(QueryBuilderHandlerBase_1.QueryBuilderHandlerBase, [model, factory || executorFactory]);
     }
     describe('constructor()', function () {
-        it('assigns model to property model, init used = false & softDeleteState = should-add', function () {
+        it('assigns model and executorFactory to properties respectively, init used = false & softDeleteState = should-add', function () {
             const model = {};
-            const query = makeInstance(model);
+            const query = makeInstance(model, executorFactory);
             expect(query.getModel() === model).toBe(true);
+            expect(query['executorFactory'] === executorFactory).toBe(true);
             expect(query.isUsed()).toBe(false);
             expect(query.getSoftDeleteState()).toEqual('should-add');
+        });
+    });
+    describe('.getQueryExecutor()', function () {
+        it('calls and returns executorFactory.makeQueryExecutor()', function () {
+            const stub = Sinon.stub(executorFactory, 'makeQueryExecutor');
+            stub.returns('anything');
+            const model = {};
+            const instance = makeInstance(model);
+            expect(instance.getQueryExecutor()).toEqual('anything');
+            expect(stub.calledWith(instance)).toBe(true);
+            stub.restore();
         });
     });
     describe('.getModel()', function () {

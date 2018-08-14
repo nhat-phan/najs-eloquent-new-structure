@@ -13,7 +13,7 @@ const MongodbQueryExecutor_1 = require("./MongodbQueryExecutor");
 const MongodbQueryLog_1 = require("./MongodbQueryLog");
 class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderHandlerBase {
     constructor(model) {
-        super(model);
+        super(model, {});
         this.convention = new MongodbConvention_1.MongodbConvention();
         this.basicQuery = new BasicQuery_1.BasicQuery(this.convention);
         this.conditionQuery = new ConditionQueryHandler_1.ConditionQueryHandler(this.basicQuery, this.convention);

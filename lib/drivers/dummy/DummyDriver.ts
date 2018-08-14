@@ -5,7 +5,7 @@
 import '../../features/RecordManager'
 import { register, make } from 'najs-binding'
 import { DriverBase } from '../DriverBase'
-import { Record } from '../../features/Record'
+import { Record } from '../Record'
 import { NajsEloquent } from '../../constants'
 
 export class DummyDriver<T extends Record = Record> extends DriverBase<T> {

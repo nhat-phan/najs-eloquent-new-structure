@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
-const Record_1 = require("../../lib/features/Record");
+const Record_1 = require("../../lib/drivers/Record");
 describe('Record', function () {
     describe('constructor()', function () {
         it('always initials property .data and .modified', function () {

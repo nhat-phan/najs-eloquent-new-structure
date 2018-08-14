@@ -1,6 +1,6 @@
 /// <reference path="../model/IModel.d.ts" />
 declare namespace NajsEloquent.Feature {
-    interface IRecordExecutor<T> {
+    interface IRecordExecutor {
         /**
          * Create the given model.
          *
@@ -24,6 +24,6 @@ declare namespace NajsEloquent.Feature {
          *
          * @param {Model} model
          */
-        restore<R = any>(record: T): Promise<R>;
+        restore<R = any>(): Promise<R>;
     }
 }

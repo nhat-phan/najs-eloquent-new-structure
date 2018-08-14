@@ -21,7 +21,7 @@ export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected convention: IConvention
 
   constructor(model: IModel) {
-    super(model)
+    super(model, {} as any)
     this.convention = new MongodbConvention()
     this.basicQuery = new BasicQuery(this.convention)
     this.conditionQuery = new ConditionQueryHandler(this.basicQuery, this.convention)

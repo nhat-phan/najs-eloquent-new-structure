@@ -3,7 +3,7 @@
 /// <reference path="../../definitions/features/IRecordManager.d.ts" />
 import '../../features/RecordManager';
 import { DriverBase } from '../DriverBase';
-import { Record } from '../../features/Record';
+import { Record } from '../Record';
 import { MongodbQueryBuilder } from './MongodbQueryBuilder';
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler';
 export declare class MongodbDriver<T extends Record = Record> extends DriverBase<T> {

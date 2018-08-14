@@ -8,6 +8,7 @@
 /// <reference path="../definitions/query-grammars/IQuery.ts" />
 
 import IModel = NajsEloquent.Model.IModel
+import IExecutorFactory = NajsEloquent.Driver.IExecutorFactory
 import IQueryExecutor = NajsEloquent.QueryBuilder.IQueryExecutor
 import IConvention = NajsEloquent.QueryBuilder.IConvention
 import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
@@ -17,13 +18,15 @@ import { make_collection } from '../util/factory'
 
 export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
   protected model: IModel
+  protected executorFactory: IExecutorFactory
   protected queryName: string
   protected logGroup: string
   protected used: boolean
   protected softDeleteState: 'should-add' | 'should-not-add' | 'added'
 
-  constructor(model: IModel) {
+  constructor(model: IModel, executorFactory: IExecutorFactory) {
     this.model = model
+    this.executorFactory = executorFactory
     this.used = false
     this.softDeleteState = 'should-add'
   }
@@ -31,7 +34,10 @@ export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
   abstract getBasicQuery(): IBasicQuery
   abstract getConditionQuery(): IConditionQuery
   abstract getQueryConvention(): IConvention
-  abstract getQueryExecutor(): IQueryExecutor
+
+  getQueryExecutor(): IQueryExecutor {
+    return this.executorFactory.makeQueryExecutor(this)
+  }
 
   getModel(): IModel {
     return this.model

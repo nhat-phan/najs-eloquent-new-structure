@@ -10,10 +10,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const factory_1 = require("../util/factory");
 class QueryBuilderHandlerBase {
-    constructor(model) {
+    constructor(model, executorFactory) {
         this.model = model;
+        this.executorFactory = executorFactory;
         this.used = false;
         this.softDeleteState = 'should-add';
+    }
+    getQueryExecutor() {
+        return this.executorFactory.makeQueryExecutor(this);
     }
     getModel() {
         return this.model;

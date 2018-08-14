@@ -13,7 +13,7 @@ namespace NajsEloquent.Feature {
     /**
      * Get the record executor instance
      */
-    getRecordExecutor(model: Model.IModel): IRecordExecutor<T>
+    getRecordExecutor(model: Model.IModel): IRecordExecutor
 
     /**
      * Initialize driver for a model.
