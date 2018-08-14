@@ -3,7 +3,10 @@ import { array_unique } from './util/functions'
 export const NajsEloquent = {
   Driver: {
     DummyDriver: 'NajsEloquent.Driver.DummyDriver',
-    MongodbDriver: 'NajsEloquent.Driver.MongodbDriver'
+    MongodbDriver: 'NajsEloquent.Driver.MongodbDriver',
+    Mongodb: {
+      MongodbExecutorFactory: 'NajsEloquent.Driver.Mongodb.MongodbExecutorFactory'
+    }
   },
   Feature: {
     RecordManager: 'NajsEloquent.Feature.RecordManager',

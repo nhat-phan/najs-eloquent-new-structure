@@ -6,14 +6,13 @@
 
 import IModel = NajsEloquent.Model.IModel
 import IConvention = NajsEloquent.QueryBuilder.IConvention
-import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
+import { make } from 'najs-binding'
 import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
 import { ConditionQueryHandler } from '../../query-builders/shared/ConditionQueryHandler'
-import { MongodbQueryExecutor } from './MongodbQueryExecutor'
-import { MongodbQueryLog } from './MongodbQueryLog'
+import { MongodbExecutorFactory } from './MongodbExecutorFactory'
 
 export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected basicQuery: BasicQuery
@@ -21,13 +20,13 @@ export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected convention: IConvention
 
   constructor(model: IModel) {
-    super(model, {} as any)
+    super(model, make<MongodbExecutorFactory>(MongodbExecutorFactory.className))
     this.convention = new MongodbConvention()
     this.basicQuery = new BasicQuery(this.convention)
     this.conditionQuery = new ConditionQueryHandler(this.basicQuery, this.convention)
   }
 
-  getBasicQuery(): IBasicQuery {
+  getBasicQuery(): BasicQuery {
     return this.basicQuery
   }
 
@@ -37,9 +36,5 @@ export class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase {
 
   getQueryConvention(): IConvention {
     return this.convention
-  }
-
-  getQueryExecutor(): MongodbQueryExecutor {
-    return new MongodbQueryExecutor(this, this.basicQuery, new MongodbQueryLog())
   }
 }

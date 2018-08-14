@@ -1,6 +1,8 @@
 /// <reference path="../../definitions/model/IModel.ts" />
+
 import IModel = NajsEloquent.Model.IModel
 import { QueryBuilder } from '../../query-builders/QueryBuilder'
+import { MongodbQueryExecutor } from './MongodbQueryExecutor'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { Collection } from 'mongodb'
 
@@ -11,10 +13,12 @@ export class MongodbQueryBuilder<
   native(
     handler: (collection: Collection, conditions: object, options?: object) => Promise<any>
   ): { execute(): Promise<any> } {
-    return this.handler.getQueryExecutor().native(handler)
+    const queryExecutor: MongodbQueryExecutor = this.handler.getQueryExecutor() as MongodbQueryExecutor
+    return queryExecutor.native(handler)
   }
 
   collection() {
-    return this.handler.getQueryExecutor().getCollection()
+    const queryExecutor: MongodbQueryExecutor = this.handler.getQueryExecutor() as MongodbQueryExecutor
+    return queryExecutor.getCollection()
   }
 }

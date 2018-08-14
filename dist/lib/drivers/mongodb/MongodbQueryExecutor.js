@@ -1,15 +1,16 @@
 "use strict";
 /// <reference path="../../definitions/query-builders/IQueryExecutor" />
 Object.defineProperty(exports, "__esModule", { value: true });
-const MongodbExecutor_1 = require("./MongodbExecutor");
 const lodash_1 = require("lodash");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
 const Moment = require("moment");
-class MongodbQueryExecutor extends MongodbExecutor_1.MongodbExecutor {
-    constructor(queryHandler, basicQuery, logger) {
-        super(queryHandler.getModel(), logger);
+class MongodbQueryExecutor {
+    constructor(queryHandler, collection, logger) {
         this.queryHandler = queryHandler;
-        this.basicQuery = basicQuery;
+        this.basicQuery = queryHandler.getBasicQuery();
+        this.collection = collection;
+        this.collectionName = collection.collectionName;
+        this.logger = logger;
         this.logger.name(this.queryHandler.getQueryName());
     }
     async get() {
@@ -38,7 +39,7 @@ class MongodbQueryExecutor extends MongodbExecutor_1.MongodbExecutor {
         }
         const query = this.makeQuery();
         const options = this.makeQueryOptions();
-        const result = await this.collection.count(query, options);
+        const result = await this.collection.countDocuments(query, options);
         return this.logRaw(query, options, 'count')
             .action('count')
             .end(result);

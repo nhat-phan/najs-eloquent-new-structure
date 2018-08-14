@@ -6,7 +6,6 @@ import { QueryLog } from '../../../lib/facades/global/QueryLogFacade'
 import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
 import { MongodbQueryBuilderHandler } from '../../../lib/drivers/mongodb/MongodbQueryBuilderHandler'
 import { MongodbQueryExecutor } from '../../../lib/drivers/mongodb/MongodbQueryExecutor'
-import { MongodbExecutor } from '../../../lib/drivers/mongodb/MongodbExecutor'
 
 const Moment = require('moment')
 
@@ -98,11 +97,6 @@ describe('MongodbQueryExecutor', function() {
   function makeQueryBuilder(handler: MongodbQueryBuilderHandler): MongodbQueryBuilder<any> {
     return new MongodbQueryBuilder(handler)
   }
-
-  it('extends MongodbExecutor', function() {
-    const handler = makeQueryBuilderHandler('users')
-    expect(handler.getQueryExecutor()).toBeInstanceOf(MongodbExecutor)
-  })
 
   describe('.get()', function() {
     it('gets all data of collection and return an instance of Collection<Eloquent<T>>', async function() {

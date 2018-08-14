@@ -1,6 +1,5 @@
 /// <reference path="../../definitions/query-builders/IQueryExecutor" />
 
-import { MongodbExecutor } from './MongodbExecutor'
 import { isEmpty } from 'lodash'
 import { Collection } from 'mongodb'
 import { MongodbQueryLog } from './MongodbQueryLog'
@@ -9,15 +8,20 @@ import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import * as Moment from 'moment'
 
-export class MongodbQueryExecutor extends MongodbExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
+export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
+  protected logger: MongodbQueryLog
+  protected collection: Collection
+  protected collectionName: string
   protected basicQuery: BasicQuery
   protected queryHandler: MongodbQueryBuilderHandler
   protected nativeHandlePromise: any
 
-  constructor(queryHandler: MongodbQueryBuilderHandler, basicQuery: BasicQuery, logger: MongodbQueryLog) {
-    super(queryHandler.getModel(), logger)
+  constructor(queryHandler: MongodbQueryBuilderHandler, collection: Collection, logger: MongodbQueryLog) {
     this.queryHandler = queryHandler
-    this.basicQuery = basicQuery
+    this.basicQuery = queryHandler.getBasicQuery()
+    this.collection = collection
+    this.collectionName = collection.collectionName
+    this.logger = logger
     this.logger.name(this.queryHandler.getQueryName())
   }
 
@@ -53,7 +57,7 @@ export class MongodbQueryExecutor extends MongodbExecutor implements NajsEloquen
     const query = this.makeQuery()
     const options = this.makeQueryOptions()
 
-    const result = await this.collection.count(query, options)
+    const result = await this.collection.countDocuments(query, options)
     return this.logRaw(query, options, 'count')
       .action('count')
       .end(result)

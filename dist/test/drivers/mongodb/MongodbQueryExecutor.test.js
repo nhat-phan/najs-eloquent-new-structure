@@ -7,7 +7,6 @@ const MongodbProviderFacade_1 = require("../../../lib/facades/global/MongodbProv
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
 const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderHandler");
-const MongodbExecutor_1 = require("../../../lib/drivers/mongodb/MongodbExecutor");
 const Moment = require('moment');
 describe('MongodbQueryExecutor', function () {
     const dataset = [
@@ -89,10 +88,6 @@ describe('MongodbQueryExecutor', function () {
     function makeQueryBuilder(handler) {
         return new MongodbQueryBuilder_1.MongodbQueryBuilder(handler);
     }
-    it('extends MongodbExecutor', function () {
-        const handler = makeQueryBuilderHandler('users');
-        expect(handler.getQueryExecutor()).toBeInstanceOf(MongodbExecutor_1.MongodbExecutor);
-    });
     describe('.get()', function () {
         it('gets all data of collection and return an instance of Collection<Eloquent<T>>', async function () {
             const handler = makeQueryBuilderHandler('users');

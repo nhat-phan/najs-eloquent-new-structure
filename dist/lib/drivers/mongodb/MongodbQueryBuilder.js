@@ -1,12 +1,15 @@
 "use strict";
+/// <reference path="../../definitions/model/IModel.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const QueryBuilder_1 = require("../../query-builders/QueryBuilder");
 class MongodbQueryBuilder extends QueryBuilder_1.QueryBuilder {
     native(handler) {
-        return this.handler.getQueryExecutor().native(handler);
+        const queryExecutor = this.handler.getQueryExecutor();
+        return queryExecutor.native(handler);
     }
     collection() {
-        return this.handler.getQueryExecutor().getCollection();
+        const queryExecutor = this.handler.getQueryExecutor();
+        return queryExecutor.getCollection();
     }
 }
 exports.MongodbQueryBuilder = MongodbQueryBuilder;
