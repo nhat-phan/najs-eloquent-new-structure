@@ -1,15 +1,20 @@
 /// <reference path="../../definitions/features/IRecordExecutor.ts" />
+/// <reference path="../../definitions/query-builders/IConvention.ts" />
 
+import IConvention = NajsEloquent.QueryBuilder.IConvention
 import Model = NajsEloquent.Model.IModel
 import { Collection } from 'mongodb'
 import { Record } from '../Record'
 import { MongodbQueryLog } from './MongodbQueryLog'
+import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
+import { isEmpty } from 'lodash'
 import * as Moment from 'moment'
 
 export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecutor {
   protected model: NajsEloquent.Model.IModel
   protected record: Record
   protected logger: MongodbQueryLog
+  protected convention: IConvention
   protected collection: Collection
 
   constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog) {
@@ -17,6 +22,7 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     this.record = record
     this.collection = collection
     this.logger = logger
+    this.convention = new MongodbConvention()
   }
 
   fillData(isCreate: boolean) {
@@ -34,9 +40,10 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
 
     if (softDeletesFeature.hasSoftDeletes(this.model)) {
       const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model)
-
-      // tslint:disable-next-line
-      this.setAttributeIfNeeded(softDeleteSettings.deletedAt, null)
+      this.setAttributeIfNeeded(
+        softDeleteSettings.deletedAt,
+        this.convention.getNullValueFor(softDeleteSettings.deletedAt)
+      )
     }
   }
 
@@ -52,8 +59,8 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     }
 
     const data = this.record.toObject()
-    this.logRaw(data, 'insertOne').action(`${this.model.getModelName()}.create()`)
-    return this.collection.insertOne(data).then((response) => {
+    this.logRaw('insertOne', data).action(`${this.model.getModelName()}.create()`)
+    return this.collection.insertOne(data).then(response => {
       return this.logger.end({
         result: response.result,
         insertedId: response.insertedId,
@@ -63,19 +70,29 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
   }
 
   async update<R = any>(shouldFillData: boolean = true): Promise<R> {
-    // if (shouldFillData) {
-    //   this.fillData(false)
-    // }
+    const filter = this.getFilter()
+    if (isEmpty(filter)) {
+      return false as any
+    }
 
-    // return new Promise((resolve, reject) => {
-    //   this.collection.updateOne(this.record.toObject(), function(error: any, result: any) {
-    //     if (error) {
-    //       return reject(error)
-    //     }
-    //     resolve(result)
-    //   })
-    // }) as any
-    return {} as R
+    if (shouldFillData) {
+      this.fillData(false)
+    }
+
+    const modifiedData = this.getModifiedData()
+    if (isEmpty(modifiedData)) {
+      return false as any
+    }
+
+    const data = { $set: modifiedData }
+    this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.update()`)
+    return this.collection.updateOne(filter, data).then(response => {
+      return this.logger.end({
+        result: response.result,
+        upsertedId: response.upsertedId,
+        upsertedCount: response.upsertedCount
+      })
+    })
   }
 
   async delete<R = any>(useSoftDelete: boolean): Promise<R> {
@@ -86,7 +103,30 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     return {} as R
   }
 
-  logRaw(data: object, func: string): MongodbQueryLog {
-    return this.logger.raw('db.', this.collection.collectionName, `.${func}(`, data, ')')
+  getModifiedData() {
+    return this.record.getModified().reduce((data, name) => {
+      data[this.convention.formatFieldName(name)] = this.record.getAttribute(name)
+      return data
+    }, {})
+  }
+
+  getFilter() {
+    const primaryKeyValue = this.model.getPrimaryKey()
+    if (!primaryKeyValue) {
+      return {}
+    }
+
+    return { [this.convention.formatFieldName(this.model.getPrimaryKeyName())]: primaryKeyValue }
+  }
+
+  logRaw(func: string, ...args: any[]): MongodbQueryLog {
+    const passed = []
+    for (let i = 0, l = args.length; i < l; i++) {
+      passed.push(args[i])
+      if (i !== l - 1) {
+        passed.push(',')
+      }
+    }
+    return this.logger.raw('db.', this.collection.collectionName, `.${func}(`, ...passed, ')')
   }
 }

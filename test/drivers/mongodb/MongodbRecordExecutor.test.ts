@@ -6,6 +6,7 @@ import { init_mongodb, delete_collection_use_mongodb } from '../../util'
 import { MongodbProviderFacade } from '../../../lib/facades/global/MongodbProviderFacade'
 import { MongodbRecordExecutor } from '../../../lib/drivers/mongodb/MongodbRecordExecutor'
 import { MongodbQueryLog } from '../../../lib/drivers/mongodb/MongodbQueryLog'
+import { ObjectId } from 'bson'
 
 const Moment = require('moment')
 
@@ -161,6 +162,34 @@ describe('MongodbRecordExecutor', function() {
     })
   })
 
+  describe('.getFilter()', function() {
+    it('returns an empty object if there is no primaryKey in model', function() {
+      const model: any = {
+        getPrimaryKey() {
+          return undefined
+        }
+      }
+
+      const executor = makeExecutor(model, new Record())
+      expect(executor.getFilter()).toEqual({})
+    })
+
+    it('returns an filter object with formated field name and value', function() {
+      const model: any = {
+        getPrimaryKeyName() {
+          return 'id'
+        },
+
+        getPrimaryKey() {
+          return 123
+        }
+      }
+
+      const executor = makeExecutor(model, new Record())
+      expect(executor.getFilter()).toEqual({ _id: 123 })
+    })
+  })
+
   describe('.create()', function() {
     it('calls .fillData(true) by default then save the data by collection.insertOne()', async function() {
       const model = makeModel('Test', false, false)
@@ -236,8 +265,162 @@ describe('MongodbRecordExecutor', function() {
   })
 
   describe('.update()', function() {
-    it('should work', function() {
-      makeExecutor({} as any, new Record()).update()
+    it('does nothing and returns false if a filter is empty', async function() {
+      const model = makeModel('Test', false, false)
+      model['getPrimaryKey'] = function() {
+        return undefined
+      }
+
+      const executor = makeExecutor(model, new Record())
+      const fillDataSpy = Sinon.spy(executor, 'fillData')
+
+      expect(await executor.update()).toBe(false)
+      expect(fillDataSpy.calledWith(true)).toBe(false)
+    })
+
+    it('calls .fillData(false) by default then save the data by collection.updateOne()', async function() {
+      const model = makeModel('Test', false, false)
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+
+      const record = new Record({ _id: id })
+      record.setAttribute('name', 'test')
+
+      const executor = makeExecutor(model, record)
+      const fillDataSpy = Sinon.spy(executor, 'fillData')
+
+      await executor.update()
+      expect(fillDataSpy.calledWith(false)).toBe(true)
+    })
+
+    it('skips calling .fillData(false) if shouldFillData = false', async function() {
+      const model = makeModel('Test', false, false)
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+
+      const record = new Record({ _id: id })
+      record.setAttribute('name', 'test')
+
+      const executor = makeExecutor(model, record)
+      const fillDataSpy = Sinon.spy(executor, 'fillData')
+
+      await executor.update(false)
+      expect(fillDataSpy.calledWith(false)).toBe(false)
+    })
+
+    it('skips calling collection.updateOne() and return false if there is no modified data', async function() {
+      const model = makeModel('Test', false, false)
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+
+      const record = new Record({ _id: id })
+
+      const executor = makeExecutor(model, record)
+
+      expect(await executor.update()).toEqual(false)
+    })
+
+    it('can create without timestamps or softDeletes settings', async function() {
+      const model = makeModel('Test', false, false)
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+
+      const record = new Record({ _id: id })
+      record.setAttribute('name', 'test')
+      const result = await makeExecutor(model, record).update()
+      expect_query_log(
+        {
+          raw: `db.test.updateOne(${JSON.stringify({ _id: id.toHexString() })},${JSON.stringify({
+            $set: { name: 'test' }
+          })})`,
+          action: 'Test.update()'
+        },
+        result,
+        1
+      )
+    })
+
+    it('can update with timestamps', async function() {
+      const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false)
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+      const now = Moment('2018-01-01T00:00:00.000Z')
+      Moment.now = () => {
+        return now
+      }
+      const record = new Record({ _id: id })
+      record.setAttribute('name', 'test')
+      const result = await makeExecutor(model, record).update()
+      expect_query_log(
+        {
+          raw: `db.test.updateOne(${JSON.stringify({ _id: id.toHexString() })},${JSON.stringify({
+            $set: { name: 'test', updated_at: now.toDate() }
+          })})`,
+          action: 'Test.update()'
+        },
+        result,
+        1
+      )
+    })
+
+    it('can update with softDeletes', async function() {
+      const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+
+      const record = new Record({ _id: id })
+      record.setAttribute('name', 'test')
+      const result = await makeExecutor(model, record).update()
+      expect_query_log(
+        {
+          raw: `db.test.updateOne(${JSON.stringify({ _id: id.toHexString() })},${JSON.stringify({
+            // tslint:disable-next-line
+            $set: { name: 'test', deleted_at: null }
+          })})`,
+          action: 'Test.update()'
+        },
+        result,
+        1
+      )
     })
   })
 

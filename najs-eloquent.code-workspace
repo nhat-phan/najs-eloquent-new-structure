@@ -52,7 +52,8 @@
       "proxify",
       "proxied",
       "chainable",
-      "bson"
+      "bson",
+      "upserted"
     ],
     "search.exclude": {
       "**/.git": true,
