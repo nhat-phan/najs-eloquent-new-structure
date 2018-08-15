@@ -9,8 +9,11 @@ export declare class MongodbRecordExecutor implements NajsEloquent.Feature.IReco
     protected logger: MongodbQueryLog;
     protected collection: Collection;
     constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog);
-    create<R = any>(): Promise<R>;
-    update<R = any>(): Promise<R>;
+    fillData(isCreate: boolean): void;
+    setAttributeIfNeeded(attribute: string, value: any): void;
+    create<R = any>(shouldFillData?: boolean): Promise<R>;
+    update<R = any>(shouldFillData?: boolean): Promise<R>;
     delete<R = any>(useSoftDelete: boolean): Promise<R>;
     restore<R = any>(): Promise<R>;
+    logRaw(data: object, func: string): MongodbQueryLog;
 }

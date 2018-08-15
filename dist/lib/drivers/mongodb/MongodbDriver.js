@@ -9,10 +9,11 @@ const DriverBase_1 = require("../DriverBase");
 const constants_1 = require("../../constants");
 const MongodbQueryBuilder_1 = require("./MongodbQueryBuilder");
 const MongodbQueryBuilderHandler_1 = require("./MongodbQueryBuilderHandler");
+const MongodbExecutorFactory_1 = require("./MongodbExecutorFactory");
 class MongodbDriver extends DriverBase_1.DriverBase {
     constructor() {
         super();
-        this.recordManager = najs_binding_1.make(constants_1.NajsEloquent.Feature.RecordManager);
+        this.recordManager = najs_binding_1.make(constants_1.NajsEloquent.Feature.RecordManager, [najs_binding_1.make(MongodbExecutorFactory_1.MongodbExecutorFactory.className)]);
     }
     getClassName() {
         return constants_1.NajsEloquent.Driver.MongodbDriver;

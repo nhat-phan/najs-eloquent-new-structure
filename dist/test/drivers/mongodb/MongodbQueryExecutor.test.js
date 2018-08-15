@@ -20,7 +20,7 @@ describe('MongodbQueryExecutor', function () {
     ];
     let collectionUsers, collectionRoles;
     beforeAll(async function () {
-        await util_1.init_mongodb('mongodb_executor');
+        await util_1.init_mongodb('mongodb_query_executor');
         const db = MongodbProviderFacade_1.MongodbProviderFacade.getDatabase();
         collectionUsers = db.collection('users');
         collectionRoles = db.collection('roles');

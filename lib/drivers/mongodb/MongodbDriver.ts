@@ -9,6 +9,7 @@ import { Record } from '../Record'
 import { NajsEloquent } from '../../constants'
 import { MongodbQueryBuilder } from './MongodbQueryBuilder'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
+import { MongodbExecutorFactory } from './MongodbExecutorFactory'
 
 export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
   protected recordManager: NajsEloquent.Feature.IRecordManager<T>
@@ -17,7 +18,7 @@ export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
   constructor() {
     super()
 
-    this.recordManager = make(NajsEloquent.Feature.RecordManager)
+    this.recordManager = make(NajsEloquent.Feature.RecordManager, [make(MongodbExecutorFactory.className)])
   }
 
   getClassName() {
