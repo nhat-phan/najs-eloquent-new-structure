@@ -432,8 +432,33 @@ describe('MongodbRecordExecutor', function () {
         });
     });
     describe('.hardDelete()', function () {
-        it('should work', function () {
-            makeExecutor({}, new Record_1.Record()).hardDelete();
+        it('does nothing if there is no filter', async function () {
+            const model = makeModel('Test', false, false);
+            model['getPrimaryKey'] = function () {
+                return undefined;
+            };
+            model['getPrimaryKeyName'] = function () {
+                return 'id';
+            };
+            expect(await makeExecutor(model, new Record_1.Record()).hardDelete()).toBe(false);
+        });
+        it('calls this.collection.deleteOne() with filter then returns data', async function () {
+            const id = new bson_1.ObjectId();
+            const model = makeModel('Test', false, false);
+            model['getPrimaryKey'] = function () {
+                return id;
+            };
+            model['getPrimaryKeyName'] = function () {
+                return 'id';
+            };
+            await makeExecutor(model, new Record_1.Record({ id: id, name: 'test' })).create();
+            const result = await makeExecutor(model, new Record_1.Record({ id: id })).hardDelete();
+            expect_query_log({
+                raw: `db.test.deleteOne(${JSON.stringify({
+                    _id: id
+                })})`,
+                action: 'Test.hardDelete()'
+            }, result, 1);
         });
     });
     describe('.restore()', function () {

@@ -525,8 +525,41 @@ describe('MongodbRecordExecutor', function() {
   })
 
   describe('.hardDelete()', function() {
-    it('should work', function() {
-      makeExecutor({} as any, new Record()).hardDelete()
+    it('does nothing if there is no filter', async function() {
+      const model: any = makeModel('Test', false, false)
+      model['getPrimaryKey'] = function() {
+        return undefined
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      expect(await makeExecutor(model, new Record()).hardDelete()).toBe(false)
+    })
+
+    it('calls this.collection.deleteOne() with filter then returns data', async function() {
+      const id = new ObjectId()
+      const model: any = makeModel('Test', false, false)
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      await makeExecutor(model, new Record({ id: id, name: 'test' })).create()
+
+      const result = await makeExecutor(model, new Record({ id: id })).hardDelete()
+      expect_query_log(
+        {
+          raw: `db.test.deleteOne(${JSON.stringify({
+            _id: id
+          })})`,
+          action: 'Test.hardDelete()'
+        },
+        result,
+        1
+      )
     })
   })
 

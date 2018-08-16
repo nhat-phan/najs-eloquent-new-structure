@@ -83,27 +83,24 @@ class MongodbRecordExecutor {
         return isNew ? this.create(false, 'softDelete') : this.update(false, 'softDelete');
     }
     async hardDelete() {
-        // const filter = this.getFilter()
-        // if (isEmpty(filter)) {
-        //   return false as any
-        // }
-        // this.logger.action(`${this.model.getModelName()}.delete()`)
-        // return this.collection.deleteOne(filter).then(response => {
-        //   return this.logger.end({
-        //     result: response.result,
-        //     deletedCount: response.deletedCount
-        //   })
-        // })
-        return false;
+        const filter = this.getFilter();
+        if (lodash_1.isEmpty(filter)) {
+            return false;
+        }
+        this.logRaw('deleteOne', filter).action(`${this.model.getModelName()}.hardDelete()`);
+        return this.collection.deleteOne(filter).then(response => {
+            return this.logger.end({
+                result: response.result,
+                deletedCount: response.deletedCount
+            });
+        });
     }
     async restore() {
-        // if (!this.model.isNew()) {
-        //   const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
-        //   const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
-        //   this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
-        //   this.fillTimestampsData(false)
-        //   return this.update(false, 'restore')
-        // }
+        // const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
+        // const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
+        // this.fillTimestampsData(false)
+        // this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
+        // return this.update(false, 'restore')
         return false;
     }
     getModifiedData() {
