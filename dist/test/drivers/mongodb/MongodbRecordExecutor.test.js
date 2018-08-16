@@ -85,11 +85,23 @@ describe('MongodbRecordExecutor', function () {
         expect(logData).toMatchObject(data);
     }
     describe('.fillData()', function () {
+        it('simply calls .fillTimestampsData() and .fillSoftDeletesData()', function () {
+            const model = makeModel('Test', false, false);
+            const record = new Record_1.Record();
+            const executor = makeExecutor(model, record);
+            const fillTimestampsDataSpy = Sinon.spy(executor, 'fillTimestampsData');
+            const fillSoftDeletesDataSpy = Sinon.spy(executor, 'fillSoftDeletesData');
+            executor.fillData(true);
+            expect(fillTimestampsDataSpy.calledWith(true)).toBe(true);
+            expect(fillSoftDeletesDataSpy.called).toBe(true);
+        });
+    });
+    describe('.fillTimestampsData()', function () {
         it('does nothing if there is no timestamps or softDeletes settings', function () {
             const model = makeModel('Test', false, false);
             const record = new Record_1.Record();
             const executor = makeExecutor(model, record);
-            executor.fillData(true);
+            executor.fillTimestampsData(true);
             expect(record.toObject()).toEqual({});
         });
         it('fills updatedAt only if isCreate = false if has timestamp settings', function () {
@@ -100,7 +112,7 @@ describe('MongodbRecordExecutor', function () {
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
             const record = new Record_1.Record();
             const executor = makeExecutor(model, record);
-            executor.fillData(false);
+            executor.fillTimestampsData(false);
             expect(record.toObject()).toEqual({ updated_at: now.toDate() });
         });
         it('fills updatedAt/createdAt if isCreate = true if has timestamp settings', function () {
@@ -111,7 +123,7 @@ describe('MongodbRecordExecutor', function () {
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
             const record = new Record_1.Record();
             const executor = makeExecutor(model, record);
-            executor.fillData(true);
+            executor.fillTimestampsData(true);
             expect(record.toObject()).toEqual({ updated_at: now.toDate(), created_at: now.toDate() });
         });
         it('skips createdAt if it already exists', function () {
@@ -122,14 +134,23 @@ describe('MongodbRecordExecutor', function () {
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
             const record = new Record_1.Record({ created_at: 'anything' });
             const executor = makeExecutor(model, record);
-            executor.fillData(true);
+            executor.fillTimestampsData(true);
             expect(record.toObject()).toEqual({ updated_at: now.toDate(), created_at: 'anything' });
+        });
+    });
+    describe('.fillSoftDeletesData()', function () {
+        it('does nothing if there is no timestamps or softDeletes settings', function () {
+            const model = makeModel('Test', false, false);
+            const record = new Record_1.Record();
+            const executor = makeExecutor(model, record);
+            executor.fillSoftDeletesData();
+            expect(record.toObject()).toEqual({});
         });
         it('fills deletedAt = null there is a softDeletes setting', function () {
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
             const record = new Record_1.Record();
             const executor = makeExecutor(model, record);
-            executor.fillData(true);
+            executor.fillSoftDeletesData();
             // tslint:disable-next-line
             expect(record.toObject()).toEqual({ deleted_at: null });
         });
@@ -137,7 +158,7 @@ describe('MongodbRecordExecutor', function () {
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
             const record = new Record_1.Record({ deleted_at: 'anything' });
             const executor = makeExecutor(model, record);
-            executor.fillData(true);
+            executor.fillSoftDeletesData();
             expect(record.toObject()).toEqual({ deleted_at: 'anything' });
         });
     });
@@ -345,9 +366,74 @@ describe('MongodbRecordExecutor', function () {
             }, result, 1);
         });
     });
-    describe('.delete()', function () {
+    describe('.softDelete()', function () {
+        it('sets deleted_at field then calls and returns .create() if the model is new', async function () {
+            const now = Moment('2018-01-01T00:00:00.000Z');
+            Moment.now = () => {
+                return now;
+            };
+            const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
+            model['isNew'] = function () {
+                return true;
+            };
+            const record = new Record_1.Record();
+            const executor = makeExecutor(model, record);
+            const fillTimestampsDataSpy = Sinon.spy(executor, 'fillTimestampsData');
+            const createStub = Sinon.stub(executor, 'create');
+            const updateStub = Sinon.stub(executor, 'update');
+            createStub.returns('create-result');
+            updateStub.returns('update-result');
+            expect(await executor.softDelete()).toEqual('create-result');
+            expect(fillTimestampsDataSpy.calledWith(true)).toBe(true);
+            expect(createStub.calledWith(false, 'softDelete')).toBe(true);
+            expect(updateStub.calledWith(false, 'softDelete')).toBe(false);
+            expect(record.getAttribute('deleted_at')).toEqual(now.toDate());
+        });
+        it('sets deleted_at field then calls and returns .update() if the model is not new', async function () {
+            const now = Moment('2018-01-01T00:00:00.000Z');
+            Moment.now = () => {
+                return now;
+            };
+            const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
+            model['isNew'] = function () {
+                return false;
+            };
+            const record = new Record_1.Record();
+            const executor = makeExecutor(model, record);
+            const fillTimestampsDataSpy = Sinon.spy(executor, 'fillTimestampsData');
+            const createStub = Sinon.stub(executor, 'create');
+            const updateStub = Sinon.stub(executor, 'update');
+            createStub.returns('create-result');
+            updateStub.returns('update-result');
+            expect(await executor.softDelete()).toEqual('update-result');
+            expect(fillTimestampsDataSpy.calledWith(false)).toBe(true);
+            expect(createStub.calledWith(false, 'softDelete')).toBe(false);
+            expect(updateStub.calledWith(false, 'softDelete')).toBe(true);
+            expect(record.getAttribute('deleted_at')).toEqual(now.toDate());
+        });
+        it('should work with expected log', async function () {
+            const now = Moment('2018-01-01T00:00:00.000Z');
+            Moment.now = () => {
+                return now;
+            };
+            const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, { deletedAt: 'deleted_at' });
+            model['isNew'] = function () {
+                return true;
+            };
+            const result = await makeExecutor(model, new Record_1.Record()).softDelete();
+            expect_query_log({
+                raw: `db.test.insertOne(${JSON.stringify({
+                    updated_at: now.toDate(),
+                    created_at: now.toDate(),
+                    deleted_at: now.toDate()
+                })})`,
+                action: 'Test.softDelete()'
+            }, result);
+        });
+    });
+    describe('.hardDelete()', function () {
         it('should work', function () {
-            makeExecutor({}, new Record_1.Record()).delete(true);
+            makeExecutor({}, new Record_1.Record()).hardDelete();
         });
     });
     describe('.restore()', function () {

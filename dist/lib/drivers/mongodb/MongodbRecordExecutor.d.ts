@@ -13,10 +13,13 @@ export declare class MongodbRecordExecutor implements NajsEloquent.Feature.IReco
     protected collection: Collection;
     constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog);
     fillData(isCreate: boolean): void;
+    fillSoftDeletesData(): void;
+    fillTimestampsData(isCreate: boolean): void;
     setAttributeIfNeeded(attribute: string, value: any): void;
-    create<R = any>(shouldFillData?: boolean): Promise<R>;
-    update<R = any>(shouldFillData?: boolean): Promise<R>;
-    delete<R = any>(useSoftDelete: boolean): Promise<R>;
+    create<R = any>(shouldFillData?: boolean, action?: string): Promise<R>;
+    update<R = any>(shouldFillData?: boolean, action?: string): Promise<R>;
+    softDelete<R = any>(): Promise<R>;
+    hardDelete<R = any>(): Promise<R>;
     restore<R = any>(): Promise<R>;
     getModifiedData(): {};
     getFilter(): {};

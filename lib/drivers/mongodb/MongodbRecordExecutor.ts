@@ -26,24 +26,32 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
   }
 
   fillData(isCreate: boolean) {
-    const timestampFeature = this.model.getDriver().getTimestampsFeature()
+    this.fillTimestampsData(isCreate)
+    this.fillSoftDeletesData()
+  }
+
+  fillSoftDeletesData() {
     const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
-
-    if (timestampFeature.hasTimestamps(this.model)) {
-      const timestampSettings = timestampFeature.getTimestampsSetting(this.model)
-
-      this.record.setAttribute(timestampSettings.updatedAt, Moment().toDate())
-      if (isCreate) {
-        this.setAttributeIfNeeded(timestampSettings.createdAt, Moment().toDate())
-      }
-    }
 
     if (softDeletesFeature.hasSoftDeletes(this.model)) {
       const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model)
       this.setAttributeIfNeeded(
-        softDeleteSettings.deletedAt,
+        this.convention.formatFieldName(softDeleteSettings.deletedAt),
         this.convention.getNullValueFor(softDeleteSettings.deletedAt)
       )
+    }
+  }
+
+  fillTimestampsData(isCreate: boolean) {
+    const timestampFeature = this.model.getDriver().getTimestampsFeature()
+
+    if (timestampFeature.hasTimestamps(this.model)) {
+      const timestampSettings = timestampFeature.getTimestampsSetting(this.model)
+
+      this.record.setAttribute(this.convention.formatFieldName(timestampSettings.updatedAt), Moment().toDate())
+      if (isCreate) {
+        this.setAttributeIfNeeded(this.convention.formatFieldName(timestampSettings.createdAt), Moment().toDate())
+      }
     }
   }
 
@@ -53,13 +61,13 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     }
   }
 
-  async create<R = any>(shouldFillData: boolean = true): Promise<R> {
+  async create<R = any>(shouldFillData: boolean = true, action: string = 'create'): Promise<R> {
     if (shouldFillData) {
       this.fillData(true)
     }
 
     const data = this.record.toObject()
-    this.logRaw('insertOne', data).action(`${this.model.getModelName()}.create()`)
+    this.logRaw('insertOne', data).action(`${this.model.getModelName()}.${action}()`)
     return this.collection.insertOne(data).then(response => {
       return this.logger.end({
         result: response.result,
@@ -69,7 +77,7 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     })
   }
 
-  async update<R = any>(shouldFillData: boolean = true): Promise<R> {
+  async update<R = any>(shouldFillData: boolean = true, action: string = 'update'): Promise<R> {
     const filter = this.getFilter()
     if (isEmpty(filter)) {
       return false as any
@@ -85,7 +93,7 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     }
 
     const data = { $set: modifiedData }
-    this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.update()`)
+    this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.${action}()`)
     return this.collection.updateOne(filter, data).then(response => {
       return this.logger.end({
         result: response.result,
@@ -95,12 +103,43 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     })
   }
 
-  async delete<R = any>(useSoftDelete: boolean): Promise<R> {
-    return {} as R
+  async softDelete<R = any>(): Promise<R> {
+    const isNew = this.model.isNew()
+    this.fillTimestampsData(isNew)
+
+    const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
+    this.record.setAttribute(
+      this.convention.formatFieldName(softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt),
+      Moment().toDate()
+    )
+
+    return isNew ? this.create(false, 'softDelete') : this.update(false, 'softDelete')
+  }
+
+  async hardDelete<R = any>(): Promise<R> {
+    // const filter = this.getFilter()
+    // if (isEmpty(filter)) {
+    //   return false as any
+    // }
+    // this.logger.action(`${this.model.getModelName()}.delete()`)
+    // return this.collection.deleteOne(filter).then(response => {
+    //   return this.logger.end({
+    //     result: response.result,
+    //     deletedCount: response.deletedCount
+    //   })
+    // })
+    return false as any
   }
 
   async restore<R = any>(): Promise<R> {
-    return {} as R
+    // if (!this.model.isNew()) {
+    //   const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
+    //   const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
+    //   this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
+    //   this.fillTimestampsData(false)
+    //   return this.update(false, 'restore')
+    // }
+    return false as any
   }
 
   getModifiedData() {

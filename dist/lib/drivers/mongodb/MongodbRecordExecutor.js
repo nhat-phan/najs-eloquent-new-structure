@@ -14,18 +14,24 @@ class MongodbRecordExecutor {
         this.convention = new MongodbConvention_1.MongodbConvention();
     }
     fillData(isCreate) {
-        const timestampFeature = this.model.getDriver().getTimestampsFeature();
+        this.fillTimestampsData(isCreate);
+        this.fillSoftDeletesData();
+    }
+    fillSoftDeletesData() {
         const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();
-        if (timestampFeature.hasTimestamps(this.model)) {
-            const timestampSettings = timestampFeature.getTimestampsSetting(this.model);
-            this.record.setAttribute(timestampSettings.updatedAt, Moment().toDate());
-            if (isCreate) {
-                this.setAttributeIfNeeded(timestampSettings.createdAt, Moment().toDate());
-            }
-        }
         if (softDeletesFeature.hasSoftDeletes(this.model)) {
             const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model);
-            this.setAttributeIfNeeded(softDeleteSettings.deletedAt, this.convention.getNullValueFor(softDeleteSettings.deletedAt));
+            this.setAttributeIfNeeded(this.convention.formatFieldName(softDeleteSettings.deletedAt), this.convention.getNullValueFor(softDeleteSettings.deletedAt));
+        }
+    }
+    fillTimestampsData(isCreate) {
+        const timestampFeature = this.model.getDriver().getTimestampsFeature();
+        if (timestampFeature.hasTimestamps(this.model)) {
+            const timestampSettings = timestampFeature.getTimestampsSetting(this.model);
+            this.record.setAttribute(this.convention.formatFieldName(timestampSettings.updatedAt), Moment().toDate());
+            if (isCreate) {
+                this.setAttributeIfNeeded(this.convention.formatFieldName(timestampSettings.createdAt), Moment().toDate());
+            }
         }
     }
     setAttributeIfNeeded(attribute, value) {
@@ -33,12 +39,12 @@ class MongodbRecordExecutor {
             this.record.setAttribute(attribute, value);
         }
     }
-    async create(shouldFillData = true) {
+    async create(shouldFillData = true, action = 'create') {
         if (shouldFillData) {
             this.fillData(true);
         }
         const data = this.record.toObject();
-        this.logRaw('insertOne', data).action(`${this.model.getModelName()}.create()`);
+        this.logRaw('insertOne', data).action(`${this.model.getModelName()}.${action}()`);
         return this.collection.insertOne(data).then(response => {
             return this.logger.end({
                 result: response.result,
@@ -47,7 +53,7 @@ class MongodbRecordExecutor {
             });
         });
     }
-    async update(shouldFillData = true) {
+    async update(shouldFillData = true, action = 'update') {
         const filter = this.getFilter();
         if (lodash_1.isEmpty(filter)) {
             return false;
@@ -60,7 +66,7 @@ class MongodbRecordExecutor {
             return false;
         }
         const data = { $set: modifiedData };
-        this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.update()`);
+        this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.${action}()`);
         return this.collection.updateOne(filter, data).then(response => {
             return this.logger.end({
                 result: response.result,
@@ -69,11 +75,36 @@ class MongodbRecordExecutor {
             });
         });
     }
-    async delete(useSoftDelete) {
-        return {};
+    async softDelete() {
+        const isNew = this.model.isNew();
+        this.fillTimestampsData(isNew);
+        const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();
+        this.record.setAttribute(this.convention.formatFieldName(softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt), Moment().toDate());
+        return isNew ? this.create(false, 'softDelete') : this.update(false, 'softDelete');
+    }
+    async hardDelete() {
+        // const filter = this.getFilter()
+        // if (isEmpty(filter)) {
+        //   return false as any
+        // }
+        // this.logger.action(`${this.model.getModelName()}.delete()`)
+        // return this.collection.deleteOne(filter).then(response => {
+        //   return this.logger.end({
+        //     result: response.result,
+        //     deletedCount: response.deletedCount
+        //   })
+        // })
+        return false;
     }
     async restore() {
-        return {};
+        // if (!this.model.isNew()) {
+        //   const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
+        //   const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
+        //   this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
+        //   this.fillTimestampsData(false)
+        //   return this.update(false, 'restore')
+        // }
+        return false;
     }
     getModifiedData() {
         return this.record.getModified().reduce((data, name) => {

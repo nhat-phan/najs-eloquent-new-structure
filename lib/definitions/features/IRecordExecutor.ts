@@ -3,30 +3,27 @@
 namespace NajsEloquent.Feature {
   export interface IRecordExecutor {
     /**
-     * Create the given model.
-     *
-     * @param {Model} model
+     * Execute create for record and model.
      */
     create<R = any>(): Promise<R>
 
     /**
-     * Create the given model.
-     *
-     * @param {Model} model
+     * Execute update for record and model.
      */
     update<R = any>(): Promise<R>
 
     /**
-     * Delete the given model.
-     *
-     * @param {Model} model
+     * Execute hard delete for record and model.
      */
-    delete<R = any>(useSoftDelete: boolean): Promise<R>
+    hardDelete<R = any>(): Promise<R>
 
     /**
-     * Restore the given model.
-     *
-     * @param {Model} model
+     * Execute soft delete for record and model.
+     */
+    softDelete<R = any>(): Promise<R>
+
+    /**
+     * Execute restore from soft delete for record and model.
      */
     restore<R = any>(): Promise<R>
   }

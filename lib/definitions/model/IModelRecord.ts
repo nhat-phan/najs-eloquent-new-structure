@@ -83,6 +83,6 @@ namespace NajsEloquent.Model {
     /**
      * Determine the model is new or not.
      */
-    isNew(model: Model.IModel): boolean
+    isNew(): boolean
   }
 }
