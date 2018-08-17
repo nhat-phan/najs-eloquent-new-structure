@@ -31,16 +31,22 @@ class SoftDeletesFeature extends FeatureBase_1.FeatureBase {
     }
     async forceDelete(model) {
         await model.fire(ModelEvent_1.ModelEvent.Deleting);
-        // TODO: implement delete
-        // this.useRecordManagerOf(model).delete(model)
+        const result = await this.useRecordManagerOf(model)
+            .getRecordExecutor(model)
+            .hardDelete();
         await model.fire(ModelEvent_1.ModelEvent.Deleted);
-        return true;
+        return result !== false;
     }
     async restore(model) {
-        await model.fire(ModelEvent_1.ModelEvent.Restoring);
-        // TODO: implement restore
-        await model.fire(ModelEvent_1.ModelEvent.Restored);
-        return true;
+        if (this.hasSoftDeletes(model) && !model.isNew()) {
+            await model.fire(ModelEvent_1.ModelEvent.Restoring);
+            const result = await this.useRecordManagerOf(model)
+                .getRecordExecutor(model)
+                .restore();
+            await model.fire(ModelEvent_1.ModelEvent.Restored);
+            return result !== false;
+        }
+        return false;
     }
 }
 SoftDeletesFeature.DefaultSetting = {

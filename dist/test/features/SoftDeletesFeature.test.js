@@ -123,9 +123,23 @@ describe('FillableFeature', function () {
     });
     describe('.forceDelete()', function () {
         it('fires events "deleting" & "deleted"', async function () {
+            const recordExecutor = {
+                hardDelete() { }
+            };
             const model = {
                 fire() {
                     return Promise.resolve(true);
+                },
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                getRecordExecutor() {
+                                    return recordExecutor;
+                                }
+                            };
+                        }
+                    };
                 }
             };
             const spy = Sinon.spy(model, 'fire');
@@ -134,21 +148,132 @@ describe('FillableFeature', function () {
             expect(spy.firstCall.calledWith('deleting')).toBe(true);
             expect(spy.secondCall.calledWith('deleted')).toBe(true);
         });
-        // TODO: implement test for forceDelete()
+        it('calls RecordExecutor.hardDelete() then returns true if result !== false', async function () {
+            const recordExecutor = {
+                hardDelete() { }
+            };
+            const model = {
+                fire() {
+                    return Promise.resolve(true);
+                },
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                getRecordExecutor() {
+                                    return recordExecutor;
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            const stub = Sinon.stub(recordExecutor, 'hardDelete');
+            stub.returns(false);
+            expect(await softDeletesFeature.forceDelete(model)).toBe(false);
+            expect(stub.called).toBe(true);
+            stub.resetHistory();
+            stub.returns({});
+            expect(await softDeletesFeature.forceDelete(model)).toBe(true);
+            expect(stub.called).toBe(true);
+        });
     });
     describe('.restore()', function () {
-        it('fires events "restoring" & "restored"', async function () {
+        it('does nothing and returns false if model has no soft deletes setting', async function () {
             const model = {
                 fire() {
                     return Promise.resolve(true);
                 }
             };
+            const hasSoftDeletesStub = Sinon.stub(softDeletesFeature, 'hasSoftDeletes');
+            hasSoftDeletesStub.returns(false);
+            const spy = Sinon.spy(model, 'fire');
+            expect(await softDeletesFeature.restore(model)).toBe(false);
+            expect(spy.callCount).toEqual(0);
+            hasSoftDeletesStub.restore();
+        });
+        it('does nothing and returns false if model.isNew() returns true', async function () {
+            const model = {
+                fire() {
+                    return Promise.resolve(true);
+                },
+                isNew() {
+                    return true;
+                }
+            };
+            const hasSoftDeletesStub = Sinon.stub(softDeletesFeature, 'hasSoftDeletes');
+            hasSoftDeletesStub.returns(false);
+            const spy = Sinon.spy(model, 'fire');
+            expect(await softDeletesFeature.restore(model)).toBe(false);
+            expect(spy.callCount).toEqual(0);
+            hasSoftDeletesStub.restore();
+        });
+        it('fires events "restoring" & "restored"', async function () {
+            const recordExecutor = {
+                restore() { }
+            };
+            const model = {
+                isNew() {
+                    return false;
+                },
+                fire() {
+                    return Promise.resolve(true);
+                },
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                getRecordExecutor() {
+                                    return recordExecutor;
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            const hasSoftDeletesStub = Sinon.stub(softDeletesFeature, 'hasSoftDeletes');
+            hasSoftDeletesStub.returns(true);
             const spy = Sinon.spy(model, 'fire');
             await softDeletesFeature.restore(model);
             expect(spy.callCount).toEqual(2);
             expect(spy.firstCall.calledWith('restoring')).toBe(true);
             expect(spy.secondCall.calledWith('restored')).toBe(true);
+            hasSoftDeletesStub.restore();
         });
-        // TODO: implement test for restore()
+        it('calls RecordExecutor.restore() then returns true if result !== false', async function () {
+            const recordExecutor = {
+                restore() { }
+            };
+            const model = {
+                isNew() {
+                    return false;
+                },
+                fire() {
+                    return Promise.resolve(true);
+                },
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                getRecordExecutor() {
+                                    return recordExecutor;
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            const hasSoftDeletesStub = Sinon.stub(softDeletesFeature, 'hasSoftDeletes');
+            hasSoftDeletesStub.returns(true);
+            const stub = Sinon.stub(recordExecutor, 'restore');
+            stub.returns(false);
+            expect(await softDeletesFeature.restore(model)).toBe(false);
+            expect(stub.called).toBe(true);
+            stub.resetHistory();
+            stub.returns({});
+            expect(await softDeletesFeature.restore(model)).toBe(true);
+            expect(stub.called).toBe(true);
+            hasSoftDeletesStub.restore();
+        });
     });
 });
