@@ -564,8 +564,59 @@ describe('MongodbRecordExecutor', function() {
   })
 
   describe('.restore()', function() {
-    it('should work', function() {
-      makeExecutor({} as any, new Record()).restore()
+    it('calls .fillTimestampsData() then calls and returns .update()', async function() {
+      const now = Moment('2018-01-01T00:00:00.000Z')
+      Moment.now = () => {
+        return now
+      }
+
+      const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
+      model['isNew'] = function() {
+        return true
+      }
+      const record = new Record()
+      const executor = makeExecutor(model, record)
+      const fillTimestampsDataSpy = Sinon.spy(executor, 'fillTimestampsData')
+      const updateStub = Sinon.stub(executor, 'update')
+      updateStub.returns('update-result')
+
+      expect(await executor.restore()).toEqual('update-result')
+      expect(fillTimestampsDataSpy.calledWith(false)).toBe(true)
+      expect(updateStub.calledWith(false, 'restore')).toBe(true)
+      expect(record.getAttribute('deleted_at')).toBeNull()
+    })
+
+    it('should work with expected log', async function() {
+      const now = Moment('2018-01-01T00:00:00.000Z')
+      Moment.now = () => {
+        return now
+      }
+      const id = new ObjectId()
+      const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+      model['isNew'] = function() {
+        return false
+      }
+
+      await makeExecutor(model, new Record({ id: id })).create()
+      await makeExecutor(model, new Record({ id: id })).softDelete()
+
+      const result = await makeExecutor(model, new Record({ id: id })).restore()
+
+      expect_query_log(
+        {
+          // tslint:disable-next-line
+          raw: `db.test.updateOne(${JSON.stringify({ _id: id })},${JSON.stringify({ $set: { deleted_at: null } })})`,
+          action: 'Test.restore()'
+        },
+        result,
+        2
+      )
     })
   })
 })

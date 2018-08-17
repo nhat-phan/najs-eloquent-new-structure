@@ -132,14 +132,12 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
   }
 
   async restore<R = any>(): Promise<R> {
-    // const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
-    // const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
+    const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
+    const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
 
-    // this.fillTimestampsData(false)
-    // this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
-    // return this.update(false, 'restore')
-
-    return false as any
+    this.fillTimestampsData(false)
+    this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
+    return this.update(false, 'restore')
   }
 
   getModifiedData() {

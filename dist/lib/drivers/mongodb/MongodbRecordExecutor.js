@@ -96,12 +96,11 @@ class MongodbRecordExecutor {
         });
     }
     async restore() {
-        // const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
-        // const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt
-        // this.fillTimestampsData(false)
-        // this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName))
-        // return this.update(false, 'restore')
-        return false;
+        const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();
+        const fieldName = softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt;
+        this.fillTimestampsData(false);
+        this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName));
+        return this.update(false, 'restore');
     }
     getModifiedData() {
         return this.record.getModified().reduce((data, name) => {
