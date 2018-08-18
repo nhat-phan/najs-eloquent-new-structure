@@ -14,6 +14,7 @@ namespace NajsEloquent.QueryBuilder {
   export interface IQueryBuilder<T extends Model.IModel, Handle extends IQueryBuilderHandler = IQueryBuilderHandler>
     extends QueryGrammar.IQuery,
       QueryGrammar.IConditionQuery,
+      QueryGrammar.IExecuteQuery,
       QueryGrammar.IAdvancedQuery<T> {}
 
   export type QueryBuilderInternal = IQueryBuilder<any> & { handler: NajsEloquent.QueryBuilder.IQueryBuilderHandler }

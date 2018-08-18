@@ -27,7 +27,7 @@ export class Model {
     return getClassName(this)
   }
 
-  newQuery(name?: string) {
+  newQuery(name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<this> {
     const query = this.driver.newQuery<any>(this)
 
     return typeof name !== 'undefined' ? query.queryName(name) : query
