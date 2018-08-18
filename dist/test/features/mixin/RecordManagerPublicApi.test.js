@@ -173,4 +173,180 @@ describe('RecordManagerPublicApi', function () {
             stub.restore();
         });
     });
+    describe('.create()', function () {
+        it('fires 2 events Creating & Created, calls RecordExecutor.create() then returns itself', async function () {
+            const recordExecutor = {
+                create() { }
+            };
+            const recordManager = {
+                getRecordExecutor() {
+                    return recordExecutor;
+                }
+            };
+            const model = {
+                async fire() { },
+                driver: {
+                    getRecordManager() {
+                        return recordManager;
+                    }
+                }
+            };
+            const fireSpy = Sinon.stub(model, 'fire');
+            const stub = Sinon.stub(recordExecutor, 'create');
+            expect((await RecordManagerPublicApi_1.RecordManagerPublicApi.create.call(model)) === model).toBe(true);
+            expect(fireSpy.calledTwice).toBe(true);
+            expect(fireSpy.firstCall.calledWith('creating')).toBe(true);
+            expect(fireSpy.secondCall.calledWith('created')).toBe(true);
+            expect(stub.called).toBe(true);
+        });
+    });
+    describe('.update()', function () {
+        it('fires 2 events Updating & Updated, calls RecordExecutor.update() then returns itself', async function () {
+            const recordExecutor = {
+                update() { }
+            };
+            const recordManager = {
+                getRecordExecutor() {
+                    return recordExecutor;
+                }
+            };
+            const model = {
+                async fire() { },
+                driver: {
+                    getRecordManager() {
+                        return recordManager;
+                    }
+                }
+            };
+            const fireSpy = Sinon.stub(model, 'fire');
+            const stub = Sinon.stub(recordExecutor, 'update');
+            expect((await RecordManagerPublicApi_1.RecordManagerPublicApi.update.call(model)) === model).toBe(true);
+            expect(fireSpy.calledTwice).toBe(true);
+            expect(fireSpy.firstCall.calledWith('updating')).toBe(true);
+            expect(fireSpy.secondCall.calledWith('updated')).toBe(true);
+            expect(stub.called).toBe(true);
+        });
+    });
+    describe('.save()', function () {
+        it('fires 2 events Saving & Saved, calls this.create() if .isNew() return true, then returns itself', async function () {
+            const model = {
+                async fire() { },
+                async create() { },
+                async update() { },
+                isNew() {
+                    return true;
+                }
+            };
+            const fireSpy = Sinon.stub(model, 'fire');
+            const createSpy = Sinon.stub(model, 'create');
+            const updateSpy = Sinon.stub(model, 'update');
+            expect((await RecordManagerPublicApi_1.RecordManagerPublicApi.save.call(model)) === model).toBe(true);
+            expect(fireSpy.calledTwice).toBe(true);
+            expect(fireSpy.firstCall.calledWith('saving')).toBe(true);
+            expect(fireSpy.secondCall.calledWith('saved')).toBe(true);
+            expect(createSpy.called).toBe(true);
+            expect(updateSpy.called).toBe(false);
+        });
+        it('fires 2 events Saving & Saved, calls this.update() if .isNew() return false, then returns itself', async function () {
+            const model = {
+                async fire() { },
+                async create() { },
+                async update() { },
+                isNew() {
+                    return false;
+                }
+            };
+            const fireSpy = Sinon.stub(model, 'fire');
+            const createSpy = Sinon.stub(model, 'create');
+            const updateSpy = Sinon.stub(model, 'update');
+            expect((await RecordManagerPublicApi_1.RecordManagerPublicApi.save.call(model)) === model).toBe(true);
+            expect(fireSpy.calledTwice).toBe(true);
+            expect(fireSpy.firstCall.calledWith('saving')).toBe(true);
+            expect(fireSpy.secondCall.calledWith('saved')).toBe(true);
+            expect(createSpy.called).toBe(false);
+            expect(updateSpy.called).toBe(true);
+        });
+    });
+    describe('.delete()', function () {
+        it('fires 2 events Deleting & Deleted, calls RecordExecutor.softDelete() if the model has soft deletes, then returns itself', async function () {
+            const recordExecutor = {
+                softDelete() { },
+                hardDelete() { }
+            };
+            const recordManager = {
+                getRecordExecutor() {
+                    return recordExecutor;
+                }
+            };
+            const model = {
+                async fire() { },
+                async create() { },
+                async update() { },
+                isNew() {
+                    return false;
+                },
+                driver: {
+                    getRecordManager() {
+                        return recordManager;
+                    },
+                    getSoftDeletesFeature() {
+                        return {
+                            hasSoftDeletes() {
+                                return true;
+                            }
+                        };
+                    }
+                }
+            };
+            const fireSpy = Sinon.stub(model, 'fire');
+            const softDeleteSpy = Sinon.stub(recordExecutor, 'softDelete');
+            const hardDeleteSpy = Sinon.stub(recordExecutor, 'hardDelete');
+            expect((await RecordManagerPublicApi_1.RecordManagerPublicApi.delete.call(model)) === model).toBe(true);
+            expect(fireSpy.calledTwice).toBe(true);
+            expect(fireSpy.firstCall.calledWith('deleting')).toBe(true);
+            expect(fireSpy.secondCall.calledWith('deleted')).toBe(true);
+            expect(softDeleteSpy.called).toBe(true);
+            expect(hardDeleteSpy.called).toBe(false);
+        });
+        it('fires 2 events Deleting & Deleted, calls RecordExecutor.hardDelete() if the model has no soft deletes, then returns itself', async function () {
+            const recordExecutor = {
+                softDelete() { },
+                hardDelete() { }
+            };
+            const recordManager = {
+                getRecordExecutor() {
+                    return recordExecutor;
+                }
+            };
+            const model = {
+                async fire() { },
+                async create() { },
+                async update() { },
+                isNew() {
+                    return false;
+                },
+                driver: {
+                    getRecordManager() {
+                        return recordManager;
+                    },
+                    getSoftDeletesFeature() {
+                        return {
+                            hasSoftDeletes() {
+                                return false;
+                            }
+                        };
+                    }
+                }
+            };
+            const fireSpy = Sinon.stub(model, 'fire');
+            const softDeleteSpy = Sinon.stub(recordExecutor, 'softDelete');
+            const hardDeleteSpy = Sinon.stub(recordExecutor, 'hardDelete');
+            expect((await RecordManagerPublicApi_1.RecordManagerPublicApi.delete.call(model)) === model).toBe(true);
+            expect(fireSpy.calledTwice).toBe(true);
+            expect(fireSpy.firstCall.calledWith('deleting')).toBe(true);
+            expect(fireSpy.secondCall.calledWith('deleted')).toBe(true);
+            expect(softDeleteSpy.called).toBe(false);
+            expect(hardDeleteSpy.called).toBe(true);
+        });
+    });
 });

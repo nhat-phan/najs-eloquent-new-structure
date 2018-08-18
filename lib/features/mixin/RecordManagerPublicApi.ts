@@ -1,6 +1,7 @@
 /// <reference path="../../definitions/model/IModel.ts" />
 /// <reference path="../../definitions/model/IModelRecord.ts" />
 import Model = NajsEloquent.Model.ModelInternal
+import { ModelEvent } from '../../model/ModelEvent'
 
 export const RecordManagerPublicApi: NajsEloquent.Model.IModelRecord<any> = {
   getRecordName(this: Model): string {
@@ -59,22 +60,57 @@ export const RecordManagerPublicApi: NajsEloquent.Model.IModelRecord<any> = {
 
   isNew(this: Model): boolean {
     return this.driver.getRecordManager().isNew(this)
+  },
+
+  async create(this: Model): Promise<any> {
+    await this.fire(ModelEvent.Creating)
+    await this.driver
+      .getRecordManager()
+      .getRecordExecutor(this)
+      .create()
+    await this.fire(ModelEvent.Created)
+
+    return this
+  },
+
+  async update(this: Model): Promise<any> {
+    await this.fire(ModelEvent.Updating)
+    await this.driver
+      .getRecordManager()
+      .getRecordExecutor(this)
+      .update()
+    await this.fire(ModelEvent.Updated)
+
+    return this
+  },
+
+  async save(this: Model): Promise<any> {
+    await this.fire(ModelEvent.Saving)
+    if (this.isNew()) {
+      await this.create()
+    } else {
+      await this.update()
+    }
+    await this.fire(ModelEvent.Saved)
+
+    return this
+  },
+
+  async delete(this: Model): Promise<any> {
+    await this.fire(ModelEvent.Deleting)
+    if (this.driver.getSoftDeletesFeature().hasSoftDeletes(this)) {
+      await this.driver
+        .getRecordManager()
+        .getRecordExecutor(this)
+        .softDelete()
+    } else {
+      await this.driver
+        .getRecordManager()
+        .getRecordExecutor(this)
+        .hardDelete()
+    }
+    await this.fire(ModelEvent.Deleted)
+
+    return this
   }
-
-  // save(this: Model): Promise<any> {
-  //   const recordManager = this.driver.getRecordManager()
-  //   if (recordManager.isNew(this)) {
-  //     return recordManager.getRecordExecutor(this).create()
-  //   }
-  //   return recordManager.getRecordExecutor(this).update()
-  // },
-
-  // delete(this: Model): Promise<any> {
-  //   const softDeletesFeature = this.driver.getSoftDeletesFeature()
-
-  //   return this.driver
-  //     .getRecordManager()
-  //     .getRecordExecutor(this)
-  //     .delete(softDeletesFeature.hasSoftDeletes(this))
-  // }
 }

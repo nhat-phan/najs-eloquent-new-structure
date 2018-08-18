@@ -72,5 +72,21 @@ declare namespace NajsEloquent.Model {
          * Determine the model is new or not.
          */
         isNew(): boolean;
+        /**
+         * Save model into database, create if not exists otherwise use update the model.
+         */
+        save(): Promise<this>;
+        /**
+         * Create model into database, it may throws an exception if the model already exists. You can use .save() instead.
+         */
+        create(): Promise<this>;
+        /**
+         * Update model into database, it may throws an exception if the model is not exists. You can use .save() instead.
+         */
+        update(): Promise<this>;
+        /**
+         * Delete model use soft deletes if the soft delete settings is true otherwise will hard delete the model.
+         */
+        delete(): Promise<this>;
     }
 }
