@@ -3,6 +3,7 @@
 /// <reference path="../definitions/relations/IRelation.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const Model_1 = require("../model/Model");
+const Eloquent_1 = require("../model/Eloquent");
 const Relation_1 = require("./Relation");
 const EventPublicApi_1 = require("../features/mixin/EventPublicApi");
 const FillablePublicApi_1 = require("../features/mixin/FillablePublicApi");
@@ -21,7 +22,7 @@ class RelationDefinitionFinder {
     getDefinitions() {
         return [this.prototype, ...this.bases]
             .map(prototype => {
-            if (prototype === Model_1.Model.prototype || prototype === Object.prototype) {
+            if (prototype === Eloquent_1.Eloquent.prototype || prototype === Model_1.Model.prototype || prototype === Object.prototype) {
                 return {};
             }
             return this.findDefinitionsInPrototype(prototype);

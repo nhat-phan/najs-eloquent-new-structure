@@ -6,6 +6,7 @@ import RelationDefinition = NajsEloquent.Relation.RelationDefinition
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
 
 import { Model } from '../model/Model'
+import { Eloquent } from '../model/Eloquent'
 import { Relation } from './Relation'
 import { EventPublicApi } from '../features/mixin/EventPublicApi'
 import { FillablePublicApi } from '../features/mixin/FillablePublicApi'
@@ -39,7 +40,7 @@ export class RelationDefinitionFinder {
   getDefinitions() {
     return [this.prototype, ...this.bases]
       .map(prototype => {
-        if (prototype === Model.prototype || prototype === Object.prototype) {
+        if (prototype === Eloquent.prototype || prototype === Model.prototype || prototype === Object.prototype) {
           return {}
         }
         return this.findDefinitionsInPrototype(prototype)
