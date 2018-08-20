@@ -5,8 +5,6 @@ import IModel = NajsEloquent.Model.IModel
 import RelationDefinition = NajsEloquent.Relation.RelationDefinition
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
 
-import { Model } from '../model/Model'
-import { Eloquent } from '../model/Eloquent'
 import { Relation } from './Relation'
 import { EventPublicApi } from '../features/mixin/EventPublicApi'
 import { FillablePublicApi } from '../features/mixin/FillablePublicApi'
@@ -15,6 +13,7 @@ import { RelationPublicApi } from '../features/mixin/RelationPublicApi'
 import { SerializationPublicApi } from '../features/mixin/SerializationPublicApi'
 import { SoftDeletesPublicApi } from '../features/mixin/SoftDeletesPublicApi'
 import { TimestampsPublicApi } from '../features/mixin/TimestampsPublicApi'
+import { PrototypeManager } from '../util/PrototypeManager'
 
 const PublicApiList = ['constructor', 'sharedMetadata'].concat(
   Object.getOwnPropertyNames(EventPublicApi),
@@ -40,7 +39,7 @@ export class RelationDefinitionFinder {
   getDefinitions() {
     return [this.prototype, ...this.bases]
       .map(prototype => {
-        if (prototype === Eloquent.prototype || prototype === Model.prototype || prototype === Object.prototype) {
+        if (!PrototypeManager.shouldFindRelationsIn(prototype)) {
           return {}
         }
         return this.findDefinitionsInPrototype(prototype)

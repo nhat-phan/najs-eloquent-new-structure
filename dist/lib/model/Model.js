@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
+const PrototypeManager_1 = require("../util/PrototypeManager");
 class Model {
     constructor(data, isGuarded) {
         this.relations = {};
@@ -24,3 +25,4 @@ class Model {
     }
 }
 exports.Model = Model;
+PrototypeManager_1.PrototypeManager.stopFindingRelationsIn(Model.prototype);

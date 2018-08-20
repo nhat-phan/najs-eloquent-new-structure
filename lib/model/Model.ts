@@ -2,6 +2,7 @@
 
 import { getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
+import { PrototypeManager } from '../util/PrototypeManager'
 
 export interface Model extends NajsEloquent.Model.IModel {}
 export class Model {
@@ -33,3 +34,5 @@ export class Model {
     return typeof name !== 'undefined' ? query.queryName(name) : query
   }
 }
+
+PrototypeManager.stopFindingRelationsIn(Model.prototype)

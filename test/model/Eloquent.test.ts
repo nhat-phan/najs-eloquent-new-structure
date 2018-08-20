@@ -5,6 +5,7 @@ import { DummyDriver } from '../../lib/drivers/dummy/DummyDriver'
 import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
 import { EloquentPublicApi } from '../../lib/model/mixin/EloquentPublicApi'
 import { EloquentStaticPublicApi } from '../../lib/model/mixin/EloquentStaticPublicApi'
+import { PrototypeManager } from '../../lib/util/PrototypeManager'
 
 EloquentDriverProvider.register(DummyDriver, 'dummy', true)
 
@@ -12,6 +13,10 @@ describe('Eloquent', function() {
   it('extends Model', function() {
     const eloquent = new Eloquent()
     expect(eloquent).toBeInstanceOf(Model)
+  })
+
+  it('should not be discovered by RelationFinder', function() {
+    expect(PrototypeManager.shouldFindRelationsIn(Eloquent.prototype)).toBe(false)
   })
 
   for (const method in EloquentPublicApi) {

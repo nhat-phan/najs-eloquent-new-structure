@@ -4,6 +4,7 @@ import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { MongodbDriver } from './MongodbDriver'
 import { bind_driver_if_needed } from '../../util/binding'
 import { Collection } from 'mongodb'
+import { PrototypeManager } from '../../util/PrototypeManager'
 
 export class MongodbModel extends Model {
   public id?: string
@@ -22,3 +23,5 @@ export class MongodbModel extends Model {
     return this.newQuery().collection()
   }
 }
+
+PrototypeManager.stopFindingRelationsIn(MongodbModel.prototype)

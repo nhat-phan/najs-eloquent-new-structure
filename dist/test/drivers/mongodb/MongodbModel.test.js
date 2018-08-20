@@ -5,6 +5,7 @@ const Sinon = require("sinon");
 const Model_1 = require("../../../lib/model/Model");
 const MongodbModel_1 = require("../../../lib/drivers/mongodb/MongodbModel");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
+const PrototypeManager_1 = require("../../../lib/util/PrototypeManager");
 describe('MongodbModel', function () {
     class User extends MongodbModel_1.MongodbModel {
         getClassName() {
@@ -15,6 +16,9 @@ describe('MongodbModel', function () {
         const model = new User();
         expect(model).toBeInstanceOf(MongodbModel_1.MongodbModel);
         expect(model).toBeInstanceOf(Model_1.Model);
+    });
+    it('should not be discovered by RelationFinder', function () {
+        expect(PrototypeManager_1.PrototypeManager.shouldFindRelationsIn(MongodbModel_1.MongodbModel.prototype)).toBe(false);
     });
     describe('.newQuery()', function () {
         it('returns an instance of MongodbQueryBuilder', function () {

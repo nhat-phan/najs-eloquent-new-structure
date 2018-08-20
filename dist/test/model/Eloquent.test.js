@@ -7,11 +7,15 @@ const DummyDriver_1 = require("../../lib/drivers/dummy/DummyDriver");
 const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
 const EloquentPublicApi_1 = require("../../lib/model/mixin/EloquentPublicApi");
 const EloquentStaticPublicApi_1 = require("../../lib/model/mixin/EloquentStaticPublicApi");
+const PrototypeManager_1 = require("../../lib/util/PrototypeManager");
 EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
 describe('Eloquent', function () {
     it('extends Model', function () {
         const eloquent = new Eloquent_1.Eloquent();
         expect(eloquent).toBeInstanceOf(Model_1.Model);
+    });
+    it('should not be discovered by RelationFinder', function () {
+        expect(PrototypeManager_1.PrototypeManager.shouldFindRelationsIn(Eloquent_1.Eloquent.prototype)).toBe(false);
     });
     for (const method in EloquentPublicApi_1.EloquentPublicApi) {
         describe(`.${method}()`, function () {

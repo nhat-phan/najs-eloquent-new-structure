@@ -2,8 +2,6 @@
 /// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/relations/IRelation.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-const Model_1 = require("../model/Model");
-const Eloquent_1 = require("../model/Eloquent");
 const Relation_1 = require("./Relation");
 const EventPublicApi_1 = require("../features/mixin/EventPublicApi");
 const FillablePublicApi_1 = require("../features/mixin/FillablePublicApi");
@@ -12,6 +10,7 @@ const RelationPublicApi_1 = require("../features/mixin/RelationPublicApi");
 const SerializationPublicApi_1 = require("../features/mixin/SerializationPublicApi");
 const SoftDeletesPublicApi_1 = require("../features/mixin/SoftDeletesPublicApi");
 const TimestampsPublicApi_1 = require("../features/mixin/TimestampsPublicApi");
+const PrototypeManager_1 = require("../util/PrototypeManager");
 const PublicApiList = ['constructor', 'sharedMetadata'].concat(Object.getOwnPropertyNames(EventPublicApi_1.EventPublicApi), Object.getOwnPropertyNames(FillablePublicApi_1.FillablePublicApi), Object.getOwnPropertyNames(RecordManagerPublicApi_1.RecordManagerPublicApi), Object.getOwnPropertyNames(RelationPublicApi_1.RelationPublicApi), Object.getOwnPropertyNames(SerializationPublicApi_1.SerializationPublicApi), Object.getOwnPropertyNames(SoftDeletesPublicApi_1.SoftDeletesPublicApi), Object.getOwnPropertyNames(TimestampsPublicApi_1.TimestampsPublicApi));
 class RelationDefinitionFinder {
     constructor(model, prototype, bases) {
@@ -22,7 +21,7 @@ class RelationDefinitionFinder {
     getDefinitions() {
         return [this.prototype, ...this.bases]
             .map(prototype => {
-            if (prototype === Eloquent_1.Eloquent.prototype || prototype === Model_1.Model.prototype || prototype === Object.prototype) {
+            if (!PrototypeManager_1.PrototypeManager.shouldFindRelationsIn(prototype)) {
                 return {};
             }
             return this.findDefinitionsInPrototype(prototype);

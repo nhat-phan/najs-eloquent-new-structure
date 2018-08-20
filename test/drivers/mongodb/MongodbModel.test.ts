@@ -3,6 +3,7 @@ import * as Sinon from 'sinon'
 import { Model } from '../../../lib/model/Model'
 import { MongodbModel } from '../../../lib/drivers/mongodb/MongodbModel'
 import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
+import { PrototypeManager } from '../../../lib/util/PrototypeManager'
 
 describe('MongodbModel', function() {
   class User extends MongodbModel {
@@ -15,6 +16,10 @@ describe('MongodbModel', function() {
     const model = new User()
     expect(model).toBeInstanceOf(MongodbModel)
     expect(model).toBeInstanceOf(Model)
+  })
+
+  it('should not be discovered by RelationFinder', function() {
+    expect(PrototypeManager.shouldFindRelationsIn(MongodbModel.prototype)).toBe(false)
   })
 
   describe('.newQuery()', function() {
