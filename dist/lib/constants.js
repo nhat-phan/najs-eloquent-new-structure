@@ -7,6 +7,9 @@ exports.NajsEloquent = {
         MongodbDriver: 'NajsEloquent.Driver.MongodbDriver',
         Mongodb: {
             MongodbExecutorFactory: 'NajsEloquent.Driver.Mongodb.MongodbExecutorFactory'
+        },
+        Mongoose: {
+            MongooseDocumentManager: 'NajsEloquent.Driver.Mongoose.MongooseDocumentManager'
         }
     },
     Feature: {

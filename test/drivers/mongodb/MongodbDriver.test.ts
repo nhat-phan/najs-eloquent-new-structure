@@ -3,7 +3,7 @@ import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
 import { DriverBase } from '../../../lib/drivers/DriverBase'
 import { MongodbDriver } from '../../../lib/drivers/mongodb/MongodbDriver'
-import { RecordManager } from '../../../lib/features/RecordManager'
+import { RecordManager } from '../../../lib/drivers/RecordManager'
 import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
 
 describe('MongodbDriver', function() {

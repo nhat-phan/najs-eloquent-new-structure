@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const najs_binding_1 = require("najs-binding");
 const RecordManagerBase_1 = require("./RecordManagerBase");
-const Record_1 = require("../drivers/Record");
+const Record_1 = require("./Record");
 const constants_1 = require("../constants");
 class RecordManager extends RecordManagerBase_1.RecordManagerBase {
     getClassName() {

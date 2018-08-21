@@ -2,8 +2,8 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { register } from 'najs-binding'
 import { Record } from '../../lib/drivers/Record'
-import { RecordManager } from '../../lib/features/RecordManager'
-import { RecordManagerBase } from '../../lib/features/RecordManagerBase'
+import { RecordManager } from '../../lib/drivers/RecordManager'
+import { RecordManagerBase } from '../../lib/drivers/RecordManagerBase'
 import { SettingFeature } from './../../lib/features/SettingFeature'
 
 describe('RecordManager', function() {

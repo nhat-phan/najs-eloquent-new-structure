@@ -5,7 +5,7 @@ const Sinon = require("sinon");
 const NajsBinding = require("najs-binding");
 const DriverBase_1 = require("../../../lib/drivers/DriverBase");
 const MongodbDriver_1 = require("../../../lib/drivers/mongodb/MongodbDriver");
-const RecordManager_1 = require("../../../lib/features/RecordManager");
+const RecordManager_1 = require("../../../lib/drivers/RecordManager");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
 describe('MongodbDriver', function () {
     it('extends DriverBase, implements Autoload under name "NajsEloquent.Driver.MongodbDriver"', function () {

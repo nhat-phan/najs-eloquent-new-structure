@@ -1,7 +1,7 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
 /// <reference path="../definitions/features/IRecordExecutor.d.ts" />
 import { RecordManagerBase } from './RecordManagerBase';
-import { Record } from '../drivers/Record';
+import { Record } from './Record';
 export declare class RecordManager<T extends Record> extends RecordManagerBase<T> {
     getClassName(): string;
     initialize(model: NajsEloquent.Model.ModelInternal<Record>, isGuarded: boolean, data?: T | object): void;

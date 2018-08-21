@@ -2,7 +2,7 @@
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 /// <reference path="../../definitions/features/IRecordManager.ts" />
 
-import '../../features/RecordManager'
+import '../RecordManager'
 import { register, make } from 'najs-binding'
 import { DriverBase } from '../DriverBase'
 import { Record } from '../Record'

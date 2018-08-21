@@ -4,7 +4,7 @@
 import { flatten } from 'lodash'
 import { register } from 'najs-binding'
 import { RecordManagerBase } from './RecordManagerBase'
-import { Record } from '../drivers/Record'
+import { Record } from './Record'
 import { NajsEloquent } from '../constants'
 
 export class RecordManager<T extends Record> extends RecordManagerBase<T> {

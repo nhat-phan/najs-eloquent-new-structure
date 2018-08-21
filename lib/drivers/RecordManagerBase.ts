@@ -8,7 +8,7 @@ import { isFunction } from 'lodash'
 import { array_unique } from '../util/functions'
 import { snakeCase } from 'lodash'
 import { plural } from 'pluralize'
-import { RecordManagerPublicApi } from './mixin/RecordManagerPublicApi'
+import { RecordManagerPublicApi } from '../features/mixin/RecordManagerPublicApi'
 
 /**
  * Base class of all RecordManager, handling:

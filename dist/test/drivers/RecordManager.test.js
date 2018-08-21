@@ -4,8 +4,8 @@ require("jest");
 const Sinon = require("sinon");
 const najs_binding_1 = require("najs-binding");
 const Record_1 = require("../../lib/drivers/Record");
-const RecordManager_1 = require("../../lib/features/RecordManager");
-const RecordManagerBase_1 = require("../../lib/features/RecordManagerBase");
+const RecordManager_1 = require("../../lib/drivers/RecordManager");
+const RecordManagerBase_1 = require("../../lib/drivers/RecordManagerBase");
 const SettingFeature_1 = require("./../../lib/features/SettingFeature");
 describe('RecordManager', function () {
     const executorFactory = {

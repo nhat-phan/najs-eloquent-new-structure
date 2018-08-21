@@ -1,7 +1,7 @@
 /// <reference path="../../definitions/model/IModel.d.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.d.ts" />
 /// <reference path="../../definitions/features/IRecordManager.d.ts" />
-import '../../features/RecordManager';
+import '../RecordManager';
 import { DriverBase } from '../DriverBase';
 import { Record } from '../Record';
 export declare class DummyDriver<T extends Record = Record> extends DriverBase<T> {

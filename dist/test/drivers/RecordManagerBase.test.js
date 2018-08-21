@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const RecordManager_1 = require("../../lib/features/RecordManager");
+const RecordManager_1 = require("../../lib/drivers/RecordManager");
 const RecordManagerPublicApi_1 = require("../../lib/features/mixin/RecordManagerPublicApi");
 describe('RecordManagerBase', function () {
     const executorFactory = {

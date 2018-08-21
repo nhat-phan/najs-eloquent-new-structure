@@ -3,7 +3,7 @@
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 /// <reference path="../../definitions/features/IRecordManager.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-require("../../features/RecordManager");
+require("../RecordManager");
 const najs_binding_1 = require("najs-binding");
 const DriverBase_1 = require("../DriverBase");
 const constants_1 = require("../../constants");

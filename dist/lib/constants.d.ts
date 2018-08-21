@@ -5,6 +5,9 @@ export declare const NajsEloquent: {
         Mongodb: {
             MongodbExecutorFactory: string;
         };
+        Mongoose: {
+            MongooseDocumentManager: string;
+        };
     };
     Feature: {
         RecordManager: string;

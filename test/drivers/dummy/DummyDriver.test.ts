@@ -2,7 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
 import { DummyDriver } from '../../../lib/drivers/dummy/DummyDriver'
-import { RecordManager } from '../../../lib/features/RecordManager'
+import { RecordManager } from '../../../lib/drivers/RecordManager'
 
 describe('DummyDriver', function() {
   it('implements Najs.Contracts.Autoload under name NajsEloquent.Driver.DummyDriver', function() {
