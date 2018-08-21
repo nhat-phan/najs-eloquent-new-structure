@@ -20,7 +20,8 @@ export const NajsEloquent = {
   },
   Provider: {
     DriverProvider: 'NajsEloquent.Provider.DriverProvider',
-    MongodbProvider: 'NajsEloquent.Provider.MongodbProvider'
+    MongodbProvider: 'NajsEloquent.Provider.MongodbProvider',
+    MongooseProvider: 'NajsEloquent.Provider.MongooseProvider'
   },
   QueryBuilder: {
     MongodbConditionConverter: 'NajsEloquent.QueryBuilder.MongodbConditionConverter'
