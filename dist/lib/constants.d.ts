@@ -7,6 +7,7 @@ export declare const NajsEloquent: {
         };
         Mongoose: {
             MongooseDocumentManager: string;
+            MongooseExecutorFactory: string;
         };
     };
     Feature: {
