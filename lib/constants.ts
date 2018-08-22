@@ -4,6 +4,7 @@ export const NajsEloquent = {
   Driver: {
     DummyDriver: 'NajsEloquent.Driver.DummyDriver',
     MongodbDriver: 'NajsEloquent.Driver.MongodbDriver',
+    MongooseDriver: 'NajsEloquent.Driver.MongooseDriver',
     Mongodb: {
       MongodbExecutorFactory: 'NajsEloquent.Driver.Mongodb.MongodbExecutorFactory'
     },

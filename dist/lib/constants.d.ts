@@ -2,6 +2,7 @@ export declare const NajsEloquent: {
     Driver: {
         DummyDriver: string;
         MongodbDriver: string;
+        MongooseDriver: string;
         Mongodb: {
             MongodbExecutorFactory: string;
         };
