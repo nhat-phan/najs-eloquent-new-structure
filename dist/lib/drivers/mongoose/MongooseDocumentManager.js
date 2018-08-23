@@ -51,15 +51,24 @@ class MongooseDocumentManager extends RecordManagerBase_1.RecordManagerBase {
         let schema = undefined;
         if (lodash_1.isFunction(model['getSchema'])) {
             schema = model['getSchema']();
-            Object.getPrototypeOf(schema).setupTimestamp = setupTimestampMoment;
         }
-        const settingFeature = model.getDriver().getSettingFeature();
         if (!schema || !(schema instanceof mongoose_1.Schema)) {
-            mongoose_1.Schema.prototype['setupTimestamp'] = setupTimestampMoment;
-            const options = Object.assign({ collection: model.getRecordName() }, settingFeature.getSettingProperty(model, 'options', {}));
-            schema = new mongoose_1.Schema(settingFeature.getSettingProperty(model, 'schema', {}), options);
+            schema = new mongoose_1.Schema(this.getSchemaDefinition(model), this.getSchemaOptions(model));
         }
+        Object.getPrototypeOf(schema).setupTimestamp = setupTimestampMoment;
         return schema;
+    }
+    getSchemaDefinition(model) {
+        return model
+            .getDriver()
+            .getSettingFeature()
+            .getSettingProperty(model, 'schema', {});
+    }
+    getSchemaOptions(model) {
+        return Object.assign({ collection: model.getRecordName() }, model
+            .getDriver()
+            .getSettingFeature()
+            .getSettingProperty(model, 'options', {}));
     }
     getAttribute(model, key) {
         return model.attributes.get(key);
@@ -69,17 +78,16 @@ class MongooseDocumentManager extends RecordManagerBase_1.RecordManagerBase {
         return true;
     }
     hasAttribute(model, key) {
-        const schema = model
-            .getDriver()
-            .getSettingFeature()
-            .getSettingProperty(model, 'schema', {});
-        return typeof schema[key] !== 'undefined';
+        return typeof this.getSchemaDefinition(model)[key] !== 'undefined';
     }
     getPrimaryKeyName(model) {
-        return '_id';
+        return model
+            .getDriver()
+            .getSettingFeature()
+            .getSettingProperty(model, 'primaryKey', '_id');
     }
     toObject(model) {
-        return model.attributes.toObject();
+        return model.attributes.toObject({ virtuals: true });
     }
     markModified(model, keys) {
         const attributes = lodash_1.flatten(lodash_1.flatten(keys));

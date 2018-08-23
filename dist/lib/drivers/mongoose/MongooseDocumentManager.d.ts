@@ -1,12 +1,16 @@
 /// <reference path="../../definitions/model/IModel.d.ts" />
 import Model = NajsEloquent.Model.ModelInternal;
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, SchemaDefinition } from 'mongoose';
 import { RecordManagerBase } from '../RecordManagerBase';
 export declare class MongooseDocumentManager extends RecordManagerBase<Document> {
     getClassName(): string;
     initialize(model: Model<Document>, isGuarded: boolean, data?: Document | object): void;
     initializeMongooseModelIfNeeded(model: Model<Document>): void;
-    protected getMongooseSchema(model: Model<Document>): Schema;
+    getMongooseSchema(model: Model<Document>): Schema;
+    getSchemaDefinition(model: Model): SchemaDefinition;
+    getSchemaOptions(model: Model): {
+        collection: string;
+    };
     getAttribute(model: Model<Document>, key: string): any;
     setAttribute<T>(model: Model<Document>, key: string, value: T): boolean;
     hasAttribute(model: Model, key: string): boolean;

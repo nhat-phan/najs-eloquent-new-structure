@@ -2,7 +2,7 @@
 
 import Model = NajsEloquent.Model.ModelInternal
 import { flatten, isFunction } from 'lodash'
-import { Document, Schema } from 'mongoose'
+import { Document, Schema, SchemaDefinition } from 'mongoose'
 import { register } from 'najs-binding'
 import { SoftDelete } from './plugins/SoftDelete'
 import { RecordManagerBase } from '../RecordManagerBase'
@@ -57,23 +57,35 @@ export class MongooseDocumentManager extends RecordManagerBase<Document> {
     MongooseProvider.createModelFromSchema(modelName, schema)
   }
 
-  protected getMongooseSchema(model: Model<Document>): Schema {
+  getMongooseSchema(model: Model<Document>): Schema {
     let schema: Schema | undefined = undefined
     if (isFunction(model['getSchema'])) {
       schema = model['getSchema']()
-      Object.getPrototypeOf(schema).setupTimestamp = setupTimestampMoment
     }
 
-    const settingFeature = model.getDriver().getSettingFeature()
     if (!schema || !(schema instanceof Schema)) {
-      Schema.prototype['setupTimestamp'] = setupTimestampMoment
-      const options = Object.assign(
-        { collection: model.getRecordName() },
-        settingFeature.getSettingProperty(model, 'options', {})
-      )
-      schema = new Schema(settingFeature.getSettingProperty(model, 'schema', {}), options)
+      schema = new Schema(this.getSchemaDefinition(model), this.getSchemaOptions(model))
     }
+
+    Object.getPrototypeOf(schema).setupTimestamp = setupTimestampMoment
     return schema
+  }
+
+  getSchemaDefinition(model: Model): SchemaDefinition {
+    return model
+      .getDriver()
+      .getSettingFeature()
+      .getSettingProperty(model, 'schema', {})
+  }
+
+  getSchemaOptions(model: Model) {
+    return Object.assign(
+      { collection: model.getRecordName() },
+      model
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(model, 'options', {})
+    )
   }
 
   getAttribute(model: Model<Document>, key: string): any {
@@ -87,20 +99,18 @@ export class MongooseDocumentManager extends RecordManagerBase<Document> {
   }
 
   hasAttribute(model: Model, key: string): boolean {
-    const schema = model
-      .getDriver()
-      .getSettingFeature()
-      .getSettingProperty(model, 'schema', {})
-
-    return typeof schema[key] !== 'undefined'
+    return typeof this.getSchemaDefinition(model)[key] !== 'undefined'
   }
 
   getPrimaryKeyName(model: Model<Document>): string {
-    return '_id'
+    return model
+      .getDriver()
+      .getSettingFeature()
+      .getSettingProperty(model, 'primaryKey', '_id')
   }
 
   toObject(model: Model<Document>): object {
-    return model.attributes.toObject()
+    return model.attributes.toObject({ virtuals: true })
   }
 
   markModified(model: Model<Document>, keys: ArrayLike<Array<string | string[]>>): void {
