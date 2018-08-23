@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const mongoose_1 = require("mongoose");
 const najs_binding_1 = require("najs-binding");
-const SoftDelete_1 = require("./plugin/SoftDelete");
+const SoftDelete_1 = require("./plugins/SoftDelete");
 const RecordManagerBase_1 = require("../RecordManagerBase");
 const MongooseProviderFacade_1 = require("../../facades/global/MongooseProviderFacade");
 const constants_1 = require("../../constants");

@@ -4,7 +4,7 @@
   "scripts": {
     "build": "npm run build-ts && npm run tslint",
     "build-ts": "tsc -d",
-    "coverage": "npm run build && jest ./dist/test/**/*.js ./dist/test/**/**/*.js --coverage --forceExit",
+    "coverage": "npm run build && jest ./dist/test/**/*.js ./dist/test/**/**/*.js ./dist/test/**/**/**/*.js --coverage --forceExit",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "prepublishOnly": "tsc -d -p ./ --outDir dist",
     "integration": "npm run integration-build && npm run integration-lint && npm run integration-test",

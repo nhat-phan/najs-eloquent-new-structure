@@ -2,20 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const MongodbProviderFacade_1 = require("../lib/facades/global/MongodbProviderFacade");
 // import { KnexProviderFacade } from '../lib/facades/global/KnexProviderFacade'
-// export function init_mongoose(mongoose: any, name: string): Promise<any> {
-//   return new Promise(resolve => {
-//     mongoose.connect('mongodb://localhost/najs_eloquent_test_' + name)
-//     mongoose.Promise = global.Promise
-//     mongoose.connection.once('open', () => {
-//       resolve(true)
-//     })
-//   })
-// }
-// export function delete_collection(mongoose: any, collection: string): Promise<any> {
-//   return new Promise(resolve => {
-//     mongoose.connection.collection(collection).drop(resolve)
-//   })
-// }
+function init_mongoose(mongoose, name) {
+    return new Promise(resolve => {
+        mongoose.connect('mongodb://localhost/najs_eloquent_test_' + name);
+        mongoose.Promise = global.Promise;
+        mongoose.connection.once('open', () => {
+            resolve(true);
+        });
+    });
+}
+exports.init_mongoose = init_mongoose;
+function delete_collection(mongoose, collection) {
+    return new Promise(resolve => {
+        mongoose.connection.collection(collection).drop(resolve);
+    });
+}
+exports.delete_collection = delete_collection;
 function init_mongodb(name) {
     return MongodbProviderFacade_1.MongodbProviderFacade.connect('mongodb://localhost:27017/najs_eloquent_test_' + name);
 }

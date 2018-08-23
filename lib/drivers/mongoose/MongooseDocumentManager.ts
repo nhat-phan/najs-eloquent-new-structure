@@ -4,7 +4,7 @@ import Model = NajsEloquent.Model.ModelInternal
 import { flatten, isFunction } from 'lodash'
 import { Document, Schema } from 'mongoose'
 import { register } from 'najs-binding'
-import { SoftDelete } from './plugin/SoftDelete'
+import { SoftDelete } from './plugins/SoftDelete'
 import { RecordManagerBase } from '../RecordManagerBase'
 import { MongooseProvider } from '../../facades/global/MongooseProviderFacade'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
