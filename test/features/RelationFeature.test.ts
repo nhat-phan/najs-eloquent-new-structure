@@ -50,7 +50,9 @@ describe('RelationFeature', function() {
     it('simply returns an property "relationDataBucket" of model', function() {
       const relationDataBucket = {}
       const model: any = {
-        relationDataBucket: relationDataBucket
+        internalData: {
+          relationDataBucket: relationDataBucket
+        }
       }
       expect(feature.getDataBucket(model) === relationDataBucket).toBe(true)
     })
@@ -59,10 +61,12 @@ describe('RelationFeature', function() {
   describe('.setDataBucket()', function() {
     it('simply sets an property "relationDataBucket" of model', function() {
       const relationDataBucket: any = {}
-      const model: any = {}
+      const model: any = {
+        internalData: {}
+      }
 
       feature.setDataBucket(model, relationDataBucket)
-      expect(model.relationDataBucket === relationDataBucket).toBe(true)
+      expect(model.internalData.relationDataBucket === relationDataBucket).toBe(true)
     })
   })
 
@@ -214,8 +218,10 @@ describe('RelationFeature', function() {
     it('returns an instance if given name is found in "relations" property', function() {
       const data = {}
       const model: any = {
-        relations: {
-          test: data
+        internalData: {
+          relations: {
+            test: data
+          }
         }
       }
 
@@ -224,7 +230,9 @@ describe('RelationFeature', function() {
 
     it('create an instance of RelationData, then call defineAccessor if name not found in "relations"', function() {
       const model: any = {
-        relations: {}
+        internalData: {
+          relations: {}
+        }
       }
       const makeFactorySpy = Sinon.spy(feature, 'makeFactory')
       const defineAccessorSpy = Sinon.spy(feature, 'defineAccessor')

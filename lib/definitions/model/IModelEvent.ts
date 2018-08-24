@@ -1,10 +1,6 @@
 /// <reference types="najs-event" />
 
 namespace NajsEloquent.Model {
-  export declare class IModelEvent {
-    protected eventEmitter?: Najs.Contracts.Event.AsyncEventEmitter
-  }
-
   export interface IModelEvent extends Najs.Contracts.Event.AsyncEventEmitter {
     /**
      * Trigger the event with both global and local EventEmitter.

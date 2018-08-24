@@ -24,8 +24,10 @@ describe('SettingFeature', function() {
   })
 
   describe('.getClassSetting()', function() {
-    it('creates the instance via ClassSetting.of() if not found, otherwise it returns property "classSettings"', function() {
+    it('creates the instance via ClassSetting.of() if not found, otherwise it returns property "internalData"."classSettings"', function() {
       class ModelForGetClassSetting {
+        internalData = {}
+
         getClassName() {
           return 'ModelForGetClassSetting'
         }
@@ -34,15 +36,17 @@ describe('SettingFeature', function() {
 
       const model: any = new ModelForGetClassSetting()
 
-      expect(model['classSettings']).toBeUndefined()
+      expect(model['internalData']['classSettings']).toBeUndefined()
       settingFeature.getClassSetting(model)
-      expect(model['classSettings']).toBeInstanceOf(ClassSetting)
+      expect(model['internalData']['classSettings']).toBeInstanceOf(ClassSetting)
     })
   })
 
   describe('.getSettingProperty()', function() {
     it('returns the static version before checking sample version. If not found will return default value', function() {
       class ModelForGetSettingProperty {
+        internalData = {}
+
         static property = 'test'
         sample = 'sample'
         static both = 'static-both'
@@ -65,6 +69,7 @@ describe('SettingFeature', function() {
   describe('.hasSetting()', function() {
     it('returns true if the property is exists and not have falsy values', function() {
       class ModelForHasSetting {
+        internalData = {}
         a = false
         b = ''
         c = 0
@@ -90,6 +95,7 @@ describe('SettingFeature', function() {
   describe('.getSettingWithDefaultForTrueValue()', function() {
     it('has the same functionality of .getSettingProperty(), just returns the default value if setting === true', function() {
       class ModelForGetSettingWithDefaultForTrueValue {
+        internalData = {}
         a = false
         b = ''
         c = 0
@@ -117,6 +123,7 @@ describe('SettingFeature', function() {
   describe('.getArrayUniqueSetting()', function() {
     it('reads the settings in static/sample and instance version, then merge and unique them', function() {
       class ModelForGetArrayUniqueSetting {
+        internalData = {}
         static a = ['a1']
         a = ['a1', 'a2']
 

@@ -155,14 +155,11 @@ describe('RecordManagerBase', function() {
         expect(attributes).toEqual([
           // reserved attributes
           'attributes',
-          'classSettings',
+          'internalData',
           'driver',
           'sharedMetadata',
           'primaryKey',
-          'relationDataBucket',
-          'relationsMap',
-          'relations',
-          'eventEmitter',
+          'relationDefinitions',
           'fillable',
           'guarded',
           'visible',

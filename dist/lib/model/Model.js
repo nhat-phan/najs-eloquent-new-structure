@@ -6,7 +6,9 @@ const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriver
 const PrototypeManager_1 = require("../util/PrototypeManager");
 class Model {
     constructor(data, isGuarded) {
-        this.relations = {};
+        this.internalData = {
+            relations: {}
+        };
         return this.makeDriver().makeModel(this, data, isGuarded);
     }
     makeDriver() {

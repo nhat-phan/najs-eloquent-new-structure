@@ -1,3 +1,4 @@
+/// <reference types="najs-event" />
 /// <reference path="../../contracts/Driver.ts" />
 /// <reference path="../utils/IClassSetting.ts" />
 /// <reference path="./IModelRecord.ts" />

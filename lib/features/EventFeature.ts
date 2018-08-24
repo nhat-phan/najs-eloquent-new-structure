@@ -28,10 +28,11 @@ export class EventFeature extends FeatureBase implements NajsEloquent.Feature.IE
   }
 
   getEventEmitter(model: NajsEloquent.Model.IModel): Najs.Contracts.Event.AsyncEventEmitter {
-    if (!model['eventEmitter']) {
-      model['eventEmitter'] = EventEmitterFactory.create(true)
+    const internalModel = this.useInternalOf(model)
+    if (!internalModel.internalData.eventEmitter) {
+      internalModel.internalData.eventEmitter = EventEmitterFactory.create(true)
     }
-    return model['eventEmitter']!
+    return internalModel.internalData.eventEmitter
   }
 
   getGlobalEventEmitter(model: NajsEloquent.Model.IModel): Najs.Contracts.Event.AsyncEventEmitter {

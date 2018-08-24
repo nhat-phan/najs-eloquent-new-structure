@@ -59,9 +59,11 @@ describe('EventFeature', function () {
     });
     describe('.getEventEmitter()', function () {
         it('initialize property model.eventEmitter if not exists then returns it', function () {
-            const model = {};
+            const model = {
+                internalData: {}
+            };
             const eventEmitter = eventFeature.getEventEmitter(model);
-            expect(eventEmitter === model['eventEmitter']).toBe(true);
+            expect(eventEmitter === model.internalData['eventEmitter']).toBe(true);
             expect(eventEmitter === eventFeature.getEventEmitter(model)).toBe(true);
         });
     });

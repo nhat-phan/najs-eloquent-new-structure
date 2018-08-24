@@ -1,3 +1,4 @@
+/// <reference types="najs-event" />
 /// <reference path="../../contracts/Driver.ts" />
 /// <reference path="../utils/IClassSetting.ts" />
 /// <reference path="./IModelRecord.ts" />
@@ -11,21 +12,38 @@
 namespace NajsEloquent.Model {
   export type ModelDefinition<T extends IModel = IModel> = string | { new (): T }
 
+  export interface IModelInternalData {
+    /**
+     * The model's class setting instance.
+     */
+    classSettings?: NajsEloquent.Util.IClassSetting
+
+    /**
+     * The model's internal event emitter.
+     */
+    eventEmitter?: Najs.Contracts.Event.AsyncEventEmitter
+
+    /**
+     * The model's relation data bucket.
+     */
+    relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<any>
+
+    /**
+     * The model's relations data.
+     */
+    relations: { [name in string]: NajsEloquent.Relation.IRelationData<any> }
+  }
+
   export declare class IModel {
     /**
      * Contains metadata data which shared for all model instances
      */
-    protected sharedMetadata: object
+    protected readonly sharedMetadata: object
 
     /**
      * The driver associated with the model.
      */
     protected driver: Najs.Contracts.Eloquent.Driver
-
-    /**
-     * The model's class setting
-     */
-    protected classSettings?: NajsEloquent.Util.IClassSetting
 
     /**
      * The model's attributes.
@@ -38,14 +56,9 @@ namespace NajsEloquent.Model {
     protected readonly relationDefinitions: NajsEloquent.Relation.RelationDefinitions
 
     /**
-     * The model's relation data bucket.
+     * The model's internal data
      */
-    protected relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<any>
-
-    /**
-     * The model's relations data.
-     */
-    protected relations: { [name in string]: NajsEloquent.Relation.IRelationData<any> }
+    protected internalData: IModelInternalData
   }
 
   export interface IModel
@@ -87,10 +100,8 @@ namespace NajsEloquent.Model {
 
     relationDefinitions: NajsEloquent.Relation.RelationDefinitions
 
-    relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<T>
-
-    relations: { [name in string]: NajsEloquent.Relation.IRelationData<any> }
-
     attributes: T
+
+    internalData: IModelInternalData
   }
 }

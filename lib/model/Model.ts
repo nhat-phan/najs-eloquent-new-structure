@@ -9,7 +9,9 @@ export class Model {
   public id?: any
 
   constructor(data?: object, isGuarded?: boolean) {
-    this.relations = {}
+    this.internalData = {
+      relations: {}
+    } as any
 
     return this.makeDriver().makeModel<any>(this, data, isGuarded)
   }

@@ -11,19 +11,35 @@ declare namespace NajsEloquent.Model {
     type ModelDefinition<T extends IModel = IModel> = string | {
         new (): T;
     };
+    interface IModelInternalData {
+        /**
+         * The model's class setting instance.
+         */
+        classSettings?: NajsEloquent.Util.IClassSetting;
+        /**
+         * The model's internal event emitter.
+         */
+        eventEmitter?: Najs.Contracts.Event.AsyncEventEmitter;
+        /**
+         * The model's relation data bucket.
+         */
+        relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<any>;
+        /**
+         * The model's relations data.
+         */
+        relations: {
+            [name in string]: NajsEloquent.Relation.IRelationData<any>;
+        };
+    }
     class IModel {
         /**
          * Contains metadata data which shared for all model instances
          */
-        protected sharedMetadata: object;
+        protected readonly sharedMetadata: object;
         /**
          * The driver associated with the model.
          */
         protected driver: Najs.Contracts.Eloquent.Driver;
-        /**
-         * The model's class setting
-         */
-        protected classSettings?: NajsEloquent.Util.IClassSetting;
         /**
          * The model's attributes.
          */
@@ -33,15 +49,9 @@ declare namespace NajsEloquent.Model {
          */
         protected readonly relationDefinitions: NajsEloquent.Relation.RelationDefinitions;
         /**
-         * The model's relation data bucket.
+         * The model's internal data
          */
-        protected relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<any>;
-        /**
-         * The model's relations data.
-         */
-        protected relations: {
-            [name in string]: NajsEloquent.Relation.IRelationData<any>;
-        };
+        protected internalData: IModelInternalData;
     }
     interface IModel extends IModelRecord, IModelEvent, IModelFillable, IModelSerialization, IModelTimestamps, IModelSoftDeletes, IModelRelation {
         /**
@@ -68,10 +78,7 @@ declare namespace NajsEloquent.Model {
     type ModelInternal<T = any> = IModel & {
         driver: Najs.Contracts.Eloquent.Driver<T>;
         relationDefinitions: NajsEloquent.Relation.RelationDefinitions;
-        relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<T>;
-        relations: {
-            [name in string]: NajsEloquent.Relation.IRelationData<any>;
-        };
         attributes: T;
+        internalData: IModelInternalData;
     };
 }

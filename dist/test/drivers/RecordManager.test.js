@@ -95,6 +95,9 @@ describe('RecordManager', function () {
     describe('.getPrimaryKeyName()', function () {
         it('uses SettingFeature.getSettingProperty() with property "primaryKey" and default value = "id"', function () {
             class ModelWithoutCustomPrimaryKey {
+                constructor() {
+                    this.internalData = {};
+                }
                 getClassName() {
                     return 'ModelWithoutCustomPrimaryKey';
                 }
@@ -109,6 +112,7 @@ describe('RecordManager', function () {
             najs_binding_1.register(ModelWithoutCustomPrimaryKey);
             class ModelWithCustomPrimaryKey {
                 constructor() {
+                    this.internalData = {};
                     this.primaryKey = 'test';
                 }
                 getClassName() {

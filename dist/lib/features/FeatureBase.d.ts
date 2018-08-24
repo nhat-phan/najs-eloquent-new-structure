@@ -6,7 +6,7 @@
 /// <reference path="../definitions/features/ISoftDeletesFeature.d.ts" />
 /// <reference path="../definitions/features/IRelationFeature.d.ts" />
 export declare abstract class FeatureBase {
-    abstract getPublicApi(): object;
+    abstract getPublicApi(): object | undefined;
     attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
     useInternalOf(model: NajsEloquent.Model.IModel): NajsEloquent.Model.ModelInternal;
     useSettingFeatureOf(model: NajsEloquent.Model.IModel): NajsEloquent.Feature.ISettingFeature;

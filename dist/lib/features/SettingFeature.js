@@ -8,8 +8,11 @@ const SettingType_1 = require("../util/SettingType");
 const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
 const constants_1 = require("../constants");
-class SettingFeature {
-    attachPublicApi(prototype, bases, driver) { }
+const FeatureBase_1 = require("./FeatureBase");
+class SettingFeature extends FeatureBase_1.FeatureBase {
+    getPublicApi() {
+        return undefined;
+    }
     getFeatureName() {
         return 'Setting';
     }
@@ -17,10 +20,11 @@ class SettingFeature {
         return constants_1.NajsEloquent.Feature.SettingFeature;
     }
     getClassSetting(model) {
-        if (!model['classSettings']) {
-            model['classSettings'] = ClassSetting_1.ClassSetting.of(model);
+        const internalModel = this.useInternalOf(model);
+        if (!internalModel.internalData.classSettings) {
+            internalModel.internalData.classSettings = ClassSetting_1.ClassSetting.of(model);
         }
-        return model['classSettings'];
+        return internalModel.internalData.classSettings;
     }
     getSettingProperty(model, property, defaultValue) {
         return this.getClassSetting(model).read(property, function (staticVersion, sampleVersion) {

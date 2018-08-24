@@ -1,7 +1,8 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
 /// <reference path="../definitions/features/ISettingFeature.d.ts" />
-export declare class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
-    attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void;
+import { FeatureBase } from './FeatureBase';
+export declare class SettingFeature extends FeatureBase implements NajsEloquent.Feature.ISettingFeature {
+    getPublicApi(): undefined;
     getFeatureName(): string;
     getClassName(): string;
     getClassSetting(model: NajsEloquent.Model.IModel): NajsEloquent.Util.IClassSetting;

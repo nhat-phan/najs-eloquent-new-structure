@@ -23,10 +23,11 @@ class EventFeature extends FeatureBase_1.FeatureBase {
         return this.getGlobalEventEmitter(model).emit(eventName, model, args);
     }
     getEventEmitter(model) {
-        if (!model['eventEmitter']) {
-            model['eventEmitter'] = najs_event_1.EventEmitterFactory.create(true);
+        const internalModel = this.useInternalOf(model);
+        if (!internalModel.internalData.eventEmitter) {
+            internalModel.internalData.eventEmitter = najs_event_1.EventEmitterFactory.create(true);
         }
-        return model['eventEmitter'];
+        return internalModel.internalData.eventEmitter;
     }
     getGlobalEventEmitter(model) {
         return model.getDriver().getGlobalEventEmitter();

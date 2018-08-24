@@ -29,10 +29,10 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         return new RelationFactory_1.RelationFactory(model, accessor);
     }
     getDataBucket(model) {
-        return this.useInternalOf(model).relationDataBucket;
+        return this.useInternalOf(model).internalData.relationDataBucket;
     }
     setDataBucket(model, dataBucket) {
-        this.useInternalOf(model).relationDataBucket = dataBucket;
+        this.useInternalOf(model).internalData.relationDataBucket = dataBucket;
     }
     createKeyForDataBucket(model) {
         return this.useRecordManagerOf(model).getRecordName(model);
@@ -62,11 +62,11 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     }
     findDataByName(model, name) {
         const internalModel = this.useInternalOf(model);
-        if (typeof internalModel.relations[name] === 'undefined') {
-            internalModel.relations[name] = new RelationData_1.RelationData(this.makeFactory(model, name));
+        if (typeof internalModel.internalData.relations[name] === 'undefined') {
+            internalModel.internalData.relations[name] = new RelationData_1.RelationData(this.makeFactory(model, name));
             this.defineAccessor(model, name);
         }
-        return internalModel.relations[name];
+        return internalModel.internalData.relations[name];
     }
     defineAccessor(model, accessor) {
         const prototype = Object.getPrototypeOf(model);

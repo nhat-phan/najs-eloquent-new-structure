@@ -45,7 +45,9 @@ describe('RelationFeature', function () {
         it('simply returns an property "relationDataBucket" of model', function () {
             const relationDataBucket = {};
             const model = {
-                relationDataBucket: relationDataBucket
+                internalData: {
+                    relationDataBucket: relationDataBucket
+                }
             };
             expect(feature.getDataBucket(model) === relationDataBucket).toBe(true);
         });
@@ -53,9 +55,11 @@ describe('RelationFeature', function () {
     describe('.setDataBucket()', function () {
         it('simply sets an property "relationDataBucket" of model', function () {
             const relationDataBucket = {};
-            const model = {};
+            const model = {
+                internalData: {}
+            };
             feature.setDataBucket(model, relationDataBucket);
-            expect(model.relationDataBucket === relationDataBucket).toBe(true);
+            expect(model.internalData.relationDataBucket === relationDataBucket).toBe(true);
         });
     });
     describe('.createKeyForDataBucket()', function () {
@@ -189,15 +193,19 @@ describe('RelationFeature', function () {
         it('returns an instance if given name is found in "relations" property', function () {
             const data = {};
             const model = {
-                relations: {
-                    test: data
+                internalData: {
+                    relations: {
+                        test: data
+                    }
                 }
             };
             expect(feature.findDataByName(model, 'test') === data).toBe(true);
         });
         it('create an instance of RelationData, then call defineAccessor if name not found in "relations"', function () {
             const model = {
-                relations: {}
+                internalData: {
+                    relations: {}
+                }
             };
             const makeFactorySpy = Sinon.spy(feature, 'makeFactory');
             const defineAccessorSpy = Sinon.spy(feature, 'defineAccessor');

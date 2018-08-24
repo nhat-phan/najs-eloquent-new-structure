@@ -281,6 +281,7 @@ describe('MongooseDocumentManager', function() {
   describe('.getSchemaDefinition()', function() {
     it('calls SettingFeature.getSettingProperty() with property = "schema" and default value = {}', function() {
       class ModelWithoutCustomSchema {
+        internalData = {}
         getClassName() {
           return 'ModelWithoutCustomSchema'
         }
@@ -296,6 +297,7 @@ describe('MongooseDocumentManager', function() {
       register(ModelWithoutCustomSchema)
 
       class ModelWithCustomSchema {
+        internalData = {}
         schema = { test: { type: 'any' } }
 
         getClassName() {
@@ -320,6 +322,7 @@ describe('MongooseDocumentManager', function() {
   describe('.getSchemaOptions()', function() {
     it('calls SettingFeature.getSettingProperty() with property = "options" and default value = {}, then merged with default options', function() {
       class ModelWithoutCustomOption {
+        internalData = {}
         getClassName() {
           return 'ModelWithoutCustomOption'
         }
@@ -339,6 +342,7 @@ describe('MongooseDocumentManager', function() {
       register(ModelWithoutCustomOption)
 
       class ModelWithCustomOption {
+        internalData = {}
         options = { test: { type: 'any' } }
 
         getClassName() {
@@ -421,6 +425,7 @@ describe('MongooseDocumentManager', function() {
   describe('.getPrimaryKeyName()', function() {
     it('uses SettingFeature.getSettingProperty() with property "primaryKey" and default value = "id"', function() {
       class ModelWithoutCustomPrimaryKey {
+        internalData = {}
         getClassName() {
           return 'ModelWithoutCustomPrimaryKey'
         }
@@ -436,6 +441,7 @@ describe('MongooseDocumentManager', function() {
       register(ModelWithoutCustomPrimaryKey)
 
       class ModelWithCustomPrimaryKey {
+        internalData = {}
         primaryKey = 'test'
 
         getClassName() {

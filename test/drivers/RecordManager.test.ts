@@ -109,6 +109,7 @@ describe('RecordManager', function() {
   describe('.getPrimaryKeyName()', function() {
     it('uses SettingFeature.getSettingProperty() with property "primaryKey" and default value = "id"', function() {
       class ModelWithoutCustomPrimaryKey {
+        internalData = {}
         getClassName() {
           return 'ModelWithoutCustomPrimaryKey'
         }
@@ -124,6 +125,7 @@ describe('RecordManager', function() {
       register(ModelWithoutCustomPrimaryKey)
 
       class ModelWithCustomPrimaryKey {
+        internalData = {}
         primaryKey = 'test'
 
         getClassName() {

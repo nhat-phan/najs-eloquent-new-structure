@@ -8,10 +8,13 @@
 /// <reference path="../definitions/features/IRelationFeature.ts" />
 
 export abstract class FeatureBase {
-  abstract getPublicApi(): object
+  abstract getPublicApi(): object | undefined
 
   attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {
-    Object.assign(prototype, this.getPublicApi())
+    const publicApi = this.getPublicApi()
+    if (publicApi) {
+      Object.assign(prototype, publicApi)
+    }
   }
 
   useInternalOf(model: NajsEloquent.Model.IModel): NajsEloquent.Model.ModelInternal {

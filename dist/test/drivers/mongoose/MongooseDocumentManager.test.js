@@ -241,6 +241,9 @@ describe('MongooseDocumentManager', function () {
     describe('.getSchemaDefinition()', function () {
         it('calls SettingFeature.getSettingProperty() with property = "schema" and default value = {}', function () {
             class ModelWithoutCustomSchema {
+                constructor() {
+                    this.internalData = {};
+                }
                 getClassName() {
                     return 'ModelWithoutCustomSchema';
                 }
@@ -255,6 +258,7 @@ describe('MongooseDocumentManager', function () {
             najs_binding_1.register(ModelWithoutCustomSchema);
             class ModelWithCustomSchema {
                 constructor() {
+                    this.internalData = {};
                     this.schema = { test: { type: 'any' } };
                 }
                 getClassName() {
@@ -276,6 +280,9 @@ describe('MongooseDocumentManager', function () {
     describe('.getSchemaOptions()', function () {
         it('calls SettingFeature.getSettingProperty() with property = "options" and default value = {}, then merged with default options', function () {
             class ModelWithoutCustomOption {
+                constructor() {
+                    this.internalData = {};
+                }
                 getClassName() {
                     return 'ModelWithoutCustomOption';
                 }
@@ -293,6 +300,7 @@ describe('MongooseDocumentManager', function () {
             najs_binding_1.register(ModelWithoutCustomOption);
             class ModelWithCustomOption {
                 constructor() {
+                    this.internalData = {};
                     this.options = { test: { type: 'any' } };
                 }
                 getClassName() {
@@ -364,6 +372,9 @@ describe('MongooseDocumentManager', function () {
     describe('.getPrimaryKeyName()', function () {
         it('uses SettingFeature.getSettingProperty() with property "primaryKey" and default value = "id"', function () {
             class ModelWithoutCustomPrimaryKey {
+                constructor() {
+                    this.internalData = {};
+                }
                 getClassName() {
                     return 'ModelWithoutCustomPrimaryKey';
                 }
@@ -378,6 +389,7 @@ describe('MongooseDocumentManager', function () {
             najs_binding_1.register(ModelWithoutCustomPrimaryKey);
             class ModelWithCustomPrimaryKey {
                 constructor() {
+                    this.internalData = {};
                     this.primaryKey = 'test';
                 }
                 getClassName() {

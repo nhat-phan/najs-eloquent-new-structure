@@ -20,23 +20,27 @@ describe('SettingFeature', function () {
         });
     });
     describe('.getClassSetting()', function () {
-        it('creates the instance via ClassSetting.of() if not found, otherwise it returns property "classSettings"', function () {
+        it('creates the instance via ClassSetting.of() if not found, otherwise it returns property "internalData"."classSettings"', function () {
             class ModelForGetClassSetting {
+                constructor() {
+                    this.internalData = {};
+                }
                 getClassName() {
                     return 'ModelForGetClassSetting';
                 }
             }
             najs_binding_1.register(ModelForGetClassSetting);
             const model = new ModelForGetClassSetting();
-            expect(model['classSettings']).toBeUndefined();
+            expect(model['internalData']['classSettings']).toBeUndefined();
             settingFeature.getClassSetting(model);
-            expect(model['classSettings']).toBeInstanceOf(ClassSetting_1.ClassSetting);
+            expect(model['internalData']['classSettings']).toBeInstanceOf(ClassSetting_1.ClassSetting);
         });
     });
     describe('.getSettingProperty()', function () {
         it('returns the static version before checking sample version. If not found will return default value', function () {
             class ModelForGetSettingProperty {
                 constructor() {
+                    this.internalData = {};
                     this.sample = 'sample';
                     this.both = 'sample-both';
                 }
@@ -58,6 +62,7 @@ describe('SettingFeature', function () {
         it('returns true if the property is exists and not have falsy values', function () {
             class ModelForHasSetting {
                 constructor() {
+                    this.internalData = {};
                     this.a = false;
                     this.b = '';
                     this.c = 0;
@@ -82,6 +87,7 @@ describe('SettingFeature', function () {
         it('has the same functionality of .getSettingProperty(), just returns the default value if setting === true', function () {
             class ModelForGetSettingWithDefaultForTrueValue {
                 constructor() {
+                    this.internalData = {};
                     this.a = false;
                     this.b = '';
                     this.c = 0;
@@ -108,6 +114,7 @@ describe('SettingFeature', function () {
         it('reads the settings in static/sample and instance version, then merge and unique them', function () {
             class ModelForGetArrayUniqueSetting {
                 constructor() {
+                    this.internalData = {};
                     this.a = ['a1', 'a2'];
                     this.b = ['b2'];
                 }

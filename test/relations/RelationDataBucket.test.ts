@@ -46,7 +46,9 @@ describe('RelationDataBucket', function() {
     it('uses make() to create model instance then assign the relationDataBucket to it', function() {
       const relationFeature = {
         setDataBucket(model: any, bucket: any) {
-          model['relationDataBucket'] = bucket
+          model['internalData'] = {
+            relationDataBucket: bucket
+          }
         }
       }
       const model = {
@@ -71,7 +73,7 @@ describe('RelationDataBucket', function() {
       const result = dataBucket.makeModel(ModelClass as any, record)
 
       expect(result === model).toBe(true)
-      expect(result['relationDataBucket'] === dataBucket).toBe(true)
+      expect(result['internalData']['relationDataBucket'] === dataBucket).toBe(true)
       expect(makeStub.calledWith('ModelClassName')).toBe(true)
       makeStub.restore()
     })

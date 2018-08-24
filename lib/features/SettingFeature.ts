@@ -7,9 +7,12 @@ import { SettingType } from '../util/SettingType'
 import { ClassSetting } from '../util/ClassSetting'
 import { array_unique } from '../util/functions'
 import { NajsEloquent } from '../constants'
+import { FeatureBase } from './FeatureBase'
 
-export class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
-  attachPublicApi(prototype: object, bases: object[], driver: Najs.Contracts.Eloquent.Driver<any>): void {}
+export class SettingFeature extends FeatureBase implements NajsEloquent.Feature.ISettingFeature {
+  getPublicApi() {
+    return undefined
+  }
 
   getFeatureName(): string {
     return 'Setting'
@@ -20,11 +23,12 @@ export class SettingFeature implements NajsEloquent.Feature.ISettingFeature {
   }
 
   getClassSetting(model: NajsEloquent.Model.IModel): NajsEloquent.Util.IClassSetting {
-    if (!model['classSettings']) {
-      model['classSettings'] = ClassSetting.of(model)
+    const internalModel = this.useInternalOf(model)
+    if (!internalModel.internalData.classSettings) {
+      internalModel.internalData.classSettings = ClassSetting.of(model)
     }
 
-    return model['classSettings']!
+    return internalModel.internalData.classSettings
   }
 
   getSettingProperty<T>(model: NajsEloquent.Model.IModel, property: string, defaultValue: T): T {

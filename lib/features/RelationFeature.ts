@@ -41,11 +41,11 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   getDataBucket(model: NajsEloquent.Model.IModel): IRelationDataBucket | undefined {
-    return this.useInternalOf(model).relationDataBucket
+    return this.useInternalOf(model).internalData.relationDataBucket
   }
 
   setDataBucket(model: NajsEloquent.Model.IModel, dataBucket: IRelationDataBucket): void {
-    this.useInternalOf(model).relationDataBucket = dataBucket
+    this.useInternalOf(model).internalData.relationDataBucket = dataBucket
   }
 
   createKeyForDataBucket(model: NajsEloquent.Model.IModel): string {
@@ -88,12 +88,12 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   findDataByName<T>(model: IModel, name: string): IRelationData<T> {
     const internalModel = this.useInternalOf(model)
 
-    if (typeof internalModel.relations[name] === 'undefined') {
-      internalModel.relations[name] = new RelationData(this.makeFactory(model, name))
+    if (typeof internalModel.internalData.relations[name] === 'undefined') {
+      internalModel.internalData.relations[name] = new RelationData(this.makeFactory(model, name))
       this.defineAccessor(model, name)
     }
 
-    return internalModel.relations[name]
+    return internalModel.internalData.relations[name]
   }
 
   defineAccessor(model: IModel, accessor: string): void {

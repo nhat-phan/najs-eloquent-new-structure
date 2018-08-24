@@ -10,7 +10,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class FeatureBase {
     attachPublicApi(prototype, bases, driver) {
-        Object.assign(prototype, this.getPublicApi());
+        const publicApi = this.getPublicApi();
+        if (publicApi) {
+            Object.assign(prototype, publicApi);
+        }
     }
     useInternalOf(model) {
         return model;
