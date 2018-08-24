@@ -38,7 +38,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         return this.useRecordManagerOf(model).getRecordName(model);
     }
     getDefinitions(model) {
-        return this.useInternalOf(model).relationDefinitions;
+        return this.useInternalOf(model).sharedMetadata.relationDefinitions;
     }
     buildDefinitions(model, prototype, bases) {
         const finder = new RelationDefinitionFinder_1.RelationDefinitionFinder(model, prototype, bases);
@@ -47,11 +47,12 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     findByName(model, name) {
         const internalModel = this.useInternalOf(model);
         const info = functions_1.parse_string_with_dot_notation(name);
-        if (typeof internalModel.relationDefinitions === 'undefined' ||
-            typeof internalModel.relationDefinitions[info.first] === 'undefined') {
+        if (typeof internalModel.sharedMetadata === 'undefined' ||
+            typeof internalModel.sharedMetadata.relationDefinitions === 'undefined' ||
+            typeof internalModel.sharedMetadata.relationDefinitions[info.first] === 'undefined') {
             throw new RelationNotDefinedError_1.RelationNotDefinedError(info.first, internalModel.getModelName());
         }
-        const definition = internalModel.relationDefinitions[info.first];
+        const definition = internalModel.sharedMetadata.relationDefinitions[info.first];
         const relation = definition.targetType === 'getter'
             ? internalModel[definition.target]
             : internalModel[definition.target].call(this);

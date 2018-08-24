@@ -53,7 +53,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   getDefinitions(model: IModel): RelationDefinitions {
-    return this.useInternalOf(model).relationDefinitions
+    return this.useInternalOf(model).sharedMetadata.relationDefinitions
   }
 
   buildDefinitions(model: IModel, prototype: object, bases: object[]): RelationDefinitions {
@@ -67,13 +67,14 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
 
     const info = parse_string_with_dot_notation(name)
     if (
-      typeof internalModel.relationDefinitions === 'undefined' ||
-      typeof internalModel.relationDefinitions[info.first] === 'undefined'
+      typeof internalModel.sharedMetadata === 'undefined' ||
+      typeof internalModel.sharedMetadata.relationDefinitions === 'undefined' ||
+      typeof internalModel.sharedMetadata.relationDefinitions[info.first] === 'undefined'
     ) {
       throw new RelationNotDefinedError(info.first, internalModel.getModelName())
     }
 
-    const definition = internalModel.relationDefinitions[info.first]
+    const definition = internalModel.sharedMetadata.relationDefinitions[info.first]
     const relation: IRelation<T> =
       definition.targetType === 'getter'
         ? internalModel[definition.target]

@@ -154,16 +154,17 @@ describe('RecordManagerBase', function() {
         const attributes = recordManager.buildKnownAttributes(prototype, bases)
         expect(attributes).toEqual([
           // reserved attributes
-          'attributes',
-          'internalData',
-          'driver',
           'sharedMetadata',
+          'internalData',
+          'attributes',
+          'driver',
           'primaryKey',
-          'relationDefinitions',
           'fillable',
           'guarded',
           'visible',
           'hidden',
+          'schema',
+          'options',
           'timestamps',
           'softDeletes',
           // functions, attributes, getters, setters from prototype

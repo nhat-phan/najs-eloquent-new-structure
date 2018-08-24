@@ -63,7 +63,7 @@ class RecordManagerBase {
         this.bindAccessorsAndMutators(prototype, dynamicAttributes);
     }
     buildKnownAttributes(prototype, bases) {
-        return functions_1.array_unique(['attributes', 'internalData', 'driver', 'sharedMetadata', 'primaryKey', 'relationDefinitions'], ['fillable', 'guarded'], ['visible', 'hidden'], ['timestamps'], ['softDeletes'], Object.getOwnPropertyNames(prototype), ...bases.map(base => Object.getOwnPropertyNames(base)));
+        return functions_1.array_unique(['sharedMetadata', 'internalData', 'attributes', 'driver', 'primaryKey'], ['fillable', 'guarded'], ['visible', 'hidden'], ['schema', 'options'], ['timestamps'], ['softDeletes'], Object.getOwnPropertyNames(prototype), ...bases.map(base => Object.getOwnPropertyNames(base)));
     }
     buildDynamicAttributes(prototype, bases) {
         const bucket = {};

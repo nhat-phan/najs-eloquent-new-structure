@@ -91,10 +91,12 @@ describe('RelationFeature', function() {
   })
 
   describe('.getDefinitions()', function() {
-    it('simply returns an property "relationDefinitions" of model', function() {
+    it('simply returns an property sharedMetadata."relationDefinitions" of model', function() {
       const relationDefinitions = {}
       const model: any = {
-        relationDefinitions: relationDefinitions
+        sharedMetadata: {
+          relationDefinitions: relationDefinitions
+        }
       }
       expect(feature.getDefinitions(model) === relationDefinitions).toBe(true)
     })
@@ -131,10 +133,12 @@ describe('RelationFeature', function() {
       expect('should not reach here').toEqual('hm')
     })
 
-    it('throws a RelationNotDefinedError if the name is not found in relationDefinitions', function() {
+    it('throws a RelationNotDefinedError if the name is not found in sharedMetadata.relationDefinitions', function() {
       const model: any = {
-        relationDefinitions: {
-          test: true
+        sharedMetadata: {
+          relationDefinitions: {
+            test: true
+          }
         },
 
         getModelName() {
@@ -155,11 +159,13 @@ describe('RelationFeature', function() {
     it('gets definitions in relationDefinition, then trigger the target type "getter"', function() {
       const relation: any = {}
       const model: any = {
-        relationDefinitions: {
-          test: {
-            accessor: 'test',
-            target: 'relation',
-            targetType: 'getter'
+        sharedMetadata: {
+          relationDefinitions: {
+            test: {
+              accessor: 'test',
+              target: 'relation',
+              targetType: 'getter'
+            }
           }
         },
 
@@ -174,11 +180,13 @@ describe('RelationFeature', function() {
     it('gets definitions in relationDefinition, then trigger the target type "function"', function() {
       const relation: any = {}
       const model: any = {
-        relationDefinitions: {
-          test: {
-            accessor: 'test',
-            target: 'getRelation',
-            targetType: 'function'
+        sharedMetadata: {
+          relationDefinitions: {
+            test: {
+              accessor: 'test',
+              target: 'getRelation',
+              targetType: 'function'
+            }
           }
         },
 
@@ -195,11 +203,13 @@ describe('RelationFeature', function() {
         with() {}
       }
       const model: any = {
-        relationDefinitions: {
-          test: {
-            accessor: 'test',
-            target: 'getRelation',
-            targetType: 'function'
+        sharedMetadata: {
+          relationDefinitions: {
+            test: {
+              accessor: 'test',
+              target: 'getRelation',
+              targetType: 'function'
+            }
           }
         },
 

@@ -232,7 +232,7 @@ describe('DriverBase', function() {
   })
 
   describe('.definePropertiesAfterAttachFeatures()', function() {
-    it('calls RelationFeature.buildDefinitions() then define a property "relationDefinitions" to prototype', function() {
+    it('calls RelationFeature.buildDefinitions() then define a property "relationDefinitions" to prototype.sharedMetadata', function() {
       const getRelationFeatureStub = Sinon.stub(driver, 'getRelationFeature')
       getRelationFeatureStub.returns({
         buildDefinitions() {
@@ -240,16 +240,16 @@ describe('DriverBase', function() {
         }
       })
 
-      const prototype = {}
+      const prototype = { sharedMetadata: {} }
       driver.definePropertiesAfterAttachFeatures({} as any, prototype, [])
 
-      expect(Object.getOwnPropertyDescriptor(prototype, 'relationDefinitions')).toEqual({
+      expect(Object.getOwnPropertyDescriptor(prototype['sharedMetadata'], 'relationDefinitions')).toEqual({
         value: 'anything',
         writable: false,
         enumerable: false,
         configurable: false
       })
-      expect(prototype['relationDefinitions']).toEqual('anything')
+      expect(prototype['sharedMetadata']['relationDefinitions']).toEqual('anything')
       getRelationFeatureStub.restore()
     })
   })

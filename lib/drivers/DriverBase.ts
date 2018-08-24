@@ -141,7 +141,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   definePropertiesAfterAttachFeatures(model: IModel, prototype: object, bases: object[]) {
     const relationDefinitions = this.getRelationFeature().buildDefinitions(model, prototype, bases)
-    Object.defineProperty(prototype, 'relationDefinitions', {
+    Object.defineProperty(prototype['sharedMetadata'], 'relationDefinitions', {
       value: relationDefinitions
     })
   }

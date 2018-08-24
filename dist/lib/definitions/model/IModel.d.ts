@@ -11,6 +11,15 @@ declare namespace NajsEloquent.Model {
     type ModelDefinition<T extends IModel = IModel> = string | {
         new (): T;
     };
+    interface IModelSharedMetadata {
+        features: {
+            [name in string]: boolean;
+        };
+        /**
+         * The model's relation definitions.
+         */
+        relationDefinitions: NajsEloquent.Relation.RelationDefinitions;
+    }
     interface IModelInternalData {
         /**
          * The model's class setting instance.
@@ -35,7 +44,7 @@ declare namespace NajsEloquent.Model {
         /**
          * Contains metadata data which shared for all model instances
          */
-        protected readonly sharedMetadata: object;
+        protected readonly sharedMetadata: IModelSharedMetadata;
         /**
          * The driver associated with the model.
          */
@@ -44,10 +53,6 @@ declare namespace NajsEloquent.Model {
          * The model's attributes.
          */
         protected attributes: object;
-        /**
-         * The model's relation definitions.
-         */
-        protected readonly relationDefinitions: NajsEloquent.Relation.RelationDefinitions;
         /**
          * The model's internal data
          */
@@ -76,9 +81,9 @@ declare namespace NajsEloquent.Model {
         newQuery(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<this>;
     }
     type ModelInternal<T = any> = IModel & {
-        driver: Najs.Contracts.Eloquent.Driver<T>;
-        relationDefinitions: NajsEloquent.Relation.RelationDefinitions;
-        attributes: T;
+        sharedMetadata: IModelSharedMetadata;
         internalData: IModelInternalData;
+        driver: Najs.Contracts.Eloquent.Driver<T>;
+        attributes: T;
     };
 }

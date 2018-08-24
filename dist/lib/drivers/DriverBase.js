@@ -101,7 +101,7 @@ class DriverBase {
     }
     definePropertiesAfterAttachFeatures(model, prototype, bases) {
         const relationDefinitions = this.getRelationFeature().buildDefinitions(model, prototype, bases);
-        Object.defineProperty(prototype, 'relationDefinitions', {
+        Object.defineProperty(prototype['sharedMetadata'], 'relationDefinitions', {
             value: relationDefinitions
         });
     }
