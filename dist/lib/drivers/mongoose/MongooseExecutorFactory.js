@@ -10,6 +10,9 @@ const MongodbQueryLog_1 = require("./../mongodb/MongodbQueryLog");
 const MongooseProviderFacade_1 = require("../../facades/global/MongooseProviderFacade");
 const constants_1 = require("../../constants");
 class MongooseExecutorFactory {
+    getClassName() {
+        return constants_1.NajsEloquent.Driver.Mongoose.MongooseExecutorFactory;
+    }
     makeRecordExecutor(model, document) {
         return new MongooseRecordExecutor_1.MongooseRecordExecutor(model, document, this.makeLogger());
     }

@@ -16,6 +16,10 @@ import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 export class MongooseExecutorFactory implements NajsEloquent.Driver.IExecutorFactory {
   static className: string = NajsEloquentClasses.Driver.Mongoose.MongooseExecutorFactory
 
+  getClassName() {
+    return NajsEloquentClasses.Driver.Mongoose.MongooseExecutorFactory
+  }
+
   makeRecordExecutor<T extends Document>(model: IModel, document: T): MongooseRecordExecutor {
     return new MongooseRecordExecutor(model, document, this.makeLogger())
   }

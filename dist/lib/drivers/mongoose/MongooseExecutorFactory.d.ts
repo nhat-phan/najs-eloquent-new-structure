@@ -9,6 +9,7 @@ import { MongooseQueryExecutor } from './MongooseQueryExecutor';
 import { MongodbQueryLog } from './../mongodb/MongodbQueryLog';
 export declare class MongooseExecutorFactory implements NajsEloquent.Driver.IExecutorFactory {
     static className: string;
+    getClassName(): string;
     makeRecordExecutor<T extends Document>(model: IModel, document: T): MongooseRecordExecutor;
     makeQueryExecutor(handler: IQueryBuilderHandler): MongooseQueryExecutor;
     getMongooseModel(model: IModel): MongooseModel<any>;
