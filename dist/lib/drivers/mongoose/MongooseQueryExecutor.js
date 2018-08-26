@@ -21,7 +21,12 @@ class MongooseQueryExecutor {
             .end(result);
     }
     async first() {
-        return {};
+        const query = this.createQuery(true);
+        const result = await query.exec();
+        return this.logger
+            .raw('.exec()')
+            .action('first')
+            .end(result);
     }
     async count() {
         return {};

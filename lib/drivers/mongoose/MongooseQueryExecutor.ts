@@ -36,7 +36,12 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   }
 
   async first(): Promise<object | null> {
-    return {} as any
+    const query = this.createQuery(true)
+    const result = await query.exec()
+    return this.logger
+      .raw('.exec()')
+      .action('first')
+      .end(result)
   }
 
   async count(): Promise<number> {
