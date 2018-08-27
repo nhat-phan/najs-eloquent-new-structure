@@ -43,7 +43,18 @@ class MongooseQueryExecutor {
             .end(result);
     }
     async update(data) {
-        return {};
+        const conditions = this.basicQuery.getConditions();
+        const query = ExecutorUtils_1.ExecutorUtils.convertConditionsToMongodbQuery(conditions);
+        const mongooseQuery = this.mongooseModel.update(query, data, {
+            multi: true
+        });
+        const result = await mongooseQuery.exec();
+        return this.logger
+            .action('update')
+            .raw(this.modelName)
+            .raw(`.update(${JSON.stringify(query)}, ${JSON.stringify(data)}, {"multi": true})`)
+            .raw('.exec()')
+            .end(result);
     }
     async delete() {
         return {};

@@ -61,7 +61,18 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   }
 
   async update(data: Object): Promise<any> {
-    return {} as any
+    const conditions = this.basicQuery.getConditions()
+    const query = ExecutorUtils.convertConditionsToMongodbQuery(conditions)
+    const mongooseQuery = this.mongooseModel.update(query, data, {
+      multi: true
+    })
+    const result = await mongooseQuery.exec()
+    return this.logger
+      .action('update')
+      .raw(this.modelName)
+      .raw(`.update(${JSON.stringify(query)}, ${JSON.stringify(data)}, {"multi": true})`)
+      .raw('.exec()')
+      .end(result)
   }
 
   async delete(): Promise<any> {

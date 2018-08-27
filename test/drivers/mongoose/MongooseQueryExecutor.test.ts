@@ -411,8 +411,112 @@ describe('MongooseQueryExecutor', function() {
   })
 
   describe('.update()', function() {
-    it('should work', function() {
-      makeQueryExecutor(makeQueryBuilder('User'), UserModel).update({})
+    it('can update data of collection, returns update result of mongoose', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('first_name', 'peter')
+
+      const result = await makeQueryExecutor(query, UserModel).update({ $set: { age: 19 } })
+
+      expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
+      expect_query_log(
+        {
+          raw: 'User.update({"first_name":"peter"}, {"$set":{"age":19}}, {"multi": true}).exec()',
+          action: 'update'
+        },
+        result,
+        0
+      )
+
+      const updatedResult = await makeQueryExecutor(
+        makeQueryBuilder('User').where('first_name', 'peter'),
+        UserModel
+      ).first()
+      expect_match_user(updatedResult, Object.assign({}, dataset[6], { age: 19 }))
+    })
+
+    it('returns empty update result if no row matched', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('first_name', 'no-one')
+
+      const result = await makeQueryExecutor(query, UserModel).update({ $set: { age: 19 } })
+      expect(result).toEqual({ n: 0, nModified: 0, ok: 1 })
+      expect_query_log(
+        {
+          raw: 'User.update({"first_name":"no-one"}, {"$set":{"age":19}}, {"multi": true}).exec()',
+          action: 'update'
+        },
+        result
+      )
+    })
+
+    it('can update data by query builder, case 1', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('age', 1000)
+
+      const result = await makeQueryExecutor(query, UserModel).update({ $set: { age: 1001 } })
+      expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
+      expect_query_log(
+        {
+          raw: 'User.update({"age":1000}, {"$set":{"age":1001}}, {"multi": true}).exec()',
+          action: 'update'
+        },
+        result
+      )
+
+      const updatedResult = await makeQueryExecutor(
+        makeQueryBuilder('User').where('first_name', 'thor'),
+        UserModel
+      ).first()
+      expect_match_user(updatedResult, Object.assign({}, dataset[3], { age: 1001 }))
+    })
+
+    it('can update data by query builder, case 2: multiple documents', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('first_name', 'tony').orWhere('first_name', 'jane')
+
+      const result = await makeQueryExecutor(query, UserModel).update({ $inc: { age: 1 } })
+      expect(result).toEqual({ n: 3, nModified: 3, ok: 1 })
+      expect_query_log(
+        {
+          raw:
+            'User.update({"$or":[{"first_name":"tony"},{"first_name":"jane"}]}, {"$inc":{"age":1}}, {"multi": true}).exec()',
+          action: 'update'
+        },
+        result
+      )
+
+      const updatedResults = await makeQueryExecutor(
+        makeQueryBuilder('User')
+          .where('first_name', 'tony')
+          .orWhere('first_name', 'jane'),
+        UserModel
+      ).get()
+      expect_match_user(updatedResults[0], Object.assign({}, dataset[1], { age: 26 }))
+      expect_match_user(updatedResults[1], Object.assign({}, dataset[2], { age: 41 }))
+      expect_match_user(updatedResults[2], Object.assign({}, dataset[5], { age: 41 }))
+    })
+
+    it('can update data by query builder, case 3', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('first_name', 'tony').where('last_name', 'stewart')
+
+      const result = await makeQueryExecutor(query, UserModel).update({ $inc: { age: 1 } })
+      expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
+      expect_query_log(
+        {
+          raw: 'User.update({"first_name":"tony","last_name":"stewart"}, {"$inc":{"age":1}}, {"multi": true}).exec()',
+          action: 'update'
+        },
+        result
+      )
+
+      const updatedResult = await makeQueryExecutor(
+        makeQueryBuilder('User')
+          .where('first_name', 'tony')
+          .where('last_name', 'stewart'),
+        UserModel
+      ).first()
+      expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 42 }))
     })
   })
 
