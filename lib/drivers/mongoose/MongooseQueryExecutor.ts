@@ -45,7 +45,19 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   }
 
   async count(): Promise<number> {
-    return {} as any
+    if (this.basicQuery.getSelect()) {
+      this.basicQuery.clearSelect()
+    }
+    if (!isEmpty(this.basicQuery.getOrdering())) {
+      this.basicQuery.clearOrdering()
+    }
+
+    const query = this.createQuery(false)
+    const result = await query.count().exec()
+    return this.logger
+      .raw('.count().exec()')
+      .action('count')
+      .end(result)
   }
 
   async update(data: Object): Promise<any> {

@@ -248,8 +248,57 @@ describe('MongooseQueryExecutor', function () {
         // })
     });
     describe('.count()', function () {
-        it('should work', function () {
-            makeQueryExecutor(makeQueryBuilder('User'), UserModel).count();
+        it('counts all data of collection and returns a Number', async function () {
+            const query = makeQueryBuilder('User');
+            const result = await makeQueryExecutor(query, UserModel).count();
+            expect(result).toEqual(7);
+            expect_query_log({
+                raw: 'User.find({}).count().exec()',
+                action: 'count'
+            }, result);
+        });
+        it('returns 0 if no result', async function () {
+            const query = makeQueryBuilder('User');
+            query.where('first_name', 'no-one');
+            const result = await makeQueryExecutor(query, UserModel).count();
+            expect(result).toEqual(0);
+            expect_query_log({
+                raw: 'User.find({"first_name":"no-one"}).count().exec()',
+                action: 'count'
+            }, result);
+        });
+        it('overrides select even .select was used', async function () {
+            const query = makeQueryBuilder('User');
+            query.select('abc', 'def');
+            const result = await makeQueryExecutor(query, UserModel).count();
+            expect(result).toEqual(7);
+            expect_query_log({
+                raw: 'User.find({}).count().exec()',
+                action: 'count'
+            }, result);
+        });
+        it('can count items by query builder, case 1', async function () {
+            const query = makeQueryBuilder('User');
+            query.where('age', 18).orWhere('first_name', 'tony');
+            const result = await makeQueryExecutor(query, UserModel).count();
+            expect(result).toEqual(2);
+            expect_query_log({
+                raw: 'User.find({"$or":[{"age":18},{"first_name":"tony"}]}).count().exec()',
+                action: 'count'
+            }, result);
+        });
+        it('can count items by query builder, case 2', async function () {
+            const query = makeQueryBuilder('User');
+            query
+                .where('age', 1000)
+                .orWhere('first_name', 'captain')
+                .orderBy('last_name');
+            const result = await makeQueryExecutor(query, UserModel).count();
+            expect(result).toEqual(2);
+            expect_query_log({
+                raw: 'User.find({"$or":[{"age":1000},{"first_name":"captain"}]}).count().exec()',
+                action: 'count'
+            }, result);
         });
     });
     describe('.update()', function () {

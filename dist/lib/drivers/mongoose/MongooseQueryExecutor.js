@@ -29,7 +29,18 @@ class MongooseQueryExecutor {
             .end(result);
     }
     async count() {
-        return {};
+        if (this.basicQuery.getSelect()) {
+            this.basicQuery.clearSelect();
+        }
+        if (!lodash_1.isEmpty(this.basicQuery.getOrdering())) {
+            this.basicQuery.clearOrdering();
+        }
+        const query = this.createQuery(false);
+        const result = await query.count().exec();
+        return this.logger
+            .raw('.count().exec()')
+            .action('count')
+            .end(result);
     }
     async update(data) {
         return {};
