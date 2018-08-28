@@ -41,11 +41,11 @@ checks:
   similar-code:
     enabled: true
     config:
-      threshold: 70
+      threshold: #language-specific defaults. overrides affect all languages.
   identical-code:
     enabled: true
     config:
-      threshold: 70
+      threshold: #language-specific defaults. overrides affect all languages.
 exclude_patterns:
   - 'config/'
   - 'db/'
@@ -57,6 +57,7 @@ exclude_patterns:
   - '**/test/'
   - '**/integration/'
   - '**/definitions/'
+  - '**/mixin/'
   - '**/tests/'
   - '**/vendor/'
   - '**/*.d.ts'
