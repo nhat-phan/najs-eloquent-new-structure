@@ -51,7 +51,7 @@ class MongooseQueryExecutor {
         return this.logger
             .action('update')
             .raw(this.modelName)
-            .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(data)}, {"multi": true})`)
+            .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(data)}, {"multi":true})`)
             .raw('.exec()')
             .end(result);
     }
@@ -72,7 +72,29 @@ class MongooseQueryExecutor {
             .end(result);
     }
     async restore() {
-        return {};
+        if (!this.queryHandler.hasSoftDeletes()) {
+            return { n: 0, nModified: 0, ok: 1 };
+        }
+        const conditions = this.getQueryConditions();
+        if (lodash_1.isEmpty(conditions)) {
+            return { n: 0, nModified: 0, ok: 1 };
+        }
+        const softDeletesSetting = this.queryHandler.getSoftDeletesSetting();
+        const updateData = {
+            $set: {
+                [softDeletesSetting.deletedAt]: this.queryHandler
+                    .getQueryConvention()
+                    .getNullValueFor(softDeletesSetting.deletedAt)
+            }
+        };
+        const mongooseQuery = this.mongooseModel.update(conditions, updateData, { multi: true });
+        const result = await mongooseQuery.exec();
+        return this.logger
+            .action('restore')
+            .raw(this.modelName)
+            .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(updateData)}, {"multi":true})`)
+            .raw('.exec()')
+            .end(result);
     }
     async execute() {
         return {};

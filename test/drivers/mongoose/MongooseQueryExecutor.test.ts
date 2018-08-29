@@ -84,14 +84,15 @@ describe('MongooseQueryExecutor', function() {
     expect(logData).toMatchObject(data)
   }
 
-  function makeQueryBuilder(name: string) {
-    return new MongooseQueryBuilder(
-      new MongooseQueryBuilderHandler({
+  function makeQueryBuilder(name: string, model?: any) {
+    if (!model) {
+      model = {
         getModelName() {
           return name
         }
-      } as any)
-    )
+      }
+    }
+    return new MongooseQueryBuilder(new MongooseQueryBuilderHandler(model))
   }
 
   function makeQueryExecutor(queryBuilder: MongooseQueryBuilder<any, any>, model: any) {
@@ -420,7 +421,7 @@ describe('MongooseQueryExecutor', function() {
       expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
       expect_query_log(
         {
-          raw: 'User.update({"first_name":"peter"}, {"$set":{"age":19}}, {"multi": true}).exec()',
+          raw: 'User.update({"first_name":"peter"}, {"$set":{"age":19}}, {"multi":true}).exec()',
           action: 'update'
         },
         result,
@@ -442,7 +443,7 @@ describe('MongooseQueryExecutor', function() {
       expect(result).toEqual({ n: 0, nModified: 0, ok: 1 })
       expect_query_log(
         {
-          raw: 'User.update({"first_name":"no-one"}, {"$set":{"age":19}}, {"multi": true}).exec()',
+          raw: 'User.update({"first_name":"no-one"}, {"$set":{"age":19}}, {"multi":true}).exec()',
           action: 'update'
         },
         result
@@ -457,7 +458,7 @@ describe('MongooseQueryExecutor', function() {
       expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
       expect_query_log(
         {
-          raw: 'User.update({"age":1000}, {"$set":{"age":1001}}, {"multi": true}).exec()',
+          raw: 'User.update({"age":1000}, {"$set":{"age":1001}}, {"multi":true}).exec()',
           action: 'update'
         },
         result
@@ -479,7 +480,7 @@ describe('MongooseQueryExecutor', function() {
       expect_query_log(
         {
           raw:
-            'User.update({"$or":[{"first_name":"tony"},{"first_name":"jane"}]}, {"$inc":{"age":1}}, {"multi": true}).exec()',
+            'User.update({"$or":[{"first_name":"tony"},{"first_name":"jane"}]}, {"$inc":{"age":1}}, {"multi":true}).exec()',
           action: 'update'
         },
         result
@@ -504,7 +505,7 @@ describe('MongooseQueryExecutor', function() {
       expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
       expect_query_log(
         {
-          raw: 'User.update({"first_name":"tony","last_name":"stewart"}, {"$inc":{"age":1}}, {"multi": true}).exec()',
+          raw: 'User.update({"first_name":"tony","last_name":"stewart"}, {"$inc":{"age":1}}, {"multi":true}).exec()',
           action: 'update'
         },
         result
@@ -620,8 +621,118 @@ describe('MongooseQueryExecutor', function() {
   })
 
   describe('.restore()', function() {
-    it('should work', function() {
-      makeQueryExecutor(makeQueryBuilder('User'), UserModel).restore()
+    it('does nothing if Model do not support SoftDeletes', async function() {
+      const query = makeQueryBuilder('User', {
+        getDriver() {
+          return {
+            getSoftDeletesFeature() {
+              return {
+                hasSoftDeletes() {
+                  return false
+                }
+              }
+            }
+          }
+        }
+      })
+      query.where('first_name', 'peter')
+
+      const result = await makeQueryExecutor(query, UserModel).restore()
+      expect(result).toEqual({ n: 0, nModified: 0, ok: 1 })
+    })
+
+    it('can not call restore if query is empty', async function() {
+      const query = makeQueryBuilder('User', {
+        getDriver() {
+          return {
+            getSoftDeletesFeature() {
+              return {
+                hasSoftDeletes() {
+                  return true
+                },
+                getSoftDeletesSetting() {
+                  return { deletedAt: 'deleted_at', overrideMethods: true }
+                }
+              }
+            }
+          }
+        }
+      })
+      query.withTrashed()
+      const result = await makeQueryExecutor(query, UserModel).restore()
+      expect(result).toEqual({ n: 0, nModified: 0, ok: 1 })
+    })
+
+    it('can restore data by query builder, case 1', async function() {
+      const query = makeQueryBuilder('Role', {
+        getDriver() {
+          return {
+            getSoftDeletesFeature() {
+              return {
+                hasSoftDeletes() {
+                  return true
+                },
+                getSoftDeletesSetting() {
+                  return { deletedAt: 'deleted_at', overrideMethods: true }
+                }
+              }
+            }
+          }
+        }
+      })
+      query.onlyTrashed().where('name', 'role-0')
+
+      const result = await makeQueryExecutor(query, RoleModel).restore()
+      expect(result).toEqual({ n: 1, nModified: 1, ok: 1 })
+      expect_query_log(
+        {
+          raw:
+            'Role.update({"deleted_at":{"$ne":null},"name":"role-0"}, {"$set":{"deleted_at":null}}, {"multi":true}).exec()',
+          action: 'restore'
+        },
+        result
+      )
+      const count = await makeQueryExecutor(makeQueryBuilder('Role'), RoleModel).count()
+      expect(count).toEqual(1)
+    })
+
+    it('can restore data by query builder, case 2: multiple documents', async function() {
+      const query = makeQueryBuilder('Role', {
+        getDriver() {
+          return {
+            getSoftDeletesFeature() {
+              return {
+                hasSoftDeletes() {
+                  return true
+                },
+                getSoftDeletesSetting() {
+                  return { deletedAt: 'deleted_at', overrideMethods: true }
+                }
+              }
+            }
+          }
+        }
+      })
+      await query
+        .withTrashed()
+        .where('name', 'role-1')
+        .orWhere('name', 'role-2')
+        .orWhere('name', 'role-3')
+
+      const result = await makeQueryExecutor(query, RoleModel).restore()
+      expect(result).toEqual({ n: 3, nModified: 3, ok: 1 })
+      const conditions = {
+        $or: [{ name: 'role-1' }, { name: 'role-2' }, { name: 'role-3' }]
+      }
+      expect_query_log(
+        {
+          raw: `Role.update(${JSON.stringify(conditions)}, {"$set":{"deleted_at":null}}, {"multi":true}).exec()`,
+          action: 'restore'
+        },
+        result
+      )
+      const count = await makeQueryExecutor(makeQueryBuilder('Role'), RoleModel).count()
+      expect(count).toEqual(4)
     })
   })
 

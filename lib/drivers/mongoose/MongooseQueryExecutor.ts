@@ -69,7 +69,7 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
     return this.logger
       .action('update')
       .raw(this.modelName)
-      .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(data)}, {"multi": true})`)
+      .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(data)}, {"multi":true})`)
       .raw('.exec()')
       .end(result)
   }
@@ -94,7 +94,31 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   }
 
   async restore(): Promise<any> {
-    return {} as any
+    if (!this.queryHandler.hasSoftDeletes()) {
+      return { n: 0, nModified: 0, ok: 1 }
+    }
+
+    const conditions = this.getQueryConditions()
+    if (isEmpty(conditions)) {
+      return { n: 0, nModified: 0, ok: 1 }
+    }
+
+    const softDeletesSetting = this.queryHandler.getSoftDeletesSetting()
+    const updateData = {
+      $set: {
+        [softDeletesSetting.deletedAt]: this.queryHandler
+          .getQueryConvention()
+          .getNullValueFor(softDeletesSetting.deletedAt)
+      }
+    }
+    const mongooseQuery = this.mongooseModel.update(conditions, updateData, { multi: true })
+    const result = await mongooseQuery.exec()
+    return this.logger
+      .action('restore')
+      .raw(this.modelName)
+      .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(updateData)}, {"multi":true})`)
+      .raw('.exec()')
+      .end(result)
   }
 
   async execute(): Promise<any> {
