@@ -19,6 +19,7 @@ export declare class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.
     delete(): Promise<any>;
     restore(): Promise<any>;
     execute(): Promise<any>;
+    getQueryConditions(): object;
     getMongooseQuery(isFindOne: boolean): MongooseQuery<any>;
     passSelectToQuery(query: MongooseQuery<any>): void;
     passLimitToQuery(query: MongooseQuery<any>): void;

@@ -368,9 +368,75 @@ describe('MongooseQueryExecutor', function () {
         });
     });
     describe('.delete()', function () {
-        it('should work', function () {
-            makeQueryExecutor(makeQueryBuilder('User'), UserModel).delete();
+        it('can delete data of collection, returns delete result of mongoose', async function () {
+            const query = makeQueryBuilder('User');
+            query.where('first_name', 'peter');
+            const result = await makeQueryExecutor(query, UserModel).delete();
+            expect(result).toEqual({ n: 1, ok: 1 });
+            expect_query_log({
+                raw: 'User.remove({"first_name":"peter"}).exec()',
+                action: 'delete'
+            }, result);
+            const count = await makeQueryExecutor(makeQueryBuilder('User'), UserModel).count();
+            expect(count).toEqual(6);
         });
+        it('can delete data by query builder, case 1', async function () {
+            const query = makeQueryBuilder('User');
+            query.where('age', 1001);
+            const result = await makeQueryExecutor(query, UserModel).delete();
+            expect(result).toEqual({ n: 1, ok: 1 });
+            expect_query_log({
+                raw: 'User.remove({"age":1001}).exec()',
+                action: 'delete'
+            }, result);
+            const count = await makeQueryExecutor(makeQueryBuilder('User'), UserModel).count();
+            expect(count).toEqual(5);
+        });
+        it('can delete data by query builder, case 2: multiple documents', async function () {
+            const query = makeQueryBuilder('User');
+            query.where('first_name', 'tony').orWhere('first_name', 'jane');
+            const result = await makeQueryExecutor(query, UserModel).delete();
+            expect(result).toEqual({ n: 3, ok: 1 });
+            expect_query_log({
+                raw: 'User.remove({"$or":[{"first_name":"tony"},{"first_name":"jane"}]}).exec()',
+                action: 'delete'
+            }, result);
+            const count = await makeQueryExecutor(makeQueryBuilder('User'), UserModel).count();
+            expect(count).toEqual(2);
+        });
+        it('can delete data by query builder, case 3', async function () {
+            const query = makeQueryBuilder('User');
+            query.where('first_name', 'john').where('last_name', 'doe');
+            const result = await makeQueryExecutor(query, UserModel).delete();
+            expect(result).toEqual({ n: 1, ok: 1 });
+            expect_query_log({
+                raw: 'User.remove({"first_name":"john","last_name":"doe"}).exec()',
+                action: 'delete'
+            }, result);
+            const count = await makeQueryExecutor(makeQueryBuilder('User'), UserModel).count();
+            expect(count).toEqual(1);
+        });
+        it('can not call delete without using any .where() statement', async function () {
+            const result = await makeQueryExecutor(makeQueryBuilder('User'), UserModel).delete();
+            expect(result).toEqual({ n: 0, ok: 1 });
+        });
+        it('can not call delete if query is empty', async function () {
+            const query = makeQueryBuilder('User');
+            query.select('any');
+            const result = await makeQueryExecutor(query, UserModel).delete();
+            expect(result).toEqual({ n: 0, ok: 1 });
+        });
+        // it('can delete by native() function', async function() {
+        //   const query = new MongooseQueryBuilder('User')
+        //   const result = await query
+        //     .native(function(model: any) {
+        //       return model.remove({})
+        //     })
+        //     .execute()
+        //   expect(result).toEqual({ n: 1, ok: 1 })
+        //   const count = await new MongooseQueryBuilder('User').count()
+        //   expect(count).toEqual(0)
+        // })
     });
     describe('.restore()', function () {
         it('should work', function () {

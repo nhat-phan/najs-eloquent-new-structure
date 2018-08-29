@@ -61,22 +61,36 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   }
 
   async update(data: Object): Promise<any> {
-    const conditions = this.basicQuery.getConditions()
-    const query = ExecutorUtils.convertConditionsToMongodbQuery(conditions)
-    const mongooseQuery = this.mongooseModel.update(query, data, {
+    const conditions = this.getQueryConditions()
+    const mongooseQuery = this.mongooseModel.update(conditions, data, {
       multi: true
     })
     const result = await mongooseQuery.exec()
     return this.logger
       .action('update')
       .raw(this.modelName)
-      .raw(`.update(${JSON.stringify(query)}, ${JSON.stringify(data)}, {"multi": true})`)
+      .raw(`.update(${JSON.stringify(conditions)}, ${JSON.stringify(data)}, {"multi": true})`)
       .raw('.exec()')
       .end(result)
   }
 
   async delete(): Promise<any> {
-    return {} as any
+    if (!this.queryHandler.isUsed()) {
+      return { n: 0, ok: 1 }
+    }
+
+    const conditions = this.getQueryConditions()
+    if (isEmpty(conditions)) {
+      return { n: 0, ok: 1 }
+    }
+
+    const mongooseQuery = this.mongooseModel.remove(conditions)
+    const result = await mongooseQuery.exec()
+    return this.logger
+      .action('delete')
+      .raw(this.modelName)
+      .raw('.remove(', conditions, ')', '.exec()')
+      .end(result)
   }
 
   async restore(): Promise<any> {
@@ -89,13 +103,17 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  getQueryConditions() {
+    const conditions = this.basicQuery.getConditions()
+    return ExecutorUtils.convertConditionsToMongodbQuery(conditions)
+  }
+
   getMongooseQuery(isFindOne: boolean): MongooseQuery<any> {
     if (!this.hasMongooseQuery) {
-      const conditions = this.basicQuery.getConditions()
-      const query = ExecutorUtils.convertConditionsToMongodbQuery(conditions)
-      this.mongooseQuery = isFindOne ? this.mongooseModel.findOne(query) : this.mongooseModel.find(query)
+      const conditions = this.getQueryConditions()
+      this.mongooseQuery = isFindOne ? this.mongooseModel.findOne(conditions) : this.mongooseModel.find(conditions)
 
-      this.logger.raw(this.modelName).raw(isFindOne ? '.findOne(' : '.find(', query, ')')
+      this.logger.raw(this.modelName).raw(isFindOne ? '.findOne(' : '.find(', conditions, ')')
       this.hasMongooseQuery = true
     }
     return this.mongooseQuery!
