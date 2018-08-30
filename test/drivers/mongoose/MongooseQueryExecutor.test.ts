@@ -292,44 +292,64 @@ describe('MongooseQueryExecutor', function() {
       )
     })
 
-    // it('can find data by .native() before using query functions of query builder', async function() {
-    //   const query = makeQueryBuilder('User')
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .native(function(collection) {
-    //       return collection.findOne({
-    //         first_name: 'tony'
-    //       })
-    //     })
-    //     .execute()
-    //   expect_match_user(result, dataset[2])
-    // })
+    it('can find data by .native() before using query functions of query builder', async function() {
+      const query = makeQueryBuilder('User')
+      const result = await makeQueryExecutor(query, UserModel)
+        .native(function(subQuery) {
+          return subQuery.findOne({
+            first_name: 'tony'
+          })
+        })
+        .first()
+      expect_match_user(result, dataset[2])
+      expect_query_log(
+        {
+          raw: 'User.find({}).exec()',
+          action: 'first'
+        },
+        result
+      )
+    })
 
-    // it('can find data by native() after using query functions of query builder', async function() {
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .where('age', 40)
-    //     .orWhere('age', 1000)
-    //     .native(function(collection, conditions) {
-    //       return collection.findOne(conditions, { sort: [['last_name', -1]] })
-    //     })
-    //     .execute()
-    //   expect_match_user(result, dataset[5])
-    // })
+    it('can find data by .native() after using query functions of query builder', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('age', 40).orWhere('age', 1000)
 
-    // it('can find data by native() and modified after using query functions of query builder', async function() {
-    //   const query = new MongodbQueryBuilder('User', collectionUsers)
-    //   const result = await query
-    //     .where('age', 40)
-    //     .orWhere('age', 1000)
-    //     .native(function(collection) {
-    //       return collection.findOne({
-    //         first_name: 'thor'
-    //       })
-    //     })
-    //     .execute()
-    //   expect_match_user(result, dataset[3])
-    // })
+      const result = await makeQueryExecutor(query, UserModel)
+        .native(function(nativeQuery) {
+          return nativeQuery.sort({ last_name: -1 })
+        })
+        .first()
+      expect_match_user(result, dataset[5])
+      expect_query_log(
+        {
+          raw: 'User.find({"$or":[{"age":40},{"age":1000}]}).fineOne().exec()',
+          action: 'first'
+        },
+        result
+      )
+    })
+
+    it('can find data by .native() and modified after using query functions of query builder', async function() {
+      const query = makeQueryBuilder('User')
+      query.where('age', 40).orWhere('age', 1000)
+
+      const result = await makeQueryExecutor(query, UserModel)
+        .native(function(collection) {
+          return collection.findOne({
+            first_name: 'thor'
+          })
+        })
+        .execute()
+      expect_match_user(result, dataset[3])
+      expect_query_log(
+        {
+          raw: 'User.find({"$or":[{"age":40},{"age":1000}]}).exec()',
+          action: 'execute'
+        },
+        result
+      )
+    })
   })
 
   describe('.count()', function() {
@@ -607,17 +627,17 @@ describe('MongooseQueryExecutor', function() {
       expect(result).toEqual({ n: 0, ok: 1 })
     })
 
-    // it('can delete by native() function', async function() {
-    //   const query = new MongooseQueryBuilder('User')
-    //   const result = await query
-    //     .native(function(model: any) {
-    //       return model.remove({})
-    //     })
-    //     .execute()
-    //   expect(result).toEqual({ n: 1, ok: 1 })
-    //   const count = await new MongooseQueryBuilder('User').count()
-    //   expect(count).toEqual(0)
-    // })
+    it('can delete by native() function', async function() {
+      const result = await makeQueryExecutor(makeQueryBuilder('User'), UserModel)
+        .native(function(model: any) {
+          return model.remove({})
+        })
+        .execute()
+      expect(result).toEqual({ n: 1, ok: 1 })
+
+      const count = await makeQueryExecutor(makeQueryBuilder('User'), UserModel).count()
+      expect(count).toEqual(0)
+    })
   })
 
   describe('.restore()', function() {
@@ -736,9 +756,22 @@ describe('MongooseQueryExecutor', function() {
     })
   })
 
-  describe('.execute()', function() {
-    it('should work', function() {
-      makeQueryExecutor(makeQueryBuilder('User'), UserModel).execute()
+  describe('.native()', function() {
+    it('is chain-able', function() {
+      const query = makeQueryExecutor(makeQueryBuilder('User'), UserModel)
+      expect(
+        query.native(function(model) {
+          return model.find()
+        })
+      ).toEqual(query)
+    })
+
+    it('passes .createQuery(false) result if there is a query builder functions was used', function() {
+      const query = makeQueryExecutor(makeQueryBuilder('User'), UserModel)
+      query.native(function(nativeQuery: any) {
+        expect(nativeQuery === query['mongooseQuery']).toBe(true)
+        return nativeQuery
+      })
     })
   })
 
@@ -751,6 +784,14 @@ describe('MongooseQueryExecutor', function() {
       const queryTwo = makeQueryBuilder('Anything')
       const executorTwo = makeQueryExecutor(queryTwo, UserModel)
       expect(executorTwo['modelName']).toEqual('User')
+    })
+  })
+
+  describe('.getMongooseModel()', function() {
+    it('simply returns property mongooseModel', function() {
+      const query = makeQueryBuilder('User')
+      const executor = makeQueryExecutor(query, {})
+      expect(executor.getMongooseModel() === executor['mongooseModel']).toBe(true)
     })
   })
 

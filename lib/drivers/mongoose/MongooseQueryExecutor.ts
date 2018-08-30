@@ -37,6 +37,10 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
 
   async first(): Promise<object | null> {
     const query = this.createQuery(true)
+    if (query['op'] === 'find') {
+      query.findOne()
+      this.logger.raw('.fineOne()')
+    }
     const result = await query.exec()
     return this.logger
       .raw('.exec()')
@@ -122,7 +126,22 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   }
 
   async execute(): Promise<any> {
-    return {} as any
+    const query: any = this.createQuery(false)
+    const result = await query.exec()
+    return this.logger
+      .raw('.exec()')
+      .action('execute')
+      .end(result)
+  }
+
+  native(handler: (native: MongooseQuery<any>) => MongooseQuery<any>): NajsEloquent.QueryBuilder.IQueryExecutor {
+    this.mongooseQuery = handler.call(undefined, this.createQuery(false))
+    this.hasMongooseQuery = true
+    return this
+  }
+
+  getMongooseModel(): MongooseModel<any> {
+    return this.mongooseModel
   }
 
   // -------------------------------------------------------------------------------------------------------------------

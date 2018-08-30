@@ -22,6 +22,10 @@ class MongooseQueryExecutor {
     }
     async first() {
         const query = this.createQuery(true);
+        if (query['op'] === 'find') {
+            query.findOne();
+            this.logger.raw('.fineOne()');
+        }
         const result = await query.exec();
         return this.logger
             .raw('.exec()')
@@ -97,7 +101,20 @@ class MongooseQueryExecutor {
             .end(result);
     }
     async execute() {
-        return {};
+        const query = this.createQuery(false);
+        const result = await query.exec();
+        return this.logger
+            .raw('.exec()')
+            .action('execute')
+            .end(result);
+    }
+    native(handler) {
+        this.mongooseQuery = handler.call(undefined, this.createQuery(false));
+        this.hasMongooseQuery = true;
+        return this;
+    }
+    getMongooseModel() {
+        return this.mongooseModel;
     }
     // -------------------------------------------------------------------------------------------------------------------
     getQueryConditions() {
