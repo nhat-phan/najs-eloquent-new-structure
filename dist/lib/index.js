@@ -21,3 +21,7 @@ var MongodbDriver_1 = require("./drivers/mongodb/MongodbDriver");
 exports.MongodbDriver = MongodbDriver_1.MongodbDriver;
 var MongodbModel_1 = require("./drivers/mongodb/MongodbModel");
 exports.MongodbModel = MongodbModel_1.MongodbModel;
+var MongooseDriver_1 = require("./drivers/mongoose/MongooseDriver");
+exports.MongooseDriver = MongooseDriver_1.MongooseDriver;
+var MongooseModel_1 = require("./drivers/mongoose/MongooseModel");
+exports.MongooseModel = MongooseModel_1.MongooseModel;

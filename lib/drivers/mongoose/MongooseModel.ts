@@ -4,7 +4,7 @@ import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler'
 import { MongooseDriver } from './MongooseDriver'
 import { bind_driver_if_needed } from '../../util/binding'
 import { PrototypeManager } from '../../util/PrototypeManager'
-import { SchemaDefinition, SchemaOptions } from 'mongoose'
+import { Document, Model as NativeModel, SchemaDefinition, SchemaOptions } from 'mongoose'
 
 export class MongooseModel extends Model {
   public id?: string
@@ -19,6 +19,10 @@ export class MongooseModel extends Model {
 
   newQuery(): MongooseQueryBuilder<this, MongooseQueryBuilderHandler> {
     return super.newQuery() as MongooseQueryBuilder<this, MongooseQueryBuilderHandler>
+  }
+
+  getNativeModel(): NativeModel<Document & this> {
+    return this.newQuery().nativeModel()
   }
 }
 

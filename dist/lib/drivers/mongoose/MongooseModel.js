@@ -12,6 +12,9 @@ class MongooseModel extends Model_1.Model {
     newQuery() {
         return super.newQuery();
     }
+    getNativeModel() {
+        return this.newQuery().nativeModel();
+    }
 }
 exports.MongooseModel = MongooseModel;
 PrototypeManager_1.PrototypeManager.stopFindingRelationsIn(MongooseModel.prototype);

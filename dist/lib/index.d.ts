@@ -7,3 +7,5 @@ export { Model } from './model/Model';
 export { Eloquent } from './model/Eloquent';
 export { MongodbDriver } from './drivers/mongodb/MongodbDriver';
 export { MongodbModel } from './drivers/mongodb/MongodbModel';
+export { MongooseDriver } from './drivers/mongoose/MongooseDriver';
+export { MongooseModel } from './drivers/mongoose/MongooseModel';

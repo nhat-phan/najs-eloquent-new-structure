@@ -7,7 +7,7 @@ import { Document } from 'mongoose';
 import { MongooseQueryBuilder } from './MongooseQueryBuilder';
 import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler';
 export declare class MongooseDriver<T extends Document = Document> extends DriverBase<T> {
-    protected recordManager: NajsEloquent.Feature.IRecordManager<T>;
+    protected documentManager: NajsEloquent.Feature.IRecordManager<T>;
     static Name: string;
     constructor();
     getClassName(): string;

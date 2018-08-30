@@ -65,7 +65,7 @@ class MongooseDocumentManager extends RecordManagerBase_1.RecordManagerBase {
             .getSettingProperty(model, 'schema', {});
     }
     getSchemaOptions(model) {
-        return Object.assign({ collection: model.getRecordName() }, model
+        return Object.assign({ collection: this.getRecordName(model) }, model
             .getDriver()
             .getSettingFeature()
             .getSettingProperty(model, 'options', {}));

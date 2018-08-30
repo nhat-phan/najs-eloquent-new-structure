@@ -286,8 +286,8 @@ describe('MongooseDocumentManager', function () {
                 getClassName() {
                     return 'ModelWithoutCustomOption';
                 }
-                getRecordName() {
-                    return 'test';
+                getModelName() {
+                    return 'Test';
                 }
                 getDriver() {
                     return {
@@ -306,7 +306,7 @@ describe('MongooseDocumentManager', function () {
                 getClassName() {
                     return 'ModelWithCustomOption';
                 }
-                getRecordName() {
+                getModelName() {
                     return 'test';
                 }
                 getDriver() {
@@ -319,10 +319,10 @@ describe('MongooseDocumentManager', function () {
             }
             najs_binding_1.register(ModelWithCustomOption);
             expect(documentManager.getSchemaOptions(new ModelWithoutCustomOption())).toEqual({
-                collection: 'test'
+                collection: 'tests'
             });
             expect(documentManager.getSchemaOptions(new ModelWithCustomOption())).toEqual({
-                collection: 'test',
+                collection: 'tests',
                 test: { type: 'any' }
             });
         });

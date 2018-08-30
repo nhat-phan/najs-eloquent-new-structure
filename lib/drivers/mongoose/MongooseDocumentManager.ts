@@ -80,7 +80,7 @@ export class MongooseDocumentManager extends RecordManagerBase<Document> {
 
   getSchemaOptions(model: Model) {
     return Object.assign(
-      { collection: model.getRecordName() },
+      { collection: this.getRecordName(model) },
       model
         .getDriver()
         .getSettingFeature()

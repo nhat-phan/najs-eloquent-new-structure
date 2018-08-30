@@ -12,13 +12,13 @@ import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler'
 import { MongooseExecutorFactory } from './MongooseExecutorFactory'
 
 export class MongooseDriver<T extends Document = Document> extends DriverBase<T> {
-  protected recordManager: NajsEloquent.Feature.IRecordManager<T>
+  protected documentManager: NajsEloquent.Feature.IRecordManager<T>
   static Name = 'mongoose'
 
   constructor() {
     super()
 
-    this.recordManager = make(NajsEloquent.Driver.Mongoose.MongooseDocumentManager, [
+    this.documentManager = make(NajsEloquent.Driver.Mongoose.MongooseDocumentManager, [
       make(MongooseExecutorFactory.className)
     ])
   }
@@ -28,7 +28,7 @@ export class MongooseDriver<T extends Document = Document> extends DriverBase<T>
   }
 
   getRecordManager() {
-    return this.recordManager
+    return this.documentManager
   }
 
   newQuery<M extends NajsEloquent.Model.IModel>(model: M): MongooseQueryBuilder<M, MongooseQueryBuilderHandler> {

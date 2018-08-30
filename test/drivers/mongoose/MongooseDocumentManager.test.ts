@@ -327,8 +327,8 @@ describe('MongooseDocumentManager', function() {
           return 'ModelWithoutCustomOption'
         }
 
-        getRecordName() {
-          return 'test'
+        getModelName() {
+          return 'Test'
         }
 
         getDriver() {
@@ -349,7 +349,7 @@ describe('MongooseDocumentManager', function() {
           return 'ModelWithCustomOption'
         }
 
-        getRecordName() {
+        getModelName() {
           return 'test'
         }
 
@@ -364,10 +364,10 @@ describe('MongooseDocumentManager', function() {
       register(ModelWithCustomOption)
 
       expect(documentManager.getSchemaOptions(<any>new ModelWithoutCustomOption())).toEqual({
-        collection: 'test'
+        collection: 'tests'
       })
       expect(documentManager.getSchemaOptions(<any>new ModelWithCustomOption())).toEqual({
-        collection: 'test',
+        collection: 'tests',
         test: { type: 'any' }
       })
     })
