@@ -25,6 +25,7 @@ export declare const NajsEloquent: {
         DriverProvider: string;
         MongodbProvider: string;
         MongooseProvider: string;
+        KnexProvider: string;
     };
     QueryBuilder: {
         MongodbConditionConverter: string;
