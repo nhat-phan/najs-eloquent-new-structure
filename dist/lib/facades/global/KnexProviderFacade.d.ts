@@ -1,4 +1,5 @@
 /// <reference path="../../contracts/KnexProvider.d.ts" />
+/// <reference types="knex" />
 import '../../providers/KnexProvider';
 import { IFacade, IFacadeBase } from 'najs-facade';
 import * as Knex from 'knex';

@@ -53,7 +53,8 @@
       "proxied",
       "chainable",
       "bson",
-      "upserted"
+      "upserted",
+      "varchar"
     ],
     "search.exclude": {
       "**/.git": true,

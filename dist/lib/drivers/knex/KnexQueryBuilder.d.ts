@@ -1,7 +1,12 @@
 /// <reference path="../../definitions/model/IModel.d.ts" />
+/// <reference types="knex" />
 import IModel = NajsEloquent.Model.IModel;
-import { QueryBuilder } from '../../query-builders/QueryBuilder';
+import * as Knex from 'knex';
+import { IKnexBasicQuery } from './definitions/IKnexBasicQuery';
 import { KnexQueryBuilderHandler } from './KnexQueryBuilderHandler';
-export declare class KnexQueryBuilder<T extends IModel, H extends KnexQueryBuilderHandler> extends QueryBuilder<T, H> {
-    doSomething(): void;
+import { QueryBuilder } from '../../query-builders/QueryBuilder';
+export declare type KnexQueryBuilderType<T extends IModel> = KnexQueryBuilder<T> & IKnexBasicQuery;
+export declare class KnexQueryBuilder<T extends IModel, H extends KnexQueryBuilderHandler = KnexQueryBuilderHandler> extends QueryBuilder<T, H> {
+    native(nativeCb: (queryBuilder: Knex.QueryBuilder) => any): this;
+    toSqlQuery(): string;
 }

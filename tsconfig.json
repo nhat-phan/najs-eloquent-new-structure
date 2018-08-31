@@ -5,7 +5,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "outDir": "dist",
-    "types": ["node"],
+    "types": ["node", "knex"],
     "lib": ["es2017"],
     "noImplicitReturns": true,
     "noImplicitThis": true,
