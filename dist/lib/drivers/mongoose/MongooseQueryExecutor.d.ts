@@ -2,7 +2,8 @@ import { MongodbQueryLog } from '../mongodb/MongodbQueryLog';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler';
 import { Model as MongooseModel, Query as MongooseQuery } from 'mongoose';
-export declare class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
+import { ExecutorBase } from '../ExecutorBase';
+export declare class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
     protected logger: MongodbQueryLog;
     protected mongooseModel: MongooseModel<any>;
     protected mongooseQuery: MongooseQuery<any> | undefined;

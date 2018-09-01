@@ -5,9 +5,10 @@ import { MongodbQueryLog } from '../mongodb/MongodbQueryLog'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler'
 import { Model as MongooseModel, Query as MongooseQuery } from 'mongoose'
+import { ExecutorBase } from '../ExecutorBase'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 
-export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
+export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected logger: MongodbQueryLog
   protected mongooseModel: MongooseModel<any>
   protected mongooseQuery: MongooseQuery<any> | undefined
@@ -18,6 +19,7 @@ export class MongooseQueryExecutor implements NajsEloquent.QueryBuilder.IQueryEx
   protected nativeHandlePromise: any
 
   constructor(queryHandler: MongooseQueryBuilderHandler, mongooseModel: MongooseModel<any>, logger: MongodbQueryLog) {
+    super()
     this.queryHandler = queryHandler
     this.basicQuery = queryHandler.getBasicQuery()
     this.mongooseModel = mongooseModel

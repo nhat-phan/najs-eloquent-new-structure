@@ -2,10 +2,12 @@
 /// <reference path="../../definitions/query-builders/IQueryExecutor" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
+const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
 const Moment = require("moment");
-class MongodbQueryExecutor {
+class MongodbQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, collection, logger) {
+        super();
         this.queryHandler = queryHandler;
         this.basicQuery = queryHandler.getBasicQuery();
         this.collection = collection;
@@ -16,7 +18,7 @@ class MongodbQueryExecutor {
     async get() {
         const query = this.makeQuery();
         const options = this.makeQueryOptions();
-        const result = await this.collection.find(query, options).toArray();
+        const result = this.shouldExecute() ? await this.collection.find(query, options).toArray() : [];
         return this.logRaw(query, options, 'find')
             .raw('.toArray()')
             .action('get')
@@ -25,7 +27,7 @@ class MongodbQueryExecutor {
     async first() {
         const query = this.makeQuery();
         const options = this.makeQueryOptions();
-        const result = await this.collection.findOne(query, options);
+        const result = this.shouldExecute() ? await this.collection.findOne(query, options) : {};
         return this.logRaw(query, options, 'findOne')
             .action('first')
             .end(result);
@@ -39,8 +41,8 @@ class MongodbQueryExecutor {
         }
         const query = this.makeQuery();
         const options = this.makeQueryOptions();
-        const result = await this.collection.countDocuments(query, options);
-        return this.logRaw(query, options, 'count')
+        const result = this.shouldExecute() ? await this.collection.countDocuments(query, options) : 0;
+        return this.logRaw(query, options, 'countDocuments')
             .action('count')
             .end(result);
     }
@@ -52,9 +54,11 @@ class MongodbQueryExecutor {
             }
             data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate();
         }
-        const result = await this.collection.updateMany(query, data).then(function (response) {
-            return response.result;
-        });
+        const result = this.shouldExecute()
+            ? await this.collection.updateMany(query, data).then(function (response) {
+                return response.result;
+            })
+            : {};
         return this.logger
             .raw('db.', this.collectionName, '.updateMany(', query, ', ', data, ')')
             .action('update')
@@ -68,9 +72,11 @@ class MongodbQueryExecutor {
         if (lodash_1.isEmpty(query)) {
             return { n: 0, ok: 1 };
         }
-        const result = await this.collection.deleteMany(query).then(function (response) {
-            return response.result;
-        });
+        const result = this.shouldExecute()
+            ? await this.collection.deleteMany(query).then(function (response) {
+                return response.result;
+            })
+            : {};
         return this.logger
             .raw('db.', this.collectionName, '.deleteMany(', query, ')')
             .action('delete')
@@ -88,9 +94,11 @@ class MongodbQueryExecutor {
         const data = {
             $set: { [fieldName]: this.queryHandler.getQueryConvention().getNullValueFor(fieldName) }
         };
-        const result = await this.collection.updateMany(query, data).then(function (response) {
-            return response.result;
-        });
+        const result = this.shouldExecute()
+            ? await this.collection.updateMany(query, data).then(function (response) {
+                return response.result;
+            })
+            : {};
         return this.logger
             .raw('db.', this.collectionName, '.updateMany(', query, ', ', data, ')')
             .action('restore')

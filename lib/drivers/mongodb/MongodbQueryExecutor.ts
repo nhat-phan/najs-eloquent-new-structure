@@ -3,12 +3,13 @@
 import { isEmpty } from 'lodash'
 import { Collection } from 'mongodb'
 import { MongodbQueryLog } from './MongodbQueryLog'
+import { ExecutorBase } from '../ExecutorBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import * as Moment from 'moment'
 
-export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
+export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected logger: MongodbQueryLog
   protected collection: Collection
   protected collectionName: string
@@ -17,6 +18,7 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
   protected nativeHandlePromise: any
 
   constructor(queryHandler: MongodbQueryBuilderHandler, collection: Collection, logger: MongodbQueryLog) {
+    super()
     this.queryHandler = queryHandler
     this.basicQuery = queryHandler.getBasicQuery()
     this.collection = collection
@@ -29,7 +31,7 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
     const query = this.makeQuery()
     const options = this.makeQueryOptions()
 
-    const result = await this.collection.find(query, options).toArray()
+    const result = this.shouldExecute() ? await this.collection.find(query, options).toArray() : []
     return this.logRaw(query, options, 'find')
       .raw('.toArray()')
       .action('get')
@@ -40,7 +42,7 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
     const query = this.makeQuery()
     const options = this.makeQueryOptions()
 
-    const result = await this.collection.findOne(query, options)
+    const result = this.shouldExecute() ? await this.collection.findOne(query, options) : {}
     return this.logRaw(query, options, 'findOne')
       .action('first')
       .end(result)
@@ -57,8 +59,8 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
     const query = this.makeQuery()
     const options = this.makeQueryOptions()
 
-    const result = await this.collection.countDocuments(query, options)
-    return this.logRaw(query, options, 'count')
+    const result = this.shouldExecute() ? await this.collection.countDocuments(query, options) : 0
+    return this.logRaw(query, options, 'countDocuments')
       .action('count')
       .end(result)
   }
@@ -73,9 +75,11 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
       data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate()
     }
 
-    const result = await this.collection.updateMany(query, data).then(function(response) {
-      return response.result
-    })
+    const result = this.shouldExecute()
+      ? await this.collection.updateMany(query, data).then(function(response) {
+          return response.result
+        })
+      : {}
     return this.logger
       .raw('db.', this.collectionName, '.updateMany(', query, ', ', data, ')')
       .action('update')
@@ -92,9 +96,11 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
       return { n: 0, ok: 1 }
     }
 
-    const result = await this.collection.deleteMany(query).then(function(response) {
-      return response.result
-    })
+    const result = this.shouldExecute()
+      ? await this.collection.deleteMany(query).then(function(response) {
+          return response.result
+        })
+      : {}
     return this.logger
       .raw('db.', this.collectionName, '.deleteMany(', query, ')')
       .action('delete')
@@ -116,9 +122,11 @@ export class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExe
       $set: { [fieldName]: this.queryHandler.getQueryConvention().getNullValueFor(fieldName) }
     }
 
-    const result = await this.collection.updateMany(query, data).then(function(response) {
-      return response.result
-    })
+    const result = this.shouldExecute()
+      ? await this.collection.updateMany(query, data).then(function(response) {
+          return response.result
+        })
+      : {}
     return this.logger
       .raw('db.', this.collectionName, '.updateMany(', query, ', ', data, ')')
       .action('restore')

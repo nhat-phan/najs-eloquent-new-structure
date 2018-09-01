@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const util_1 = require("../../util");
+const ExecutorBase_1 = require("../../../lib/drivers/ExecutorBase");
 const MongodbProviderFacade_1 = require("../../../lib/facades/global/MongodbProviderFacade");
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
@@ -88,6 +89,10 @@ describe('MongodbQueryExecutor', function () {
     function makeQueryBuilder(handler) {
         return new MongodbQueryBuilder_1.MongodbQueryBuilder(handler);
     }
+    it('extends ExecutorBase', function () {
+        const executor = makeQueryBuilderHandler('users').getQueryExecutor();
+        expect(executor).toBeInstanceOf(ExecutorBase_1.ExecutorBase);
+    });
     describe('.get()', function () {
         it('gets all data of collection and return an instance of Collection<Eloquent<T>>', async function () {
             const handler = makeQueryBuilderHandler('users');
@@ -183,6 +188,23 @@ describe('MongodbQueryExecutor', function () {
             expect_match_user(result[0], dataset[6]);
             expect_match_user(result[1], dataset[5]);
             expect_match_user(result[2], dataset[2]);
+        });
+        it('returns an empty array if executeMode is disabled', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('age', 40)
+                .orWhere('first_name', 'peter')
+                .orderBy('id', 'desc');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .get();
+            expect_query_log({
+                raw: 'db.users.find({"$or":[{"age":40},{"first_name":"peter"}]}, {"sort":[["_id",-1]]}).toArray()',
+                options: { sort: [['_id', -1]] },
+                action: 'get'
+            }, result);
+            expect(result).toEqual([]);
         });
     });
     describe('.first()', function () {
@@ -289,13 +311,29 @@ describe('MongodbQueryExecutor', function () {
                 .execute();
             expect_match_user(result, dataset[3]);
         });
+        it('returns an empty object if executeMode is disabled', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('age', 40)
+                .orWhere('first_name', 'jane');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .first();
+            expect_query_log({
+                raw: 'db.users.findOne({"$or":[{"age":40},{"first_name":"jane"}]})',
+                query: { $or: [{ age: 40 }, { first_name: 'jane' }] },
+                action: 'first'
+            }, result);
+            expect(result).toEqual({});
+        });
     });
     describe('.count()', function () {
         it('counts all data of collection and returns a Number', async function () {
             const handler = makeQueryBuilderHandler('users');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: 'db.users.count({})',
+                raw: 'db.users.countDocuments({})',
                 action: 'count'
             }, result);
             expect(result).toEqual(7);
@@ -305,7 +343,7 @@ describe('MongodbQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'no-one');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: 'db.users.count({"first_name":"no-one"})',
+                raw: 'db.users.countDocuments({"first_name":"no-one"})',
                 query: { first_name: 'no-one' },
                 action: 'count'
             }, result);
@@ -316,7 +354,7 @@ describe('MongodbQueryExecutor', function () {
             makeQueryBuilder(handler).select('abc', 'def');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: 'db.users.count({})',
+                raw: 'db.users.countDocuments({})',
                 options: undefined,
                 action: 'count'
             }, result);
@@ -327,7 +365,7 @@ describe('MongodbQueryExecutor', function () {
             makeQueryBuilder(handler).orderBy('abc');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: 'db.users.count({})',
+                raw: 'db.users.countDocuments({})',
                 options: undefined,
                 action: 'count'
             }, result);
@@ -340,7 +378,7 @@ describe('MongodbQueryExecutor', function () {
                 .orWhere('first_name', 'tony');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: 'db.users.count({"$or":[{"age":18},{"first_name":"tony"}]})',
+                raw: 'db.users.countDocuments({"$or":[{"age":18},{"first_name":"tony"}]})',
                 query: { $or: [{ age: 18 }, { first_name: 'tony' }] },
                 action: 'count'
             }, result);
@@ -355,12 +393,31 @@ describe('MongodbQueryExecutor', function () {
                 .limit(10);
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: 'db.users.count({"$or":[{"age":1000},{"first_name":"captain"}]}, {"limit":10})',
+                raw: 'db.users.countDocuments({"$or":[{"age":1000},{"first_name":"captain"}]}, {"limit":10})',
                 query: { $or: [{ age: 1000 }, { first_name: 'captain' }] },
                 options: { limit: 10 },
                 action: 'count'
             }, result);
             expect(result).toEqual(2);
+        });
+        it('returns 0 if executeMode is disabled', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('age', 1000)
+                .orWhere('first_name', 'captain')
+                .orderBy('last_name')
+                .limit(10);
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .count();
+            expect_query_log({
+                raw: 'db.users.countDocuments({"$or":[{"age":1000},{"first_name":"captain"}]}, {"limit":10})',
+                query: { $or: [{ age: 1000 }, { first_name: 'captain' }] },
+                options: { limit: 10 },
+                action: 'count'
+            }, result);
+            expect(result).toEqual(0);
         });
     });
     describe('.update()', function () {
@@ -501,6 +558,28 @@ describe('MongodbQueryExecutor', function () {
             const updatedResult2 = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult2, Object.assign({}, dataset[5], { age: 44, updated_at: now }));
         });
+        it('returns an empty object if executeMode is disabled', async function () {
+            let handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .update({ $inc: { age: 1 } });
+            expect_query_log({
+                raw: 'db.users.updateMany({"first_name":"tony","last_name":"stewart"}, {"$inc":{"age":1}})',
+                query: { first_name: 'tony', last_name: 'stewart' },
+                action: 'update'
+            }, result);
+            expect(result).toEqual({});
+            handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .where('last_name', 'stewart');
+            const updatedResult = await handler.getQueryExecutor().first();
+            expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 44 }));
+        });
     });
     describe('.delete()', function () {
         it('can delete data of collection, returns delete result of mongodb', async function () {
@@ -513,6 +592,22 @@ describe('MongodbQueryExecutor', function () {
                 action: 'delete'
             }, result);
             expect(result).toEqual({ n: 1, ok: 1 });
+            const count = await makeQueryBuilderHandler('users')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(6);
+        });
+        it('returns an empty object if executeMode is disabled', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            makeQueryBuilder(handler)
+                .where('first_name', 'john')
+                .where('last_name', 'doe');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .delete();
+            expect_query_log({ raw: 'db.users.deleteMany({"first_name":"john","last_name":"doe"})' }, result);
+            expect(result).toEqual({});
             const count = await makeQueryBuilderHandler('users')
                 .getQueryExecutor()
                 .count();
@@ -662,6 +757,27 @@ describe('MongodbQueryExecutor', function () {
                 action: 'restore'
             }, result);
             expect(result).toEqual({ n: 3, nModified: 3, ok: 1 });
+            handler = makeHandler();
+            const count = await handler.getQueryExecutor().count();
+            expect(count).toEqual(4);
+        });
+        it('returns an empty object if executeMode is disabled', async function () {
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .withTrashed()
+                .where('name', 'role-1')
+                .orWhere('name', 'role-2')
+                .orWhere('name', 'role-3');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .restore();
+            expect_query_log({
+                raw: 'db.roles.updateMany({"$or":[{"name":"role-1"},{"name":"role-2"},{"name":"role-3"}]}, {"$set":{"deleted_at":null}})',
+                query: { $or: [{ name: 'role-1' }, { name: 'role-2' }, { name: 'role-3' }] },
+                action: 'restore'
+            }, result);
+            expect(result).toEqual({});
             handler = makeHandler();
             const count = await handler.getQueryExecutor().count();
             expect(count).toEqual(4);

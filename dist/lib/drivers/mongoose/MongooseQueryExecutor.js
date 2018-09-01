@@ -2,9 +2,11 @@
 /// <reference path="../../definitions/query-builders/IQueryExecutor" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
+const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
-class MongooseQueryExecutor {
+class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, mongooseModel, logger) {
+        super();
         this.queryHandler = queryHandler;
         this.basicQuery = queryHandler.getBasicQuery();
         this.mongooseModel = mongooseModel;

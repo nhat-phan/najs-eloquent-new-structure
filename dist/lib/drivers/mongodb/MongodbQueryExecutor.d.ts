@@ -1,8 +1,9 @@
 import { Collection } from 'mongodb';
 import { MongodbQueryLog } from './MongodbQueryLog';
+import { ExecutorBase } from '../ExecutorBase';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler';
-export declare class MongodbQueryExecutor implements NajsEloquent.QueryBuilder.IQueryExecutor {
+export declare class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
     protected logger: MongodbQueryLog;
     protected collection: Collection;
     protected collectionName: string;
