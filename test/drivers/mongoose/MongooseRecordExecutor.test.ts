@@ -1,5 +1,6 @@
 import 'jest'
 import * as Sinon from 'sinon'
+import { ExecutorBase } from '../../../lib/drivers/ExecutorBase'
 import { Document, model, Schema } from 'mongoose'
 import { init_mongoose, delete_collection } from '../../util'
 import { QueryLog } from '../../../lib/facades/global/QueryLogFacade'
@@ -39,6 +40,12 @@ describe('MongooseRecordExecutor', function() {
     expect(logData).toMatchObject(data)
   }
 
+  it('extends ExecutorBase', function() {
+    const document = makeDocument()
+    const executor = makeExecutor(model, document)
+    expect(executor).toBeInstanceOf(ExecutorBase)
+  })
+
   describe('.create()', function() {
     it('calls and returns this.document.save()', async function() {
       const model: any = {
@@ -60,6 +67,29 @@ describe('MongooseRecordExecutor', function() {
         result
       )
       expect(spy.called).toBe(true)
+    })
+
+    it('does not call this.document.save(), just returns an empty object if executeMode is disabled', async function() {
+      const model: any = {
+        getModelName() {
+          return 'Test'
+        }
+      }
+      const document = makeDocument()
+      const spy = Sinon.spy(document, 'save')
+
+      const executor = makeExecutor(model, document)
+      const result = await executor.setExecuteMode('disabled').create()
+
+      expect_query_log(
+        {
+          raw: 'Test.save()',
+          action: 'Test.create()'
+        },
+        result
+      )
+      expect(result).toEqual({})
+      expect(spy.called).toBe(false)
     })
   })
 
@@ -84,6 +114,29 @@ describe('MongooseRecordExecutor', function() {
         result
       )
       expect(spy.called).toBe(true)
+    })
+
+    it('does not call this.document.save(), just returns an empty object if executeMode is disabled', async function() {
+      const model: any = {
+        getModelName() {
+          return 'Test'
+        }
+      }
+      const document = makeDocument()
+      const spy = Sinon.spy(document, 'save')
+
+      const executor = makeExecutor(model, document)
+      const result = await executor.setExecuteMode('disabled').update()
+
+      expect_query_log(
+        {
+          raw: 'Test.save()',
+          action: 'Test.update()'
+        },
+        result
+      )
+      expect(result).toEqual({})
+      expect(spy.called).toBe(false)
     })
   })
 
@@ -111,6 +164,31 @@ describe('MongooseRecordExecutor', function() {
       )
       expect(spy.called).toBe(true)
     })
+
+    it('does not call this.document.delete(), just returns an empty object if executeMode is disabled', async function() {
+      const model: any = {
+        getModelName() {
+          return 'Test'
+        }
+      }
+      const document: any = {
+        async delete() {}
+      }
+      const spy = Sinon.spy(document, 'delete')
+
+      const executor = makeExecutor(model, document)
+      const result = await executor.setExecuteMode('disabled').softDelete()
+
+      expect_query_log(
+        {
+          raw: 'Test.delete()',
+          action: 'Test.softDelete()'
+        },
+        result
+      )
+      expect(result).toEqual({})
+      expect(spy.called).toBe(false)
+    })
   })
 
   describe('.hardDelete()', function() {
@@ -134,6 +212,29 @@ describe('MongooseRecordExecutor', function() {
         result
       )
       expect(spy.called).toBe(true)
+    })
+
+    it('does not call this.document.remove(), just returns an empty object if executeMode is disabled', async function() {
+      const model: any = {
+        getModelName() {
+          return 'Test'
+        }
+      }
+      const document = makeDocument()
+      const spy = Sinon.spy(document, 'remove')
+
+      const executor = makeExecutor(model, document)
+      const result = await executor.setExecuteMode('disabled').hardDelete()
+
+      expect_query_log(
+        {
+          raw: 'Test.remove()',
+          action: 'Test.hardDelete()'
+        },
+        result
+      )
+      expect(result).toEqual({})
+      expect(spy.called).toBe(false)
     })
   })
 
@@ -160,6 +261,31 @@ describe('MongooseRecordExecutor', function() {
         result
       )
       expect(spy.called).toBe(true)
+    })
+
+    it('does not call this.document.restore(), just returns an empty object if executeMode is disabled', async function() {
+      const model: any = {
+        getModelName() {
+          return 'Test'
+        }
+      }
+      const document: any = {
+        async restore() {}
+      }
+      const spy = Sinon.spy(document, 'restore')
+
+      const executor = makeExecutor(model, document)
+      const result = await executor.setExecuteMode('disabled').restore()
+
+      expect_query_log(
+        {
+          raw: 'Test.restore()',
+          action: 'Test.restore()'
+        },
+        result
+      )
+      expect(result).toEqual({})
+      expect(spy.called).toBe(false)
     })
   })
 })

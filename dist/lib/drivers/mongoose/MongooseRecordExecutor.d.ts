@@ -2,9 +2,10 @@
 /// <reference path="../../definitions/query-builders/IConvention.d.ts" />
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import Model = NajsEloquent.Model.IModel;
+import { ExecutorBase } from '../ExecutorBase';
 import { Document } from 'mongoose';
 import { MongodbQueryLog } from '../mongodb/MongodbQueryLog';
-export declare class MongooseRecordExecutor implements NajsEloquent.Feature.IRecordExecutor {
+export declare class MongooseRecordExecutor extends ExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
     protected model: NajsEloquent.Model.IModel;
     protected document: Document;
     protected logger: MongodbQueryLog;

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
+const ExecutorBase_1 = require("../../../lib/drivers/ExecutorBase");
 const mongoose_1 = require("mongoose");
 const util_1 = require("../../util");
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
@@ -32,6 +33,11 @@ describe('MongooseRecordExecutor', function () {
         }
         expect(logData).toMatchObject(data);
     }
+    it('extends ExecutorBase', function () {
+        const document = makeDocument();
+        const executor = makeExecutor(mongoose_1.model, document);
+        expect(executor).toBeInstanceOf(ExecutorBase_1.ExecutorBase);
+    });
     describe('.create()', function () {
         it('calls and returns this.document.save()', async function () {
             const model = {
@@ -48,6 +54,23 @@ describe('MongooseRecordExecutor', function () {
                 action: 'Test.create()'
             }, result);
             expect(spy.called).toBe(true);
+        });
+        it('does not call this.document.save(), just returns an empty object if executeMode is disabled', async function () {
+            const model = {
+                getModelName() {
+                    return 'Test';
+                }
+            };
+            const document = makeDocument();
+            const spy = Sinon.spy(document, 'save');
+            const executor = makeExecutor(model, document);
+            const result = await executor.setExecuteMode('disabled').create();
+            expect_query_log({
+                raw: 'Test.save()',
+                action: 'Test.create()'
+            }, result);
+            expect(result).toEqual({});
+            expect(spy.called).toBe(false);
         });
     });
     describe('.update()', function () {
@@ -66,6 +89,23 @@ describe('MongooseRecordExecutor', function () {
                 action: 'Test.update()'
             }, result);
             expect(spy.called).toBe(true);
+        });
+        it('does not call this.document.save(), just returns an empty object if executeMode is disabled', async function () {
+            const model = {
+                getModelName() {
+                    return 'Test';
+                }
+            };
+            const document = makeDocument();
+            const spy = Sinon.spy(document, 'save');
+            const executor = makeExecutor(model, document);
+            const result = await executor.setExecuteMode('disabled').update();
+            expect_query_log({
+                raw: 'Test.save()',
+                action: 'Test.update()'
+            }, result);
+            expect(result).toEqual({});
+            expect(spy.called).toBe(false);
         });
     });
     describe('.softDelete()', function () {
@@ -87,6 +127,25 @@ describe('MongooseRecordExecutor', function () {
             }, result);
             expect(spy.called).toBe(true);
         });
+        it('does not call this.document.delete(), just returns an empty object if executeMode is disabled', async function () {
+            const model = {
+                getModelName() {
+                    return 'Test';
+                }
+            };
+            const document = {
+                async delete() { }
+            };
+            const spy = Sinon.spy(document, 'delete');
+            const executor = makeExecutor(model, document);
+            const result = await executor.setExecuteMode('disabled').softDelete();
+            expect_query_log({
+                raw: 'Test.delete()',
+                action: 'Test.softDelete()'
+            }, result);
+            expect(result).toEqual({});
+            expect(spy.called).toBe(false);
+        });
     });
     describe('.hardDelete()', function () {
         it('calls and returns this.document.remove()', async function () {
@@ -104,6 +163,23 @@ describe('MongooseRecordExecutor', function () {
                 action: 'Test.hardDelete()'
             }, result);
             expect(spy.called).toBe(true);
+        });
+        it('does not call this.document.remove(), just returns an empty object if executeMode is disabled', async function () {
+            const model = {
+                getModelName() {
+                    return 'Test';
+                }
+            };
+            const document = makeDocument();
+            const spy = Sinon.spy(document, 'remove');
+            const executor = makeExecutor(model, document);
+            const result = await executor.setExecuteMode('disabled').hardDelete();
+            expect_query_log({
+                raw: 'Test.remove()',
+                action: 'Test.hardDelete()'
+            }, result);
+            expect(result).toEqual({});
+            expect(spy.called).toBe(false);
         });
     });
     describe('.restore()', function () {
@@ -124,6 +200,25 @@ describe('MongooseRecordExecutor', function () {
                 action: 'Test.restore()'
             }, result);
             expect(spy.called).toBe(true);
+        });
+        it('does not call this.document.restore(), just returns an empty object if executeMode is disabled', async function () {
+            const model = {
+                getModelName() {
+                    return 'Test';
+                }
+            };
+            const document = {
+                async restore() { }
+            };
+            const spy = Sinon.spy(document, 'restore');
+            const executor = makeExecutor(model, document);
+            const result = await executor.setExecuteMode('disabled').restore();
+            expect_query_log({
+                raw: 'Test.restore()',
+                action: 'Test.restore()'
+            }, result);
+            expect(result).toEqual({});
+            expect(spy.called).toBe(false);
         });
     });
 });
