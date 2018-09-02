@@ -311,7 +311,7 @@ describe('MongodbQueryExecutor', function () {
                 .execute();
             expect_match_user(result, dataset[3]);
         });
-        it('returns an empty object if executeMode is disabled', async function () {
+        it('returns an undefined if executeMode is disabled', async function () {
             const handler = makeQueryBuilderHandler('users');
             makeQueryBuilder(handler)
                 .where('age', 40)
@@ -325,7 +325,7 @@ describe('MongodbQueryExecutor', function () {
                 query: { $or: [{ age: 40 }, { first_name: 'jane' }] },
                 action: 'first'
             }, result);
-            expect(result).toEqual({});
+            expect(result).toBeUndefined();
         });
     });
     describe('.count()', function () {

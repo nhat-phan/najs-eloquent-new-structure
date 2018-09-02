@@ -27,7 +27,7 @@ class MongodbQueryExecutor extends ExecutorBase_1.ExecutorBase {
     async first() {
         const query = this.makeQuery();
         const options = this.makeQueryOptions();
-        const result = this.shouldExecute() ? await this.collection.findOne(query, options) : {};
+        const result = this.shouldExecute() ? await this.collection.findOne(query, options) : undefined;
         return this.logRaw(query, options, 'findOne')
             .action('first')
             .end(result);

@@ -2,11 +2,13 @@
 /// <reference path="../../definitions/features/IRecordExecutor.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const ExecutorBase_1 = require("../ExecutorBase");
 const MongodbConvention_1 = require("../../query-builders/shared/MongodbConvention");
 const lodash_1 = require("lodash");
 const Moment = require("moment");
-class MongodbRecordExecutor {
+class MongodbRecordExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(model, record, collection, logger) {
+        super();
         this.model = model;
         this.record = record;
         this.collection = collection;
@@ -45,13 +47,15 @@ class MongodbRecordExecutor {
         }
         const data = this.record.toObject();
         this.logRaw('insertOne', data).action(`${this.model.getModelName()}.${action}()`);
-        return this.collection.insertOne(data).then(response => {
-            return this.logger.end({
-                result: response.result,
-                insertedId: response.insertedId,
-                insertedCount: response.insertedCount
-            });
-        });
+        return this.shouldExecute()
+            ? this.collection.insertOne(data).then(response => {
+                return this.logger.end({
+                    result: response.result,
+                    insertedId: response.insertedId,
+                    insertedCount: response.insertedCount
+                });
+            })
+            : this.logger.end({});
     }
     async update(shouldFillData = true, action = 'update') {
         const filter = this.getFilter();
@@ -67,13 +71,15 @@ class MongodbRecordExecutor {
         }
         const data = { $set: modifiedData };
         this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.${action}()`);
-        return this.collection.updateOne(filter, data).then(response => {
-            return this.logger.end({
-                result: response.result,
-                upsertedId: response.upsertedId,
-                upsertedCount: response.upsertedCount
-            });
-        });
+        return this.shouldExecute()
+            ? this.collection.updateOne(filter, data).then(response => {
+                return this.logger.end({
+                    result: response.result,
+                    upsertedId: response.upsertedId,
+                    upsertedCount: response.upsertedCount
+                });
+            })
+            : this.logger.end({});
     }
     async softDelete() {
         const isNew = this.model.isNew();
@@ -88,12 +94,14 @@ class MongodbRecordExecutor {
             return false;
         }
         this.logRaw('deleteOne', filter).action(`${this.model.getModelName()}.hardDelete()`);
-        return this.collection.deleteOne(filter).then(response => {
-            return this.logger.end({
-                result: response.result,
-                deletedCount: response.deletedCount
-            });
-        });
+        return this.shouldExecute()
+            ? this.collection.deleteOne(filter).then(response => {
+                return this.logger.end({
+                    result: response.result,
+                    deletedCount: response.deletedCount
+                });
+            })
+            : this.logger.end({});
     }
     async restore() {
         const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();

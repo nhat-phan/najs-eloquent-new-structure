@@ -42,7 +42,7 @@ export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.Q
     const query = this.makeQuery()
     const options = this.makeQueryOptions()
 
-    const result = this.shouldExecute() ? await this.collection.findOne(query, options) : {}
+    const result = this.shouldExecute() ? await this.collection.findOne(query, options) : undefined
     return this.logRaw(query, options, 'findOne')
       .action('first')
       .end(result)

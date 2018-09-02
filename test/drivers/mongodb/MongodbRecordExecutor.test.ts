@@ -6,6 +6,7 @@ import { init_mongodb, delete_collection_use_mongodb } from '../../util'
 import { MongodbProviderFacade } from '../../../lib/facades/global/MongodbProviderFacade'
 import { MongodbRecordExecutor } from '../../../lib/drivers/mongodb/MongodbRecordExecutor'
 import { MongodbQueryLog } from '../../../lib/drivers/mongodb/MongodbQueryLog'
+import { ExecutorBase } from '../../../lib/drivers/ExecutorBase'
 import { ObjectId } from 'bson'
 
 const Moment = require('moment')
@@ -95,6 +96,13 @@ describe('MongodbRecordExecutor', function() {
     }
     expect(logData).toMatchObject(data)
   }
+
+  it('extends ExecutorBase', function() {
+    const model = makeModel('Test', false, false)
+    const record = new Record()
+    const executor = makeExecutor(model, record)
+    expect(executor).toBeInstanceOf(ExecutorBase)
+  })
 
   describe('.fillData()', function() {
     it('simply calls .fillTimestampsData() and .fillSoftDeletesData()', function() {
@@ -285,6 +293,30 @@ describe('MongodbRecordExecutor', function() {
         result
       )
     })
+
+    it('returns an empty object if executeMode is disabled', async function() {
+      const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
+      const now = Moment('2018-01-01T00:00:00.000Z')
+      Moment.now = () => {
+        return now
+      }
+
+      const result = await makeExecutor(model, new Record({ test: 'data' }))
+        .setExecuteMode('disabled')
+        .create()
+      expect_query_log(
+        {
+          raw: `db.test.insertOne(${JSON.stringify({
+            test: 'data',
+            // tslint:disable-next-line
+            deleted_at: null
+          })})`,
+          action: 'Test.create()'
+        },
+        result
+      )
+      expect(result).toEqual({})
+    })
   })
 
   describe('.update()', function() {
@@ -445,6 +477,37 @@ describe('MongodbRecordExecutor', function() {
         1
       )
     })
+
+    it('returns an empty object if executeMode is disabled', async function() {
+      const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
+      const id = new ObjectId()
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
+
+      const record = new Record({ _id: id })
+      record.setAttribute('name', 'test')
+      const result = await makeExecutor(model, record)
+        .setExecuteMode('disabled')
+        .update()
+      expect_query_log(
+        {
+          raw: `db.test.updateOne(${JSON.stringify({ _id: id.toHexString() })},${JSON.stringify({
+            // tslint:disable-next-line
+            $set: { name: 'test', deleted_at: null }
+          })})`,
+          action: 'Test.update()'
+        },
+        result,
+        1
+      )
+      expect(result).toEqual({})
+    })
   })
 
   describe('.softDelete()', function() {
@@ -560,6 +623,35 @@ describe('MongodbRecordExecutor', function() {
         result,
         1
       )
+    })
+
+    it('returns an empty object if executeMode is disabled', async function() {
+      const id = new ObjectId()
+      const model: any = makeModel('Test', false, false)
+      model['getPrimaryKey'] = function() {
+        return id
+      }
+      model['getPrimaryKeyName'] = function() {
+        return 'id'
+      }
+
+      await makeExecutor(model, new Record({ id: id, name: 'test' })).create()
+
+      const result = await makeExecutor(model, new Record({ id: id }))
+        .setExecuteMode('disabled')
+        .hardDelete()
+
+      expect_query_log(
+        {
+          raw: `db.test.deleteOne(${JSON.stringify({
+            _id: id
+          })})`,
+          action: 'Test.hardDelete()'
+        },
+        result,
+        1
+      )
+      expect(result).toEqual({})
     })
   })
 

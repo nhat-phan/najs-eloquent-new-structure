@@ -5,12 +5,13 @@ import IConvention = NajsEloquent.QueryBuilder.IConvention
 import Model = NajsEloquent.Model.IModel
 import { Collection } from 'mongodb'
 import { Record } from '../Record'
+import { ExecutorBase } from '../ExecutorBase'
 import { MongodbQueryLog } from './MongodbQueryLog'
 import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
 import { isEmpty } from 'lodash'
 import * as Moment from 'moment'
 
-export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecutor {
+export class MongodbRecordExecutor extends ExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
   protected model: NajsEloquent.Model.IModel
   protected record: Record
   protected logger: MongodbQueryLog
@@ -18,6 +19,7 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
   protected collection: Collection
 
   constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog) {
+    super()
     this.model = model
     this.record = record
     this.collection = collection
@@ -68,13 +70,16 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
 
     const data = this.record.toObject()
     this.logRaw('insertOne', data).action(`${this.model.getModelName()}.${action}()`)
-    return this.collection.insertOne(data).then(response => {
-      return this.logger.end({
-        result: response.result,
-        insertedId: response.insertedId,
-        insertedCount: response.insertedCount
-      })
-    })
+
+    return this.shouldExecute()
+      ? this.collection.insertOne(data).then(response => {
+          return this.logger.end({
+            result: response.result,
+            insertedId: response.insertedId,
+            insertedCount: response.insertedCount
+          })
+        })
+      : this.logger.end({})
   }
 
   async update<R = any>(shouldFillData: boolean = true, action: string = 'update'): Promise<R> {
@@ -94,13 +99,16 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
 
     const data = { $set: modifiedData }
     this.logRaw('updateOne', filter, data).action(`${this.model.getModelName()}.${action}()`)
-    return this.collection.updateOne(filter, data).then(response => {
-      return this.logger.end({
-        result: response.result,
-        upsertedId: response.upsertedId,
-        upsertedCount: response.upsertedCount
-      })
-    })
+
+    return this.shouldExecute()
+      ? this.collection.updateOne(filter, data).then(response => {
+          return this.logger.end({
+            result: response.result,
+            upsertedId: response.upsertedId,
+            upsertedCount: response.upsertedCount
+          })
+        })
+      : this.logger.end({})
   }
 
   async softDelete<R = any>(): Promise<R> {
@@ -123,12 +131,14 @@ export class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecut
     }
 
     this.logRaw('deleteOne', filter).action(`${this.model.getModelName()}.hardDelete()`)
-    return this.collection.deleteOne(filter).then(response => {
-      return this.logger.end({
-        result: response.result,
-        deletedCount: response.deletedCount
-      })
-    })
+    return this.shouldExecute()
+      ? this.collection.deleteOne(filter).then(response => {
+          return this.logger.end({
+            result: response.result,
+            deletedCount: response.deletedCount
+          })
+        })
+      : this.logger.end({})
   }
 
   async restore<R = any>(): Promise<R> {

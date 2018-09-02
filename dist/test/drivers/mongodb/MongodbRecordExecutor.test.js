@@ -8,6 +8,7 @@ const util_1 = require("../../util");
 const MongodbProviderFacade_1 = require("../../../lib/facades/global/MongodbProviderFacade");
 const MongodbRecordExecutor_1 = require("../../../lib/drivers/mongodb/MongodbRecordExecutor");
 const MongodbQueryLog_1 = require("../../../lib/drivers/mongodb/MongodbQueryLog");
+const ExecutorBase_1 = require("../../../lib/drivers/ExecutorBase");
 const bson_1 = require("bson");
 const Moment = require('moment');
 describe('MongodbRecordExecutor', function () {
@@ -84,6 +85,12 @@ describe('MongodbRecordExecutor', function () {
         }
         expect(logData).toMatchObject(data);
     }
+    it('extends ExecutorBase', function () {
+        const model = makeModel('Test', false, false);
+        const record = new Record_1.Record();
+        const executor = makeExecutor(model, record);
+        expect(executor).toBeInstanceOf(ExecutorBase_1.ExecutorBase);
+    });
     describe('.fillData()', function () {
         it('simply calls .fillTimestampsData() and .fillSoftDeletesData()', function () {
             const model = makeModel('Test', false, false);
@@ -240,6 +247,25 @@ describe('MongodbRecordExecutor', function () {
                 action: 'Test.create()'
             }, result);
         });
+        it('returns an empty object if executeMode is disabled', async function () {
+            const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
+            const now = Moment('2018-01-01T00:00:00.000Z');
+            Moment.now = () => {
+                return now;
+            };
+            const result = await makeExecutor(model, new Record_1.Record({ test: 'data' }))
+                .setExecuteMode('disabled')
+                .create();
+            expect_query_log({
+                raw: `db.test.insertOne(${JSON.stringify({
+                    test: 'data',
+                    // tslint:disable-next-line
+                    deleted_at: null
+                })})`,
+                action: 'Test.create()'
+            }, result);
+            expect(result).toEqual({});
+        });
     });
     describe('.update()', function () {
         it('does nothing and returns false if a filter is empty', async function () {
@@ -365,6 +391,30 @@ describe('MongodbRecordExecutor', function () {
                 action: 'Test.update()'
             }, result, 1);
         });
+        it('returns an empty object if executeMode is disabled', async function () {
+            const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
+            const id = new bson_1.ObjectId();
+            model['getPrimaryKey'] = function () {
+                return id;
+            };
+            model['getPrimaryKeyName'] = function () {
+                return 'id';
+            };
+            await makeExecutor(model, new Record_1.Record({ _id: id, name: 'any' })).create();
+            const record = new Record_1.Record({ _id: id });
+            record.setAttribute('name', 'test');
+            const result = await makeExecutor(model, record)
+                .setExecuteMode('disabled')
+                .update();
+            expect_query_log({
+                raw: `db.test.updateOne(${JSON.stringify({ _id: id.toHexString() })},${JSON.stringify({
+                    // tslint:disable-next-line
+                    $set: { name: 'test', deleted_at: null }
+                })})`,
+                action: 'Test.update()'
+            }, result, 1);
+            expect(result).toEqual({});
+        });
     });
     describe('.softDelete()', function () {
         it('sets deleted_at field then calls and returns .create() if the model is new', async function () {
@@ -459,6 +509,27 @@ describe('MongodbRecordExecutor', function () {
                 })})`,
                 action: 'Test.hardDelete()'
             }, result, 1);
+        });
+        it('returns an empty object if executeMode is disabled', async function () {
+            const id = new bson_1.ObjectId();
+            const model = makeModel('Test', false, false);
+            model['getPrimaryKey'] = function () {
+                return id;
+            };
+            model['getPrimaryKeyName'] = function () {
+                return 'id';
+            };
+            await makeExecutor(model, new Record_1.Record({ id: id, name: 'test' })).create();
+            const result = await makeExecutor(model, new Record_1.Record({ id: id }))
+                .setExecuteMode('disabled')
+                .hardDelete();
+            expect_query_log({
+                raw: `db.test.deleteOne(${JSON.stringify({
+                    _id: id
+                })})`,
+                action: 'Test.hardDelete()'
+            }, result, 1);
+            expect(result).toEqual({});
         });
     });
     describe('.restore()', function () {

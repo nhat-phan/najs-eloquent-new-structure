@@ -4,8 +4,9 @@ import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import Model = NajsEloquent.Model.IModel;
 import { Collection } from 'mongodb';
 import { Record } from '../Record';
+import { ExecutorBase } from '../ExecutorBase';
 import { MongodbQueryLog } from './MongodbQueryLog';
-export declare class MongodbRecordExecutor implements NajsEloquent.Feature.IRecordExecutor {
+export declare class MongodbRecordExecutor extends ExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
     protected model: NajsEloquent.Model.IModel;
     protected record: Record;
     protected logger: MongodbQueryLog;
