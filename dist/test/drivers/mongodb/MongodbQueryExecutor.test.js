@@ -819,6 +819,12 @@ describe('MongodbQueryExecutor', function () {
             expect(await executor.execute()).toEqual('anything');
             expect(executor['nativeHandlePromise']).toBeUndefined();
         });
+        it('does not resolve promise, just returns an empty object if executeMode is disabled', async function () {
+            const handler = makeQueryBuilderHandler('users');
+            const executor = handler.getQueryExecutor();
+            executor['nativeHandlePromise'] = Promise.resolve({ result: 'anything' });
+            expect(await executor.setExecuteMode('disabled').execute()).toEqual({});
+        });
     });
     describe('.getCollection()', function () {
         it('simply returns an collection property', function () {

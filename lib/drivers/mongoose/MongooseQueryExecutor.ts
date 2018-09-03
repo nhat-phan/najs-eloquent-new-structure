@@ -30,7 +30,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
 
   async get(): Promise<object[]> {
     const query = this.createQuery(false)
-    const result = await query.exec()
+    const result = this.shouldExecute() ? await query.exec() : []
     return this.logger
       .raw('.exec()')
       .action('get')
@@ -43,7 +43,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
       query.findOne()
       this.logger.raw('.fineOne()')
     }
-    const result = await query.exec()
+    const result = this.shouldExecute() ? await query.exec() : undefined
     return this.logger
       .raw('.exec()')
       .action('first')
@@ -59,7 +59,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
     }
 
     const query = this.createQuery(false)
-    const result = await query.count().exec()
+    const result = this.shouldExecute() ? await query.count().exec() : 0
     return this.logger
       .raw('.count().exec()')
       .action('count')
@@ -71,7 +71,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
     const mongooseQuery = this.mongooseModel.update(conditions, data, {
       multi: true
     })
-    const result = await mongooseQuery.exec()
+    const result = this.shouldExecute() ? await mongooseQuery.exec() : {}
     return this.logger
       .action('update')
       .raw(this.modelName)
@@ -91,7 +91,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
     }
 
     const mongooseQuery = this.mongooseModel.remove(conditions)
-    const result = await mongooseQuery.exec()
+    const result = this.shouldExecute() ? await mongooseQuery.exec() : {}
     return this.logger
       .action('delete')
       .raw(this.modelName)
@@ -118,7 +118,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
       }
     }
     const mongooseQuery = this.mongooseModel.update(conditions, updateData, { multi: true })
-    const result = await mongooseQuery.exec()
+    const result = this.shouldExecute() ? await mongooseQuery.exec() : {}
     return this.logger
       .action('restore')
       .raw(this.modelName)
@@ -129,7 +129,7 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
 
   async execute(): Promise<any> {
     const query: any = this.createQuery(false)
-    const result = await query.exec()
+    const result = this.shouldExecute() ? await query.exec() : {}
     return this.logger
       .raw('.exec()')
       .action('execute')

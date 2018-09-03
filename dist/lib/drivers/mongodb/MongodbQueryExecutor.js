@@ -112,10 +112,12 @@ class MongodbQueryExecutor extends ExecutorBase_1.ExecutorBase {
     }
     async execute() {
         if (this.nativeHandlePromise) {
-            return this.nativeHandlePromise.then((response) => {
-                this.nativeHandlePromise = undefined;
-                return response.result || response;
-            });
+            return this.shouldExecute()
+                ? this.nativeHandlePromise.then((response) => {
+                    this.nativeHandlePromise = undefined;
+                    return response.result || response;
+                })
+                : Promise.resolve({});
         }
         return this.get();
     }

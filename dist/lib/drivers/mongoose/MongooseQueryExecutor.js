@@ -16,7 +16,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
     }
     async get() {
         const query = this.createQuery(false);
-        const result = await query.exec();
+        const result = this.shouldExecute() ? await query.exec() : [];
         return this.logger
             .raw('.exec()')
             .action('get')
@@ -28,7 +28,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
             query.findOne();
             this.logger.raw('.fineOne()');
         }
-        const result = await query.exec();
+        const result = this.shouldExecute() ? await query.exec() : undefined;
         return this.logger
             .raw('.exec()')
             .action('first')
@@ -42,7 +42,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
             this.basicQuery.clearOrdering();
         }
         const query = this.createQuery(false);
-        const result = await query.count().exec();
+        const result = this.shouldExecute() ? await query.count().exec() : 0;
         return this.logger
             .raw('.count().exec()')
             .action('count')
@@ -53,7 +53,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
         const mongooseQuery = this.mongooseModel.update(conditions, data, {
             multi: true
         });
-        const result = await mongooseQuery.exec();
+        const result = this.shouldExecute() ? await mongooseQuery.exec() : {};
         return this.logger
             .action('update')
             .raw(this.modelName)
@@ -70,7 +70,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
             return { n: 0, ok: 1 };
         }
         const mongooseQuery = this.mongooseModel.remove(conditions);
-        const result = await mongooseQuery.exec();
+        const result = this.shouldExecute() ? await mongooseQuery.exec() : {};
         return this.logger
             .action('delete')
             .raw(this.modelName)
@@ -94,7 +94,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
             }
         };
         const mongooseQuery = this.mongooseModel.update(conditions, updateData, { multi: true });
-        const result = await mongooseQuery.exec();
+        const result = this.shouldExecute() ? await mongooseQuery.exec() : {};
         return this.logger
             .action('restore')
             .raw(this.modelName)
@@ -104,7 +104,7 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
     }
     async execute() {
         const query = this.createQuery(false);
-        const result = await query.exec();
+        const result = this.shouldExecute() ? await query.exec() : {};
         return this.logger
             .raw('.exec()')
             .action('execute')

@@ -144,10 +144,12 @@ export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.Q
 
   async execute(): Promise<any> {
     if (this.nativeHandlePromise) {
-      return this.nativeHandlePromise.then((response: any) => {
-        this.nativeHandlePromise = undefined
-        return response.result || response
-      })
+      return this.shouldExecute()
+        ? this.nativeHandlePromise.then((response: any) => {
+            this.nativeHandlePromise = undefined
+            return response.result || response
+          })
+        : Promise.resolve({})
     }
     return this.get()
   }
