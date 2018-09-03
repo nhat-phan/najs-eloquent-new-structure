@@ -25,7 +25,7 @@ export class DummyDriver<T extends Record = Record> extends DriverBase<T> {
     return this.recordManager
   }
 
-  newQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<M> {
+  makeQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<M> {
     return <any>{}
   }
 }

@@ -61,7 +61,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>
 
-  abstract newQuery<M extends IModel>(model: M): IQueryBuilder<M>
+  abstract makeQuery<M extends IModel>(model: M): IQueryBuilder<M>
 
   getSettingFeature() {
     return this.settingFeature
@@ -104,6 +104,15 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     this.attachPublicApiIfNeeded(model)
 
     return model
+  }
+
+  newQuery<M extends IModel>(model: M): IQueryBuilder<M> {
+    const queryBuilder = this.makeQuery(model) as NajsEloquent.QueryBuilder.QueryBuilderInternal
+    const executeMode = this.settingFeature.getSettingProperty(model, 'executeMode', 'default')
+    if (executeMode !== 'default') {
+      queryBuilder.handler.getQueryExecutor().setExecuteMode(executeMode)
+    }
+    return queryBuilder
   }
 
   attachPublicApiIfNeeded(model: IModel) {

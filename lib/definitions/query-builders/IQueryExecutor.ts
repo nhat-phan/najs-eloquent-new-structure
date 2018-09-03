@@ -1,19 +1,8 @@
 /// <reference path="../collect.js/index.d.ts" />
+/// <reference path="../driver/IExecutor.ts" />
 
 namespace NajsEloquent.QueryBuilder {
-  export interface IQueryExecutor<T extends object = object> {
-    /**
-     * Set execute mode, can set to "disabled" then nothing will executed in db.
-     *
-     * @param {string} mode
-     */
-    setExecuteMode(mode: 'default' | 'disabled'): this
-
-    /**
-     * Determine that should execute a query/command or not.
-     */
-    shouldExecute(): boolean
-
+  export interface IQueryExecutor<T extends object = object> extends Driver.IExecutor {
     /**
      * Execute query and return the records as a Collection.
      */

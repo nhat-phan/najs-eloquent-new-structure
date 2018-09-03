@@ -16,14 +16,53 @@ describe('RecordManagerBase', function () {
     });
     describe('.getRecordExecutor()', function () {
         it('calls and returns this.executorFactory.makeRecordExecutor() with model and model.attribute', function () {
+            const recordExecutor = {
+                setExecuteMode() { }
+            };
             const stub = Sinon.stub(executorFactory, 'makeRecordExecutor');
-            stub.returns('anything');
+            stub.returns(recordExecutor);
             const attributes = {};
             const model = {
+                driver: {
+                    getSettingFeature() {
+                        return {
+                            getSettingProperty() {
+                                return 'default';
+                            }
+                        };
+                    }
+                },
                 attributes: attributes
             };
-            expect(recordManager.getRecordExecutor(model)).toEqual('anything');
+            const spy = Sinon.spy(recordExecutor, 'setExecuteMode');
+            expect(recordManager.getRecordExecutor(model)).toEqual(recordExecutor);
             expect(stub.calledWith(model, attributes)).toBe(true);
+            expect(spy.calledWith('disabled')).toBe(false);
+            stub.restore();
+        });
+        it('calls this.executorFactory.makeRecordExecutor() and calls .setExecuteMode() if there is a setting property "executeMode"', function () {
+            const recordExecutor = {
+                setExecuteMode() { }
+            };
+            const stub = Sinon.stub(executorFactory, 'makeRecordExecutor');
+            stub.returns(recordExecutor);
+            const attributes = {};
+            const model = {
+                driver: {
+                    getSettingFeature() {
+                        return {
+                            getSettingProperty() {
+                                return 'disabled';
+                            }
+                        };
+                    }
+                },
+                attributes: attributes
+            };
+            const spy = Sinon.spy(recordExecutor, 'setExecuteMode');
+            expect(recordManager.getRecordExecutor(model)).toEqual(recordExecutor);
+            expect(stub.calledWith(model, attributes)).toBe(true);
+            expect(spy.calledWith('disabled')).toBe(true);
             stub.restore();
         });
     });

@@ -1,7 +1,8 @@
 /// <reference path="../model/IModel.ts" />
+/// <reference path="../driver/IExecutor.ts" />
 
 namespace NajsEloquent.Feature {
-  export interface IRecordExecutor {
+  export interface IRecordExecutor extends Driver.IExecutor {
     /**
      * Execute create for record and model.
      */

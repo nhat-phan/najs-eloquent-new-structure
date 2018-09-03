@@ -31,7 +31,7 @@ export class MongooseDriver<T extends Document = Document> extends DriverBase<T>
     return this.documentManager
   }
 
-  newQuery<M extends NajsEloquent.Model.IModel>(model: M): MongooseQueryBuilder<M, MongooseQueryBuilderHandler> {
+  makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MongooseQueryBuilder<M, MongooseQueryBuilderHandler> {
     return new MongooseQueryBuilder(new MongooseQueryBuilderHandler(model))
   }
 }

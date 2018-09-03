@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
+const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../../lib/model/Model");
 const MongodbModel_1 = require("../../../lib/drivers/mongodb/MongodbModel");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
@@ -12,6 +13,7 @@ describe('MongodbModel', function () {
             return 'User';
         }
     }
+    najs_binding_1.register(User);
     it('extends Model', function () {
         const model = new User();
         expect(model).toBeInstanceOf(MongodbModel_1.MongodbModel);

@@ -34,7 +34,7 @@ describe('MongooseDriver', function () {
             expect(driver.getRecordManager() === driver['documentManager']).toBe(true);
         });
     });
-    describe('.newQuery()', function () {
+    describe('.makeQuery()', function () {
         it('creates and returns an instance of MongooseQueryBuilder every calls', function () {
             const model = {
                 getRecordName() {
@@ -42,8 +42,8 @@ describe('MongooseDriver', function () {
                 }
             };
             const driver = new MongooseDriver_1.MongooseDriver();
-            const query1 = driver.newQuery(model);
-            const query2 = driver.newQuery(model);
+            const query1 = driver.makeQuery(model);
+            const query2 = driver.makeQuery(model);
             expect(query1 === query2).toBe(false);
             expect(query1).toBeInstanceOf(MongooseQueryBuilder_1.MongooseQueryBuilder);
         });

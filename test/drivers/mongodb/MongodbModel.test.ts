@@ -1,5 +1,6 @@
 import 'jest'
 import * as Sinon from 'sinon'
+import { register } from 'najs-binding'
 import { Model } from '../../../lib/model/Model'
 import { MongodbModel } from '../../../lib/drivers/mongodb/MongodbModel'
 import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
@@ -11,6 +12,7 @@ describe('MongodbModel', function() {
       return 'User'
     }
   }
+  register(User)
 
   it('extends Model', function() {
     const model = new User()

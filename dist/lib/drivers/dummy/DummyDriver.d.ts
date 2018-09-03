@@ -9,5 +9,5 @@ export declare class DummyDriver<T extends Record = Record> extends DriverBase<T
     constructor();
     getClassName(): string;
     getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
-    newQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<M>;
+    makeQuery<M extends NajsEloquent.Model.IModel>(model: M, name?: string): NajsEloquent.QueryBuilder.IQueryBuilder<M>;
 }

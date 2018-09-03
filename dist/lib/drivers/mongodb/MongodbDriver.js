@@ -21,7 +21,7 @@ class MongodbDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.recordManager;
     }
-    newQuery(model) {
+    makeQuery(model) {
         return new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model));
     }
 }

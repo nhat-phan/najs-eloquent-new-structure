@@ -27,10 +27,10 @@ describe('DummyDriver', function () {
             expect(dummyDriver.getRecordManager() === recordManager).toBe(true);
         });
     });
-    describe('.newQuery()', function () {
+    describe('.makeQuery()', function () {
         it('simply returns an empty object, dummy driver is not support query builder', function () {
             const dummyDriver = new DummyDriver_1.DummyDriver();
-            expect(dummyDriver.newQuery({})).toEqual({});
+            expect(dummyDriver.makeQuery({})).toEqual({});
         });
     });
 });

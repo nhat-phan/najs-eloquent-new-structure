@@ -74,6 +74,14 @@ class DriverBase {
         this.attachPublicApiIfNeeded(model);
         return model;
     }
+    newQuery(model) {
+        const queryBuilder = this.makeQuery(model);
+        const executeMode = this.settingFeature.getSettingProperty(model, 'executeMode', 'default');
+        if (executeMode !== 'default') {
+            queryBuilder.handler.getQueryExecutor().setExecuteMode(executeMode);
+        }
+        return queryBuilder;
+    }
     attachPublicApiIfNeeded(model) {
         if (typeof this.attachedModels[model.getModelName()] !== 'undefined') {
             return;

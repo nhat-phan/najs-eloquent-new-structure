@@ -18,7 +18,7 @@ class DummyDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.recordManager;
     }
-    newQuery(model, name) {
+    makeQuery(model, name) {
         return {};
     }
 }

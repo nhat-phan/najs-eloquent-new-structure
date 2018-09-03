@@ -159,6 +159,62 @@ describe('DriverBase', function() {
     })
   })
 
+  describe('.newQuery()', function() {
+    const queryExecutor = {
+      setExecuteMode() {}
+    }
+
+    const query: any = {
+      handler: {
+        getQueryExecutor() {
+          return queryExecutor
+        }
+      }
+    }
+
+    class ChildDriver extends DriverBase<any> {
+      getClassName() {
+        return 'ChildDriver'
+      }
+
+      getRecordManager() {
+        return {} as any
+      }
+
+      makeQuery(): any {
+        return query
+      }
+    }
+
+    it('calls .makeQuery() then returns an instance if there is no setting property "executeMode"', function() {
+      const model: any = {}
+      const driver = new ChildDriver()
+      const stub = Sinon.stub(driver['settingFeature'], 'getSettingProperty')
+      stub.returns('default')
+
+      const spy = Sinon.spy(queryExecutor, 'setExecuteMode')
+
+      expect(driver.newQuery(model) === query).toBe(true)
+      expect(stub.calledWith(model, 'executeMode')).toBe(true)
+      expect(spy.calledWith('disabled')).toBe(false)
+      spy.restore()
+    })
+
+    it('calls .makeQuery() then passes "executeMode" to .setExecuteMode() if the setting property exists', function() {
+      const model: any = {}
+      const driver = new ChildDriver()
+      const stub = Sinon.stub(driver['settingFeature'], 'getSettingProperty')
+      stub.returns('disabled')
+
+      const spy = Sinon.spy(queryExecutor, 'setExecuteMode')
+
+      expect(driver.newQuery(model) === query).toBe(true)
+      expect(stub.calledWith(model, 'executeMode')).toBe(true)
+      expect(spy.calledWith('disabled')).toBe(true)
+      spy.restore()
+    })
+  })
+
   describe('.attachPublicApiIfNeeded()', function() {
     it('does nothing if the model is not in property "attachedModels"', function() {
       const getFeaturesSpy = Sinon.spy(driver, 'getFeatures')

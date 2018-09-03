@@ -29,7 +29,7 @@ export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
     return this.recordManager
   }
 
-  newQuery<M extends NajsEloquent.Model.IModel>(model: M): MongodbQueryBuilder<M, MongodbQueryBuilderHandler> {
+  makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MongodbQueryBuilder<M, MongodbQueryBuilderHandler> {
     return new MongodbQueryBuilder(new MongodbQueryBuilderHandler(model))
   }
 }

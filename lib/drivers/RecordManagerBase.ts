@@ -45,7 +45,12 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
   }
 
   getRecordExecutor(model: NajsEloquent.Model.ModelInternal<T>): NajsEloquent.Feature.IRecordExecutor {
-    return this.executorFactory.makeRecordExecutor(model, model.attributes)
+    const executor = this.executorFactory.makeRecordExecutor(model, model.attributes)
+    const executeMode = model.driver.getSettingFeature().getSettingProperty(model, 'executeMode', 'default')
+    if (executeMode !== 'default') {
+      executor.setExecuteMode(executeMode)
+    }
+    return executor
   }
 
   getFeatureName(): string {

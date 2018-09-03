@@ -18,7 +18,12 @@ class RecordManagerBase {
         this.executorFactory = executorFactory;
     }
     getRecordExecutor(model) {
-        return this.executorFactory.makeRecordExecutor(model, model.attributes);
+        const executor = this.executorFactory.makeRecordExecutor(model, model.attributes);
+        const executeMode = model.driver.getSettingFeature().getSettingProperty(model, 'executeMode', 'default');
+        if (executeMode !== 'default') {
+            executor.setExecuteMode(executeMode);
+        }
+        return executor;
     }
     getFeatureName() {
         return 'RecordManager';

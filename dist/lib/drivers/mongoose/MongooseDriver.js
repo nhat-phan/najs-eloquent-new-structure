@@ -23,7 +23,7 @@ class MongooseDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.documentManager;
     }
-    newQuery(model) {
+    makeQuery(model) {
         return new MongooseQueryBuilder_1.MongooseQueryBuilder(new MongooseQueryBuilderHandler_1.MongooseQueryBuilderHandler(model));
     }
 }

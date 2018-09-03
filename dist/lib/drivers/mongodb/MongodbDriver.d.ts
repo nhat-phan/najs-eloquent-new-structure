@@ -12,5 +12,5 @@ export declare class MongodbDriver<T extends Record = Record> extends DriverBase
     constructor();
     getClassName(): string;
     getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
-    newQuery<M extends NajsEloquent.Model.IModel>(model: M): MongodbQueryBuilder<M, MongodbQueryBuilderHandler>;
+    makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MongodbQueryBuilder<M, MongodbQueryBuilderHandler>;
 }

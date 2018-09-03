@@ -37,7 +37,7 @@ describe('MongooseDriver', function() {
     })
   })
 
-  describe('.newQuery()', function() {
+  describe('.makeQuery()', function() {
     it('creates and returns an instance of MongooseQueryBuilder every calls', function() {
       const model: any = {
         getRecordName() {
@@ -45,8 +45,8 @@ describe('MongooseDriver', function() {
         }
       }
       const driver = new MongooseDriver()
-      const query1 = driver.newQuery(model)
-      const query2 = driver.newQuery(model)
+      const query1 = driver.makeQuery(model)
+      const query2 = driver.makeQuery(model)
       expect(query1 === query2).toBe(false)
       expect(query1).toBeInstanceOf(MongooseQueryBuilder)
     })

@@ -35,7 +35,7 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     constructor();
     abstract getClassName(): string;
     abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
-    abstract newQuery<M extends IModel>(model: M): IQueryBuilder<M>;
+    abstract makeQuery<M extends IModel>(model: M): IQueryBuilder<M>;
     getSettingFeature(): NajsEloquent.Feature.ISettingFeature;
     getEventFeature(): NajsEloquent.Feature.IEventFeature;
     getFillableFeature(): NajsEloquent.Feature.IFillableFeature;
@@ -45,6 +45,7 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter;
     getRelationFeature(): NajsEloquent.Feature.IRelationFeature;
     makeModel<M extends IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
+    newQuery<M extends IModel>(model: M): IQueryBuilder<M>;
     attachPublicApiIfNeeded(model: IModel): void;
     definePropertiesBeforeAttachFeatures(model: IModel, prototype: object, bases: object[]): void;
     definePropertiesAfterAttachFeatures(model: IModel, prototype: object, bases: object[]): void;

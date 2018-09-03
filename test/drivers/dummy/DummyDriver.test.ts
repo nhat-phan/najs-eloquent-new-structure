@@ -30,10 +30,10 @@ describe('DummyDriver', function() {
     })
   })
 
-  describe('.newQuery()', function() {
+  describe('.makeQuery()', function() {
     it('simply returns an empty object, dummy driver is not support query builder', function() {
       const dummyDriver = new DummyDriver()
-      expect(dummyDriver.newQuery(<any>{})).toEqual({})
+      expect(dummyDriver.makeQuery(<any>{})).toEqual({})
     })
   })
 })

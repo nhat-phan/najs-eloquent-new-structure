@@ -12,5 +12,5 @@ export declare class MongooseDriver<T extends Document = Document> extends Drive
     constructor();
     getClassName(): string;
     getRecordManager(): NajsEloquent.Feature.IRecordManager<T>;
-    newQuery<M extends NajsEloquent.Model.IModel>(model: M): MongooseQueryBuilder<M, MongooseQueryBuilderHandler>;
+    makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MongooseQueryBuilder<M, MongooseQueryBuilderHandler>;
 }

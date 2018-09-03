@@ -37,7 +37,7 @@ describe('MongodbDriver', function() {
     })
   })
 
-  describe('.newQuery()', function() {
+  describe('.makeQuery()', function() {
     it('creates and returns an instance of MongodbQueryBuilder every calls', function() {
       const model: any = {
         getRecordName() {
@@ -45,8 +45,8 @@ describe('MongodbDriver', function() {
         }
       }
       const driver = new MongodbDriver()
-      const query1 = driver.newQuery(model)
-      const query2 = driver.newQuery(model)
+      const query1 = driver.makeQuery(model)
+      const query2 = driver.makeQuery(model)
       expect(query1 === query2).toBe(false)
       expect(query1).toBeInstanceOf(MongodbQueryBuilder)
     })
