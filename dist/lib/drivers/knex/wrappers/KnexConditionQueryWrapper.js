@@ -11,7 +11,7 @@ class KnexConditionQueryWrapper extends KnexQueryBuilderWrapperBase_1.KnexQueryB
         return this;
     }
     andWhere() {
-        this.knexQuery.where.apply(this.knexQuery, arguments);
+        this.knexQuery.andWhere.apply(this.knexQuery, arguments);
         return this;
     }
     whereNot() {

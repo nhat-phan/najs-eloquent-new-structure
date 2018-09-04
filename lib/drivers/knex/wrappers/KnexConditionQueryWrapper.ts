@@ -13,7 +13,7 @@ export class KnexConditionQueryWrapper extends KnexQueryBuilderWrapperBase imple
   }
 
   andWhere() {
-    this.knexQuery.where.apply(this.knexQuery, arguments)
+    this.knexQuery.andWhere.apply(this.knexQuery, arguments)
     return this
   }
 
