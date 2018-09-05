@@ -5,9 +5,9 @@ import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandle
 import { KnexConditionQueryWrapper } from './wrappers/KnexConditionQueryWrapper';
 import { DefaultConvention } from '../../query-builders/shared/DefaultConvention';
 export declare class KnexQueryBuilderHandler extends QueryBuilderHandlerBase {
-    protected knexQuery: Knex.QueryBuilder;
-    protected basicQuery: KnexBasicQueryWrapper;
-    protected conditionQuery: KnexConditionQueryWrapper;
+    protected knexQuery?: Knex.QueryBuilder;
+    protected basicQuery?: KnexBasicQueryWrapper;
+    protected conditionQuery?: KnexConditionQueryWrapper;
     protected convention: DefaultConvention;
     constructor(model: NajsEloquent.Model.IModel);
     getTableName(): string;
