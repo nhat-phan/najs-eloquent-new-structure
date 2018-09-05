@@ -14,7 +14,7 @@ export class KnexQueryBuilder<
 > extends QueryBuilder<T, H> {
   native(nativeCb: (queryBuilder: Knex.QueryBuilder) => any) {
     const queryBuilder = this.handler.getKnexQueryBuilder()
-    nativeCb.call(undefined, queryBuilder)
+    nativeCb.call(queryBuilder, queryBuilder)
 
     return this
   }

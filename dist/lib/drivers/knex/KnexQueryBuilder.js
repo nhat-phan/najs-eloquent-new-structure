@@ -4,7 +4,7 @@ const QueryBuilder_1 = require("../../query-builders/QueryBuilder");
 class KnexQueryBuilder extends QueryBuilder_1.QueryBuilder {
     native(nativeCb) {
         const queryBuilder = this.handler.getKnexQueryBuilder();
-        nativeCb.call(undefined, queryBuilder);
+        nativeCb.call(queryBuilder, queryBuilder);
         return this;
     }
     toSqlQuery() {
