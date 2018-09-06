@@ -3,6 +3,7 @@ import { KnexQueryBuilderWrapperBase } from './KnexQueryBuilderWrapperBase'
 
 export class KnexConditionQueryWrapper extends KnexQueryBuilderWrapperBase implements IKnexConditionQuery {
   where() {
+    console.log(arguments)
     this.knexQuery.where.apply(this.knexQuery, arguments)
     return this
   }

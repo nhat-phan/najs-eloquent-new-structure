@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const KnexQueryBuilderWrapperBase_1 = require("./KnexQueryBuilderWrapperBase");
 class KnexConditionQueryWrapper extends KnexQueryBuilderWrapperBase_1.KnexQueryBuilderWrapperBase {
     where() {
+        console.log(arguments);
         this.knexQuery.where.apply(this.knexQuery, arguments);
         return this;
     }

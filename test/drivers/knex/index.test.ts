@@ -27,6 +27,7 @@ describe('Knex.QueryBuilder', function() {
           .where('a', '>')
           .toQuery()
       )
+      console.log(query.where('a', '0').toQuery())
     })
   })
 })

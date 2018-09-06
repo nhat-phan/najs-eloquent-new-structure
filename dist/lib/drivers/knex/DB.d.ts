@@ -1,4 +1,3 @@
-import { IKnexBasicQuery } from './definitions/IKnexBasicQuery';
-export interface DB extends IKnexBasicQuery {
-}
-export declare const DB: DB;
+/// <reference types="knex" />
+import * as Knex from 'knex';
+export declare const DB: Knex;

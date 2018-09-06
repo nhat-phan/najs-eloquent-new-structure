@@ -23,6 +23,7 @@ describe('Knex.QueryBuilder', function () {
                 .limit(10)
                 .where('a', '>')
                 .toQuery());
+            console.log(query.where('a', '0').toQuery());
         });
     });
 });
