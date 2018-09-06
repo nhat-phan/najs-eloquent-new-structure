@@ -2,17 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConditionQuery = {
     where(arg0, arg1, arg2) {
-        this.handler.getConditionQuery().where(arg0, arg1, arg2);
+        const conditionQuery = this.handler.getConditionQuery();
+        conditionQuery.where.apply(conditionQuery, arguments);
         this.handler.markUsed();
         return this;
     },
     orWhere(arg0, arg1, arg2) {
-        this.handler.getConditionQuery().orWhere(arg0, arg1, arg2);
+        const conditionQuery = this.handler.getConditionQuery();
+        conditionQuery.orWhere.apply(conditionQuery, arguments);
         this.handler.markUsed();
         return this;
     },
     andWhere(arg0, arg1, arg2) {
-        this.handler.getConditionQuery().andWhere(arg0, arg1, arg2);
+        const conditionQuery = this.handler.getConditionQuery();
+        conditionQuery.andWhere.apply(conditionQuery, arguments);
         this.handler.markUsed();
         return this;
     },

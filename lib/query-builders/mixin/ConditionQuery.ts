@@ -5,19 +5,24 @@ import Range = NajsEloquent.QueryGrammar.Range
 
 export const ConditionQuery: NajsEloquent.QueryGrammar.IConditionQuery = {
   where(this: QueryBuilder, arg0?: any, arg1?: any, arg2?: any) {
-    this.handler.getConditionQuery().where(arg0, arg1, arg2)
+    const conditionQuery = this.handler.getConditionQuery()
+    conditionQuery.where.apply(conditionQuery, arguments)
+
     this.handler.markUsed()
     return this
   },
 
   orWhere(this: QueryBuilder, arg0?: any, arg1?: any, arg2?: any) {
-    this.handler.getConditionQuery().orWhere(arg0, arg1, arg2)
+    const conditionQuery = this.handler.getConditionQuery()
+    conditionQuery.orWhere.apply(conditionQuery, arguments)
+
     this.handler.markUsed()
     return this
   },
 
   andWhere(this: QueryBuilder, arg0?: any, arg1?: any, arg2?: any) {
-    this.handler.getConditionQuery().andWhere(arg0, arg1, arg2)
+    const conditionQuery = this.handler.getConditionQuery()
+    conditionQuery.andWhere.apply(conditionQuery, arguments)
     this.handler.markUsed()
     return this
   },

@@ -3,10 +3,11 @@ import IModel = NajsEloquent.Model.IModel
 
 import * as Knex from 'knex'
 import { IKnexBasicQuery } from './definitions/IKnexBasicQuery'
+import { IKnexConditionQuery } from './definitions/IKnexConditionQuery'
 import { KnexQueryBuilderHandler } from './KnexQueryBuilderHandler'
 import { QueryBuilder } from '../../query-builders/QueryBuilder'
 
-export type KnexQueryBuilderType<T extends IModel> = KnexQueryBuilder<T> & IKnexBasicQuery
+export type KnexQueryBuilderType<T extends IModel> = KnexQueryBuilder<T> & IKnexBasicQuery & IKnexConditionQuery
 
 export class KnexQueryBuilder<
   T extends IModel,

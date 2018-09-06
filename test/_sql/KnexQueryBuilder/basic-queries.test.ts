@@ -43,14 +43,14 @@ describe('KnexQueryBuilder', function() {
         code: qb => qb.select(DB.raw('`column` as ?', ['name'])),
         sql: "select `column` as 'name' from `table`"
       }
+    ],
+    '.where()': [
+      {
+        desc: 'should work with .andWhereIn()',
+        code: qb => qb.where('a', 0).andWhereIn('b', [1, 2]),
+        sql: 'select * from `table` where `a` = 0 and `b` in (1, 2)'
+      }
     ]
-    // '.where()': [
-    //   {
-    //     desc: 'should work with .andWhereIn()',
-    //     code: qb => qb.where('a', 0).andWhereIn('b', [1, 2]),
-    //     sql: 'select * from `table` where `a` = 0 and `b` in (1, 2)'
-    //   }
-    // ]
   }
 
   generateTestSuite(dataset)
