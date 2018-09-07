@@ -1,15 +1,11 @@
 import 'jest'
 import { init_knex } from '../../util'
 import { generateTestSuite, TestSqlDataset } from '../func'
-import { KnexProvider } from '../../../lib/facades/global/KnexProviderFacade'
-import * as Knex from 'knex'
-
-let DB: Knex
+import { DB } from '../../../lib/facades/global/DBFacade'
 
 describe('KnexQueryBuilder', function() {
   beforeAll(async function() {
     await init_knex('sql_knex_query_builder')
-    DB = KnexProvider.create('default')
   })
 
   const dataset: TestSqlDataset = {

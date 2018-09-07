@@ -12,6 +12,9 @@ exports.NajsEloquent = {
         Mongoose: {
             MongooseDocumentManager: 'NajsEloquent.Driver.Mongoose.MongooseDocumentManager',
             MongooseExecutorFactory: 'NajsEloquent.Driver.Mongoose.MongooseExecutorFactory'
+        },
+        Knex: {
+            KnexWrapper: 'NajsEloquent.Driver.Knex.KnexWrapper'
         }
     },
     Feature: {

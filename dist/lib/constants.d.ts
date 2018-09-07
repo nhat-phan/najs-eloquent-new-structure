@@ -10,6 +10,9 @@ export declare const NajsEloquent: {
             MongooseDocumentManager: string;
             MongooseExecutorFactory: string;
         };
+        Knex: {
+            KnexWrapper: string;
+        };
     };
     Feature: {
         RecordManager: string;

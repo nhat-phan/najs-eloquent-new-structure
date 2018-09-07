@@ -3,12 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const util_1 = require("../../util");
 const func_1 = require("../func");
-const KnexProviderFacade_1 = require("../../../lib/facades/global/KnexProviderFacade");
-let DB;
+const DBFacade_1 = require("../../../lib/facades/global/DBFacade");
 describe('KnexQueryBuilder', function () {
     beforeAll(async function () {
         await util_1.init_knex('sql_knex_query_builder');
-        DB = KnexProviderFacade_1.KnexProvider.create('default');
     });
     const dataset = {
         '.select()': [
@@ -33,12 +31,12 @@ describe('KnexQueryBuilder', function () {
             },
             {
                 desc: 'should work with knex raw, case 1',
-                code: qb => qb.select(DB.raw('`column` as `name`')),
+                code: qb => qb.select(DBFacade_1.DB.raw('`column` as `name`')),
                 sql: 'select `column` as `name` from `table`'
             },
             {
                 desc: 'should work with knex raw, case 2',
-                code: qb => qb.select(DB.raw('`column` as ?', ['name'])),
+                code: qb => qb.select(DBFacade_1.DB.raw('`column` as ?', ['name'])),
                 sql: "select `column` as 'name' from `table`"
             }
         ],

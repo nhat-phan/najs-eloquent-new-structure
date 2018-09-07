@@ -3,12 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const util_1 = require("../../util");
 const func_1 = require("../func");
-const KnexProviderFacade_1 = require("../../../lib/facades/global/KnexProviderFacade");
-let DB;
+const DBFacade_1 = require("../../../lib/facades/global/DBFacade");
 describe('KnexQueryBuilder', function () {
     beforeAll(async function () {
         await util_1.init_knex('sql_knex_query_builder');
-        DB = KnexProviderFacade_1.KnexProvider.create('default');
     });
     const dataset = {
         '.where()': [
@@ -19,7 +17,7 @@ describe('KnexQueryBuilder', function () {
             },
             {
                 desc: 'should work with 1 param, case raw',
-                code: qb => qb.where(DB.raw('`a` in (select id from `another_table`)')),
+                code: qb => qb.where(DBFacade_1.DB.raw('`a` in (select id from `another_table`)')),
                 sql: 'select * from `table` where `a` in (select id from `another_table`)'
             },
             {
@@ -34,12 +32,12 @@ describe('KnexQueryBuilder', function () {
             },
             {
                 desc: 'should work with 3 params, case raw',
-                code: qb => qb.where('a', 'in', DB.raw('select `id` from `another_table`')),
+                code: qb => qb.where('a', 'in', DBFacade_1.DB.raw('select `id` from `another_table`')),
                 sql: 'select * from `table` where `a` in (select `id` from `another_table`)'
             },
             {
                 desc: 'should work with 3 params, case query builder as a value',
-                code: qb => qb.where('a', 'in', DB.select('id').from('another_table')),
+                code: qb => qb.where('a', 'in', DBFacade_1.DB.select('id').from('another_table')),
                 sql: 'select * from `table` where `a` in (select `id` from `another_table`)'
             },
             {
@@ -56,7 +54,7 @@ describe('KnexQueryBuilder', function () {
             },
             {
                 desc: 'should work with 1 param, case raw',
-                code: qb => qb.where('first', 1).orWhere(DB.raw('`a` in (select id from `another_table`)')),
+                code: qb => qb.where('first', 1).orWhere(DBFacade_1.DB.raw('`a` in (select id from `another_table`)')),
                 sql: 'select * from `table` where `first` = 1 or `a` in (select id from `another_table`)'
             },
             {
@@ -72,13 +70,13 @@ describe('KnexQueryBuilder', function () {
             {
                 desc: 'should work with 3 params, case raw',
                 code: qb => qb
-                    .where('a', 'in', DB.raw('select `id` from `another_table`'))
-                    .orWhere('b', 'in', DB.raw('select `id` from `another_table`')),
+                    .where('a', 'in', DBFacade_1.DB.raw('select `id` from `another_table`'))
+                    .orWhere('b', 'in', DBFacade_1.DB.raw('select `id` from `another_table`')),
                 sql: 'select * from `table` where `a` in (select `id` from `another_table`) or `b` in (select `id` from `another_table`)'
             },
             {
                 desc: 'should work with 3 params, case query builder as a value',
-                code: qb => qb.where('a', 'test').orWhere('b', 'in', DB.select('id').from('another_table')),
+                code: qb => qb.where('a', 'test').orWhere('b', 'in', DBFacade_1.DB.select('id').from('another_table')),
                 sql: "select * from `table` where `a` = 'test' or `b` in (select `id` from `another_table`)"
             },
             {
@@ -95,7 +93,7 @@ describe('KnexQueryBuilder', function () {
             },
             {
                 desc: 'should work with 1 param, case raw',
-                code: qb => qb.andWhere(DB.raw('`a` in (select id from `another_table`)')),
+                code: qb => qb.andWhere(DBFacade_1.DB.raw('`a` in (select id from `another_table`)')),
                 sql: 'select * from `table` where `a` in (select id from `another_table`)'
             },
             {
@@ -110,12 +108,12 @@ describe('KnexQueryBuilder', function () {
             },
             {
                 desc: 'should work with 3 params, case raw',
-                code: qb => qb.andWhere('a', 'in', DB.raw('select `id` from `another_table`')),
+                code: qb => qb.andWhere('a', 'in', DBFacade_1.DB.raw('select `id` from `another_table`')),
                 sql: 'select * from `table` where `a` in (select `id` from `another_table`)'
             },
             {
                 desc: 'should work with 3 params, case query builder as a value',
-                code: qb => qb.andWhere('a', 'in', DB.select('id').from('another_table')),
+                code: qb => qb.andWhere('a', 'in', DBFacade_1.DB.select('id').from('another_table')),
                 sql: 'select * from `table` where `a` in (select `id` from `another_table`)'
             },
             {
