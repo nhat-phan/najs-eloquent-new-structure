@@ -4,14 +4,19 @@ require("jest");
 require("../../../lib/query-log/FlipFlopQueryLog");
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
 const MongodbQueryLog_1 = require("../../../lib/drivers/mongodb/MongodbQueryLog");
+const QueryLogBase_1 = require("../../../lib/drivers/QueryLogBase");
 describe('MongodbQueryLog', function () {
     beforeEach(function () {
         QueryLogFacade_1.QueryLog.clear().enable();
     });
-    describe('constructor()', function () {
-        it('init with empty "raw" and "queryBuilderData"', function () {
+    it('extends QueryLogBase', function () {
+        const logger = new MongodbQueryLog_1.MongodbQueryLog();
+        expect(logger).toBeInstanceOf(QueryLogBase_1.QueryLogBase);
+    });
+    describe('.getDefaultData()', function () {
+        it('return empty "raw" and "queryBuilderData"', function () {
             const logger = new MongodbQueryLog_1.MongodbQueryLog();
-            expect(logger['data']).toEqual({ raw: '', queryBuilderData: {} });
+            expect(logger.getDefaultData()).toEqual({ raw: '', queryBuilderData: {} });
         });
     });
     describe('.name()', function () {

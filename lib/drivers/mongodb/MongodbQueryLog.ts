@@ -1,27 +1,17 @@
-import { QueryLog } from '../../facades/global/QueryLogFacade'
-import { flatten } from 'lodash'
+import { QueryLogBase, IQueryLogData } from './../QueryLogBase'
 
-export class MongodbQueryLog {
-  protected data: {
-    raw: string
-    queryBuilderData: object
-    result?: any
-    query?: object
-    options?: object
-    name?: string
-    action?: string
-  }
+export interface IMongodbQueryLogData extends IQueryLogData {
+  queryBuilderData: object
+  query?: object
+  options?: object
+}
 
-  constructor() {
-    this.data = {
+export class MongodbQueryLog extends QueryLogBase<IMongodbQueryLogData> {
+  getDefaultData(): IMongodbQueryLogData {
+    return {
       raw: '',
       queryBuilderData: {}
     }
-  }
-
-  name(name: string): this {
-    this.data.name = name
-    return this
   }
 
   queryBuilderData(key: string, value: any): this {
@@ -39,31 +29,5 @@ export class MongodbQueryLog {
     this.data.options = data
 
     return data
-  }
-
-  action(action: string): this {
-    this.data.action = action
-    return this
-  }
-
-  raw(raw: any): this
-  raw(...raw: any[]): this
-  raw(...args: Array<any>): this {
-    this.data.raw += flatten(args)
-      .map(function(item) {
-        if (typeof item === 'string') {
-          return item
-        }
-        return JSON.stringify(item)
-      })
-      .join('')
-    return this
-  }
-
-  end(result: any): any {
-    this.data.result = result
-    QueryLog.push(this.data)
-
-    return result
   }
 }

@@ -2,16 +2,22 @@ import 'jest'
 import '../../../lib/query-log/FlipFlopQueryLog'
 import { QueryLog } from '../../../lib/facades/global/QueryLogFacade'
 import { MongodbQueryLog } from '../../../lib/drivers/mongodb/MongodbQueryLog'
+import { QueryLogBase } from '../../../lib/drivers/QueryLogBase'
 
 describe('MongodbQueryLog', function() {
   beforeEach(function() {
     QueryLog.clear().enable()
   })
 
-  describe('constructor()', function() {
-    it('init with empty "raw" and "queryBuilderData"', function() {
+  it('extends QueryLogBase', function() {
+    const logger = new MongodbQueryLog()
+    expect(logger).toBeInstanceOf(QueryLogBase)
+  })
+
+  describe('.getDefaultData()', function() {
+    it('return empty "raw" and "queryBuilderData"', function() {
       const logger = new MongodbQueryLog()
-      expect(logger['data']).toEqual({ raw: '', queryBuilderData: {} })
+      expect(logger.getDefaultData()).toEqual({ raw: '', queryBuilderData: {} })
     })
   })
 
