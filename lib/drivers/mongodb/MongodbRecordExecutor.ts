@@ -7,7 +7,7 @@ import { Collection } from 'mongodb'
 import { Record } from '../Record'
 import { ExecutorBase } from '../ExecutorBase'
 import { MongodbQueryLog } from './MongodbQueryLog'
-import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
+import { MongodbConvention } from './MongodbConvention'
 import { isEmpty } from 'lodash'
 import * as Moment from 'moment'
 

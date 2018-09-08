@@ -10,7 +10,7 @@ import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import { make } from 'najs-binding'
 import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
-import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
+import { MongodbConvention } from './MongodbConvention'
 import { ConditionQueryHandler } from '../../query-builders/shared/ConditionQueryHandler'
 import { MongodbExecutorFactory } from './MongodbExecutorFactory'
 

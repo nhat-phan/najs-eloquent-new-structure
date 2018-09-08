@@ -7,7 +7,7 @@ const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/Mongo
 const BasicQuery_1 = require("../../../lib/query-builders/shared/BasicQuery");
 const MongodbQueryExecutor_1 = require("../../../lib/drivers/mongodb/MongodbQueryExecutor");
 const ConditionQueryHandler_1 = require("../../../lib/query-builders/shared/ConditionQueryHandler");
-const MongodbConvention_1 = require("../../../lib/query-builders/shared/MongodbConvention");
+const MongodbConvention_1 = require("../../../lib/drivers/mongodb/MongodbConvention");
 describe('MongodbQueryBuilderHandler', function () {
     it('extends QueryBuilderHandlerBase', function () {
         const model = {};

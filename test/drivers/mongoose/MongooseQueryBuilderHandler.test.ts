@@ -5,7 +5,7 @@ import { QueryBuilderHandlerBase } from '../../../lib/query-builders/QueryBuilde
 import { MongooseQueryBuilderHandler } from '../../../lib/drivers/mongoose/MongooseQueryBuilderHandler'
 import { BasicQuery } from '../../../lib/query-builders/shared/BasicQuery'
 import { ConditionQueryHandler } from '../../../lib/query-builders/shared/ConditionQueryHandler'
-import { MongodbConvention } from '../../../lib/query-builders/shared/MongodbConvention'
+import { MongodbConvention } from '../../../lib/drivers/mongodb/MongodbConvention'
 import { MongooseQueryExecutor } from '../../../lib/drivers/mongoose/MongooseQueryExecutor'
 const mongoose = require('mongoose')
 

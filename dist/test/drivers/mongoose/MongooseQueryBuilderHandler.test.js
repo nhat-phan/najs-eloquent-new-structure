@@ -7,7 +7,7 @@ const QueryBuilderHandlerBase_1 = require("../../../lib/query-builders/QueryBuil
 const MongooseQueryBuilderHandler_1 = require("../../../lib/drivers/mongoose/MongooseQueryBuilderHandler");
 const BasicQuery_1 = require("../../../lib/query-builders/shared/BasicQuery");
 const ConditionQueryHandler_1 = require("../../../lib/query-builders/shared/ConditionQueryHandler");
-const MongodbConvention_1 = require("../../../lib/query-builders/shared/MongodbConvention");
+const MongodbConvention_1 = require("../../../lib/drivers/mongodb/MongodbConvention");
 const MongooseQueryExecutor_1 = require("../../../lib/drivers/mongoose/MongooseQueryExecutor");
 const mongoose = require('mongoose');
 describe('MongooseQueryBuilderHandler', function () {

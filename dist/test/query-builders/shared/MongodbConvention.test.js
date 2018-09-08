@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
-const MongodbConvention_1 = require("../../../lib/query-builders/shared/MongodbConvention");
+const MongodbConvention_1 = require("../../../lib/drivers/mongodb/MongodbConvention");
 describe('MongodbConvention', function () {
     const convention = new MongodbConvention_1.MongodbConvention();
     describe('.formatFieldName()', function () {

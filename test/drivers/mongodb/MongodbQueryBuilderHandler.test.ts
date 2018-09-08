@@ -5,7 +5,7 @@ import { MongodbQueryBuilderHandler } from '../../../lib/drivers/mongodb/Mongodb
 import { BasicQuery } from '../../../lib/query-builders/shared/BasicQuery'
 import { MongodbQueryExecutor } from '../../../lib/drivers/mongodb/MongodbQueryExecutor'
 import { ConditionQueryHandler } from '../../../lib/query-builders/shared/ConditionQueryHandler'
-import { MongodbConvention } from '../../../lib/query-builders/shared/MongodbConvention'
+import { MongodbConvention } from '../../../lib/drivers/mongodb/MongodbConvention'
 
 describe('MongodbQueryBuilderHandler', function() {
   it('extends QueryBuilderHandlerBase', function() {

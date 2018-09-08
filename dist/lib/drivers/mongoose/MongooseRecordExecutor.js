@@ -3,7 +3,7 @@
 /// <reference path="../../definitions/query-builders/IConvention.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const ExecutorBase_1 = require("../ExecutorBase");
-const MongodbConvention_1 = require("../../query-builders/shared/MongodbConvention");
+const MongodbConvention_1 = require("../mongodb/MongodbConvention");
 class MongooseRecordExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(model, document, logger) {
         super();

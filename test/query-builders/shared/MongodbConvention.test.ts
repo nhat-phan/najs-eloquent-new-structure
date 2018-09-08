@@ -1,5 +1,5 @@
 import 'jest'
-import { MongodbConvention } from '../../../lib/query-builders/shared/MongodbConvention'
+import { MongodbConvention } from '../../../lib/drivers/mongodb/MongodbConvention'
 
 describe('MongodbConvention', function() {
   const convention = new MongodbConvention()

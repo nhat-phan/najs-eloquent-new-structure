@@ -6,7 +6,7 @@ import Model = NajsEloquent.Model.IModel
 import { ExecutorBase } from '../ExecutorBase'
 import { Document } from 'mongoose'
 import { MongodbQueryLog } from '../mongodb/MongodbQueryLog'
-import { MongodbConvention } from '../../query-builders/shared/MongodbConvention'
+import { MongodbConvention } from '../mongodb/MongodbConvention'
 
 export class MongooseRecordExecutor extends ExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
   protected model: NajsEloquent.Model.IModel

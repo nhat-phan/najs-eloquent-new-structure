@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const QueryBuilderHandlerBase_1 = require("../../query-builders/QueryBuilderHandlerBase");
 const BasicQuery_1 = require("../../query-builders/shared/BasicQuery");
-const MongodbConvention_1 = require("../../query-builders/shared/MongodbConvention");
+const MongodbConvention_1 = require("./MongodbConvention");
 const ConditionQueryHandler_1 = require("../../query-builders/shared/ConditionQueryHandler");
 const MongodbExecutorFactory_1 = require("./MongodbExecutorFactory");
 class MongodbQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderHandlerBase {
