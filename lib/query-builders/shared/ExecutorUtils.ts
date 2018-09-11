@@ -1,6 +1,6 @@
 import { make } from 'najs-binding'
 import { QueryBuilderHandlerBase } from '../QueryBuilderHandlerBase'
-import { MongodbConditionConverter } from './MongodbConditionConverter'
+import { MongodbConditionConverter } from '../../drivers/mongodb/MongodbConditionConverter'
 
 export class ExecutorUtils {
   static addSoftDeleteConditionIfNeeded(handler: QueryBuilderHandlerBase) {

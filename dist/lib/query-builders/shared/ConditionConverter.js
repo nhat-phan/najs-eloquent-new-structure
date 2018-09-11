@@ -2,15 +2,18 @@
 /// <reference path="../../definitions/query-grammars/IConditionQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 class ConditionConverter {
-    constructor(queryConditions, matcherFactory, simplify) {
-        this.queryConditions = queryConditions;
+    constructor(queries, matcherFactory, simplify) {
+        this.queries = queries;
         this.matcherFactory = matcherFactory;
         this.simplify = simplify;
     }
     convert() {
-        return this.convertConditions(this.queryConditions);
+        return this.convertQueries(this.queries);
     }
-    convertConditions(conditions) {
+    convertQueries(conditions) {
+        if (conditions.length === 0) {
+            return {};
+        }
         const result = {};
         for (let i = 0, l = conditions.length; i < l; i++) {
             // fix edge case: `query.orWhere().where()...`
@@ -24,6 +27,9 @@ class ConditionConverter {
         }
         this.convertConditionsWithAnd(result, conditions.filter(item => item['bool'] === 'and'));
         this.convertConditionsWithOr(result, conditions.filter(item => item['bool'] === 'or'));
+        if (!this.simplify) {
+            return result;
+        }
         if (Object.keys(result).length === 1 && typeof result['$and'] !== 'undefined' && result['$and'].length === 1) {
             return result['$and'][0];
         }
@@ -43,7 +49,7 @@ class ConditionConverter {
         let result = {};
         for (const condition of conditions) {
             const query = this.convertCondition(condition);
-            if (this.hasAnyIntersectKey(result, query) && !Array.isArray(result)) {
+            if (!Array.isArray(result) && this.hasAnyIntersectKey(result, query)) {
                 result = [result];
             }
             if (Array.isArray(result)) {
@@ -54,10 +60,6 @@ class ConditionConverter {
         }
         if (Array.isArray(result)) {
             Object.assign(bucket, { $and: result });
-            return;
-        }
-        if (!this.simplify) {
-            Object.assign(bucket, { $and: [result] });
             return;
         }
         const keysLength = Object.keys(result).length;
@@ -74,31 +76,31 @@ class ConditionConverter {
             const query = this.convertCondition(condition);
             result.push(Object.assign({}, query));
         }
-        if (!this.simplify) {
-            Object.assign(bucket, { $or: result });
-            return;
-        }
         if (result.length > 1) {
             Object.assign(bucket, { $or: result });
         }
     }
     convertCondition(condition) {
         if (typeof condition['queries'] === 'undefined') {
-            return this.convertSimpleCondition(condition);
+            return this.matcherFactory.transform(this.matcherFactory.make(condition));
         }
-        return this.convertGroupOfCondition(condition);
+        const result = this.convertGroupQueryData(condition);
+        if (Object.keys(result).length === 1 && typeof result['$or'] !== 'undefined' && result['$or'].length === 1) {
+            return result['$or'][0];
+        }
+        return result;
     }
-    convertGroupOfCondition(condition) {
+    convertGroupQueryData(condition) {
         if (!condition.queries || condition.queries.length === 0) {
             return {};
         }
         if (condition.queries.length === 1) {
             return this.convertCondition(condition.queries[0]);
         }
-        return this.convertNotEmptyGroupOfCondition(condition);
+        return this.convertNotEmptyGroupQueryData(condition);
     }
-    convertNotEmptyGroupOfCondition(condition) {
-        const result = this.convertConditions(condition.queries);
+    convertNotEmptyGroupQueryData(condition) {
+        const result = this.convertQueries(condition.queries);
         if (Object.keys(result).length === 0) {
             return {};
         }
@@ -112,30 +114,6 @@ class ConditionConverter {
             return result;
         }
         return { $or: [result] };
-    }
-    convertSimpleCondition(condition) {
-        if (typeof condition.value === 'undefined') {
-            return this.matcherFactory.make(condition.field, 'nope', condition.value);
-        }
-        let acceptedOperator = condition.operator;
-        switch (condition.operator) {
-            case '<>':
-                acceptedOperator = '!=';
-                break;
-            case '=<':
-                acceptedOperator = '<=';
-                break;
-            case '=>':
-                acceptedOperator = '>=';
-                break;
-            case '==':
-                acceptedOperator = '=';
-                break;
-            default:
-                acceptedOperator = condition.operator;
-                break;
-        }
-        return this.matcherFactory.make(condition.field, acceptedOperator, condition.value);
     }
 }
 exports.ConditionConverter = ConditionConverter;

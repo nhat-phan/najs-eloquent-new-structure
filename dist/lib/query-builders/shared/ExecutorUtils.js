@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
-const MongodbConditionConverter_1 = require("./MongodbConditionConverter");
+const MongodbConditionConverter_1 = require("../../drivers/mongodb/MongodbConditionConverter");
 class ExecutorUtils {
     static addSoftDeleteConditionIfNeeded(handler) {
         if (handler.shouldAddSoftDeleteCondition()) {

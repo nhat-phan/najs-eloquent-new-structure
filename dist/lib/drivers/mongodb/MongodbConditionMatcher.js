@@ -11,24 +11,28 @@ class MongodbConditionMatcher {
             return {};
         }
         switch (operator) {
-            case '=':
+            case '==':
                 return lodash_1.set({}, field, value);
             case '!=':
+            case '<>':
                 return lodash_1.set({}, field, { $ne: value });
             case '<':
                 return lodash_1.set({}, field, { $lt: value });
             case '<=':
+            case '=<':
                 return lodash_1.set({}, field, { $lte: value });
             case '>':
                 return lodash_1.set({}, field, { $gt: value });
             case '>=':
+            case '=>':
                 return lodash_1.set({}, field, { $gte: value });
             case 'in':
                 return lodash_1.set({}, field, { $in: value });
             case 'not-in':
                 return lodash_1.set({}, field, { $nin: value });
+            case '=':
             default:
-                return {};
+                return lodash_1.set({}, field, value);
         }
     }
     isMatch(record) {

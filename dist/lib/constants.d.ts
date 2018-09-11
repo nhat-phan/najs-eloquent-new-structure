@@ -5,6 +5,7 @@ export declare const NajsEloquent: {
         MongooseDriver: string;
         Mongodb: {
             MongodbExecutorFactory: string;
+            MongodbConditionMatcherFactory: string;
         };
         Mongoose: {
             MongooseDocumentManager: string;

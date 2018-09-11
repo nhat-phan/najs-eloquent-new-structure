@@ -1,3 +1,4 @@
+/// <reference path="../../definitions/query-builders/IQueryExecutor.d.ts" />
 import { MongodbQueryLog } from '../mongodb/MongodbQueryLog';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler';

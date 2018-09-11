@@ -29,16 +29,20 @@ class RecordConditionMatcher {
     isMatch(record) {
         switch (this.operator) {
             case '=':
+            case '==':
                 return this.isEqual(record);
             case '!=':
+            case '<>':
                 return !this.isEqual(record);
             case '<':
                 return this.isLessThan(record);
             case '<=':
+            case '=<':
                 return this.isLessThanOrEqual(record);
             case '>':
                 return this.isGreaterThan(record);
             case '>=':
+            case '=>':
                 return this.isGreaterThanOrEqual(record);
             case 'in':
                 return this.isInArray(record);

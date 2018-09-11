@@ -1,12 +1,11 @@
 /// <reference path="../../definitions/query-builders/IConditionMatcher.d.ts" />
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher;
-import ConditionMatcherOperator = NajsEloquent.QueryBuilder.ConditionMatcherOperator;
 import { Record } from '../Record';
 export declare class RecordConditionMatcher implements IConditionMatcher<Record> {
     protected field: string;
-    protected operator: ConditionMatcherOperator;
+    protected operator: string;
     protected value: any;
-    constructor(field: string, operator: ConditionMatcherOperator, value: any);
+    constructor(field: string, operator: string, value: any);
     isEqual(record: Record): boolean;
     isLessThan(record: Record): boolean;
     isLessThanOrEqual(record: Record): boolean;

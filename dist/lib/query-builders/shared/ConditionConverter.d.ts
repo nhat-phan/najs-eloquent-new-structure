@@ -1,28 +1,27 @@
 /// <reference path="../../definitions/query-grammars/IConditionQuery.d.ts" />
 import IConditionMatcherFactory = NajsEloquent.QueryBuilder.IConditionMatcherFactory;
-export declare type SimpleCondition = {
+export declare type QueryData = {
     bool: 'and' | 'or';
     field: string;
     operator: NajsEloquent.QueryGrammar.Operator;
     value: any;
 };
-export declare type GroupOfCondition = {
+export declare type GroupQueryData = {
     bool: 'and' | 'or';
-    queries: Condition[];
+    queries: QueryData[];
 };
-export declare type Condition = SimpleCondition | GroupOfCondition;
+export declare type QueryConditionData = QueryData | GroupQueryData;
 export declare class ConditionConverter {
-    queryConditions: object[];
-    matcherFactory: IConditionMatcherFactory;
-    simplify: boolean;
-    constructor(queryConditions: object[], matcherFactory: IConditionMatcherFactory, simplify: boolean);
+    protected queries: QueryConditionData[];
+    protected matcherFactory: IConditionMatcherFactory;
+    protected simplify: boolean;
+    constructor(queries: QueryConditionData[], matcherFactory: IConditionMatcherFactory, simplify: boolean);
     convert(): object;
-    protected convertConditions(conditions: Condition[]): any;
+    protected convertQueries(conditions: QueryConditionData[]): any;
     protected hasAnyIntersectKey(a: Object, b: Object): boolean;
-    protected convertConditionsWithAnd(bucket: Object, conditions: Condition[]): void;
-    protected convertConditionsWithOr(bucket: Object, conditions: Condition[]): void;
-    protected convertCondition(condition: Condition): Object;
-    protected convertGroupOfCondition(condition: GroupOfCondition): Object;
-    private convertNotEmptyGroupOfCondition(condition);
-    protected convertSimpleCondition(condition: SimpleCondition): NajsEloquent.QueryBuilder.IConditionMatcher<any>;
+    protected convertConditionsWithAnd(bucket: Object, conditions: QueryConditionData[]): void;
+    protected convertConditionsWithOr(bucket: Object, conditions: QueryConditionData[]): void;
+    protected convertCondition(condition: QueryConditionData): object;
+    protected convertGroupQueryData(condition: GroupQueryData): object;
+    private convertNotEmptyGroupQueryData(condition);
 }

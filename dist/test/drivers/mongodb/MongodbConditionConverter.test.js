@@ -1,75 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
-const MongodbConditionConverter_1 = require("../../../lib/query-builders/shared/MongodbConditionConverter");
+const MongodbConditionConverter_1 = require("../../../lib/drivers/mongodb/MongodbConditionConverter");
 describe('MongodbConditionConverter', function () {
     it('implements IAutoload and returns "NajsEloquent.QueryBuilder.MongodbConditionConverter" as className', function () {
         const query = new MongodbConditionConverter_1.MongodbConditionConverter([]);
         expect(query.getClassName()).toEqual('NajsEloquent.QueryBuilder.MongodbConditionConverter');
     });
-    describe('protected convertSimpleCondition()', function () {
-        const equalsOperatorDataset = {
-            'equals case #1': {
-                input: { field: 'a', operator: '=', value: 1 },
-                expected: { a: 1 }
-            },
-            'equals case #2': {
-                input: { field: 'a', operator: '==', value: true },
-                expected: { a: true }
-            },
-            'equals case #3': {
-                input: { field: 'a', operator: '==', value: undefined },
-                expected: {}
-            },
-            'equals case #4': {
-                input: { field: 'something.field', operator: '==', value: 'value' },
-                expected: { something: { field: 'value' } }
-            }
-        };
-        const converter = new MongodbConditionConverter_1.MongodbConditionConverter([]);
-        for (const name in equalsOperatorDataset) {
-            it(name, function () {
-                expect(converter['convertSimpleCondition'](equalsOperatorDataset[name].input)).toEqual(equalsOperatorDataset[name].expected);
-            });
-        }
-        function make_the_other_operators_dataset(name, operator, alternate, mgOpt) {
-            return {
-                [name + ' case #1']: {
-                    input: { field: 'a', operator: operator, value: 1 },
-                    expected: { a: { [mgOpt]: 1 } }
-                },
-                [name + ' case #2']: {
-                    input: { field: 'a', operator: alternate, value: true },
-                    expected: { a: { [mgOpt]: true } }
-                },
-                [name + ' case #3']: {
-                    input: { field: 'a', operator: operator, value: undefined },
-                    expected: {}
-                },
-                [name + ' case #4']: {
-                    input: { field: 'something.field', operator: alternate, value: 'value' },
-                    expected: { something: { field: { [mgOpt]: 'value' } } }
-                }
-            };
-        }
-        function test_for_operator(operatorName, operator, alternate, mgOpt) {
-            const dataset = make_the_other_operators_dataset(operatorName, operator, alternate, mgOpt);
-            const converter = new MongodbConditionConverter_1.MongodbConditionConverter([]);
-            for (const name in dataset) {
-                it(name, function () {
-                    expect(converter['convertSimpleCondition'](dataset[name].input)).toEqual(dataset[name].expected);
-                });
-            }
-        }
-        test_for_operator('not-equals', '!=', '<>', '$ne');
-        test_for_operator('less than', '<', '<', '$lt');
-        test_for_operator('less than or equal', '<=', '=<', '$lte');
-        test_for_operator('great than', '>', '>', '$gt');
-        test_for_operator('great than or equal', '>=', '=>', '$gte');
-        test_for_operator('in', 'in', 'in', '$in');
-        test_for_operator('not in', 'not-in', 'not-in', '$nin');
-    });
-    describe('protected convertGroupOfCondition()', function () {
+    describe('protected convertGroupQuery()', function () {
         const dataset = {
             'empty group #and': {
                 input: { bool: 'and', queries: [] },
@@ -221,11 +159,11 @@ describe('MongodbConditionConverter', function () {
         const converter = new MongodbConditionConverter_1.MongodbConditionConverter([]);
         for (const name in dataset) {
             it(name, function () {
-                expect(converter['convertGroupOfCondition'](dataset[name].input)).toEqual(dataset[name].expected);
+                expect(converter['convertGroupQueryData'](dataset[name].input)).toEqual(dataset[name].expected);
             });
         }
     });
-    describe('protected convertConditions()', function () {
+    describe('protected convertQueries()', function () {
         const dataset = {
             'case "query.where(a)': {
                 input: [{ bool: 'and', field: 'a', operator: '=', value: 1 }],
@@ -332,12 +270,27 @@ describe('MongodbConditionConverter', function () {
                     ],
                     $or: [{ b: 2 }, { c: 3 }]
                 }
+            },
+            'case "(query.where(a).where(b)).orWhere(c)"': {
+                input: [
+                    {
+                        bool: 'and',
+                        queries: [
+                            { bool: 'and', field: 'a', operator: '=', value: 1 },
+                            { bool: 'and', field: 'b', operator: '=', value: 2 }
+                        ]
+                    },
+                    { bool: 'or', field: 'c', operator: '=', value: 3 }
+                ],
+                expected: {
+                    $or: [{ a: 1, b: 2 }, { c: 3 }]
+                }
             }
         };
         const converter = new MongodbConditionConverter_1.MongodbConditionConverter([]);
         for (const name in dataset) {
             it(name, function () {
-                expect(converter['convertConditions'](dataset[name].input)).toEqual(dataset[name].expected);
+                expect(converter['convertQueries'](dataset[name].input)).toEqual(dataset[name].expected);
             });
         }
     });

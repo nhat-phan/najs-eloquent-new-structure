@@ -2,36 +2,40 @@
 
 import IConditionMatcherFactory = NajsEloquent.QueryBuilder.IConditionMatcherFactory
 
-export type SimpleCondition = {
+export type QueryData = {
   bool: 'and' | 'or'
   field: string
   operator: NajsEloquent.QueryGrammar.Operator
   value: any
 }
 
-export type GroupOfCondition = {
+export type GroupQueryData = {
   bool: 'and' | 'or'
-  queries: Condition[]
+  queries: QueryData[]
 }
 
-export type Condition = SimpleCondition | GroupOfCondition
+export type QueryConditionData = QueryData | GroupQueryData
 
 export class ConditionConverter {
-  queryConditions: object[]
-  matcherFactory: IConditionMatcherFactory
-  simplify: boolean
+  protected queries: QueryConditionData[]
+  protected matcherFactory: IConditionMatcherFactory
+  protected simplify: boolean
 
-  constructor(queryConditions: object[], matcherFactory: IConditionMatcherFactory, simplify: boolean) {
-    this.queryConditions = queryConditions
+  constructor(queries: QueryConditionData[], matcherFactory: IConditionMatcherFactory, simplify: boolean) {
+    this.queries = queries
     this.matcherFactory = matcherFactory
     this.simplify = simplify
   }
 
   convert(): object {
-    return this.convertConditions(this.queryConditions as any)
+    return this.convertQueries(this.queries)
   }
 
-  protected convertConditions(conditions: Condition[]) {
+  protected convertQueries(conditions: QueryConditionData[]) {
+    if (conditions.length === 0) {
+      return {}
+    }
+
     const result = {}
 
     for (let i = 0, l = conditions.length; i < l; i++) {
@@ -47,6 +51,10 @@ export class ConditionConverter {
     }
     this.convertConditionsWithAnd(result, <any>conditions.filter(item => item['bool'] === 'and'))
     this.convertConditionsWithOr(result, <any>conditions.filter(item => item['bool'] === 'or'))
+    if (!this.simplify) {
+      return result
+    }
+
     if (Object.keys(result).length === 1 && typeof result['$and'] !== 'undefined' && result['$and'].length === 1) {
       return result['$and'][0]
     }
@@ -64,11 +72,11 @@ export class ConditionConverter {
     return false
   }
 
-  protected convertConditionsWithAnd(bucket: Object, conditions: Condition[]) {
+  protected convertConditionsWithAnd(bucket: Object, conditions: QueryConditionData[]) {
     let result: Object | Object[] = {}
     for (const condition of conditions) {
       const query = this.convertCondition(condition)
-      if (this.hasAnyIntersectKey(result, query) && !Array.isArray(result)) {
+      if (!Array.isArray(result) && this.hasAnyIntersectKey(result, query)) {
         result = [result]
       }
 
@@ -84,11 +92,6 @@ export class ConditionConverter {
       return
     }
 
-    if (!this.simplify) {
-      Object.assign(bucket, { $and: [result] })
-      return
-    }
-
     const keysLength = Object.keys(result).length
     if (keysLength === 1) {
       Object.assign(bucket, result)
@@ -98,16 +101,11 @@ export class ConditionConverter {
     }
   }
 
-  protected convertConditionsWithOr(bucket: Object, conditions: Condition[]) {
+  protected convertConditionsWithOr(bucket: Object, conditions: QueryConditionData[]) {
     const result: Object[] = []
     for (const condition of conditions) {
       const query = this.convertCondition(condition)
       result.push(Object.assign({}, query))
-    }
-
-    if (!this.simplify) {
-      Object.assign(bucket, { $or: result })
-      return
     }
 
     if (result.length > 1) {
@@ -115,26 +113,32 @@ export class ConditionConverter {
     }
   }
 
-  protected convertCondition(condition: Condition): Object {
+  protected convertCondition(condition: QueryConditionData): object {
     if (typeof condition['queries'] === 'undefined') {
-      return this.convertSimpleCondition(condition as SimpleCondition)
+      return this.matcherFactory.transform(this.matcherFactory.make(condition as QueryData))
     }
-    return this.convertGroupOfCondition(condition as GroupOfCondition)
+    const result = this.convertGroupQueryData(condition as GroupQueryData)
+
+    if (Object.keys(result).length === 1 && typeof result['$or'] !== 'undefined' && result['$or'].length === 1) {
+      return result['$or'][0]
+    }
+
+    return result
   }
 
-  protected convertGroupOfCondition(condition: GroupOfCondition): Object {
+  protected convertGroupQueryData(condition: GroupQueryData): object {
     if (!condition.queries || condition.queries.length === 0) {
       return {}
     }
 
     if (condition.queries.length === 1) {
-      return this.convertCondition(<Condition>condition.queries[0])
+      return this.convertCondition(<QueryData>condition.queries[0])
     }
-    return this.convertNotEmptyGroupOfCondition(condition)
+    return this.convertNotEmptyGroupQueryData(condition)
   }
 
-  private convertNotEmptyGroupOfCondition(condition: GroupOfCondition): Object {
-    const result: Object = this.convertConditions(condition.queries)
+  private convertNotEmptyGroupQueryData(condition: GroupQueryData): object {
+    const result: object = this.convertQueries(condition.queries)
     if (Object.keys(result).length === 0) {
       return {}
     }
@@ -150,36 +154,5 @@ export class ConditionConverter {
       return result
     }
     return { $or: [result] }
-  }
-
-  protected convertSimpleCondition(condition: SimpleCondition): NajsEloquent.QueryBuilder.IConditionMatcher<any> {
-    if (typeof condition.value === 'undefined') {
-      return this.matcherFactory.make(condition.field, 'nope', condition.value)
-    }
-
-    let acceptedOperator = condition.operator
-    switch (condition.operator) {
-      case '<>':
-        acceptedOperator = '!='
-        break
-
-      case '=<':
-        acceptedOperator = '<='
-        break
-
-      case '=>':
-        acceptedOperator = '>='
-        break
-
-      case '==':
-        acceptedOperator = '='
-        break
-
-      default:
-        acceptedOperator = condition.operator
-        break
-    }
-
-    return this.matcherFactory.make(condition.field, acceptedOperator, condition.value)
   }
 }

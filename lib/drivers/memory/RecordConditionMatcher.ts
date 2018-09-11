@@ -1,17 +1,16 @@
 /// <reference path="../../definitions/query-builders/IConditionMatcher.ts" />
 
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher
-import ConditionMatcherOperator = NajsEloquent.QueryBuilder.ConditionMatcherOperator
 
 import * as Lodash from 'lodash'
 import { Record } from '../Record'
 
 export class RecordConditionMatcher implements IConditionMatcher<Record> {
   protected field: string
-  protected operator: ConditionMatcherOperator
+  protected operator: string
   protected value: any
 
-  constructor(field: string, operator: ConditionMatcherOperator, value: any) {
+  constructor(field: string, operator: string, value: any) {
     this.field = field
     this.operator = operator
     this.value = value
@@ -44,21 +43,25 @@ export class RecordConditionMatcher implements IConditionMatcher<Record> {
   isMatch(record: Record): boolean {
     switch (this.operator) {
       case '=':
+      case '==':
         return this.isEqual(record)
 
       case '!=':
+      case '<>':
         return !this.isEqual(record)
 
       case '<':
         return this.isLessThan(record)
 
       case '<=':
+      case '=<':
         return this.isLessThanOrEqual(record)
 
       case '>':
         return this.isGreaterThan(record)
 
       case '>=':
+      case '=>':
         return this.isGreaterThanOrEqual(record)
 
       case 'in':
