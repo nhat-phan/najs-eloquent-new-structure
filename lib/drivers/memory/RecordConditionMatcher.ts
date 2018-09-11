@@ -17,7 +17,7 @@ export class RecordConditionMatcher implements IConditionMatcher<Record> {
   }
 
   isEqual(record: Record): boolean {
-    return Lodash.eq(record.getAttribute(this.field), this.value)
+    return Lodash.isEqual(record.getAttribute(this.field), this.value)
   }
 
   isLessThan(record: Record): boolean {

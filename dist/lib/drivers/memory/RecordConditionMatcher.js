@@ -9,7 +9,7 @@ class RecordConditionMatcher {
         this.value = value;
     }
     isEqual(record) {
-        return Lodash.eq(record.getAttribute(this.field), this.value);
+        return Lodash.isEqual(record.getAttribute(this.field), this.value);
     }
     isLessThan(record) {
         return Lodash.lt(record.getAttribute(this.field), this.value);
