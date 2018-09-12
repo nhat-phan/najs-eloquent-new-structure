@@ -17,7 +17,7 @@ export declare class QueryCondition implements IBasicConditionQuery {
     protected constructor();
     static create(convention: IConvention, bool: 'and' | 'or', arg0: string | SubCondition, arg1?: Operator | any, arg2?: any): QueryCondition;
     getConditionQueryHandler(): IConditionQuery;
-    toObject(): Object;
+    toObject(): object;
     buildQuery(bool: 'and' | 'or', arg0: string | SubCondition, arg1?: Operator | any, arg2?: any): this;
     buildSubQuery(queryCondition: QueryCondition, arg0: SubCondition): this;
     where(conditionBuilder: SubCondition): this;

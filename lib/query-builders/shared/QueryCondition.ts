@@ -42,8 +42,8 @@ export class QueryCondition implements IBasicConditionQuery {
     return new ConditionQueryHandler(this, this.convention)
   }
 
-  toObject(): Object {
-    const result: Object = {
+  toObject(): object {
+    const result: object = {
       bool: this.bool
     }
     if (this.queries.length > 0) {

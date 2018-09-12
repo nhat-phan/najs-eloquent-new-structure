@@ -1,5 +1,10 @@
 namespace NajsEloquent.QueryBuilder {
-  export type QueryData = {
+  export type GroupQueryConditionData = {
+    bool: 'and' | 'or'
+    queries: Array<SingleQueryConditionData | GroupQueryConditionData>
+  }
+
+  export type SingleQueryConditionData = {
     bool: 'and' | 'or'
     field: string
     operator: QueryGrammar.Operator
@@ -11,8 +16,8 @@ namespace NajsEloquent.QueryBuilder {
   }
 
   export interface IConditionMatcherFactory {
-    make<T>(data: QueryData): IConditionMatcher<T>
+    make<T>(data: SingleQueryConditionData): IConditionMatcher<T>
 
-    transform<T>(matcher: IConditionMatcher<T>): object
+    transform<T>(matcher: IConditionMatcher<T>): any
   }
 }

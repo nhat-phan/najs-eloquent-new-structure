@@ -1,5 +1,5 @@
 "use strict";
-/// <reference path="../../definitions/query-builders/IQueryExecutor" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const ExecutorBase_1 = require("../ExecutorBase");

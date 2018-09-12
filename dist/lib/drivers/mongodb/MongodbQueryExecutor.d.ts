@@ -1,3 +1,4 @@
+/// <reference path="../../definitions/query-builders/IQueryExecutor.d.ts" />
 import { Collection } from 'mongodb';
 import { MongodbQueryLog } from './MongodbQueryLog';
 import { ExecutorBase } from '../ExecutorBase';

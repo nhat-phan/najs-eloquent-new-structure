@@ -1,7 +1,7 @@
 /// <reference path="../../definitions/query-builders/IConditionMatcher.ts" />
 
 import IConditionMatcherFactory = NajsEloquent.QueryBuilder.IConditionMatcherFactory
-import QueryData = NajsEloquent.QueryBuilder.QueryData
+import SingleQueryConditionData = NajsEloquent.QueryBuilder.SingleQueryConditionData
 
 import { register } from 'najs-binding'
 import { MongodbConditionMatcher } from './MongodbConditionMatcher'
@@ -14,11 +14,11 @@ export class MongodbConditionMatcherFactory implements IConditionMatcherFactory 
     return NajsEloquentClasses.Driver.Mongodb.MongodbConditionMatcherFactory
   }
 
-  make(data: QueryData): MongodbConditionMatcher {
+  make(data: SingleQueryConditionData): MongodbConditionMatcher {
     return new MongodbConditionMatcher(data.field, data.operator, data.value)
   }
 
-  transform(matcher: MongodbConditionMatcher): object {
+  transform(matcher: MongodbConditionMatcher): any {
     return matcher.getCondition()
   }
 }

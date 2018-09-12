@@ -1,10 +1,10 @@
 /// <reference path="../../definitions/query-builders/IConditionMatcher.d.ts" />
 import IConditionMatcherFactory = NajsEloquent.QueryBuilder.IConditionMatcherFactory;
-import QueryData = NajsEloquent.QueryBuilder.QueryData;
+import SingleQueryConditionData = NajsEloquent.QueryBuilder.SingleQueryConditionData;
 import { MongodbConditionMatcher } from './MongodbConditionMatcher';
 export declare class MongodbConditionMatcherFactory implements IConditionMatcherFactory {
     static className: string;
     getClassName(): string;
-    make(data: QueryData): MongodbConditionMatcher;
-    transform(matcher: MongodbConditionMatcher): object;
+    make(data: SingleQueryConditionData): MongodbConditionMatcher;
+    transform(matcher: MongodbConditionMatcher): any;
 }

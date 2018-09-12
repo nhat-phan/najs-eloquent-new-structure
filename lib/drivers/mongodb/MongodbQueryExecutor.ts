@@ -1,4 +1,4 @@
-/// <reference path="../../definitions/query-builders/IQueryExecutor" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 
 import { isEmpty } from 'lodash'
 import { Collection } from 'mongodb'

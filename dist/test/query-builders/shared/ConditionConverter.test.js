@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("jest");
 const ConditionQueryHandler_1 = require("../../../lib/query-builders/shared/ConditionQueryHandler");
 const BasicQuery_1 = require("../../../lib/query-builders/shared/BasicQuery");
-require("jest");
 const ConditionConverter_1 = require("../../../lib/query-builders/shared/ConditionConverter");
 const QueryBuilder_1 = require("../../../lib/query-builders/QueryBuilder");
 const QueryBuilderHandlerBase_1 = require("../../../lib/query-builders/QueryBuilderHandlerBase");
@@ -45,7 +45,6 @@ describe('ConditionConverter', function () {
     describe('it works with simplify option = false', function () {
         const dataset = [
             {
-                skip: false,
                 desc: 'it returns empty object if there is no condition',
                 query: qb => { },
                 expected: {}
@@ -98,6 +97,22 @@ describe('ConditionConverter', function () {
                         { $and: [{ field: 'c', operator: '=', value: 3 }, { field: 'd', operator: '=', value: 4 }] }
                     ]
                 }
+            },
+            {
+                skip: true,
+                desc: 'case #6, .where.orWhere.where.orWhere',
+                query: qb => qb
+                    .where('a', 1)
+                    .orWhere('b', 2)
+                    .where('c', 3)
+                    .orWhere('d', 4),
+                // .orWhere(subQuery => subQuery.where('e', 5).where('f', 6)),
+                expected: {
+                    $or: [
+                        { $and: [{ field: 'a', operator: '=', value: 1 }, { field: 'b', operator: '=', value: 2 }] },
+                        { $and: [{ field: 'c', operator: '=', value: 3 }, { field: 'd', operator: '=', value: 4 }] }
+                    ]
+                }
             }
         ];
         for (const data of dataset) {
@@ -112,5 +127,10 @@ describe('ConditionConverter', function () {
                 });
             }
         }
+        // a OR b             => a OR b                 => $or: [a,b]
+        // a OR b OR c        => a OR b OR c            => $or: [a,b,c]
+        // a OR b AND c OR d  => a OR (b AND c) OR d    => $or: [a, { $and: [b,c] }, d ]
+        // a AND b OR c       => (a AND b) or c         => $or: [ { $and: [a,b] }, c ]
+        // a AND b OR c AND d => (a AND b) or (c AND d) => $or: [ { $and: [a,b] }, { $and: [c,d] } ]
     });
 });

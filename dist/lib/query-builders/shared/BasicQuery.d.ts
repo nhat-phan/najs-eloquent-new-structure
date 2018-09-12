@@ -20,7 +20,7 @@ export declare class BasicQuery implements IBasicQuery, IBasicConditionQuery {
     protected conditions: QueryCondition[];
     protected convention: IConvention;
     constructor(convention: IConvention);
-    getConditions(): Object[];
+    getConditions(): object[];
     getRawConditions(): QueryCondition[];
     getLimit(): number;
     getOrdering(): Object;

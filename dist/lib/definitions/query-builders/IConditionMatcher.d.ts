@@ -1,5 +1,9 @@
 declare namespace NajsEloquent.QueryBuilder {
-    type QueryData = {
+    type GroupQueryConditionData = {
+        bool: 'and' | 'or';
+        queries: Array<SingleQueryConditionData | GroupQueryConditionData>;
+    };
+    type SingleQueryConditionData = {
         bool: 'and' | 'or';
         field: string;
         operator: QueryGrammar.Operator;
@@ -9,7 +13,7 @@ declare namespace NajsEloquent.QueryBuilder {
         isMatch(record: T): boolean;
     }
     interface IConditionMatcherFactory {
-        make<T>(data: QueryData): IConditionMatcher<T>;
-        transform<T>(matcher: IConditionMatcher<T>): object;
+        make<T>(data: SingleQueryConditionData): IConditionMatcher<T>;
+        transform<T>(matcher: IConditionMatcher<T>): any;
     }
 }
