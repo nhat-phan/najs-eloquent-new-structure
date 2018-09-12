@@ -5,7 +5,7 @@ const najs_binding_1 = require("najs-binding");
 const MongodbConditionMatcherFactory_1 = require("../../../lib/drivers/mongodb/MongodbConditionMatcherFactory");
 const MongodbConditionMatcher_1 = require("../../../lib/drivers/mongodb/MongodbConditionMatcher");
 describe('MongodbConditionMatcherFactory', function () {
-    it('implements Autoload with singleton under name ""', function () {
+    it('implements Autoload with singleton under name "NajsEloquent.Driver.Mongodb.MongodbConditionMatcherFactory"', function () {
         const factory = najs_binding_1.make(MongodbConditionMatcherFactory_1.MongodbConditionMatcherFactory);
         expect(factory.getClassName()).toEqual('NajsEloquent.Driver.Mongodb.MongodbConditionMatcherFactory');
         const anotherInstance = najs_binding_1.make(MongodbConditionMatcherFactory_1.MongodbConditionMatcherFactory);

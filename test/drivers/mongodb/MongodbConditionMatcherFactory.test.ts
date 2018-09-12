@@ -4,7 +4,7 @@ import { MongodbConditionMatcherFactory } from '../../../lib/drivers/mongodb/Mon
 import { MongodbConditionMatcher } from '../../../lib/drivers/mongodb/MongodbConditionMatcher'
 
 describe('MongodbConditionMatcherFactory', function() {
-  it('implements Autoload with singleton under name ""', function() {
+  it('implements Autoload with singleton under name "NajsEloquent.Driver.Mongodb.MongodbConditionMatcherFactory"', function() {
     const factory = make<MongodbConditionMatcherFactory>(MongodbConditionMatcherFactory)
     expect(factory.getClassName()).toEqual('NajsEloquent.Driver.Mongodb.MongodbConditionMatcherFactory')
     const anotherInstance = make<MongodbConditionMatcherFactory>(MongodbConditionMatcherFactory)

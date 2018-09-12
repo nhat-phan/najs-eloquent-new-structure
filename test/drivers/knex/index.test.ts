@@ -61,10 +61,10 @@ describe('Knex.QueryBuilder', function() {
     it('a = 1 AND b = 1 OR c = 1', function() {
       const query = KnexProvider.createQueryBuilder('operator_and_or')
       query
-        .orWhere('a', 1)
-        .where('b', 1)
-        // .where('c', '1')
-        // .orWhere('d', '1')
+        .where('a', 1)
+        .orWhere('b', 1)
+        .where('c', '1')
+        .orWhere('d', '1')
         .then(function(result) {
           console.log(result)
         })

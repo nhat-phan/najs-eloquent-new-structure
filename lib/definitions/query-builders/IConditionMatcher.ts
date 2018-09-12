@@ -16,8 +16,8 @@ namespace NajsEloquent.QueryBuilder {
   }
 
   export interface IConditionMatcherFactory {
-    make<T>(data: SingleQueryConditionData): IConditionMatcher<T>
+    make(data: SingleQueryConditionData): IConditionMatcher<any>
 
-    transform<T>(matcher: IConditionMatcher<T>): any
+    transform(matcher: IConditionMatcher<any>): any
   }
 }

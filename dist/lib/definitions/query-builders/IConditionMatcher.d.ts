@@ -13,7 +13,7 @@ declare namespace NajsEloquent.QueryBuilder {
         isMatch(record: T): boolean;
     }
     interface IConditionMatcherFactory {
-        make<T>(data: SingleQueryConditionData): IConditionMatcher<T>;
-        transform<T>(matcher: IConditionMatcher<T>): any;
+        make(data: SingleQueryConditionData): IConditionMatcher<any>;
+        transform(matcher: IConditionMatcher<any>): any;
     }
 }

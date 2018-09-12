@@ -3,6 +3,10 @@ export declare const NajsEloquent: {
         DummyDriver: string;
         MongodbDriver: string;
         MongooseDriver: string;
+        Memory: {
+            RecordFilter: string;
+            RecordConditionMatcherFactory: string;
+        };
         Mongodb: {
             MongodbExecutorFactory: string;
             MongodbConditionMatcherFactory: string;

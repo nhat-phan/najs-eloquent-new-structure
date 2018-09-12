@@ -6,6 +6,10 @@ exports.NajsEloquent = {
         DummyDriver: 'NajsEloquent.Driver.DummyDriver',
         MongodbDriver: 'NajsEloquent.Driver.MongodbDriver',
         MongooseDriver: 'NajsEloquent.Driver.MongooseDriver',
+        Memory: {
+            RecordFilter: 'NajsEloquent.Driver.Memory.RecordFilter',
+            RecordConditionMatcherFactory: 'NajsEloquent.Driver.Memory.RecordConditionMatcherFactory'
+        },
         Mongodb: {
             MongodbExecutorFactory: 'NajsEloquent.Driver.Mongodb.MongodbExecutorFactory',
             MongodbConditionMatcherFactory: 'NajsEloquent.Driver.Mongodb.MongodbConditionMatcherFactory'
