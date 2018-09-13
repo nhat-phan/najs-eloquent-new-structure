@@ -9,6 +9,7 @@ const MongodbProviderFacade_1 = require("../../../lib/facades/global/MongodbProv
 const MongodbRecordExecutor_1 = require("../../../lib/drivers/mongodb/MongodbRecordExecutor");
 const MongodbQueryLog_1 = require("../../../lib/drivers/mongodb/MongodbQueryLog");
 const ExecutorBase_1 = require("../../../lib/drivers/ExecutorBase");
+const RecordExecutorBase_1 = require("../../../lib/drivers/RecordExecutorBase");
 const bson_1 = require("bson");
 const Moment = require('moment');
 describe('MongodbRecordExecutor', function () {
@@ -85,11 +86,12 @@ describe('MongodbRecordExecutor', function () {
         }
         expect(logData).toMatchObject(data);
     }
-    it('extends ExecutorBase', function () {
+    it('extends RecordExecutorBase / ExecutorBase', function () {
         const model = makeModel('Test', false, false);
         const record = new Record_1.Record();
         const executor = makeExecutor(model, record);
         expect(executor).toBeInstanceOf(ExecutorBase_1.ExecutorBase);
+        expect(executor).toBeInstanceOf(RecordExecutorBase_1.RecordExecutorBase);
     });
     describe('.fillData()', function () {
         it('simply calls .fillTimestampsData() and .fillSoftDeletesData()', function () {

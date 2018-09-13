@@ -7,6 +7,7 @@ import { MongodbProviderFacade } from '../../../lib/facades/global/MongodbProvid
 import { MongodbRecordExecutor } from '../../../lib/drivers/mongodb/MongodbRecordExecutor'
 import { MongodbQueryLog } from '../../../lib/drivers/mongodb/MongodbQueryLog'
 import { ExecutorBase } from '../../../lib/drivers/ExecutorBase'
+import { RecordExecutorBase } from '../../../lib/drivers/RecordExecutorBase'
 import { ObjectId } from 'bson'
 
 const Moment = require('moment')
@@ -97,11 +98,12 @@ describe('MongodbRecordExecutor', function() {
     expect(logData).toMatchObject(data)
   }
 
-  it('extends ExecutorBase', function() {
+  it('extends RecordExecutorBase / ExecutorBase', function() {
     const model = makeModel('Test', false, false)
     const record = new Record()
     const executor = makeExecutor(model, record)
     expect(executor).toBeInstanceOf(ExecutorBase)
+    expect(executor).toBeInstanceOf(RecordExecutorBase)
   })
 
   describe('.fillData()', function() {

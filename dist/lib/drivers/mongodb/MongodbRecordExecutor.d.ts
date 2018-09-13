@@ -1,27 +1,17 @@
 /// <reference path="../../definitions/features/IRecordExecutor.d.ts" />
 /// <reference path="../../definitions/query-builders/IConvention.d.ts" />
-import IConvention = NajsEloquent.QueryBuilder.IConvention;
 import Model = NajsEloquent.Model.IModel;
 import { Collection } from 'mongodb';
 import { Record } from '../Record';
-import { ExecutorBase } from '../ExecutorBase';
+import { RecordExecutorBase } from '../RecordExecutorBase';
 import { MongodbQueryLog } from './MongodbQueryLog';
-export declare class MongodbRecordExecutor extends ExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
-    protected model: NajsEloquent.Model.IModel;
-    protected record: Record;
+export declare class MongodbRecordExecutor extends RecordExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
     protected logger: MongodbQueryLog;
-    protected convention: IConvention;
     protected collection: Collection;
     constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog);
-    fillData(isCreate: boolean): void;
-    fillSoftDeletesData(): void;
-    fillTimestampsData(isCreate: boolean): void;
-    setAttributeIfNeeded(attribute: string, value: any): void;
-    create<R = any>(shouldFillData?: boolean, action?: string): Promise<R>;
-    update<R = any>(shouldFillData?: boolean, action?: string): Promise<R>;
-    softDelete<R = any>(): Promise<R>;
-    hardDelete<R = any>(): Promise<R>;
-    restore<R = any>(): Promise<R>;
+    createRecord<R = any>(action: string): Promise<R>;
+    updateRecord<R = any>(action: string): Promise<R>;
+    hardDeleteRecord<R = any>(): Promise<R>;
     getModifiedData(): {};
     getFilter(): {};
     logRaw(func: string, ...args: any[]): MongodbQueryLog;
