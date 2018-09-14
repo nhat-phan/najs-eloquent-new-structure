@@ -5,7 +5,7 @@ import { Collection } from 'mongodb';
 import { Record } from '../Record';
 import { RecordExecutorBase } from '../RecordExecutorBase';
 import { MongodbQueryLog } from './MongodbQueryLog';
-export declare class MongodbRecordExecutor extends RecordExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
+export declare class MongodbRecordExecutor extends RecordExecutorBase {
     protected logger: MongodbQueryLog;
     protected collection: Collection;
     constructor(model: Model, record: Record, collection: Collection, logger: MongodbQueryLog);

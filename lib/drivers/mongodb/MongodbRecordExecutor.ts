@@ -8,7 +8,7 @@ import { RecordExecutorBase } from '../RecordExecutorBase'
 import { MongodbQueryLog } from './MongodbQueryLog'
 import { MongodbConvention } from './MongodbConvention'
 
-export class MongodbRecordExecutor extends RecordExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
+export class MongodbRecordExecutor extends RecordExecutorBase {
   protected logger: MongodbQueryLog
   protected collection: Collection
 
