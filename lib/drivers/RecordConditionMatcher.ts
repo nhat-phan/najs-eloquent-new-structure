@@ -1,9 +1,9 @@
-/// <reference path="../../definitions/query-builders/IConditionMatcher.ts" />
+/// <reference path="../definitions/query-builders/IConditionMatcher.ts" />
 
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher
 
 import * as Lodash from 'lodash'
-import { Record } from '../Record'
+import { Record } from './Record'
 
 export class RecordConditionMatcher implements IConditionMatcher<Record> {
   protected field: string

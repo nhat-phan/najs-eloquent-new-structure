@@ -1,8 +1,10 @@
 "use strict";
-/// <reference path="../../contracts/MemoryDataSource.ts" />
+/// <reference path="../contracts/MemoryDataSource.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-class RecordDataSourceBase {
+const najs_facade_1 = require("najs-facade");
+class RecordDataSourceBase extends najs_facade_1.Facade {
     constructor(modelName, primaryKeyName) {
+        super();
         this.modelName = modelName;
         this.primaryKeyName = primaryKeyName;
         this.buffer = new Map();

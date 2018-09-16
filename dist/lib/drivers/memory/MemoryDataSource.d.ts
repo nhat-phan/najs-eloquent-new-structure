@@ -1,5 +1,5 @@
 import { Record } from '../Record';
-import { RecordDataSourceBase } from './RecordDataSourceBase';
+import { RecordDataSourceBase } from '../RecordDataSourceBase';
 export declare class MemoryDataSource extends RecordDataSourceBase {
     static className: string;
     getClassName(): string;

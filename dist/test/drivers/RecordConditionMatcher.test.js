@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const Lodash = require("lodash");
-const RecordConditionMatcher_1 = require("../../../lib/drivers/memory/RecordConditionMatcher");
+const RecordConditionMatcher_1 = require("../../lib/drivers/RecordConditionMatcher");
 describe('RecordConditionMatcher', function () {
     describe('.isMatch', function () {
         const dataset = [

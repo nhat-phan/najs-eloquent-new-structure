@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const bson_1 = require("bson");
 const constants_1 = require("../../constants");
-const RecordDataSourceBase_1 = require("./RecordDataSourceBase");
+const RecordDataSourceBase_1 = require("../RecordDataSourceBase");
 class MemoryDataSource extends RecordDataSourceBase_1.RecordDataSourceBase {
     getClassName() {
         return constants_1.NajsEloquent.Driver.Memory.MemoryDataSource;

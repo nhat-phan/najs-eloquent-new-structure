@@ -1,11 +1,11 @@
-/// <reference path="../../definitions/query-builders/IConditionMatcher.ts" />
+/// <reference path="../definitions/query-builders/IConditionMatcher.ts" />
 
 import IConditionMatcherFactory = NajsEloquent.QueryBuilder.IConditionMatcherFactory
 import SingleQueryConditionData = NajsEloquent.QueryBuilder.SingleQueryConditionData
 
 import { register } from 'najs-binding'
 import { RecordConditionMatcher } from './RecordConditionMatcher'
-import { NajsEloquent as NajsEloquentClasses } from '../../constants'
+import { NajsEloquent as NajsEloquentClasses } from '../constants'
 
 export class RecordConditionMatcherFactory implements IConditionMatcherFactory {
   static className: string = NajsEloquentClasses.Driver.Memory.RecordConditionMatcherFactory

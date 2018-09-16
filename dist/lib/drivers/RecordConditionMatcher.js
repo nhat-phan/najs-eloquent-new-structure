@@ -1,5 +1,5 @@
 "use strict";
-/// <reference path="../../definitions/query-builders/IConditionMatcher.ts" />
+/// <reference path="../definitions/query-builders/IConditionMatcher.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const Lodash = require("lodash");
 class RecordConditionMatcher {

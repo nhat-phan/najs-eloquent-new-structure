@@ -1,8 +1,8 @@
-import { Record } from '../Record'
+import { Record } from './Record'
 import { RecordConditionMatcher } from './RecordConditionMatcher'
 
 import { register } from 'najs-binding'
-import { NajsEloquent as NajsEloquentClasses } from '../../constants'
+import { NajsEloquent as NajsEloquentClasses } from '../constants'
 
 export type RecordBucket = { [id in string]: Record }
 export type RecordConditions =

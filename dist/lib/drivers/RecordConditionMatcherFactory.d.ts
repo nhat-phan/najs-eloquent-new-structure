@@ -1,4 +1,4 @@
-/// <reference path="../../definitions/query-builders/IConditionMatcher.d.ts" />
+/// <reference path="../definitions/query-builders/IConditionMatcher.d.ts" />
 import IConditionMatcherFactory = NajsEloquent.QueryBuilder.IConditionMatcherFactory;
 import SingleQueryConditionData = NajsEloquent.QueryBuilder.SingleQueryConditionData;
 import { RecordConditionMatcher } from './RecordConditionMatcher';

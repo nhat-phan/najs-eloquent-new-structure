@@ -1,7 +1,7 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import * as Lodash from 'lodash'
-import { RecordConditionMatcher } from '../../../lib/drivers/memory/RecordConditionMatcher'
+import { RecordConditionMatcher } from '../../lib/drivers/RecordConditionMatcher'
 
 interface MatchTestData {
   a: any

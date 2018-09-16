@@ -3,16 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const najs_binding_1 = require("najs-binding");
-const Record_1 = require("../../../lib/drivers/Record");
-const RecordFilter_1 = require("../../../lib/drivers/memory/RecordFilter");
-const BasicQuery_1 = require("../../../lib/query-builders/shared/BasicQuery");
-const DefaultConvention_1 = require("../../../lib/query-builders/shared/DefaultConvention");
-const ConditionQueryHandler_1 = require("./../../../lib/query-builders/shared/ConditionQueryHandler");
-const QueryBuilder_1 = require("../../../lib/query-builders/QueryBuilder");
-const QueryBuilderHandlerBase_1 = require("../../../lib/query-builders/QueryBuilderHandlerBase");
-const BasicQueryConverter_1 = require("../../../lib/query-builders/shared/BasicQueryConverter");
-const RecordConditionMatcherFactory_1 = require("../../../lib/drivers/memory/RecordConditionMatcherFactory");
-const RecordConditionMatcher_1 = require("../../../lib/drivers/memory/RecordConditionMatcher");
+const Record_1 = require("../../lib/drivers/Record");
+const RecordFilter_1 = require("../../lib/drivers/RecordFilter");
+const BasicQuery_1 = require("../../lib/query-builders/shared/BasicQuery");
+const DefaultConvention_1 = require("../../lib/query-builders/shared/DefaultConvention");
+const ConditionQueryHandler_1 = require("../../lib/query-builders/shared/ConditionQueryHandler");
+const QueryBuilder_1 = require("../../lib/query-builders/QueryBuilder");
+const QueryBuilderHandlerBase_1 = require("../../lib/query-builders/QueryBuilderHandlerBase");
+const BasicQueryConverter_1 = require("../../lib/query-builders/shared/BasicQueryConverter");
+const RecordConditionMatcherFactory_1 = require("../../lib/drivers/RecordConditionMatcherFactory");
+const RecordConditionMatcher_1 = require("../../lib/drivers/RecordConditionMatcher");
 describe('RecordFilter', function () {
     it('implements Autoload under name "NajsEloquent.Driver.Memory.RecordFilter" with singleton option = true', function () {
         const filter = najs_binding_1.make(RecordFilter_1.RecordFilter.className);

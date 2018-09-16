@@ -2,7 +2,7 @@ import { register } from 'najs-binding'
 import { ObjectId } from 'bson'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { Record } from '../Record'
-import { RecordDataSourceBase } from './RecordDataSourceBase'
+import { RecordDataSourceBase } from '../RecordDataSourceBase'
 
 export class MemoryDataSource extends RecordDataSourceBase {
   static className: string = NajsEloquentClasses.Driver.Memory.MemoryDataSource

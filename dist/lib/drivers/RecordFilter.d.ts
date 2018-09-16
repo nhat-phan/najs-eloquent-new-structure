@@ -1,4 +1,4 @@
-import { Record } from '../Record';
+import { Record } from './Record';
 import { RecordConditionMatcher } from './RecordConditionMatcher';
 export declare type RecordBucket = {
     [id in string]: Record;

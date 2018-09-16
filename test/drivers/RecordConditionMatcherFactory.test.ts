@@ -1,7 +1,7 @@
 import 'jest'
 import { make } from 'najs-binding'
-import { RecordConditionMatcherFactory } from '../../../lib/drivers/memory/RecordConditionMatcherFactory'
-import { RecordConditionMatcher } from '../../../lib/drivers/memory/RecordConditionMatcher'
+import { RecordConditionMatcherFactory } from '../../lib/drivers/RecordConditionMatcherFactory'
+import { RecordConditionMatcher } from '../../lib/drivers/RecordConditionMatcher'
 
 describe('RecordConditionMatcherFactory', function() {
   it('implements Autoload with singleton under name "NajsEloquent.Driver.Memory.RecordConditionMatcherFactory"', function() {

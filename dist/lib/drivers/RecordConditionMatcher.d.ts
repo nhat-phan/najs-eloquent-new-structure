@@ -1,6 +1,6 @@
-/// <reference path="../../definitions/query-builders/IConditionMatcher.d.ts" />
+/// <reference path="../definitions/query-builders/IConditionMatcher.d.ts" />
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher;
-import { Record } from '../Record';
+import { Record } from './Record';
 export declare class RecordConditionMatcher implements IConditionMatcher<Record> {
     protected field: string;
     protected operator: string;

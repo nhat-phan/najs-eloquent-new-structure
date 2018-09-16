@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const najs_binding_1 = require("najs-binding");
-const RecordConditionMatcherFactory_1 = require("../../../lib/drivers/memory/RecordConditionMatcherFactory");
-const RecordConditionMatcher_1 = require("../../../lib/drivers/memory/RecordConditionMatcher");
+const RecordConditionMatcherFactory_1 = require("../../lib/drivers/RecordConditionMatcherFactory");
+const RecordConditionMatcher_1 = require("../../lib/drivers/RecordConditionMatcher");
 describe('RecordConditionMatcherFactory', function () {
     it('implements Autoload with singleton under name "NajsEloquent.Driver.Memory.RecordConditionMatcherFactory"', function () {
         const factory = najs_binding_1.make(RecordConditionMatcherFactory_1.RecordConditionMatcherFactory);
