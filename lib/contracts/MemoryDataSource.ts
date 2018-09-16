@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /// <reference types="najs-binding" />
 /// <reference path="../definitions/model/IModel.ts" />
 
@@ -13,8 +14,6 @@ namespace Najs.Contracts.Eloquent {
 
     filter(cb: (item: T) => boolean): T[]
 
-    next(): { value?: T; done: boolean }
-
-    [Symbol.iterator](): { next: () => { value?: T; done: boolean } }
+    [Symbol.iterator](): IterableIterator<T>
   }
 }

@@ -9,6 +9,15 @@ class RecordDataSourceBase extends najs_facade_1.Facade {
         this.primaryKeyName = primaryKeyName;
         this.buffer = new Map();
     }
+    getModelName() {
+        return this.modelName;
+    }
+    getPrimaryKeyName() {
+        return this.primaryKeyName;
+    }
+    getBuffer() {
+        return this.buffer;
+    }
     push(data) {
         this.buffer.set(this.getPrimaryKey(data), data);
         return this;
@@ -26,13 +35,8 @@ class RecordDataSourceBase extends najs_facade_1.Facade {
         }
         return result;
     }
-    next() {
-        return this.buffer.values().next();
-    }
     [Symbol.iterator]() {
-        return {
-            next: () => this.next()
-        };
+        return this.buffer.values();
     }
 }
 exports.RecordDataSourceBase = RecordDataSourceBase;

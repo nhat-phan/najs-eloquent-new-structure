@@ -6,6 +6,9 @@ export declare abstract class RecordDataSourceBase extends Facade implements Naj
     protected primaryKeyName: string;
     protected buffer: Map<string, Record>;
     constructor(modelName: string, primaryKeyName: string);
+    getModelName(): string;
+    getPrimaryKeyName(): string;
+    getBuffer(): Map<string, Record>;
     abstract getClassName(): string;
     abstract getPrimaryKey(data: Record): string;
     abstract read(): Promise<boolean>;
@@ -13,14 +16,5 @@ export declare abstract class RecordDataSourceBase extends Facade implements Naj
     push(data: Record): this;
     remove(data: Record): this;
     filter(cb: (item: Record) => boolean): Record[];
-    next(): {
-        value: Record;
-        done: boolean;
-    };
-    [Symbol.iterator](): {
-        next: () => {
-            value: Record;
-            done: boolean;
-        };
-    };
+    [Symbol.iterator](): IterableIterator<Record>;
 }

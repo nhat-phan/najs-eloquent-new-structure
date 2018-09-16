@@ -15,6 +15,7 @@ export class MemoryRecordExecutor extends RecordExecutorBase {
 
   constructor(model: Model, record: Record, dataSource: MemoryDataSource<Record>, logger: MemoryQueryLog) {
     super(model, record, new DefaultConvention())
+    this.dataSource = dataSource
     this.logger = logger
   }
 

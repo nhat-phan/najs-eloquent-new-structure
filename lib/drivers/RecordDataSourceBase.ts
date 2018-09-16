@@ -15,6 +15,18 @@ export abstract class RecordDataSourceBase extends Facade implements Najs.Contra
     this.buffer = new Map()
   }
 
+  getModelName(): string {
+    return this.modelName
+  }
+
+  getPrimaryKeyName(): string {
+    return this.primaryKeyName
+  }
+
+  getBuffer(): Map<string, Record> {
+    return this.buffer
+  }
+
   abstract getClassName(): string
   abstract getPrimaryKey(data: Record): string
   abstract read(): Promise<boolean>
@@ -42,13 +54,7 @@ export abstract class RecordDataSourceBase extends Facade implements Najs.Contra
     return result
   }
 
-  next(): { value: Record; done: boolean } {
-    return this.buffer.values().next()
-  }
-
-  [Symbol.iterator](): { next: () => { value: Record; done: boolean } } {
-    return {
-      next: () => this.next()
-    }
+  [Symbol.iterator](): IterableIterator<Record> {
+    return this.buffer.values()
   }
 }

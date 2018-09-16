@@ -6,15 +6,6 @@ declare namespace Najs.Contracts.Eloquent {
         read(): Promise<boolean>;
         write(): Promise<boolean>;
         filter(cb: (item: T) => boolean): T[];
-        next(): {
-            value?: T;
-            done: boolean;
-        };
-        [Symbol.iterator](): {
-            next: () => {
-                value?: T;
-                done: boolean;
-            };
-        };
+        [Symbol.iterator](): IterableIterator<T>;
     }
 }

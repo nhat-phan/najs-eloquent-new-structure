@@ -7,6 +7,7 @@ const RecordExecutorBase_1 = require("../RecordExecutorBase");
 class MemoryRecordExecutor extends RecordExecutorBase_1.RecordExecutorBase {
     constructor(model, record, dataSource, logger) {
         super(model, record, new DefaultConvention_1.DefaultConvention());
+        this.dataSource = dataSource;
         this.logger = logger;
     }
     async saveRecord(action) {
