@@ -6,7 +6,8 @@ import { QueryLogBase, IQueryLogData } from '../../lib/drivers/QueryLogBase'
 class Logger extends QueryLogBase<IQueryLogData> {
   getDefaultData(): IQueryLogData {
     return {
-      raw: ''
+      raw: '',
+      queryBuilderData: {}
     }
   }
 }
@@ -19,7 +20,7 @@ describe('QueryLogBase', function() {
   describe('constructor()', function() {
     it('init with empty "raw" and "queryBuilderData"', function() {
       const logger = new Logger()
-      expect(logger['data']).toEqual({ raw: '' })
+      expect(logger['data']).toEqual({ raw: '', queryBuilderData: {} })
     })
   })
 
@@ -27,7 +28,7 @@ describe('QueryLogBase', function() {
     it('is chainable, sets the name to data', function() {
       const logger = new Logger()
       expect(logger.name('test') === logger).toBe(true)
-      expect(logger['data']).toEqual({ raw: '', name: 'test' })
+      expect(logger['data']).toEqual({ raw: '', queryBuilderData: {}, name: 'test' })
     })
   })
 
@@ -35,7 +36,7 @@ describe('QueryLogBase', function() {
     it('is chainable, sets the action to data', function() {
       const logger = new Logger()
       expect(logger.action('test') === logger).toBe(true)
-      expect(logger['data']).toEqual({ raw: '', action: 'test' })
+      expect(logger['data']).toEqual({ raw: '', queryBuilderData: {}, action: 'test' })
     })
   })
 
@@ -43,9 +44,9 @@ describe('QueryLogBase', function() {
     it('is chainable, appends all params to raw, if param is object it stringify param first', function() {
       const logger = new Logger()
       expect(logger.raw('1') === logger).toBe(true)
-      expect(logger['data']).toEqual({ raw: '1' })
+      expect(logger['data']).toEqual({ raw: '1', queryBuilderData: {} })
       logger.raw('2', { a: 1 }, '3')
-      expect(logger['data']).toEqual({ raw: '12{"a":1}3' })
+      expect(logger['data']).toEqual({ raw: '12{"a":1}3', queryBuilderData: {} })
     })
   })
 
@@ -55,7 +56,7 @@ describe('QueryLogBase', function() {
       const logger = new Logger()
       expect(logger.end(result) === result).toBe(true)
 
-      expect(QueryLog.pull()[0].data).toEqual({ raw: '', result: result })
+      expect(QueryLog.pull()[0].data).toEqual({ raw: '', queryBuilderData: {}, result: result })
     })
   })
 })

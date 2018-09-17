@@ -1,22 +1,13 @@
 import { QueryLogBase, IQueryLogData } from './../QueryLogBase'
 
 export interface IMongodbQueryLogData extends IQueryLogData {
-  queryBuilderData: object
   query?: object
   options?: object
 }
 
 export class MongodbQueryLog extends QueryLogBase<IMongodbQueryLogData> {
   getDefaultData(): IMongodbQueryLogData {
-    return {
-      raw: '',
-      queryBuilderData: {}
-    }
-  }
-
-  queryBuilderData(key: string, value: any): this {
-    this.data.queryBuilderData[key] = value
-    return this
+    return this.getEmptyData()
   }
 
   query(data: object): object {

@@ -6,6 +6,7 @@ export interface IQueryLogData {
   result?: any
   name?: string
   action?: string
+  queryBuilderData: object
 }
 
 export abstract class QueryLogBase<T extends IQueryLogData> {
@@ -16,6 +17,18 @@ export abstract class QueryLogBase<T extends IQueryLogData> {
   }
 
   abstract getDefaultData(): T
+
+  getEmptyData(): IQueryLogData {
+    return {
+      raw: '',
+      queryBuilderData: {}
+    }
+  }
+
+  queryBuilderData(key: string, value: any): this {
+    this.data.queryBuilderData[key] = value
+    return this
+  }
 
   name(name: string): this {
     this.data.name = name

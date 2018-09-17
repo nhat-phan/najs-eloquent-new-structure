@@ -2,8 +2,6 @@ import { QueryLogBase, IQueryLogData } from '../QueryLogBase'
 
 export class MemoryQueryLog extends QueryLogBase<IQueryLogData> {
   getDefaultData(): IQueryLogData {
-    return {
-      raw: ''
-    }
+    return this.getEmptyData()
   }
 }

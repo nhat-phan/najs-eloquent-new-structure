@@ -6,6 +6,16 @@ class QueryLogBase {
     constructor() {
         this.data = this.getDefaultData();
     }
+    getEmptyData() {
+        return {
+            raw: '',
+            queryBuilderData: {}
+        };
+    }
+    queryBuilderData(key, value) {
+        this.data.queryBuilderData[key] = value;
+        return this;
+    }
     name(name) {
         this.data.name = name;
         return this;
