@@ -36,6 +36,7 @@ exports.NajsEloquent = {
     },
     Provider: {
         DriverProvider: 'NajsEloquent.Provider.DriverProvider',
+        MemoryDataSourceProvider: 'NajsEloquent.Provider.MemoryDataSourceProvider',
         MongodbProvider: 'NajsEloquent.Provider.MongodbProvider',
         MongooseProvider: 'NajsEloquent.Provider.MongooseProvider',
         KnexProvider: 'NajsEloquent.Provider.KnexProvider'

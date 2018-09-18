@@ -1,6 +1,5 @@
 /// <reference types="node" />
 /// <reference types="najs-binding" />
-/// <reference path="../definitions/model/IModel.ts" />
 
 namespace Najs.Contracts.Eloquent {
   export interface MemoryDataSource<T extends object> extends Najs.Contracts.Autoload {

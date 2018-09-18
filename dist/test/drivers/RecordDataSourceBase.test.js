@@ -2,17 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const najs_facade_1 = require("najs-facade");
 const Record_1 = require("../../lib/drivers/Record");
 const MemoryDataSource_1 = require("../../lib/drivers/memory/MemoryDataSource");
 describe('RecordDataSourceBase', function () {
-    it('extends Facade', function () {
-        const ds = new MemoryDataSource_1.MemoryDataSource('test', 'id');
-        expect(ds).toBeInstanceOf(najs_facade_1.Facade);
-    });
+    const model = {
+        getModelName() {
+            return 'test';
+        },
+        getPrimaryKeyName() {
+            return 'id';
+        }
+    };
     describe('constructor()', function () {
         it('assigns modelName and primaryKeyName to respective properties and create new buffer as a Map', function () {
-            const ds = new MemoryDataSource_1.MemoryDataSource('test', 'id');
+            const ds = new MemoryDataSource_1.MemoryDataSource(model);
             expect(ds.getModelName()).toEqual('test');
             expect(ds.getPrimaryKeyName()).toEqual('id');
             expect(ds.getBuffer()).toBeInstanceOf(Map);
@@ -21,7 +24,7 @@ describe('RecordDataSourceBase', function () {
     describe('.push()', function () {
         it('is chainable, simply assigns the record to map with id from .getPrimaryKey()', function () {
             const record = new Record_1.Record();
-            const ds = new MemoryDataSource_1.MemoryDataSource('test', 'id');
+            const ds = new MemoryDataSource_1.MemoryDataSource(model);
             const stub = Sinon.stub(ds, 'getPrimaryKey');
             stub.returns('anything');
             expect(ds.push(record) === ds).toBe(true);
@@ -31,7 +34,7 @@ describe('RecordDataSourceBase', function () {
     describe('.remove()', function () {
         it('is chainable, simply removes the record out of map with id from .getPrimaryKey()', function () {
             const record = new Record_1.Record();
-            const ds = new MemoryDataSource_1.MemoryDataSource('test', 'id');
+            const ds = new MemoryDataSource_1.MemoryDataSource(model);
             const stub = Sinon.stub(ds, 'getPrimaryKey');
             stub.returns('anything');
             ds.push(record);
@@ -41,7 +44,7 @@ describe('RecordDataSourceBase', function () {
     });
     describe('.filter()', function () {
         it('loops each value item then filters based on the callback', function () {
-            const ds = new MemoryDataSource_1.MemoryDataSource('test', 'id');
+            const ds = new MemoryDataSource_1.MemoryDataSource(model);
             const a = new Record_1.Record({ name: 'a' });
             const b = new Record_1.Record({ name: 'b' });
             const c = new Record_1.Record({ name: 'c' });
@@ -61,7 +64,7 @@ describe('RecordDataSourceBase', function () {
     });
     describe('[Symbol.iterator]()', function () {
         it('returns the iterator of buffer.values()', function () {
-            const ds = new MemoryDataSource_1.MemoryDataSource('test', 'id');
+            const ds = new MemoryDataSource_1.MemoryDataSource(model);
             ds.push(new Record_1.Record({ name: 'a' }));
             ds.push(new Record_1.Record({ name: 'b' }));
             ds.push(new Record_1.Record({ name: 'c' }));

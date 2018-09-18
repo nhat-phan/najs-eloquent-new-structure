@@ -1,18 +1,21 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { Facade } from 'najs-facade'
 import { Record } from '../../lib/drivers/Record'
 import { MemoryDataSource } from '../../lib/drivers/memory/MemoryDataSource'
 
 describe('RecordDataSourceBase', function() {
-  it('extends Facade', function() {
-    const ds = new MemoryDataSource('test', 'id')
-    expect(ds).toBeInstanceOf(Facade)
-  })
+  const model: any = {
+    getModelName() {
+      return 'test'
+    },
+    getPrimaryKeyName() {
+      return 'id'
+    }
+  }
 
   describe('constructor()', function() {
     it('assigns modelName and primaryKeyName to respective properties and create new buffer as a Map', function() {
-      const ds = new MemoryDataSource('test', 'id')
+      const ds = new MemoryDataSource(model)
       expect(ds.getModelName()).toEqual('test')
       expect(ds.getPrimaryKeyName()).toEqual('id')
       expect(ds.getBuffer()).toBeInstanceOf(Map)
@@ -22,7 +25,7 @@ describe('RecordDataSourceBase', function() {
   describe('.push()', function() {
     it('is chainable, simply assigns the record to map with id from .getPrimaryKey()', function() {
       const record = new Record()
-      const ds = new MemoryDataSource('test', 'id')
+      const ds = new MemoryDataSource(model)
       const stub = Sinon.stub(ds, 'getPrimaryKey')
       stub.returns('anything')
 
@@ -34,7 +37,7 @@ describe('RecordDataSourceBase', function() {
   describe('.remove()', function() {
     it('is chainable, simply removes the record out of map with id from .getPrimaryKey()', function() {
       const record = new Record()
-      const ds = new MemoryDataSource('test', 'id')
+      const ds = new MemoryDataSource(model)
       const stub = Sinon.stub(ds, 'getPrimaryKey')
       stub.returns('anything')
       ds.push(record)
@@ -46,7 +49,7 @@ describe('RecordDataSourceBase', function() {
 
   describe('.filter()', function() {
     it('loops each value item then filters based on the callback', function() {
-      const ds = new MemoryDataSource('test', 'id')
+      const ds = new MemoryDataSource(model)
       const a = new Record({ name: 'a' })
       const b = new Record({ name: 'b' })
       const c = new Record({ name: 'c' })
@@ -68,7 +71,7 @@ describe('RecordDataSourceBase', function() {
 
   describe('[Symbol.iterator]()', function() {
     it('returns the iterator of buffer.values()', function() {
-      const ds = new MemoryDataSource('test', 'id')
+      const ds = new MemoryDataSource(model)
       ds.push(new Record({ name: 'a' }))
       ds.push(new Record({ name: 'b' }))
       ds.push(new Record({ name: 'c' }))

@@ -1,11 +1,11 @@
 /// <reference path="../contracts/MemoryDataSource.d.ts" />
-import { Facade } from 'najs-facade';
+/// <reference path="../definitions/model/IModel.d.ts" />
 import { Record } from './Record';
-export declare abstract class RecordDataSourceBase extends Facade implements Najs.Contracts.Eloquent.MemoryDataSource<Record> {
+export declare abstract class RecordDataSourceBase implements Najs.Contracts.Eloquent.MemoryDataSource<Record> {
     protected modelName: string;
     protected primaryKeyName: string;
     protected buffer: Map<string, Record>;
-    constructor(modelName: string, primaryKeyName: string);
+    constructor(model: NajsEloquent.Model.IModel);
     getModelName(): string;
     getPrimaryKeyName(): string;
     getBuffer(): Map<string, Record>;

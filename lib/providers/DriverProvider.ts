@@ -4,7 +4,7 @@ import { Facade } from 'najs-facade'
 import { register, make, getClassName } from 'najs-binding'
 import { NajsEloquent } from '../constants'
 
-export class DriverProvider extends Facade implements DriverProvider {
+export class DriverProvider extends Facade implements Najs.Contracts.Eloquent.DriverProvider {
   static className: string = NajsEloquent.Provider.DriverProvider
 
   protected drivers: {

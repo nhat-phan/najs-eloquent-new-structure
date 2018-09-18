@@ -1,7 +1,7 @@
 /// <reference path="../contracts/DriverProvider.d.ts" />
 import Driver = Najs.Contracts.Eloquent.Driver;
 import { Facade } from 'najs-facade';
-export declare class DriverProvider extends Facade implements DriverProvider {
+export declare class DriverProvider extends Facade implements Najs.Contracts.Eloquent.DriverProvider {
     static className: string;
     protected drivers: {
         [key: string]: {
