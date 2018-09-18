@@ -176,11 +176,11 @@ export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.Q
       this.logger.queryBuilderData('limit', limit)
     }
 
-    const ordering = this.basicQuery.getOrdering()
-    if (ordering && !isEmpty(ordering)) {
+    const ordering = Array.from(this.basicQuery.getOrdering().entries())
+    if (ordering && ordering.length > 0) {
       this.logger.queryBuilderData('ordering', ordering)
-      options['sort'] = Object.keys(ordering).reduce((memo: any[], key) => {
-        memo.push([key, ordering[key] === 'asc' ? 1 : -1])
+      options['sort'] = ordering.reduce((memo: any[], entry) => {
+        memo.push([entry[0], entry[1] === 'asc' ? 1 : -1])
         return memo
       }, [])
     }

@@ -182,11 +182,11 @@ export class MongooseQueryExecutor extends ExecutorBase implements NajsEloquent.
   }
 
   passOrderingToQuery(query: MongooseQuery<any>) {
-    const ordering = this.basicQuery.getOrdering()
+    const ordering = Array.from(this.basicQuery.getOrdering().entries())
 
-    if (ordering && !isEmpty(ordering)) {
-      const sort: Object = Object.keys(ordering).reduce((memo, key) => {
-        memo[key] = ordering[key] === 'asc' ? 1 : -1
+    if (ordering && ordering.length > 0) {
+      const sort: Object = ordering.reduce((memo, entry) => {
+        memo[entry[0]] = entry[1] === 'asc' ? 1 : -1
         return memo
       }, {})
 

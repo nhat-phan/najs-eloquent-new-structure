@@ -148,10 +148,10 @@ class MongooseQueryExecutor extends ExecutorBase_1.ExecutorBase {
         }
     }
     passOrderingToQuery(query) {
-        const ordering = this.basicQuery.getOrdering();
-        if (ordering && !lodash_1.isEmpty(ordering)) {
-            const sort = Object.keys(ordering).reduce((memo, key) => {
-                memo[key] = ordering[key] === 'asc' ? 1 : -1;
+        const ordering = Array.from(this.basicQuery.getOrdering().entries());
+        if (ordering && ordering.length > 0) {
+            const sort = ordering.reduce((memo, entry) => {
+                memo[entry[0]] = entry[1] === 'asc' ? 1 : -1;
                 return memo;
             }, {});
             query.sort(sort);

@@ -7,7 +7,7 @@ const Operator_1 = require("./Operator");
 class BasicQuery {
     constructor(convention) {
         this.fields = {};
-        this.ordering = {};
+        this.ordering = new Map();
         this.conditions = [];
         this.convention = convention;
     }
@@ -30,8 +30,7 @@ class BasicQuery {
         delete this.fields.select;
     }
     clearOrdering() {
-        delete this.ordering;
-        this.ordering = {};
+        this.ordering.clear();
     }
     select(...fields) {
         const names = functions_1.array_unique(lodash_1.flatten(fields)).map(this.convention.formatFieldName);
@@ -44,7 +43,7 @@ class BasicQuery {
         return this;
     }
     orderBy(field, direction = 'asc') {
-        this.ordering[this.convention.formatFieldName(field)] = direction;
+        this.ordering.set(this.convention.formatFieldName(field), direction);
         return this;
     }
     limit(records) {

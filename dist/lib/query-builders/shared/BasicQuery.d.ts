@@ -15,7 +15,7 @@ export declare class BasicQuery implements IBasicQuery, IBasicConditionQuery {
         select?: string[];
         distinct?: string[];
     };
-    protected ordering: Object;
+    protected ordering: Map<string, string>;
     protected limitNumber: number;
     protected conditions: QueryCondition[];
     protected convention: IConvention;
@@ -23,7 +23,7 @@ export declare class BasicQuery implements IBasicQuery, IBasicConditionQuery {
     getConditions(): object[];
     getRawConditions(): QueryCondition[];
     getLimit(): number;
-    getOrdering(): Object;
+    getOrdering(): Map<string, string>;
     getSelect(): string[] | undefined;
     clearSelect(): void;
     clearOrdering(): void;

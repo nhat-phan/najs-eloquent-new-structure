@@ -63,11 +63,11 @@ describe('BasicQuery', function () {
     describe('.clearOrdering()', function () {
         it('clears all ordering data', function () {
             const query = new BasicQuery_1.BasicQuery(defaultConvention);
-            expect(query.orderBy('a', 'asc').getOrdering()).toEqual({ a: 'asc' });
-            expect(query.orderBy('a', 'desc').getOrdering()).toEqual({ a: 'desc' });
-            expect(query.orderBy('b').getOrdering()).toEqual({ a: 'desc', b: 'asc' });
+            expect(Array.from(query.orderBy('a', 'asc').getOrdering())).toEqual([['a', 'asc']]);
+            expect(Array.from(query.orderBy('a', 'desc').getOrdering())).toEqual([['a', 'desc']]);
+            expect(Array.from(query.orderBy('b').getOrdering())).toEqual([['a', 'desc'], ['b', 'asc']]);
             query.clearOrdering();
-            expect(query.getOrdering()).toEqual({});
+            expect(Array.from(query.getOrdering().keys())).toEqual([]);
         });
     });
     describe('.select()', function () {
@@ -86,17 +86,17 @@ describe('BasicQuery', function () {
     describe('.orderBy()', function () {
         it('has default direction is ASC', function () {
             const query = new BasicQuery_1.BasicQuery(defaultConvention);
-            expect(query.orderBy('a').getOrdering()).toEqual({ a: 'asc' });
+            expect(Array.from(query.orderBy('a').getOrdering())).toEqual([['a', 'asc']]);
         });
         it('can set direction to DESC', function () {
             const query = new BasicQuery_1.BasicQuery(defaultConvention);
-            expect(query.orderBy('a', 'desc').getOrdering()).toEqual({ a: 'desc' });
+            expect(Array.from(query.orderBy('a', 'desc').getOrdering())).toEqual([['a', 'desc']]);
         });
         it('overrides if fields already exists', function () {
             const query = new BasicQuery_1.BasicQuery(defaultConvention);
-            expect(query.orderBy('a', 'asc').getOrdering()).toEqual({ a: 'asc' });
-            expect(query.orderBy('a', 'desc').getOrdering()).toEqual({ a: 'desc' });
-            expect(query.orderBy('b').getOrdering()).toEqual({ a: 'desc', b: 'asc' });
+            expect(Array.from(query.orderBy('a', 'asc').getOrdering())).toEqual([['a', 'asc']]);
+            expect(Array.from(query.orderBy('a', 'desc').getOrdering())).toEqual([['a', 'desc']]);
+            expect(Array.from(query.orderBy('b').getOrdering())).toEqual([['a', 'desc'], ['b', 'asc']]);
         });
     });
     describe('.limit()', function () {

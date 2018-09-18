@@ -138,11 +138,11 @@ class MongodbQueryExecutor extends ExecutorBase_1.ExecutorBase {
             options['limit'] = limit;
             this.logger.queryBuilderData('limit', limit);
         }
-        const ordering = this.basicQuery.getOrdering();
-        if (ordering && !lodash_1.isEmpty(ordering)) {
+        const ordering = Array.from(this.basicQuery.getOrdering().entries());
+        if (ordering && ordering.length > 0) {
             this.logger.queryBuilderData('ordering', ordering);
-            options['sort'] = Object.keys(ordering).reduce((memo, key) => {
-                memo.push([key, ordering[key] === 'asc' ? 1 : -1]);
+            options['sort'] = ordering.reduce((memo, entry) => {
+                memo.push([entry[0], entry[1] === 'asc' ? 1 : -1]);
                 return memo;
             }, []);
         }

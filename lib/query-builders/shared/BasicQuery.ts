@@ -21,14 +21,14 @@ export class BasicQuery implements IBasicQuery, IBasicConditionQuery {
     select?: string[]
     distinct?: string[]
   }
-  protected ordering: Object
+  protected ordering: Map<string, string>
   protected limitNumber: number
   protected conditions: QueryCondition[]
   protected convention: IConvention
 
   constructor(convention: IConvention) {
     this.fields = {}
-    this.ordering = {}
+    this.ordering = new Map()
     this.conditions = []
     this.convention = convention
   }
@@ -41,11 +41,11 @@ export class BasicQuery implements IBasicQuery, IBasicConditionQuery {
     return this.conditions
   }
 
-  getLimit() {
+  getLimit(): number {
     return this.limitNumber
   }
 
-  getOrdering() {
+  getOrdering(): Map<string, string> {
     return this.ordering
   }
 
@@ -58,8 +58,7 @@ export class BasicQuery implements IBasicQuery, IBasicConditionQuery {
   }
 
   clearOrdering() {
-    delete this.ordering
-    this.ordering = {}
+    this.ordering.clear()
   }
 
   select(...fields: Array<string | string[]>): this {
@@ -74,7 +73,7 @@ export class BasicQuery implements IBasicQuery, IBasicConditionQuery {
   }
 
   orderBy(field: string, direction: 'asc' | 'desc' = 'asc'): this {
-    this.ordering[this.convention.formatFieldName(field)] = direction
+    this.ordering.set(this.convention.formatFieldName(field), direction)
     return this
   }
 
