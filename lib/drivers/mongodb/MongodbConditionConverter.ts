@@ -5,6 +5,7 @@ import { IAutoload, register, make } from 'najs-binding'
 import { NajsEloquent } from '../../constants'
 import { MongodbConditionMatcherFactory } from './MongodbConditionMatcherFactory'
 
+// TODO: use BasicQueryConverter instead
 export class MongodbConditionConverter extends ConditionConverter implements IAutoload {
   static className: string = NajsEloquent.QueryBuilder.MongodbConditionConverter
 

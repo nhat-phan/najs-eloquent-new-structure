@@ -7,8 +7,8 @@ var BoolOperator;
     BoolOperator["OR"] = "or";
 })(BoolOperator = exports.BoolOperator || (exports.BoolOperator = {}));
 class BasicQueryConverter {
-    constructor(queryCondition, matcherFactory) {
-        this.basicQuery = queryCondition;
+    constructor(basicQuery, matcherFactory) {
+        this.basicQuery = basicQuery;
         this.matcherFactory = matcherFactory;
     }
     getConvertedQuery() {

@@ -15,8 +15,8 @@ export class BasicQueryConverter {
   protected basicQuery: BasicQuery
   protected matcherFactory: IConditionMatcherFactory
 
-  constructor(queryCondition: BasicQuery, matcherFactory: IConditionMatcherFactory) {
-    this.basicQuery = queryCondition
+  constructor(basicQuery: BasicQuery, matcherFactory: IConditionMatcherFactory) {
+    this.basicQuery = basicQuery
     this.matcherFactory = matcherFactory
   }
 

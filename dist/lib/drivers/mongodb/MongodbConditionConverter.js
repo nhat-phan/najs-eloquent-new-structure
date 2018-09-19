@@ -5,6 +5,7 @@ const ConditionConverter_1 = require("../../query-builders/shared/ConditionConve
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
 const MongodbConditionMatcherFactory_1 = require("./MongodbConditionMatcherFactory");
+// TODO: use BasicQueryConverter instead
 class MongodbConditionConverter extends ConditionConverter_1.ConditionConverter {
     constructor(queryConditions) {
         super(queryConditions, najs_binding_1.make(MongodbConditionMatcherFactory_1.MongodbConditionMatcherFactory.className), true);

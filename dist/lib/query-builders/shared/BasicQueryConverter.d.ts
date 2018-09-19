@@ -10,7 +10,7 @@ export declare enum BoolOperator {
 export declare class BasicQueryConverter {
     protected basicQuery: BasicQuery;
     protected matcherFactory: IConditionMatcherFactory;
-    constructor(queryCondition: BasicQuery, matcherFactory: IConditionMatcherFactory);
+    constructor(basicQuery: BasicQuery, matcherFactory: IConditionMatcherFactory);
     getConvertedQuery<T>(): {
         $and: T[];
     } | {
