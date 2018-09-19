@@ -20,7 +20,7 @@ export class MemoryRecordExecutor extends RecordExecutorBase {
   }
 
   async saveRecord<R = any>(action: string): Promise<R> {
-    this.logRaw('push', this.record).action(`${this.model.getModelName()}.${action}()`)
+    this.logRaw('push', this.record.toObject()).action(`${this.model.getModelName()}.${action}()`)
 
     return this.shouldExecute()
       ? this.dataSource
@@ -28,7 +28,7 @@ export class MemoryRecordExecutor extends RecordExecutorBase {
           .write()
           .then(success => {
             return this.logger.end({
-              success: success
+              ok: success
             })
           })
       : this.logger.end({})
@@ -43,7 +43,7 @@ export class MemoryRecordExecutor extends RecordExecutorBase {
   }
 
   async hardDeleteRecord<R = any>(): Promise<R> {
-    this.logRaw('remove', this.record).action(`${this.model.getModelName()}.hardDelete()`)
+    this.logRaw('remove', this.record.toObject()).action(`${this.model.getModelName()}.hardDelete()`)
 
     return this.shouldExecute()
       ? this.dataSource
@@ -51,20 +51,13 @@ export class MemoryRecordExecutor extends RecordExecutorBase {
           .write()
           .then(success => {
             return this.logger.end({
-              success: success
+              ok: success
             })
           })
       : this.logger.end({})
   }
 
-  logRaw(func: string, ...args: any[]): MemoryQueryLog {
-    const passed = []
-    for (let i = 0, l = args.length; i < l; i++) {
-      passed.push(args[i])
-      if (i !== l - 1) {
-        passed.push(',')
-      }
-    }
-    return this.logger.raw(this.dataSource.getClassName(), `.${func}(`, ...passed, ').write()')
+  logRaw(func: string, data: any): MemoryQueryLog {
+    return this.logger.raw(this.dataSource.getClassName(), `.${func}(`, data, ').write()')
   }
 }

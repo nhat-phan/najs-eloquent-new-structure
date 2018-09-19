@@ -11,14 +11,14 @@ class MemoryRecordExecutor extends RecordExecutorBase_1.RecordExecutorBase {
         this.logger = logger;
     }
     async saveRecord(action) {
-        this.logRaw('push', this.record).action(`${this.model.getModelName()}.${action}()`);
+        this.logRaw('push', this.record.toObject()).action(`${this.model.getModelName()}.${action}()`);
         return this.shouldExecute()
             ? this.dataSource
                 .push(this.record)
                 .write()
                 .then(success => {
                 return this.logger.end({
-                    success: success
+                    ok: success
                 });
             })
             : this.logger.end({});
@@ -30,27 +30,20 @@ class MemoryRecordExecutor extends RecordExecutorBase_1.RecordExecutorBase {
         return this.saveRecord(action);
     }
     async hardDeleteRecord() {
-        this.logRaw('remove', this.record).action(`${this.model.getModelName()}.hardDelete()`);
+        this.logRaw('remove', this.record.toObject()).action(`${this.model.getModelName()}.hardDelete()`);
         return this.shouldExecute()
             ? this.dataSource
                 .remove(this.record)
                 .write()
                 .then(success => {
                 return this.logger.end({
-                    success: success
+                    ok: success
                 });
             })
             : this.logger.end({});
     }
-    logRaw(func, ...args) {
-        const passed = [];
-        for (let i = 0, l = args.length; i < l; i++) {
-            passed.push(args[i]);
-            if (i !== l - 1) {
-                passed.push(',');
-            }
-        }
-        return this.logger.raw(this.dataSource.getClassName(), `.${func}(`, ...passed, ').write()');
+    logRaw(func, data) {
+        return this.logger.raw(this.dataSource.getClassName(), `.${func}(`, data, ').write()');
     }
 }
 exports.MemoryRecordExecutor = MemoryRecordExecutor;

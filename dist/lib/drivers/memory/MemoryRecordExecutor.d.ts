@@ -13,5 +13,5 @@ export declare class MemoryRecordExecutor extends RecordExecutorBase {
     createRecord<R = any>(action: string): Promise<R>;
     updateRecord<R = any>(action: string): Promise<R>;
     hardDeleteRecord<R = any>(): Promise<R>;
-    logRaw(func: string, ...args: any[]): MemoryQueryLog;
+    logRaw(func: string, data: any): MemoryQueryLog;
 }
