@@ -12,7 +12,6 @@ describe('RecordCollector', function () {
                 const ds = {};
                 const collector = RecordCollector_1.RecordCollector.use(ds);
                 expect(collector['dataSource'] === ds).toBe(true);
-                expect(collector['conditions']).toEqual({});
             });
         });
         describe('.limit()', function () {
@@ -243,6 +242,18 @@ describe('RecordCollector', function () {
             });
         });
         describe('.exec()', function () {
+            it('does not filter if there is no conditions data', function () {
+                const ds = [
+                    new Record_1.Record({ a: 1 }),
+                    new Record_1.Record({ a: 2 }),
+                    new Record_1.Record({ a: 3 }),
+                    new Record_1.Record({ a: 4 }),
+                    new Record_1.Record({ a: 5 })
+                ];
+                const collector = RecordCollector_1.RecordCollector.use(ds);
+                const result = collector.exec().map(item => item.getAttribute('a'));
+                expect(result).toEqual([1, 2, 3, 4, 5]);
+            });
             it('filters dataSource by .isMatch()', function () {
                 const ds = [
                     new Record_1.Record({ a: 1 }),

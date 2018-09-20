@@ -12,7 +12,7 @@ export declare class RecordCollector {
     protected limited?: number;
     protected sortedBy?: Array<[string, string]>;
     protected selected?: string[];
-    protected conditions: RecordConditions;
+    protected conditions?: RecordConditions;
     protected constructor(dataSource: MemoryDataSource<Record>);
     static use(dataSource: MemoryDataSource<Record>): RecordCollector;
     limit(value: number): this;

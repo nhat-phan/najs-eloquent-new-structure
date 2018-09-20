@@ -6,7 +6,6 @@ const RecordConditionMatcher_1 = require("./RecordConditionMatcher");
 class RecordCollector {
     constructor(dataSource) {
         this.dataSource = dataSource;
-        this.conditions = {};
     }
     static use(dataSource) {
         return new RecordCollector(dataSource);
@@ -76,10 +75,11 @@ class RecordCollector {
     }
     exec() {
         const filtered = [];
+        const shouldMatchItem = typeof this.conditions !== 'undefined';
         const shouldSortResult = this.hasSortedByConfig();
         const shouldPickFields = this.hasSelectedFieldsConfig();
         for (const record of this.dataSource) {
-            if (!this.isMatch(record, this.conditions)) {
+            if (shouldMatchItem && !this.isMatch(record, this.conditions)) {
                 continue;
             }
             // Edge cases which happens if there is no sortedBy data

@@ -15,11 +15,10 @@ export class RecordCollector {
   protected limited?: number
   protected sortedBy?: Array<[string, string]>
   protected selected?: string[]
-  protected conditions: RecordConditions
+  protected conditions?: RecordConditions
 
   protected constructor(dataSource: MemoryDataSource<Record>) {
     this.dataSource = dataSource
-    this.conditions = {}
   }
 
   static use(dataSource: MemoryDataSource<Record>) {
@@ -110,11 +109,12 @@ export class RecordCollector {
 
   exec(): Record[] {
     const filtered: Record[] = []
+    const shouldMatchItem = typeof this.conditions !== 'undefined'
     const shouldSortResult = this.hasSortedByConfig()
     const shouldPickFields = this.hasSelectedFieldsConfig()
 
     for (const record of this.dataSource) {
-      if (!this.isMatch(record, this.conditions)) {
+      if (shouldMatchItem && !this.isMatch(record, this.conditions!)) {
         continue
       }
 

@@ -1,6 +1,7 @@
 /// <reference path="../../contracts/MemoryDataSource.ts" />
 import MemoryDataSource = Najs.Contracts.Eloquent.MemoryDataSource
 
+import { isEmpty } from 'lodash'
 import { make } from 'najs-binding'
 import { RecordConditionMatcherFactory } from '../RecordConditionMatcherFactory'
 import { BasicQueryConverter } from '../../query-builders/shared/BasicQueryConverter'
@@ -10,6 +11,7 @@ import { MemoryQueryLog } from './MemoryQueryLog'
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
+import { RecordCollector } from '../RecordCollector'
 // import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 
 export class MemoryQueryExecutor extends ExecutorBase {
@@ -27,19 +29,46 @@ export class MemoryQueryExecutor extends ExecutorBase {
   }
 
   async get(): Promise<object[]> {
-    await this.dataSource.read()
-    // const conditions = this.getFilterConditions()
-    if (this.shouldExecute()) {
-      // const records = this.dataSource.filter(item => this.filter.isMatch(item, conditions))
+    const collector = this.makeCollector()
+    const result = this.shouldExecute() ? await this.collectResult(collector) : []
+    return this.logger.action('get').end(result)
+  }
 
-      // return records
+  async collectResult(collector: RecordCollector): Promise<Record[]> {
+    await this.dataSource.read()
+
+    return collector.exec()
+  }
+
+  makeCollector() {
+    const collector = RecordCollector.use(this.dataSource)
+    this.logger.raw(`RecordCollector.use(${this.dataSource.getClassName()})`)
+
+    const limit = this.basicQuery.getLimit()
+    if (limit) {
+      collector.limit(limit)
+      this.logger.queryBuilderData('limit', limit).raw('.limit(', limit, ')')
     }
-    return []
-    // const result = this.shouldExecute() ? await this.collection.find(query, options).toArray() : []
-    // return this.logRaw(query, options, 'find')
-    //   .raw('.toArray()')
-    //   .action('get')
-    //   .end(result)
+
+    const ordering = Array.from(this.basicQuery.getOrdering().entries())
+    if (ordering && ordering.length > 0) {
+      collector.orderBy(ordering)
+      this.logger.queryBuilderData('ordering', ordering).raw('.orderBy(', ordering, ')')
+    }
+
+    const selected = this.basicQuery.getSelect()
+    if (!isEmpty(selected)) {
+      collector.select(selected!)
+      this.logger.queryBuilderData('select', selected).raw('.select(', selected, ')')
+    }
+
+    const conditions = this.getFilterConditions()
+    if (!isEmpty(selected)) {
+      collector.filterBy(conditions)
+      this.logger.queryBuilderData('conditions', this.basicQuery.getRawConditions()).raw('.filterBy(', conditions, ')')
+    }
+
+    return collector
   }
 
   getFilterConditions(): object {
@@ -50,11 +79,5 @@ export class MemoryQueryExecutor extends ExecutorBase {
       make<RecordConditionMatcherFactory>(RecordConditionMatcherFactory.className)
     )
     return converter.getConvertedQuery()
-    // return this.logger.queryBuilderData('conditions', this.basicQuery.getRawConditions())
-    // .query(ExecutorUtils.convertConditionsToMongodbQuery(conditions))
-  }
-
-  logRaw(query: object, options: object | undefined, func: string): MemoryQueryLog {
-    return this.logger.raw('db.', `.${func}(`, query).raw(options ? ', ' : '', options, ')')
   }
 }
