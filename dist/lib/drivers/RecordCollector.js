@@ -11,25 +11,25 @@ class RecordCollector {
     static use(dataSource) {
         return new RecordCollector(dataSource);
     }
-    setLimit(value) {
+    limit(value) {
         this.limited = value;
         return this;
     }
-    setSelectedFields(selectedFields) {
+    select(selectedFields) {
         this.selected = selectedFields;
         return this;
     }
-    setSortedData(directions) {
+    orderBy(directions) {
         this.sortedBy = directions;
         return this;
     }
-    setConditions(conditions) {
+    filterBy(conditions) {
         this.conditions = conditions;
         return this;
     }
-    pickFields(record) {
+    pickFields(record, selectedFields) {
         const data = record.toObject();
-        return new Record_1.Record(lodash_1.pick(data, this.selected));
+        return new Record_1.Record(lodash_1.pick(data, selectedFields));
     }
     isMatch(record, conditions) {
         if (typeof conditions['$or'] !== 'undefined') {
@@ -68,17 +68,23 @@ class RecordCollector {
         }
         return true;
     }
+    hasSortedByConfig() {
+        return typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0;
+    }
+    hasSelectedFieldsConfig() {
+        return typeof this.selected !== 'undefined' && this.selected.length > 0;
+    }
     exec() {
         const filtered = [];
-        const shouldSortResult = typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0;
-        const shouldPickFields = typeof this.selected !== 'undefined' && this.selected.length > 0;
+        const shouldSortResult = this.hasSortedByConfig();
+        const shouldPickFields = this.hasSelectedFieldsConfig();
         for (const record of this.dataSource) {
             if (!this.isMatch(record, this.conditions)) {
                 continue;
             }
             // Edge cases which happens if there is no sortedBy data
             if (!shouldSortResult) {
-                filtered.push(shouldPickFields ? this.pickFields(record) : record);
+                filtered.push(shouldPickFields ? this.pickFields(record, this.selected) : record);
                 // Edge case #1: the result is reach limited number the process should be stopped
                 if (this.limited && filtered.length === this.limited) {
                     return filtered;
@@ -95,8 +101,8 @@ class RecordCollector {
         if (this.limited) {
             result = result.slice(0, this.limited);
         }
-        if (typeof this.selected !== 'undefined') {
-            return result.map(record => this.pickFields(record));
+        if (this.hasSelectedFieldsConfig()) {
+            return result.map(record => this.pickFields(record, this.selected));
         }
         return result;
     }
@@ -106,7 +112,7 @@ class RecordCollector {
         const valueB = b.getAttribute(key);
         const result = lodash_1.eq(valueA, valueB);
         if (result) {
-            if (index > this.sortedBy.length - 1) {
+            if (index + 1 >= this.sortedBy.length) {
                 return 0;
             }
             return this.compare(a, b, index + 1);

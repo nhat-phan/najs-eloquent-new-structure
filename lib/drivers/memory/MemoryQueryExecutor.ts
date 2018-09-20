@@ -10,14 +10,12 @@ import { MemoryQueryLog } from './MemoryQueryLog'
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
-import { RecordFilter } from '../RecordFilter'
 // import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 
 export class MemoryQueryExecutor extends ExecutorBase {
   protected queryHandler: MemoryQueryBuilderHandler
   protected dataSource: MemoryDataSource<Record>
   protected basicQuery: BasicQuery
-  protected filter: RecordFilter
   protected logger: MemoryQueryLog
 
   constructor(queryHandler: MemoryQueryBuilderHandler, dataSource: MemoryDataSource<Record>, logger: MemoryQueryLog) {
@@ -25,17 +23,16 @@ export class MemoryQueryExecutor extends ExecutorBase {
     this.queryHandler = queryHandler
     this.dataSource = dataSource
     this.basicQuery = queryHandler.getBasicQuery()
-    this.filter = make<RecordFilter>(RecordFilter.className)
     this.logger = logger.name(this.queryHandler.getQueryName())
   }
 
   async get(): Promise<object[]> {
     await this.dataSource.read()
-    const conditions = this.getFilterConditions()
+    // const conditions = this.getFilterConditions()
     if (this.shouldExecute()) {
-      const records = this.dataSource.filter(item => this.filter.isMatch(item, conditions))
+      // const records = this.dataSource.filter(item => this.filter.isMatch(item, conditions))
 
-      return records
+      // return records
     }
     return []
     // const result = this.shouldExecute() ? await this.collection.find(query, options).toArray() : []

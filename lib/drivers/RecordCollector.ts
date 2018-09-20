@@ -26,34 +26,34 @@ export class RecordCollector {
     return new RecordCollector(dataSource)
   }
 
-  setLimit(value: number): this {
+  limit(value: number): this {
     this.limited = value
 
     return this
   }
 
-  setSelectedFields(selectedFields: string[]): this {
+  select(selectedFields: string[]): this {
     this.selected = selectedFields
 
     return this
   }
 
-  setSortedData(directions: Array<[string, string]>): this {
+  orderBy(directions: Array<[string, string]>): this {
     this.sortedBy = directions
 
     return this
   }
 
-  setConditions(conditions: RecordConditions): this {
+  filterBy(conditions: RecordConditions): this {
     this.conditions = conditions
 
     return this
   }
 
-  pickFields(record: Record): Record {
+  pickFields(record: Record, selectedFields: string[]): Record {
     const data = record.toObject()
 
-    return new Record(pick(data, this.selected!))
+    return new Record(pick(data, selectedFields))
   }
 
   isMatch(record: Record, conditions: RecordConditions): boolean {
@@ -100,10 +100,18 @@ export class RecordCollector {
     return true
   }
 
+  hasSortedByConfig(): boolean {
+    return typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0
+  }
+
+  hasSelectedFieldsConfig(): boolean {
+    return typeof this.selected !== 'undefined' && this.selected.length > 0
+  }
+
   exec(): Record[] {
     const filtered: Record[] = []
-    const shouldSortResult = typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0
-    const shouldPickFields = typeof this.selected !== 'undefined' && this.selected.length > 0
+    const shouldSortResult = this.hasSortedByConfig()
+    const shouldPickFields = this.hasSelectedFieldsConfig()
 
     for (const record of this.dataSource) {
       if (!this.isMatch(record, this.conditions)) {
@@ -112,7 +120,7 @@ export class RecordCollector {
 
       // Edge cases which happens if there is no sortedBy data
       if (!shouldSortResult) {
-        filtered.push(shouldPickFields ? this.pickFields(record) : record)
+        filtered.push(shouldPickFields ? this.pickFields(record, this.selected!) : record)
 
         // Edge case #1: the result is reach limited number the process should be stopped
         if (this.limited && filtered.length === this.limited) {
@@ -135,8 +143,8 @@ export class RecordCollector {
       result = result.slice(0, this.limited)
     }
 
-    if (typeof this.selected !== 'undefined') {
-      return result.map(record => this.pickFields(record))
+    if (this.hasSelectedFieldsConfig()) {
+      return result.map(record => this.pickFields(record, this.selected!))
     }
     return result
   }
@@ -148,7 +156,7 @@ export class RecordCollector {
 
     const result = eq(valueA, valueB)
     if (result) {
-      if (index > this.sortedBy!.length - 1) {
+      if (index + 1 >= this.sortedBy!.length) {
         return 0
       }
       return this.compare(a, b, index + 1)
