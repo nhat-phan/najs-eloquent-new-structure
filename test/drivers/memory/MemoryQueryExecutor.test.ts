@@ -140,7 +140,7 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: 'RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).exec()',
+          raw: 'RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()',
           action: 'get'
         },
         result
@@ -158,7 +158,7 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).filterBy(${JSON.stringify({
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
             $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
           })}).exec()`
         },
@@ -174,7 +174,7 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).filterBy(${JSON.stringify({
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
             $and: [{ field: 'age', operator: '=', value: 1000 }]
           })}).exec()`,
           action: 'get'
@@ -192,9 +192,10 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).filterBy(${JSON.stringify({
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
             $and: [{ field: 'age', operator: '=', value: 40 }]
           })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
           action: 'get'
         },
         result
@@ -213,9 +214,10 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).filterBy(${JSON.stringify({
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
             $and: [{ field: 'age', operator: '=', value: 40 }, { field: 'last_name', operator: '=', value: 'stark' }]
           })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
           action: 'get'
         },
         result
@@ -233,9 +235,10 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).filterBy(${JSON.stringify({
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
             $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'peter' }]
           })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
           action: 'get'
         },
         result
@@ -256,11 +259,12 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).orderBy(${JSON.stringify([
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).orderBy(${JSON.stringify([
             ['id', 'desc']
           ])}).filterBy(${JSON.stringify({
             $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'peter' }]
           })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
           action: 'get'
         },
         result
@@ -285,11 +289,12 @@ describe('MemoryQueryExecutor', function() {
 
       expect_query_log(
         {
-          raw: `RecordCollector.use(NajsEloquent.Driver.Memory.MemoryDataSource("User")).orderBy(${JSON.stringify([
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).orderBy(${JSON.stringify([
             ['id', 'desc']
           ])}).filterBy(${JSON.stringify({
             $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'peter' }]
           })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
           action: 'get'
         },
         result

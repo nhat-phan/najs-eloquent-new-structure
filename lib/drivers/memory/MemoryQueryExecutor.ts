@@ -44,9 +44,9 @@ export class MemoryQueryExecutor extends ExecutorBase {
 
   makeCollector() {
     const collector = RecordCollector.use(this.dataSource)
-    this.logger.raw(
-      `RecordCollector.use(${this.dataSource.getClassName()}("${this.queryHandler.getModel().getModelName()}"))`
-    )
+    this.logger
+      .dataSource(this.dataSource)
+      .raw(`RecordCollector.use(MemoryDataSourceProvider.create("${this.queryHandler.getModel().getModelName()}"))`)
 
     const limit = this.basicQuery.getLimit()
     if (limit) {

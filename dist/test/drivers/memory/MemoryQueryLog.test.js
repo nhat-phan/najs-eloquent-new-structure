@@ -17,4 +17,16 @@ describe('MemoryQueryLog', function () {
             expect(logger.getDefaultData()).toEqual('anything');
         });
     });
+    describe('.dataSource()', function () {
+        it('assigns the className of DataSource class to dataSource property', function () {
+            const logger = new MemoryQueryLog_1.MemoryQueryLog();
+            const dataSource = {
+                getClassName() {
+                    return 'anything';
+                }
+            };
+            expect(logger.dataSource(dataSource) === logger).toBe(true);
+            expect(logger['data']['dataSource']).toEqual('anything');
+        });
+    });
 });
