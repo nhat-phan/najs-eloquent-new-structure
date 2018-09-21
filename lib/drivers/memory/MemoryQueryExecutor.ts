@@ -12,7 +12,6 @@ import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import { RecordCollector } from '../RecordCollector'
-// import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 
 export class MemoryQueryExecutor extends ExecutorBase {
   protected queryHandler: MemoryQueryBuilderHandler
@@ -31,7 +30,10 @@ export class MemoryQueryExecutor extends ExecutorBase {
   async get(): Promise<object[]> {
     const collector = this.makeCollector()
     const result = this.shouldExecute() ? await this.collectResult(collector) : []
-    return this.logger.action('get').end(result)
+    return this.logger
+      .raw('.exec()')
+      .action('get')
+      .end(result)
   }
 
   async collectResult(collector: RecordCollector): Promise<Record[]> {
@@ -42,7 +44,9 @@ export class MemoryQueryExecutor extends ExecutorBase {
 
   makeCollector() {
     const collector = RecordCollector.use(this.dataSource)
-    this.logger.raw(`RecordCollector.use(${this.dataSource.getClassName()})`)
+    this.logger.raw(
+      `RecordCollector.use(${this.dataSource.getClassName()}("${this.queryHandler.getModel().getModelName()}"))`
+    )
 
     const limit = this.basicQuery.getLimit()
     if (limit) {
@@ -53,7 +57,7 @@ export class MemoryQueryExecutor extends ExecutorBase {
     const ordering = Array.from(this.basicQuery.getOrdering().entries())
     if (ordering && ordering.length > 0) {
       collector.orderBy(ordering)
-      this.logger.queryBuilderData('ordering', ordering).raw('.orderBy(', ordering, ')')
+      this.logger.queryBuilderData('ordering', ordering).raw('.orderBy(', JSON.stringify(ordering), ')')
     }
 
     const selected = this.basicQuery.getSelect()
@@ -63,7 +67,7 @@ export class MemoryQueryExecutor extends ExecutorBase {
     }
 
     const conditions = this.getFilterConditions()
-    if (!isEmpty(selected)) {
+    if (!isEmpty(conditions)) {
       collector.filterBy(conditions)
       this.logger.queryBuilderData('conditions', this.basicQuery.getRawConditions()).raw('.filterBy(', conditions, ')')
     }

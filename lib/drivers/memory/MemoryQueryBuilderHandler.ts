@@ -12,6 +12,7 @@ import { make } from 'najs-binding'
 import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ConditionQueryHandler } from '../../query-builders/shared/ConditionQueryHandler'
+import { MemoryExecutorFactory } from './MemoryExecutorFactory'
 
 export class MemoryQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected basicQuery: BasicQuery
@@ -19,7 +20,7 @@ export class MemoryQueryBuilderHandler extends QueryBuilderHandlerBase {
   protected convention: IConvention
 
   constructor(model: IModel) {
-    super(model, make<any>(''))
+    super(model, make<MemoryExecutorFactory>(MemoryExecutorFactory.className))
     this.convention = new DefaultConvention()
     this.basicQuery = new BasicQuery(this.convention)
     this.conditionQuery = new ConditionQueryHandler(this.basicQuery, this.convention)

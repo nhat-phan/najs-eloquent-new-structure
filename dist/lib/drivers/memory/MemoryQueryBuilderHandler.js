@@ -10,9 +10,10 @@ const najs_binding_1 = require("najs-binding");
 const QueryBuilderHandlerBase_1 = require("../../query-builders/QueryBuilderHandlerBase");
 const BasicQuery_1 = require("../../query-builders/shared/BasicQuery");
 const ConditionQueryHandler_1 = require("../../query-builders/shared/ConditionQueryHandler");
+const MemoryExecutorFactory_1 = require("./MemoryExecutorFactory");
 class MemoryQueryBuilderHandler extends QueryBuilderHandlerBase_1.QueryBuilderHandlerBase {
     constructor(model) {
-        super(model, najs_binding_1.make(''));
+        super(model, najs_binding_1.make(MemoryExecutorFactory_1.MemoryExecutorFactory.className));
         this.convention = new DefaultConvention_1.DefaultConvention();
         this.basicQuery = new BasicQuery_1.BasicQuery(this.convention);
         this.conditionQuery = new ConditionQueryHandler_1.ConditionQueryHandler(this.basicQuery, this.convention);

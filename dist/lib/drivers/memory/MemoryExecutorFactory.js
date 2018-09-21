@@ -5,16 +5,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../../constants");
+const MemoryRecordExecutor_1 = require("./MemoryRecordExecutor");
+const MemoryQueryExecutor_1 = require("./MemoryQueryExecutor");
 const MemoryQueryLog_1 = require("./MemoryQueryLog");
+const MemoryDataSourceProviderFacade_1 = require("../../facades/global/MemoryDataSourceProviderFacade");
 class MemoryExecutorFactory {
     makeRecordExecutor(model, record) {
-        return {};
+        return new MemoryRecordExecutor_1.MemoryRecordExecutor(model, record, this.getDataSource(model), this.makeLogger());
     }
     makeQueryExecutor(handler) {
-        return {};
+        return new MemoryQueryExecutor_1.MemoryQueryExecutor(handler, this.getDataSource(handler.getModel()), this.makeLogger());
     }
     getClassName() {
         return constants_1.NajsEloquent.Driver.Memory.MemoryExecutorFactory;
+    }
+    getDataSource(model) {
+        return MemoryDataSourceProviderFacade_1.MemoryDataSourceProvider.create(model);
     }
     makeLogger() {
         return new MemoryQueryLog_1.MemoryQueryLog();

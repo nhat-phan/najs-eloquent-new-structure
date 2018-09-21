@@ -7,7 +7,6 @@ const BasicQueryConverter_1 = require("../../query-builders/shared/BasicQueryCon
 const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
 const RecordCollector_1 = require("../RecordCollector");
-// import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase'
 class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, dataSource, logger) {
         super();
@@ -19,7 +18,10 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
     async get() {
         const collector = this.makeCollector();
         const result = this.shouldExecute() ? await this.collectResult(collector) : [];
-        return this.logger.action('get').end(result);
+        return this.logger
+            .raw('.exec()')
+            .action('get')
+            .end(result);
     }
     async collectResult(collector) {
         await this.dataSource.read();
@@ -27,7 +29,7 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
     }
     makeCollector() {
         const collector = RecordCollector_1.RecordCollector.use(this.dataSource);
-        this.logger.raw(`RecordCollector.use(${this.dataSource.getClassName()})`);
+        this.logger.raw(`RecordCollector.use(${this.dataSource.getClassName()}("${this.queryHandler.getModel().getModelName()}"))`);
         const limit = this.basicQuery.getLimit();
         if (limit) {
             collector.limit(limit);
@@ -36,7 +38,7 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
         const ordering = Array.from(this.basicQuery.getOrdering().entries());
         if (ordering && ordering.length > 0) {
             collector.orderBy(ordering);
-            this.logger.queryBuilderData('ordering', ordering).raw('.orderBy(', ordering, ')');
+            this.logger.queryBuilderData('ordering', ordering).raw('.orderBy(', JSON.stringify(ordering), ')');
         }
         const selected = this.basicQuery.getSelect();
         if (!lodash_1.isEmpty(selected)) {
@@ -44,7 +46,7 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
             this.logger.queryBuilderData('select', selected).raw('.select(', selected, ')');
         }
         const conditions = this.getFilterConditions();
-        if (!lodash_1.isEmpty(selected)) {
+        if (!lodash_1.isEmpty(conditions)) {
             collector.filterBy(conditions);
             this.logger.queryBuilderData('conditions', this.basicQuery.getRawConditions()).raw('.filterBy(', conditions, ')');
         }
