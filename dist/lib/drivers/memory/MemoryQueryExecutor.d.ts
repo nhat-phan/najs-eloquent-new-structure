@@ -14,6 +14,7 @@ export declare class MemoryQueryExecutor extends ExecutorBase {
     constructor(queryHandler: MemoryQueryBuilderHandler, dataSource: MemoryDataSource<Record>, logger: MemoryQueryLog);
     get(): Promise<object[]>;
     first(): Promise<object | undefined>;
+    count(): Promise<number>;
     collectResult(collector: RecordCollector): Promise<Record[]>;
     makeCollector(): RecordCollector;
     getFilterConditions(): object;

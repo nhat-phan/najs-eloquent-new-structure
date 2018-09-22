@@ -32,6 +32,20 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
             .end(result ? result[0] : undefined);
         return result && result.length > 0 ? result[0] : undefined;
     }
+    async count() {
+        if (this.basicQuery.getSelect()) {
+            this.basicQuery.clearSelect();
+        }
+        if (!lodash_1.isEmpty(this.basicQuery.getOrdering())) {
+            this.basicQuery.clearOrdering();
+        }
+        const collector = this.makeCollector();
+        const result = this.shouldExecute() ? await this.collectResult(collector) : [];
+        return this.logger
+            .raw('.exec()')
+            .action('count')
+            .end(result.length);
+    }
     async collectResult(collector) {
         await this.dataSource.read();
         return collector.exec();

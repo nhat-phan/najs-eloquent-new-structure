@@ -47,6 +47,22 @@ export class MemoryQueryExecutor extends ExecutorBase {
     return result && result.length > 0 ? result[0] : undefined
   }
 
+  async count(): Promise<number> {
+    if (this.basicQuery.getSelect()) {
+      this.basicQuery.clearSelect()
+    }
+    if (!isEmpty(this.basicQuery.getOrdering())) {
+      this.basicQuery.clearOrdering()
+    }
+
+    const collector = this.makeCollector()
+    const result = this.shouldExecute() ? await this.collectResult(collector) : []
+    return this.logger
+      .raw('.exec()')
+      .action('count')
+      .end(result.length)
+  }
+
   async collectResult(collector: RecordCollector): Promise<Record[]> {
     await this.dataSource.read()
 

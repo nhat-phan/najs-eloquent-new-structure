@@ -479,6 +479,146 @@ describe('MemoryQueryExecutor', function() {
     })
   })
 
+  describe('.count()', function() {
+    it('counts all data of records and returns a number', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(7)
+    })
+
+    it('returns 0 if no result', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'no-one')
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
+          })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(0)
+    })
+
+    it('overrides select even .select was used', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).select('abc', 'def')
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(7)
+    })
+
+    it('overrides ordering even .orderBy was used', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).orderBy('abc')
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(7)
+    })
+
+    it('can count items by query builder, case 1', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('age', 18)
+        .orWhere('first_name', 'tony')
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $or: [{ field: 'age', operator: '=', value: 18 }, { field: 'first_name', operator: '=', value: 'tony' }]
+          })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(2)
+    })
+
+    it('can count items by query builder, case 2', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('age', 1000)
+        .orWhere('first_name', 'captain')
+        .orderBy('last_name')
+        .limit(10)
+      const result = await handler.getQueryExecutor().count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).limit(10).filterBy(${JSON.stringify({
+            $or: [
+              { field: 'age', operator: '=', value: 1000 },
+              { field: 'first_name', operator: '=', value: 'captain' }
+            ]
+          })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(2)
+    })
+
+    it('returns 0 if executeMode is disabled', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('age', 1000)
+        .orWhere('first_name', 'captain')
+        .orderBy('last_name')
+        .limit(10)
+      const result = await handler
+        .getQueryExecutor()
+        .setExecuteMode('disabled')
+        .count()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).limit(10).filterBy(${JSON.stringify({
+            $or: [
+              { field: 'age', operator: '=', value: 1000 },
+              { field: 'first_name', operator: '=', value: 'captain' }
+            ]
+          })}).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'count'
+        },
+        result
+      )
+      expect(result).toEqual(0)
+    })
+  })
+
   describe('.collectResult()', function() {
     it('calls DataSource.read(), then calls and returns collector.exec()', async function() {
       const readSpy = Sinon.spy(UserDataSource, 'read')
