@@ -36,6 +36,17 @@ export class MemoryQueryExecutor extends ExecutorBase {
       .end(result)
   }
 
+  async first(): Promise<object | undefined> {
+    const collector = this.makeCollector().limit(1)
+    const result = this.shouldExecute() ? await this.collectResult(collector) : undefined
+    this.logger
+      .raw('.limit(1).exec()')
+      .action('first')
+      .end(result ? result[0] : undefined)
+
+    return result && result.length > 0 ? result[0] : undefined
+  }
+
   async collectResult(collector: RecordCollector): Promise<Record[]> {
     await this.dataSource.read()
 

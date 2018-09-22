@@ -9,7 +9,7 @@ declare namespace NajsEloquent.QueryBuilder {
         /**
          * Execute query and returns the first record.
          */
-        first(): Promise<T | null>;
+        first(): Promise<T | null | undefined>;
         /**
          * Execute query and returns count of records.
          */

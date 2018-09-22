@@ -303,6 +303,182 @@ describe('MemoryQueryExecutor', function() {
     })
   })
 
+  describe('.first()', function() {
+    it('finds first document of collection and return an instance of Eloquent<T>', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      const result = await handler.getQueryExecutor().first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect_match_user(result, dataset[0])
+    })
+
+    it('finds first document of collection and return an instance of Eloquent<T>', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).orderBy('id', 'desc')
+      const result = await handler.getQueryExecutor().first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).orderBy(${JSON.stringify([
+            ['id', 'desc']
+          ])}).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect_match_user(result, dataset[6])
+    })
+
+    it('returns undefined if no result', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'no-one')
+      const result = await handler.getQueryExecutor().first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
+          })}).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect(result).toBeUndefined()
+    })
+
+    it('can find data by query builder, case 1', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('age', 1000)
+      const result = await handler.getQueryExecutor().first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'age', operator: '=', value: 1000 }]
+          })}).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect_match_user(result, dataset[3])
+    })
+
+    it('can find data by query builder, case 2', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('age', 40)
+        .orWhere('first_name', 'jane')
+      const result = await handler.getQueryExecutor().first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'jane' }]
+          })}).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect_match_user(result, dataset[1])
+    })
+
+    it('can find data by query builder, case 3', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+      const result = await handler.getQueryExecutor().first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [
+              { field: 'first_name', operator: '=', value: 'tony' },
+              { field: 'last_name', operator: '=', value: 'stewart' }
+            ]
+          })}).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect_match_user(result, dataset[5])
+    })
+
+    // it('can find data by .native() before using query functions of query builder', async function() {
+    //   const handler = makeQueryBuilderHandler('users')
+    //   const result = await makeQueryBuilder(handler)
+    //     .native(function(collection) {
+    //       return collection.findOne({
+    //         first_name: 'tony'
+    //       })
+    //     })
+    //     .execute()
+
+    //   expect_match_user(result, dataset[2])
+    // })
+
+    // it('can find data by native() after using query functions of query builder', async function() {
+    //   const handler = makeQueryBuilderHandler('users')
+    //   const result = await makeQueryBuilder(handler)
+    //     .where('age', 40)
+    //     .orWhere('age', 1000)
+    //     .native(function(collection, conditions) {
+    //       return collection.findOne(conditions, { sort: [['last_name', -1]] })
+    //     })
+    //     .execute()
+    //   expect_match_user(result, dataset[5])
+    // })
+
+    // it('can find data by native() and modified after using query functions of query builder', async function() {
+    //   const handler = makeQueryBuilderHandler('users')
+    //   const result = await await makeQueryBuilder(handler)
+    //     .where('age', 40)
+    //     .orWhere('age', 1000)
+    //     .native(function(collection) {
+    //       return collection.findOne({
+    //         first_name: 'thor'
+    //       })
+    //     })
+    //     .execute()
+    //   expect_match_user(result, dataset[3])
+    // })
+
+    it('returns an undefined if executeMode is disabled', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('age', 40)
+        .orWhere('first_name', 'jane')
+      const result = await handler
+        .getQueryExecutor()
+        .setExecuteMode('disabled')
+        .first()
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'jane' }]
+          })}).limit(1).exec()`,
+          dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+          action: 'first'
+        },
+        result
+      )
+      expect(result).toBeUndefined()
+    })
+  })
+
   describe('.collectResult()', function() {
     it('calls DataSource.read(), then calls and returns collector.exec()', async function() {
       const readSpy = Sinon.spy(UserDataSource, 'read')

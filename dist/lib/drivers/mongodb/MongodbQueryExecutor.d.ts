@@ -13,7 +13,7 @@ export declare class MongodbQueryExecutor extends ExecutorBase implements NajsEl
     protected nativeHandlePromise: any;
     constructor(queryHandler: MongodbQueryBuilderHandler, collection: Collection, logger: MongodbQueryLog);
     get(): Promise<object[]>;
-    first(): Promise<object | null>;
+    first(): Promise<object | null | undefined>;
     count(): Promise<number>;
     update(data: Object): Promise<any>;
     delete(): Promise<any>;

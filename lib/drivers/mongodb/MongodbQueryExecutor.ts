@@ -38,7 +38,7 @@ export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.Q
       .end(result)
   }
 
-  async first(): Promise<object | null> {
+  async first(): Promise<object | null | undefined> {
     const query = this.makeQuery()
     const options = this.makeQueryOptions()
 

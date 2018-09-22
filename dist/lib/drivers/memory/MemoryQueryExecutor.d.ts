@@ -13,6 +13,7 @@ export declare class MemoryQueryExecutor extends ExecutorBase {
     protected logger: MemoryQueryLog;
     constructor(queryHandler: MemoryQueryBuilderHandler, dataSource: MemoryDataSource<Record>, logger: MemoryQueryLog);
     get(): Promise<object[]>;
+    first(): Promise<object | undefined>;
     collectResult(collector: RecordCollector): Promise<Record[]>;
     makeCollector(): RecordCollector;
     getFilterConditions(): object;
