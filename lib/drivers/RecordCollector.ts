@@ -99,6 +99,10 @@ export class RecordCollector {
     return true
   }
 
+  hasFilterByConfig(): boolean {
+    return typeof this.conditions !== 'undefined'
+  }
+
   hasSortedByConfig(): boolean {
     return typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0
   }
@@ -109,7 +113,7 @@ export class RecordCollector {
 
   exec(): Record[] {
     const filtered: Record[] = []
-    const shouldMatchItem = typeof this.conditions !== 'undefined'
+    const shouldMatchItem = this.hasFilterByConfig()
     const shouldSortResult = this.hasSortedByConfig()
     const shouldPickFields = this.hasSelectedFieldsConfig()
 

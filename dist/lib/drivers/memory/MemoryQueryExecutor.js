@@ -69,6 +69,24 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
         }
         return this.logger.end(await this.dataSource.write());
     }
+    async delete() {
+        const collector = this.makeCollector();
+        if (!collector.hasFilterByConfig()) {
+            return false;
+        }
+        const records = this.shouldExecute() ? await this.collectResult(collector) : [];
+        if (records.length === 0) {
+            return this.logger
+                .raw('.exec() >> empty, do nothing')
+                .action('delete')
+                .end(true);
+        }
+        this.logger.raw('.exec() >> delete records >> dataSource.write()').action('delete');
+        for (const record of records) {
+            this.dataSource.remove(record);
+        }
+        return this.logger.end(await this.dataSource.write());
+    }
     getUpdateRecordInfo(record, data) {
         const info = {
             origin: Object.assign({}, record.toObject()),

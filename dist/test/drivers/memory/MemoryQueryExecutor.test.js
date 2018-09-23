@@ -486,7 +486,7 @@ describe('MemoryQueryExecutor', function () {
         });
     });
     describe('.update()', function () {
-        it('can update data of collection, returns update result of records', async function () {
+        it('can update data of collection, returns result of dataSource.write()', async function () {
             let handler = makeQueryBuilderHandler('User');
             makeQueryBuilder(handler).where('first_name', 'peter');
             const result = await handler.getQueryExecutor().update({ age: 19 });
@@ -662,6 +662,130 @@ describe('MemoryQueryExecutor', function () {
             const updatedResult = await handler.getQueryExecutor().first();
             expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 44 }));
         });
+    });
+    describe('.delete()', function () {
+        it('can delete data of collection, returns result of dataSource.write()', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler).where('first_name', 'peter');
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                    $and: [{ field: 'first_name', operator: '=', value: 'peter' }]
+                })}).exec() >> delete records >> dataSource.write()`,
+                action: 'delete'
+            }, result);
+            expect(result).toEqual(true);
+            const count = await makeQueryBuilderHandler('User')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(6);
+        });
+        it('returns true and do nothing if executeMode is disabled', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler)
+                .where('first_name', 'john')
+                .where('last_name', 'doe');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .delete();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                    $and: [
+                        { field: 'first_name', operator: '=', value: 'john' },
+                        { field: 'last_name', operator: '=', value: 'doe' }
+                    ]
+                })}).exec() >> empty, do nothing`,
+                action: 'delete'
+            }, result);
+            expect(result).toEqual(true);
+            const count = await makeQueryBuilderHandler('User')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(6);
+        });
+        it('can delete data by query builder, case 1', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler).where('age', 1001);
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                    $and: [{ field: 'age', operator: '=', value: 1001 }]
+                })}).exec() >> delete records >> dataSource.write()`,
+                action: 'delete'
+            }, result);
+            expect(result).toEqual(true);
+            const count = await makeQueryBuilderHandler('User')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(5);
+        });
+        it('can delete data by query builder, case 2: multiple documents', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler)
+                .where('first_name', 'tony')
+                .orWhere('first_name', 'jane');
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                    $or: [
+                        { field: 'first_name', operator: '=', value: 'tony' },
+                        { field: 'first_name', operator: '=', value: 'jane' }
+                    ]
+                })}).exec() >> delete records >> dataSource.write()`,
+                action: 'delete'
+            }, result);
+            expect(result).toEqual(true);
+            const count = await makeQueryBuilderHandler('User')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(2);
+        });
+        it('can delete data by query builder, case 3', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler)
+                .where('first_name', 'john')
+                .where('last_name', 'doe');
+            const result = await handler.getQueryExecutor().delete();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                    $and: [
+                        { field: 'first_name', operator: '=', value: 'john' },
+                        { field: 'last_name', operator: '=', value: 'doe' }
+                    ]
+                })}).exec() >> delete records >> dataSource.write()`,
+                action: 'delete'
+            }, result);
+            expect(result).toEqual(true);
+            const count = await makeQueryBuilderHandler('User')
+                .getQueryExecutor()
+                .count();
+            expect(count).toEqual(1);
+        });
+        it('can not call delete without using any .where() statement', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            const result = await handler.getQueryExecutor().delete();
+            expect(result).toEqual(false);
+        });
+        it('can not call delete if query is empty', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler).select('any');
+            const result = await handler.getQueryExecutor().delete();
+            expect(result).toEqual(false);
+        });
+        // it('can delete by native() function', async function() {
+        //   const handler = makeQueryBuilderHandler('users')
+        //   const result = await makeQueryBuilder(handler)
+        //     .native(function(collection) {
+        //       return collection.remove({})
+        //     })
+        //     .execute()
+        //   expect(result).toEqual({ n: 1, ok: 1 })
+        //   const count = await makeQueryBuilderHandler('users')
+        //     .getQueryExecutor()
+        //     .count()
+        //   expect(count).toEqual(0)
+        // })
     });
     describe('.getUpdateRecordInfo()', function () {
         it('returns an updateRecordInfo which contain origin, updated and modified property', function () {

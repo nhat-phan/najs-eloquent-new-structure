@@ -23,6 +23,7 @@ export declare class RecordCollector {
     isMatch(record: Record, conditions: RecordConditions): boolean;
     isMatchAtLeastOneCondition(record: Record, conditions: Array<RecordConditionMatcher | RecordConditions>): boolean;
     isMatchAllConditions(record: Record, conditions: Array<RecordConditionMatcher | RecordConditions>): boolean;
+    hasFilterByConfig(): boolean;
     hasSortedByConfig(): boolean;
     hasSelectedFieldsConfig(): boolean;
     exec(): Record[];

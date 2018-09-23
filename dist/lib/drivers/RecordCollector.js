@@ -67,6 +67,9 @@ class RecordCollector {
         }
         return true;
     }
+    hasFilterByConfig() {
+        return typeof this.conditions !== 'undefined';
+    }
     hasSortedByConfig() {
         return typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0;
     }
@@ -75,7 +78,7 @@ class RecordCollector {
     }
     exec() {
         const filtered = [];
-        const shouldMatchItem = typeof this.conditions !== 'undefined';
+        const shouldMatchItem = this.hasFilterByConfig();
         const shouldSortResult = this.hasSortedByConfig();
         const shouldPickFields = this.hasSelectedFieldsConfig();
         for (const record of this.dataSource) {
