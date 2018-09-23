@@ -9,5 +9,12 @@ class MemoryQueryLog extends QueryLogBase_1.QueryLogBase {
         this.data.dataSource = ds.getClassName();
         return this;
     }
+    updateRecordInfo(info) {
+        if (typeof this.data.records === 'undefined') {
+            this.data.records = [];
+        }
+        this.data.records.push(info);
+        return this;
+    }
 }
 exports.MemoryQueryLog = MemoryQueryLog;

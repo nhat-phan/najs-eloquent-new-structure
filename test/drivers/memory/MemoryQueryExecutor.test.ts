@@ -11,6 +11,8 @@ import { MemoryQueryBuilder } from '../../../lib/drivers/memory/MemoryQueryBuild
 import { MemoryQueryBuilderHandler } from '../../../lib/drivers/memory/MemoryQueryBuilderHandler'
 import { MemoryQueryExecutor } from '../../../lib/drivers/memory/MemoryQueryExecutor'
 
+const Moment = require('moment')
+
 MemoryDataSourceProvider.register(MemoryDataSource, 'memory', true)
 
 const User: any = {
@@ -616,6 +618,259 @@ describe('MemoryQueryExecutor', function() {
         result
       )
       expect(result).toEqual(0)
+    })
+  })
+
+  describe('.update()', function() {
+    it('can update data of collection, returns update result of records', async function() {
+      let handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'peter')
+      const result = await handler.getQueryExecutor().update({ age: 19 })
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'first_name', operator: '=', value: 'peter' }]
+          })}).exec() >> update records >> dataSource.write()`,
+          action: 'update',
+          records: [
+            {
+              origin: Object.assign({}, dataset[6], { age: 15 }),
+              modified: true,
+              updated: Object.assign({}, dataset[6], { age: 19 })
+            }
+          ]
+        },
+        result
+      )
+      expect(result).toEqual(true)
+
+      handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'peter')
+      const updatedResult = await handler.getQueryExecutor().first()
+
+      expect_match_user(updatedResult, Object.assign({}, dataset[6], { age: 19 }))
+    })
+
+    it('does not call dataSource.push() if the record is not modified', async function() {
+      let handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'peter')
+      const result = await handler.getQueryExecutor().update({ age: 19 })
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'first_name', operator: '=', value: 'peter' }]
+          })}).exec() >> update records >> dataSource.write()`,
+          action: 'update',
+          records: [
+            {
+              origin: Object.assign({}, dataset[6], { age: 19 }),
+              modified: false,
+              updated: Object.assign({}, dataset[6], { age: 19 })
+            }
+          ]
+        },
+        result
+      )
+      expect(result).toEqual(true)
+
+      handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'peter')
+      const updatedResult = await handler.getQueryExecutor().first()
+
+      expect_match_user(updatedResult, Object.assign({}, dataset[6], { age: 19 }))
+    })
+
+    it('returns empty update result if no row matched', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'no-one')
+      const result = await handler.getQueryExecutor().update({ $set: { age: 19 } })
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
+          })}).exec() >> empty, do nothing`,
+          action: 'update'
+        },
+        result
+      )
+      expect(result).toEqual(true)
+    })
+
+    it('can update data by query builder, case 1', async function() {
+      let handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('age', 1000)
+      const result = await handler.getQueryExecutor().update({ age: 1001 })
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'age', operator: '=', value: 1000 }]
+          })}).exec() >> update records >> dataSource.write()`,
+          action: 'update'
+        },
+        result
+      )
+      expect(result).toEqual(true)
+
+      handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('first_name', 'thor')
+      const updatedResult = await handler.getQueryExecutor().first()
+
+      expect_match_user(updatedResult, Object.assign({}, dataset[3], { age: 1001 }))
+    })
+
+    it('can update data by query builder, case 2: multiple documents', async function() {
+      let handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('age', 40)
+      const result = await handler.getQueryExecutor().update({ age: 41 })
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [{ field: 'age', operator: '=', value: 40 }]
+          })}).exec() >> update records >> dataSource.write()`,
+          action: 'update'
+        },
+        result
+      )
+      expect(result).toEqual(true)
+
+      handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler).where('age', 41)
+      const updatedResults = await handler.getQueryExecutor().get()
+
+      expect_match_user(updatedResults[0], Object.assign({}, dataset[2], { age: 41 }))
+      expect_match_user(updatedResults[1], Object.assign({}, dataset[5], { age: 41 }))
+    })
+
+    it('auto add updatedAt field to $set if timestamps options is on', async function() {
+      const now = new Date(1988, 4, 16)
+      Moment.now = () => now
+
+      function makeHandler() {
+        return new MemoryQueryBuilderHandler(<any>{
+          getDriver() {
+            return {
+              getSoftDeletesFeature() {
+                return {
+                  hasSoftDeletes() {
+                    return false
+                  }
+                }
+              },
+              getTimestampsFeature() {
+                return {
+                  hasTimestamps() {
+                    return true
+                  },
+                  getTimestampsSetting() {
+                    return { createdAt: 'created_at', updatedAt: 'updated_at' }
+                  }
+                }
+              }
+            }
+          },
+
+          getModelName() {
+            return 'User'
+          },
+
+          getPrimaryKey() {
+            return 'id'
+          }
+        })
+      }
+      let handler = makeHandler()
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+
+      const result = await handler.getQueryExecutor().update({ age: 43 })
+      expect(result).toEqual(true)
+
+      handler = makeHandler()
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+      const updatedResult = await handler.getQueryExecutor().first()
+      expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 43, updated_at: now }))
+
+      handler = makeHandler()
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+      const result2 = await handler.getQueryExecutor().update({ age: 44 })
+      expect(result2).toEqual(true)
+
+      handler = makeHandler()
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+      const updatedResult2 = await handler.getQueryExecutor().first()
+      expect_match_user(updatedResult2, Object.assign({}, dataset[5], { age: 44, updated_at: now }))
+    })
+
+    it('returns an true and do nothing if executeMode is disabled', async function() {
+      let handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+      const result = await handler
+        .getQueryExecutor()
+        .setExecuteMode('disabled')
+        .update({ $inc: { age: 1 } })
+
+      expect_query_log(
+        {
+          raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+            $and: [
+              { field: 'first_name', operator: '=', value: 'tony' },
+              { field: 'last_name', operator: '=', value: 'stewart' }
+            ]
+          })}).exec() >> empty, do nothing`,
+          action: 'update'
+        },
+        result
+      )
+      expect(result).toEqual(true)
+
+      handler = makeQueryBuilderHandler('User')
+      makeQueryBuilder(handler)
+        .where('first_name', 'tony')
+        .where('last_name', 'stewart')
+      const updatedResult = await handler.getQueryExecutor().first()
+
+      expect_match_user(updatedResult, Object.assign({}, dataset[5], { age: 44 }))
+    })
+  })
+
+  describe('.getUpdateRecordInfo()', function() {
+    it('returns an updateRecordInfo which contain origin, updated and modified property', function() {
+      const handler = makeQueryBuilderHandler('User')
+      const record = new Record({ a: 1, b: 2 })
+      const executor: MemoryQueryExecutor = handler.getQueryExecutor() as any
+      const info = executor.getUpdateRecordInfo(record, {})
+
+      expect(info.modified).toBe(false)
+      expect(info.updated === record.toObject()).toBe(true)
+      expect(info.origin === record.toObject()).toBe(false)
+      expect(info.origin).toEqual(record.toObject())
+    })
+
+    it('sets modified of info to true if there is a changed in data', function() {
+      const handler = makeQueryBuilderHandler('User')
+      const record = new Record({ a: 1, b: 2 })
+      const executor: MemoryQueryExecutor = handler.getQueryExecutor() as any
+      const info = executor.getUpdateRecordInfo(record, { a: '1' })
+
+      expect(info.modified).toBe(true)
+      expect(info.updated === record.toObject()).toBe(true)
+      expect(info.origin === record.toObject()).toBe(false)
+      expect(info.origin).not.toEqual(record.toObject())
+      expect(info.updated).toEqual({ a: '1', b: 2 })
     })
   })
 

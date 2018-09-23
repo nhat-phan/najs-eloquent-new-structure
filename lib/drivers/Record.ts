@@ -28,6 +28,12 @@ export class Record {
     return true
   }
 
+  clearModified(): this {
+    this.modified = []
+
+    return this
+  }
+
   getModified(): string[] {
     return this.modified
   }

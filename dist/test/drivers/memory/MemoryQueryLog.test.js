@@ -29,4 +29,20 @@ describe('MemoryQueryLog', function () {
             expect(logger['data']['dataSource']).toEqual('anything');
         });
     });
+    describe('.updateRecordInfo()', function () {
+        it('creates an array and add the info to data under property "records"', function () {
+            const info = {};
+            const logger = new MemoryQueryLog_1.MemoryQueryLog();
+            expect(logger.updateRecordInfo(info) === logger).toBe(true);
+            expect(logger['data']['records']).toEqual([info]);
+        });
+        it('push an info to array in data under property "records"', function () {
+            const info1 = {};
+            const info2 = {};
+            const logger = new MemoryQueryLog_1.MemoryQueryLog();
+            expect(logger.updateRecordInfo(info1) === logger).toBe(true);
+            expect(logger.updateRecordInfo(info2) === logger).toBe(true);
+            expect(logger['data']['records']).toEqual([info1, info2]);
+        });
+    });
 });

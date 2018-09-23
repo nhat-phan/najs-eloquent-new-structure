@@ -7,11 +7,12 @@ import { RecordConditionMatcherFactory } from '../RecordConditionMatcherFactory'
 import { BasicQueryConverter } from '../../query-builders/shared/BasicQueryConverter'
 import { Record } from '../Record'
 import { ExecutorBase } from '../ExecutorBase'
-import { MemoryQueryLog } from './MemoryQueryLog'
+import { MemoryQueryLog, IUpdateRecordInfo } from './MemoryQueryLog'
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import { RecordCollector } from '../RecordCollector'
+import * as Moment from 'moment'
 
 export class MemoryQueryExecutor extends ExecutorBase {
   protected queryHandler: MemoryQueryBuilderHandler
@@ -61,6 +62,47 @@ export class MemoryQueryExecutor extends ExecutorBase {
       .raw('.exec()')
       .action('count')
       .end(result.length)
+  }
+
+  async update(data: object): Promise<any> {
+    const collector = this.makeCollector()
+    const records = this.shouldExecute() ? await this.collectResult(collector) : []
+
+    if (this.queryHandler.hasTimestamps()) {
+      data[this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate()
+    }
+
+    if (records.length === 0) {
+      return this.logger
+        .raw('.exec() >> empty, do nothing')
+        .action('update')
+        .end(true)
+    }
+
+    this.logger.raw('.exec() >> update records >> dataSource.write()').action('update')
+    for (const record of records) {
+      const info = this.getUpdateRecordInfo(record, data)
+      if (info.modified) {
+        this.dataSource.push(record)
+      }
+      this.logger.updateRecordInfo(info)
+    }
+    return this.logger.end(await this.dataSource.write())
+  }
+
+  getUpdateRecordInfo(record: Record, data: object): IUpdateRecordInfo {
+    const info: IUpdateRecordInfo = {
+      origin: Object.assign({}, record.toObject()),
+      modified: false,
+      updated: record.toObject()
+    }
+
+    record.clearModified()
+    for (const name in data) {
+      record.setAttribute(name, data[name])
+    }
+    info.modified = record.getModified().length > 0
+    return info
   }
 
   async collectResult(collector: RecordCollector): Promise<Record[]> {

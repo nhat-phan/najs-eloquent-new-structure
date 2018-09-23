@@ -2,7 +2,7 @@
 import MemoryDataSource = Najs.Contracts.Eloquent.MemoryDataSource;
 import { Record } from '../Record';
 import { ExecutorBase } from '../ExecutorBase';
-import { MemoryQueryLog } from './MemoryQueryLog';
+import { MemoryQueryLog, IUpdateRecordInfo } from './MemoryQueryLog';
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { RecordCollector } from '../RecordCollector';
@@ -15,6 +15,8 @@ export declare class MemoryQueryExecutor extends ExecutorBase {
     get(): Promise<object[]>;
     first(): Promise<object | undefined>;
     count(): Promise<number>;
+    update(data: object): Promise<any>;
+    getUpdateRecordInfo(record: Record, data: object): IUpdateRecordInfo;
     collectResult(collector: RecordCollector): Promise<Record[]>;
     makeCollector(): RecordCollector;
     getFilterConditions(): object;

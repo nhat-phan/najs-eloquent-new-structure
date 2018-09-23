@@ -7,6 +7,7 @@ const BasicQueryConverter_1 = require("../../query-builders/shared/BasicQueryCon
 const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
 const RecordCollector_1 = require("../RecordCollector");
+const Moment = require("moment");
 class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, dataSource, logger) {
         super();
@@ -45,6 +46,41 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
             .raw('.exec()')
             .action('count')
             .end(result.length);
+    }
+    async update(data) {
+        const collector = this.makeCollector();
+        const records = this.shouldExecute() ? await this.collectResult(collector) : [];
+        if (this.queryHandler.hasTimestamps()) {
+            data[this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate();
+        }
+        if (records.length === 0) {
+            return this.logger
+                .raw('.exec() >> empty, do nothing')
+                .action('update')
+                .end(true);
+        }
+        this.logger.raw('.exec() >> update records >> dataSource.write()').action('update');
+        for (const record of records) {
+            const info = this.getUpdateRecordInfo(record, data);
+            if (info.modified) {
+                this.dataSource.push(record);
+            }
+            this.logger.updateRecordInfo(info);
+        }
+        return this.logger.end(await this.dataSource.write());
+    }
+    getUpdateRecordInfo(record, data) {
+        const info = {
+            origin: Object.assign({}, record.toObject()),
+            modified: false,
+            updated: record.toObject()
+        };
+        record.clearModified();
+        for (const name in data) {
+            record.setAttribute(name, data[name]);
+        }
+        info.modified = record.getModified().length > 0;
+        return info;
     }
     async collectResult(collector) {
         await this.dataSource.read();

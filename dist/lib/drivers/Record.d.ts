@@ -4,6 +4,7 @@ export declare class Record {
     constructor(data?: object | Record);
     getAttribute<T>(path: string): T;
     setAttribute<T>(path: string, value: T): boolean;
+    clearModified(): this;
     getModified(): string[];
     markModified(name: string): void;
     toObject(): object;

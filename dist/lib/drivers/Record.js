@@ -22,6 +22,10 @@ class Record {
         }
         return true;
     }
+    clearModified() {
+        this.modified = [];
+        return this;
+    }
     getModified() {
         return this.modified;
     }

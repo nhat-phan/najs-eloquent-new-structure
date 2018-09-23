@@ -65,11 +65,21 @@ describe('Record', function() {
   })
 
   describe('.getModified()', function() {
-    it('simply return property .modified', function() {
+    it('simply returns property .modified', function() {
       const modified: string[] = []
       const record = new Record()
       record['modified'] = modified
       expect(record.getModified() === modified).toBe(true)
+    })
+  })
+
+  describe('.clearModified()', function() {
+    it('simply clears property .modified', function() {
+      const modified: string[] = ['a', 'b', 'c']
+      const record = new Record()
+      record['modified'] = modified
+      expect(record.clearModified() === record).toBe(true)
+      expect(record.getModified()).toEqual([])
     })
   })
 
