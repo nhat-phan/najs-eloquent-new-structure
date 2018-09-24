@@ -787,6 +787,123 @@ describe('MemoryQueryExecutor', function () {
         //   expect(count).toEqual(0)
         // })
     });
+    describe('.restore()', function () {
+        it('does nothing if Model do not support SoftDeletes', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            makeQueryBuilder(handler).where('first_name', 'peter');
+            const result = await handler.getQueryExecutor().restore();
+            expect(QueryLogFacade_1.QueryLog.pull()).toHaveLength(0);
+            expect(result).toEqual(false);
+        });
+        function makeHandler() {
+            return new MemoryQueryBuilderHandler_1.MemoryQueryBuilderHandler({
+                getDriver() {
+                    return {
+                        getSoftDeletesFeature() {
+                            return {
+                                hasSoftDeletes() {
+                                    return true;
+                                },
+                                getSoftDeletesSetting() {
+                                    return { deletedAt: 'deleted_at' };
+                                }
+                            };
+                        },
+                        getTimestampsFeature() {
+                            return {
+                                hasTimestamps() {
+                                    return false;
+                                }
+                            };
+                        }
+                    };
+                },
+                getModelName() {
+                    return 'Role';
+                },
+                getPrimaryKeyName() {
+                    return 'id';
+                }
+            });
+        }
+        it('can not call restore if query is empty', async function () {
+            const handler = makeHandler();
+            makeQueryBuilder(handler).withTrashed();
+            const result = await handler.getQueryExecutor().restore();
+            expect(QueryLogFacade_1.QueryLog.pull()).toHaveLength(0);
+            expect(result).toEqual(false);
+        });
+        it('can restore data by query builder, case 1', async function () {
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .onlyTrashed()
+                .where('name', 'role-0');
+            const result = await handler.getQueryExecutor().restore();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("Role")).filterBy(${JSON.stringify({
+                    $and: [
+                        // tslint:disable-next-line
+                        { field: 'deleted_at', operator: '<>', value: null },
+                        { field: 'name', operator: '=', value: 'role-0' }
+                    ]
+                })}).exec() >> update records >> dataSource.write()`,
+                action: 'restore'
+            }, result);
+            expect(result).toEqual(true);
+            handler = makeHandler();
+            const count = await handler.getQueryExecutor().count();
+            expect(count).toEqual(1);
+        });
+        it('returns true and do nothing if executeMode is disabled', async function () {
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .withTrashed()
+                .where('name', 'role-1')
+                .orWhere('name', 'role-2')
+                .orWhere('name', 'role-3');
+            const result = await handler
+                .getQueryExecutor()
+                .setExecuteMode('disabled')
+                .restore();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("Role")).filterBy(${JSON.stringify({
+                    $or: [
+                        { field: 'name', operator: '=', value: 'role-1' },
+                        { field: 'name', operator: '=', value: 'role-2' },
+                        { field: 'name', operator: '=', value: 'role-3' }
+                    ]
+                })}).exec() >> empty, do nothing`,
+                action: 'restore'
+            }, result);
+            expect(result).toEqual(true);
+            handler = makeHandler();
+            const count = await handler.getQueryExecutor().count();
+            expect(count).toEqual(1);
+        });
+        it('can restore data by query builder, case 2: multiple documents', async function () {
+            let handler = makeHandler();
+            makeQueryBuilder(handler)
+                .withTrashed()
+                .where('name', 'role-1')
+                .orWhere('name', 'role-2')
+                .orWhere('name', 'role-3');
+            const result = await handler.getQueryExecutor().restore();
+            expect_query_log({
+                raw: `RecordCollector.use(MemoryDataSourceProvider.create("Role")).filterBy(${JSON.stringify({
+                    $or: [
+                        { field: 'name', operator: '=', value: 'role-1' },
+                        { field: 'name', operator: '=', value: 'role-2' },
+                        { field: 'name', operator: '=', value: 'role-3' }
+                    ]
+                })}).exec() >> update records >> dataSource.write()`,
+                action: 'restore'
+            }, result);
+            expect(result).toEqual(true);
+            handler = makeHandler();
+            const count = await handler.getQueryExecutor().count();
+            expect(count).toEqual(4);
+        });
+    });
     describe('.getUpdateRecordInfo()', function () {
         it('returns an updateRecordInfo which contain origin, updated and modified property', function () {
             const handler = makeQueryBuilderHandler('User');

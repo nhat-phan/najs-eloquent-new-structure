@@ -60,14 +60,7 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
                 .end(true);
         }
         this.logger.raw('.exec() >> update records >> dataSource.write()').action('update');
-        for (const record of records) {
-            const info = this.getUpdateRecordInfo(record, data);
-            if (info.modified) {
-                this.dataSource.push(record);
-            }
-            this.logger.updateRecordInfo(info);
-        }
-        return this.logger.end(await this.dataSource.write());
+        return await this.updateRecordsByData(records, data);
     }
     async delete() {
         const collector = this.makeCollector();
@@ -86,6 +79,38 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
             this.dataSource.remove(record);
         }
         return this.logger.end(await this.dataSource.write());
+    }
+    async restore() {
+        if (!this.queryHandler.hasSoftDeletes()) {
+            return false;
+        }
+        const collector = this.makeCollector();
+        if (!collector.hasFilterByConfig()) {
+            return false;
+        }
+        const records = this.shouldExecute() ? await this.collectResult(collector) : [];
+        if (records.length === 0) {
+            return this.logger
+                .raw('.exec() >> empty, do nothing')
+                .action('restore')
+                .end(true);
+        }
+        const fieldName = this.queryHandler.getSoftDeletesSetting().deletedAt;
+        const data = { [fieldName]: this.queryHandler.getQueryConvention().getNullValueFor(fieldName) };
+        this.logger.raw('.exec() >> update records >> dataSource.write()').action('restore');
+        return await this.updateRecordsByData(records, data);
+    }
+    async updateRecordsByData(records, data) {
+        let shouldWrite = false;
+        for (const record of records) {
+            const info = this.getUpdateRecordInfo(record, data);
+            if (info.modified) {
+                shouldWrite = true;
+                this.dataSource.push(record);
+            }
+            this.logger.updateRecordInfo(info);
+        }
+        return this.logger.end(shouldWrite ? await this.dataSource.write() : true);
     }
     getUpdateRecordInfo(record, data) {
         const info = {

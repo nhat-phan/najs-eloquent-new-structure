@@ -17,6 +17,8 @@ export declare class MemoryQueryExecutor extends ExecutorBase {
     count(): Promise<number>;
     update(data: object): Promise<any>;
     delete(): Promise<any>;
+    restore(): Promise<any>;
+    updateRecordsByData(records: Record[], data: object): Promise<any>;
     getUpdateRecordInfo(record: Record, data: object): IUpdateRecordInfo;
     collectResult(collector: RecordCollector): Promise<Record[]>;
     makeCollector(): RecordCollector;
