@@ -1149,6 +1149,18 @@ describe('MemoryQueryExecutor', function() {
     })
   })
 
+  describe('.execute()', function() {
+    it('simply calls and returns .get()', async function() {
+      const handler = makeQueryBuilderHandler('User')
+      const executor: MemoryQueryExecutor = handler.getQueryExecutor() as any
+      const stub = Sinon.stub(executor, 'get')
+      stub.returns(Promise.resolve('anything'))
+
+      expect(await executor.execute()).toEqual('anything')
+      expect(stub.called).toBe(true)
+    })
+  })
+
   describe('.getUpdateRecordInfo()', function() {
     it('returns an updateRecordInfo which contain origin, updated and modified property', function() {
       const handler = makeQueryBuilderHandler('User')

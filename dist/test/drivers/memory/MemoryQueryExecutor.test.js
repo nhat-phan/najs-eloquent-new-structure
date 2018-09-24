@@ -904,6 +904,16 @@ describe('MemoryQueryExecutor', function () {
             expect(count).toEqual(4);
         });
     });
+    describe('.execute()', function () {
+        it('simply calls and returns .get()', async function () {
+            const handler = makeQueryBuilderHandler('User');
+            const executor = handler.getQueryExecutor();
+            const stub = Sinon.stub(executor, 'get');
+            stub.returns(Promise.resolve('anything'));
+            expect(await executor.execute()).toEqual('anything');
+            expect(stub.called).toBe(true);
+        });
+    });
     describe('.getUpdateRecordInfo()', function () {
         it('returns an updateRecordInfo which contain origin, updated and modified property', function () {
             const handler = makeQueryBuilderHandler('User');

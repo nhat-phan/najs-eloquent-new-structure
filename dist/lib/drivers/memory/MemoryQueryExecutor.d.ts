@@ -1,4 +1,5 @@
 /// <reference path="../../contracts/MemoryDataSource.d.ts" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.d.ts" />
 import MemoryDataSource = Najs.Contracts.Eloquent.MemoryDataSource;
 import { Record } from '../Record';
 import { ExecutorBase } from '../ExecutorBase';
@@ -6,7 +7,7 @@ import { MemoryQueryLog, IUpdateRecordInfo } from './MemoryQueryLog';
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler';
 import { BasicQuery } from '../../query-builders/shared/BasicQuery';
 import { RecordCollector } from '../RecordCollector';
-export declare class MemoryQueryExecutor extends ExecutorBase {
+export declare class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
     protected queryHandler: MemoryQueryBuilderHandler;
     protected dataSource: MemoryDataSource<Record>;
     protected basicQuery: BasicQuery;
@@ -18,6 +19,7 @@ export declare class MemoryQueryExecutor extends ExecutorBase {
     update(data: object): Promise<any>;
     delete(): Promise<any>;
     restore(): Promise<any>;
+    execute(): Promise<any>;
     updateRecordsByData(records: Record[], data: object): Promise<any>;
     getUpdateRecordInfo(record: Record, data: object): IUpdateRecordInfo;
     collectResult(collector: RecordCollector): Promise<Record[]>;

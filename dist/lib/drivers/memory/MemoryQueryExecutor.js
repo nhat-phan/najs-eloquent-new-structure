@@ -1,4 +1,6 @@
 "use strict";
+/// <reference path="../../contracts/MemoryDataSource.ts" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const najs_binding_1 = require("najs-binding");
@@ -99,6 +101,9 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
         const data = { [fieldName]: this.queryHandler.getQueryConvention().getNullValueFor(fieldName) };
         this.logger.raw('.exec() >> update records >> dataSource.write()').action('restore');
         return await this.updateRecordsByData(records, data);
+    }
+    async execute() {
+        return this.get();
     }
     async updateRecordsByData(records, data) {
         let shouldWrite = false;

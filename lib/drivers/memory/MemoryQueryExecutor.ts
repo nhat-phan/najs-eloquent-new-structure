@@ -1,4 +1,6 @@
 /// <reference path="../../contracts/MemoryDataSource.ts" />
+/// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
+
 import MemoryDataSource = Najs.Contracts.Eloquent.MemoryDataSource
 
 import { isEmpty } from 'lodash'
@@ -14,7 +16,7 @@ import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
 import { RecordCollector } from '../RecordCollector'
 import * as Moment from 'moment'
 
-export class MemoryQueryExecutor extends ExecutorBase {
+export class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected queryHandler: MemoryQueryBuilderHandler
   protected dataSource: MemoryDataSource<Record>
   protected basicQuery: BasicQuery
@@ -128,6 +130,10 @@ export class MemoryQueryExecutor extends ExecutorBase {
 
     this.logger.raw('.exec() >> update records >> dataSource.write()').action('restore')
     return await this.updateRecordsByData(records, data)
+  }
+
+  async execute(): Promise<any> {
+    return this.get()
   }
 
   async updateRecordsByData(records: Record[], data: object) {
