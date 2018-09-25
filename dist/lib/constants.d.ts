@@ -1,6 +1,6 @@
 export declare const NajsEloquent: {
     Driver: {
-        DummyDriver: string;
+        MemoryDriver: string;
         MongodbDriver: string;
         MongooseDriver: string;
         Memory: {

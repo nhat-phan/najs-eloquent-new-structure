@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Model_1 = require("../../lib/model/Model");
 const Eloquent_1 = require("../../lib/model/Eloquent");
-const DummyDriver_1 = require("../../lib/drivers/dummy/DummyDriver");
+const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
 const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
 const EloquentPublicApi_1 = require("../../lib/model/mixin/EloquentPublicApi");
 const EloquentStaticPublicApi_1 = require("../../lib/model/mixin/EloquentStaticPublicApi");
 const PrototypeManager_1 = require("../../lib/util/PrototypeManager");
-EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
+EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 describe('Eloquent', function () {
     it('extends Model', function () {
         const eloquent = new Eloquent_1.Eloquent();

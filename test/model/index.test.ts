@@ -2,10 +2,10 @@ import 'jest'
 import { register } from 'najs-binding'
 import { Model } from '../../lib/model/Model'
 import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
-import { DummyDriver } from '../../lib/drivers/dummy/DummyDriver'
+import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
 import { ObjectId } from 'bson'
 
-EloquentDriverProvider.register(DummyDriver, 'dummy', true)
+EloquentDriverProvider.register(MemoryDriver, 'memory', true)
 
 class TestModel extends Model {
   getClassName() {

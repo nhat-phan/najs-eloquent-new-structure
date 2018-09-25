@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../../lib/model/Model");
-const DummyDriver_1 = require("../../../lib/drivers/dummy/DummyDriver");
+const MemoryDriver_1 = require("../../../lib/drivers/memory/MemoryDriver");
 const EloquentDriverProviderFacade_1 = require("../../../lib/facades/global/EloquentDriverProviderFacade");
-EloquentDriverProviderFacade_1.EloquentDriverProvider.register(DummyDriver_1.DummyDriver, 'dummy', true);
+EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 describe('Model Fillable Feature', function () {
     describe('No Setting', function () {
         class ModelFillableNoSetting extends Model_1.Model {

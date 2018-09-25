@@ -2,7 +2,7 @@ import { array_unique } from './util/functions'
 
 export const NajsEloquent = {
   Driver: {
-    DummyDriver: 'NajsEloquent.Driver.DummyDriver',
+    MemoryDriver: 'NajsEloquent.Driver.MemoryDriver',
     MongodbDriver: 'NajsEloquent.Driver.MongodbDriver',
     MongooseDriver: 'NajsEloquent.Driver.MongooseDriver',
     Memory: {

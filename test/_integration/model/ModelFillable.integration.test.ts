@@ -1,10 +1,10 @@
 import 'jest'
 import { register } from 'najs-binding'
 import { Model } from '../../../lib/model/Model'
-import { DummyDriver } from '../../../lib/drivers/dummy/DummyDriver'
+import { MemoryDriver } from '../../../lib/drivers/memory/MemoryDriver'
 import { EloquentDriverProvider } from '../../../lib/facades/global/EloquentDriverProviderFacade'
 
-EloquentDriverProvider.register(DummyDriver, 'dummy', true)
+EloquentDriverProvider.register(MemoryDriver, 'memory', true)
 
 describe('Model Fillable Feature', function() {
   describe('No Setting', function() {

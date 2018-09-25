@@ -5,7 +5,7 @@ const Sinon = require("sinon");
 const NajsBinding = require("najs-binding");
 const ClassSetting_1 = require("../../lib/util/ClassSetting");
 const DriverBase_1 = require("../../lib/drivers/DriverBase");
-const DummyDriver_1 = require("../../lib/drivers/dummy/DummyDriver");
+const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
 const EventFeature_1 = require("../../lib/features/EventFeature");
 const FillableFeature_1 = require("../../lib/features/FillableFeature");
@@ -14,7 +14,7 @@ const TimestampsFeature_1 = require("../../lib/features/TimestampsFeature");
 const SoftDeletesFeature_1 = require("../../lib/features/SoftDeletesFeature");
 describe('DriverBase', function () {
     function createDriver() {
-        return new DummyDriver_1.DummyDriver();
+        return new MemoryDriver_1.MemoryDriver();
     }
     const driver = createDriver();
     describe('constructor()', function () {

@@ -3,7 +3,7 @@ import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
 import { CREATE_SAMPLE } from '../../lib/util/ClassSetting'
 import { DriverBase } from '../../lib/drivers/DriverBase'
-import { DummyDriver } from '../../lib/drivers/dummy/DummyDriver'
+import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
 import { SettingFeature } from '../../lib/features/SettingFeature'
 import { EventFeature } from '../../lib/features/EventFeature'
 import { FillableFeature } from '../../lib/features/FillableFeature'
@@ -13,7 +13,7 @@ import { SoftDeletesFeature } from '../../lib/features/SoftDeletesFeature'
 
 describe('DriverBase', function() {
   function createDriver(): DriverBase<any> {
-    return new DummyDriver()
+    return new MemoryDriver()
   }
   const driver = createDriver()
 

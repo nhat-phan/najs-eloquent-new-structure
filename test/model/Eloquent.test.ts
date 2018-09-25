@@ -1,13 +1,13 @@
 import 'jest'
 import { Model } from '../../lib/model/Model'
 import { Eloquent } from '../../lib/model/Eloquent'
-import { DummyDriver } from '../../lib/drivers/dummy/DummyDriver'
+import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
 import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
 import { EloquentPublicApi } from '../../lib/model/mixin/EloquentPublicApi'
 import { EloquentStaticPublicApi } from '../../lib/model/mixin/EloquentStaticPublicApi'
 import { PrototypeManager } from '../../lib/util/PrototypeManager'
 
-EloquentDriverProvider.register(DummyDriver, 'dummy', true)
+EloquentDriverProvider.register(MemoryDriver, 'memory', true)
 
 describe('Eloquent', function() {
   it('extends Model', function() {
