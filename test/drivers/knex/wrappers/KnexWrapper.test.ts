@@ -14,12 +14,12 @@ describe('KnexWrapper', function() {
     KnexProviderFacade.restoreFacade()
   })
 
-  describe('.connection()', function() {
+  describe('.getConnection()', function() {
     it('does nothing, returns itself if the name is equals to current connectionName', function() {
       KnexProviderFacade.createStub('create').returns({})
 
       const wrapper = new KnexWrapper()
-      expect(wrapper.connection('default') === wrapper).toBe(true)
+      expect(wrapper.getConnection('default') === wrapper).toBe(true)
 
       KnexProviderFacade.restoreFacade()
     })
@@ -28,7 +28,7 @@ describe('KnexWrapper', function() {
       KnexProviderFacade.createStub('create').returns({})
 
       const wrapper = new KnexWrapper()
-      const newWrapper = wrapper.connection('test')
+      const newWrapper = wrapper.getConnection('test')
       expect(newWrapper === wrapper).toBe(false)
       expect(newWrapper).toBeInstanceOf(KnexWrapper)
 

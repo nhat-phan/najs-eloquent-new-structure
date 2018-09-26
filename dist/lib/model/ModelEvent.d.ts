@@ -8,5 +8,5 @@ export declare enum ModelEvent {
     Deleting = "deleting",
     Deleted = "deleted",
     Restoring = "restoring",
-    Restored = "restored",
+    Restored = "restored"
 }

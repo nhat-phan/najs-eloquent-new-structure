@@ -8,5 +8,5 @@ export declare enum Operator {
     GreaterThanOrEquals = ">=",
     LessThanOrEquals = "<=",
     In = "in",
-    NotIn = "not-in",
+    NotIn = "not-in"
 }

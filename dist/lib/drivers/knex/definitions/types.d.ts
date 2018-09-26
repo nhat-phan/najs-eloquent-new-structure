@@ -1,5 +1,4 @@
 /// <reference types="node" />
-/// <reference types="knex" />
 import * as Knex from 'knex';
 export declare type Callback = Function;
 export declare type Client = Function;

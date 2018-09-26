@@ -1,4 +1,3 @@
-/// <reference types="knex" />
 import { Model } from '../../model/Model';
 import { KnexQueryBuilderType } from './KnexQueryBuilder';
 import * as Knex from 'knex';

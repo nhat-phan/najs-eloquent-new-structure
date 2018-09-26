@@ -25,7 +25,7 @@ class KnexWrapper extends najs_facade_1.Facade {
     getClassName() {
         return constants_1.NajsEloquent.Driver.Knex.KnexWrapper;
     }
-    connection(name) {
+    getConnection(name) {
         if (name === this.connectionName) {
             return this;
         }

@@ -1,4 +1,3 @@
-/// <reference types="knex" />
 import * as Knex from 'knex';
 export declare class KnexQueryBuilderWrapperBase {
     protected knexQuery: Knex.QueryBuilder;

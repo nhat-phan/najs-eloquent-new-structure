@@ -1,4 +1,3 @@
-/// <reference types="knex" />
 import * as Knex from 'knex';
 import { Facade } from 'najs-facade';
 export declare const KnexWrapperProxyHandler: {
@@ -11,5 +10,5 @@ export declare class KnexWrapper extends Facade implements Najs.Contracts.Autolo
     protected connectionName: string;
     constructor(name?: string);
     getClassName(): string;
-    connection(name: string): KnexWrapper;
+    getConnection(name: string): KnexWrapper;
 }

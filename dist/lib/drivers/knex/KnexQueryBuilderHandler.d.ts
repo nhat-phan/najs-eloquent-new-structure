@@ -1,4 +1,3 @@
-/// <reference types="knex" />
 import * as Knex from 'knex';
 import { KnexBasicQueryWrapper } from './wrappers/KnexBasicQueryWrapper';
 import { QueryBuilderHandlerBase } from '../../query-builders/QueryBuilderHandlerBase';

@@ -25,7 +25,7 @@ const RoleSchema = new mongoose_1.Schema({
 }, {
     collection: 'roles'
 });
-RoleSchema.plugin(SoftDelete_1.SoftDelete, { overrideMethods: true });
+RoleSchema.plugin(SoftDelete_1.SoftDelete, { deletedAt: 'deleted_at', overrideMethods: true });
 const RoleModel = mongoose.model('Role', RoleSchema);
 describe('MongooseQueryExecutor', function () {
     jest.setTimeout(10000);

@@ -32,7 +32,7 @@ const RoleSchema: Schema = new Schema(
     collection: 'roles'
   }
 )
-RoleSchema.plugin(SoftDelete, { overrideMethods: true })
+RoleSchema.plugin(SoftDelete, { deletedAt: 'deleted_at', overrideMethods: true })
 const RoleModel = mongoose.model('Role', RoleSchema)
 
 describe('MongooseQueryExecutor', function() {

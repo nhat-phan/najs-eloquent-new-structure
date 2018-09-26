@@ -1,5 +1,4 @@
 /// <reference path="../contracts/KnexProvider.d.ts" />
-/// <reference types="knex" />
 import * as Knex from 'knex';
 import { Facade } from 'najs-facade';
 import { QueryBuilder, Config } from 'knex';

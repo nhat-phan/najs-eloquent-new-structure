@@ -36,7 +36,7 @@ export class KnexWrapper extends Facade implements Najs.Contracts.Autoload {
     return NajsEloquent.Driver.Knex.KnexWrapper
   }
 
-  connection(name: string): KnexWrapper {
+  getConnection(name: string): KnexWrapper {
     if (name === this.connectionName) {
       return this
     }

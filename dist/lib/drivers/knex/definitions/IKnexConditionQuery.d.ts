@@ -1,5 +1,4 @@
 /// <reference path="../../../definitions/query-grammars/IConditionQuery.d.ts" />
-/// <reference types="knex" />
 import * as Knex from 'knex';
 export interface IKnexCustomConditionQuery {
     /**

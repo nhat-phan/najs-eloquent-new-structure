@@ -23,5 +23,5 @@ export declare class ConditionConverter {
     protected convertConditionsWithOr(bucket: Object, conditions: QueryConditionData[]): void;
     protected convertCondition(condition: QueryConditionData): object;
     protected convertGroupQueryData(condition: GroupQueryData): object;
-    private convertNotEmptyGroupQueryData(condition);
+    private convertNotEmptyGroupQueryData;
 }

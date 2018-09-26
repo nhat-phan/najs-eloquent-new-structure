@@ -5,7 +5,7 @@ import GroupQuery = NajsEloquent.QueryBuilder.GroupQueryConditionData;
 import { BasicQuery } from './BasicQuery';
 export declare enum BoolOperator {
     AND = "and",
-    OR = "or",
+    OR = "or"
 }
 export declare class BasicQueryConverter {
     protected basicQuery: BasicQuery;

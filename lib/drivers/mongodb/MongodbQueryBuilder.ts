@@ -1,13 +1,13 @@
 /// <reference path="../../definitions/model/IModel.ts" />
 
-import IModel = NajsEloquent.Model.IModel
+// import IModel = NajsEloquent.Model.IModel
 import { QueryBuilder } from '../../query-builders/QueryBuilder'
 import { MongodbQueryExecutor } from './MongodbQueryExecutor'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { Collection } from 'mongodb'
 
 export class MongodbQueryBuilder<
-  T extends IModel,
+  T,
   H extends MongodbQueryBuilderHandler = MongodbQueryBuilderHandler
 > extends QueryBuilder<T, H> {
   native(

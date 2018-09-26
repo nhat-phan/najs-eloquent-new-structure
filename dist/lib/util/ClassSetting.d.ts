@@ -21,7 +21,7 @@ export declare class ClassSetting implements NajsEloquent.Util.IClassSetting {
      * Get definition of the class.
      */
     getDefinition(): Function;
-    private clone(instance);
+    private clone;
     /**
      * store ClassSetting instance with "sample"
      */

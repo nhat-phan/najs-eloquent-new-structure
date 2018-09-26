@@ -7,7 +7,9 @@
 /// <reference path="./IModelTimestamps.ts" />
 /// <reference path="./IModelSoftDeletes.ts" />
 /// <reference path="./IModelRelation.ts" />
+/// <reference path="./IModelQuery.ts" />
 /// <reference path="../relations/IRelationDataBucket.ts" />
+/// <reference path="../query-builders/IQueryBuilder.ts" />
 
 namespace NajsEloquent.Model {
   export type ModelDefinition<T extends IModel = IModel> = string | { new (): T }
@@ -72,7 +74,8 @@ namespace NajsEloquent.Model {
       IModelSerialization,
       IModelTimestamps,
       IModelSoftDeletes,
-      IModelRelation {
+      IModelRelation,
+      IModelQuery {
     /**
      * Primary key of the model
      */
@@ -91,12 +94,11 @@ namespace NajsEloquent.Model {
     /**
      * Start new query of model.
      */
-    newQuery(): NajsEloquent.QueryBuilder.IQueryBuilder<this>
-
+    newQuery(): QueryBuilder.IQueryBuilder<this>
     /**
      * Start new query of model with name.
      */
-    newQuery(name: string): NajsEloquent.QueryBuilder.IQueryBuilder<this>
+    newQuery(name: string): QueryBuilder.IQueryBuilder<this>
   }
 
   export type ModelInternal<T = any> = IModel & {
