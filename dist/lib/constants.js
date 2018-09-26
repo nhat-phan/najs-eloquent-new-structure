@@ -8,16 +8,19 @@ exports.NajsEloquent = {
         MongooseDriver: 'NajsEloquent.Driver.MongooseDriver',
         Memory: {
             MemoryDataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
+            MemoryQueryBuilderFactory: 'NajsEloquent.Driver.Memory.MemoryQueryBuilderFactory',
             MemoryExecutorFactory: 'NajsEloquent.Driver.Memory.MemoryExecutorFactory',
             RecordFilter: 'NajsEloquent.Driver.Memory.RecordFilter',
             RecordConditionMatcherFactory: 'NajsEloquent.Driver.Memory.RecordConditionMatcherFactory'
         },
         Mongodb: {
             MongodbExecutorFactory: 'NajsEloquent.Driver.Mongodb.MongodbExecutorFactory',
+            MongodbQueryBuilderFactory: 'NajsEloquent.Driver.Mongodb.MongodbQueryBuilderFactory',
             MongodbConditionMatcherFactory: 'NajsEloquent.Driver.Mongodb.MongodbConditionMatcherFactory'
         },
         Mongoose: {
             MongooseDocumentManager: 'NajsEloquent.Driver.Mongoose.MongooseDocumentManager',
+            MongooseQueryBuilderFactory: 'NajsEloquent.Driver.Mongoose.MongooseQueryBuilderFactory',
             MongooseExecutorFactory: 'NajsEloquent.Driver.Mongoose.MongooseExecutorFactory'
         },
         Knex: {
@@ -30,6 +33,7 @@ exports.NajsEloquent = {
         EventFeature: 'NajsEloquent.Feature.EventFeature',
         FillableFeature: 'NajsEloquent.Feature.FillableFeature',
         SerializationFeature: 'NajsEloquent.Feature.SerializationFeature',
+        QueryFeature: 'NajsEloquent.Feature.QueryFeature',
         TimestampsFeature: 'NajsEloquent.Feature.TimestampsFeature',
         SoftDeletesFeature: 'NajsEloquent.Feature.SoftDeletesFeature',
         RelationFeature: 'NajsEloquent.Feature.RelationFeature'

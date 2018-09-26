@@ -1,11 +1,10 @@
 /// <reference path="../../definitions/model/IModel.ts" />
-/// <reference path="../../definitions/model/IEloquent.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 
 import Model = NajsEloquent.Model.IModel
 import QueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 
-export const EloquentPublicApi: NajsEloquent.Model.IEloquent<any, any> = {
+export const QueryPublicApi = {
   queryName(this: Model, name: string): QueryBuilder<any, any> {
     return this.newQuery(name)
   },

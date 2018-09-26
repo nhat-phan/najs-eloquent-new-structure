@@ -1,6 +1,6 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { EloquentPublicApi } from '../../../lib/model/mixin/EloquentPublicApi'
+import { QueryPublicApi } from '../../../lib/features/mixin/QueryPublicApi'
 
 describe('EloquentPublicApi', function() {
   describe('.queryName()', function() {
@@ -10,7 +10,7 @@ describe('EloquentPublicApi', function() {
       }
       const stub = Sinon.stub(model, 'newQuery')
       stub.returns('anything')
-      expect(EloquentPublicApi.queryName.call(model, 'test')).toEqual('anything')
+      expect(QueryPublicApi.queryName.call(model, 'test')).toEqual('anything')
       expect(stub.calledWith('test')).toBe(true)
     })
   })
@@ -58,7 +58,7 @@ describe('EloquentPublicApi', function() {
 
         const params = functions[name]
         for (const param of params) {
-          expect(EloquentPublicApi[name].apply(model, param)).toEqual('anything')
+          expect(QueryPublicApi[name].apply(model, param)).toEqual('anything')
           expect(stub.calledWith(...param)).toBe(true)
           stub.resetHistory()
         }

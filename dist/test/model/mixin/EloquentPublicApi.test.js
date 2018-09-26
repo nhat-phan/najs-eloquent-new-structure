@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const EloquentPublicApi_1 = require("../../../lib/model/mixin/EloquentPublicApi");
+const QueryPublicApi_1 = require("../../../lib/features/mixin/QueryPublicApi");
 describe('EloquentPublicApi', function () {
     describe('.queryName()', function () {
         it('calls and returns .newQuery()', function () {
@@ -11,7 +11,7 @@ describe('EloquentPublicApi', function () {
             };
             const stub = Sinon.stub(model, 'newQuery');
             stub.returns('anything');
-            expect(EloquentPublicApi_1.EloquentPublicApi.queryName.call(model, 'test')).toEqual('anything');
+            expect(QueryPublicApi_1.QueryPublicApi.queryName.call(model, 'test')).toEqual('anything');
             expect(stub.calledWith('test')).toBe(true);
         });
     });
@@ -56,7 +56,7 @@ describe('EloquentPublicApi', function () {
                 stub.returns('anything');
                 const params = functions[name];
                 for (const param of params) {
-                    expect(EloquentPublicApi_1.EloquentPublicApi[name].apply(model, param)).toEqual('anything');
+                    expect(QueryPublicApi_1.QueryPublicApi[name].apply(model, param)).toEqual('anything');
                     expect(stub.calledWith(...param)).toBe(true);
                     stub.resetHistory();
                 }

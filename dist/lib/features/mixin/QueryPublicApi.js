@@ -1,9 +1,8 @@
 "use strict";
 /// <reference path="../../definitions/model/IModel.ts" />
-/// <reference path="../../definitions/model/IEloquent.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EloquentPublicApi = {
+exports.QueryPublicApi = {
     queryName(name) {
         return this.newQuery(name);
     },

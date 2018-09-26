@@ -5,16 +5,19 @@ export declare const NajsEloquent: {
         MongooseDriver: string;
         Memory: {
             MemoryDataSource: string;
+            MemoryQueryBuilderFactory: string;
             MemoryExecutorFactory: string;
             RecordFilter: string;
             RecordConditionMatcherFactory: string;
         };
         Mongodb: {
             MongodbExecutorFactory: string;
+            MongodbQueryBuilderFactory: string;
             MongodbConditionMatcherFactory: string;
         };
         Mongoose: {
             MongooseDocumentManager: string;
+            MongooseQueryBuilderFactory: string;
             MongooseExecutorFactory: string;
         };
         Knex: {
@@ -27,6 +30,7 @@ export declare const NajsEloquent: {
         EventFeature: string;
         FillableFeature: string;
         SerializationFeature: string;
+        QueryFeature: string;
         TimestampsFeature: string;
         SoftDeletesFeature: string;
         RelationFeature: string;

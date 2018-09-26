@@ -14,6 +14,7 @@ import { MemoryDriver } from './drivers/memory/MemoryDriver';
 import { MemoryExecutorFactory } from './drivers/memory/MemoryExecutorFactory';
 import { MemoryQueryBuilder } from './drivers/memory/MemoryQueryBuilder';
 import { MemoryQueryBuilderHandler } from './drivers/memory/MemoryQueryBuilderHandler';
+import { MemoryQueryBuilderFactory } from './drivers/memory/MemoryQueryBuilderFactory';
 import { MemoryQueryExecutor } from './drivers/memory/MemoryQueryExecutor';
 import { MemoryQueryLog } from './drivers/memory/MemoryQueryLog';
 import { MemoryRecordExecutor } from './drivers/memory/MemoryRecordExecutor';
@@ -57,6 +58,10 @@ import { RelationDefinitionFinder } from './relations/RelationDefinitionFinder';
 import { RelationFactory } from './relations/RelationFactory';
 import { RelationUtilities } from './relations/RelationUtilities';
 import { HasOneRelation } from './relations/basic/HasOneRelation';
+import { ClassSetting } from './util/ClassSetting';
+import { GenericData } from './util/GenericData';
+import { PrototypeManager } from './util/PrototypeManager';
+import { SettingType } from './util/SettingType';
 export declare type DriverPackage = {
     DriverBase: typeof DriverBase;
     ExecutorBase: typeof ExecutorBase;
@@ -77,6 +82,7 @@ export declare type DriverMemoryPackage = {
     MemoryExecutorFactory: typeof MemoryExecutorFactory;
     MemoryQueryBuilder: typeof MemoryQueryBuilder;
     MemoryQueryBuilderHandler: typeof MemoryQueryBuilderHandler;
+    MemoryQueryBuilderFactory: typeof MemoryQueryBuilderFactory;
     MemoryQueryExecutor: typeof MemoryQueryExecutor;
     MemoryQueryLog: typeof MemoryQueryLog;
     MemoryRecordExecutor: typeof MemoryRecordExecutor;
@@ -142,6 +148,12 @@ export declare type RelationPackage = {
     RelationUtilities: typeof RelationUtilities;
     HasOneRelation: typeof HasOneRelation;
 };
+export declare type UtilPackage = {
+    ClassSetting: typeof ClassSetting;
+    GenericData: typeof GenericData;
+    PrototypeManager: typeof PrototypeManager;
+    SettingType: typeof SettingType;
+};
 export declare const Builtin: {
     Driver: DriverPackage;
     Error: ErrorPackage;
@@ -150,4 +162,5 @@ export declare const Builtin: {
     QueryBuilder: QueryBuilderPackage;
     QueryLog: QueryLogPackage;
     Relation: RelationPackage;
+    Util: UtilPackage;
 };

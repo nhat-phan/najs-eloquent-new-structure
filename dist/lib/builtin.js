@@ -18,6 +18,7 @@ const MemoryDriver_1 = require("./drivers/memory/MemoryDriver");
 const MemoryExecutorFactory_1 = require("./drivers/memory/MemoryExecutorFactory");
 const MemoryQueryBuilder_1 = require("./drivers/memory/MemoryQueryBuilder");
 const MemoryQueryBuilderHandler_1 = require("./drivers/memory/MemoryQueryBuilderHandler");
+const MemoryQueryBuilderFactory_1 = require("./drivers/memory/MemoryQueryBuilderFactory");
 const MemoryQueryExecutor_1 = require("./drivers/memory/MemoryQueryExecutor");
 const MemoryQueryLog_1 = require("./drivers/memory/MemoryQueryLog");
 const MemoryRecordExecutor_1 = require("./drivers/memory/MemoryRecordExecutor");
@@ -70,6 +71,11 @@ const RelationDefinitionFinder_1 = require("./relations/RelationDefinitionFinder
 const RelationFactory_1 = require("./relations/RelationFactory");
 const RelationUtilities_1 = require("./relations/RelationUtilities");
 const HasOneRelation_1 = require("./relations/basic/HasOneRelation");
+// package Util
+const ClassSetting_1 = require("./util/ClassSetting");
+const GenericData_1 = require("./util/GenericData");
+const PrototypeManager_1 = require("./util/PrototypeManager");
+const SettingType_1 = require("./util/SettingType");
 exports.Builtin = {
     Driver: {
         DriverBase: DriverBase_1.DriverBase,
@@ -89,6 +95,7 @@ exports.Builtin = {
             MemoryExecutorFactory: MemoryExecutorFactory_1.MemoryExecutorFactory,
             MemoryQueryBuilder: MemoryQueryBuilder_1.MemoryQueryBuilder,
             MemoryQueryBuilderHandler: MemoryQueryBuilderHandler_1.MemoryQueryBuilderHandler,
+            MemoryQueryBuilderFactory: MemoryQueryBuilderFactory_1.MemoryQueryBuilderFactory,
             MemoryQueryExecutor: MemoryQueryExecutor_1.MemoryQueryExecutor,
             MemoryQueryLog: MemoryQueryLog_1.MemoryQueryLog,
             MemoryRecordExecutor: MemoryRecordExecutor_1.MemoryRecordExecutor
@@ -151,5 +158,11 @@ exports.Builtin = {
         RelationFactory: RelationFactory_1.RelationFactory,
         RelationUtilities: RelationUtilities_1.RelationUtilities,
         HasOneRelation: HasOneRelation_1.HasOneRelation
+    },
+    Util: {
+        ClassSetting: ClassSetting_1.ClassSetting,
+        GenericData: GenericData_1.GenericData,
+        PrototypeManager: PrototypeManager_1.PrototypeManager,
+        SettingType: SettingType_1.SettingType
     }
 };
