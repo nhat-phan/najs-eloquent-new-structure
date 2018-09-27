@@ -29,7 +29,12 @@ export class QueryFeature extends FeatureBase implements NajsEloquent.Feature.IQ
   }
 
   newQuery(model: NajsEloquent.Model.IModel): NajsEloquent.QueryBuilder.IQueryBuilder<any> {
-    return this.factory.make(model)
+    const queryBuilder = this.factory.make(model) as NajsEloquent.QueryBuilder.QueryBuilderInternal
+    const executeMode = this.useSettingFeatureOf(model).getSettingProperty(model, 'executeMode', 'default')
+    if (executeMode !== 'default') {
+      queryBuilder.handler.getQueryExecutor().setExecuteMode(executeMode)
+    }
+    return queryBuilder
   }
 }
 register(QueryFeature, NajsEloquent.Feature.QueryFeature)

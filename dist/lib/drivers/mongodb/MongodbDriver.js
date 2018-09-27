@@ -7,8 +7,7 @@ require("../RecordManager");
 const najs_binding_1 = require("najs-binding");
 const DriverBase_1 = require("../DriverBase");
 const constants_1 = require("../../constants");
-const MongodbQueryBuilder_1 = require("./MongodbQueryBuilder");
-const MongodbQueryBuilderHandler_1 = require("./MongodbQueryBuilderHandler");
+const MongodbQueryBuilderFactory_1 = require("./MongodbQueryBuilderFactory");
 const MongodbExecutorFactory_1 = require("./MongodbExecutorFactory");
 class MongodbDriver extends DriverBase_1.DriverBase {
     constructor() {
@@ -21,8 +20,8 @@ class MongodbDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.recordManager;
     }
-    makeQuery(model) {
-        return new MongodbQueryBuilder_1.MongodbQueryBuilder(new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler(model));
+    makeQueryBuilderFactory() {
+        return najs_binding_1.make(MongodbQueryBuilderFactory_1.MongodbQueryBuilderFactory.className);
     }
 }
 MongodbDriver.Name = 'mongodb';

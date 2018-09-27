@@ -3,6 +3,7 @@
 /// <reference path="../contracts/Driver.ts" />
 /// <reference path="../definitions/features/ISettingFeature.ts" />
 /// <reference path="../definitions/features/IEventFeature.ts" />
+/// <reference path="../definitions/features/IQueryFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
@@ -12,6 +13,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../features/SettingFeature");
 require("../features/EventFeature");
+require("../features/QueryFeature");
 require("../features/FillableFeature");
 require("../features/SerializationFeature");
 require("../features/TimestampsFeature");
@@ -33,6 +35,7 @@ class DriverBase {
         this.attachedModels = {};
         this.settingFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SettingFeature);
         this.eventFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.EventFeature);
+        this.queryFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.QueryFeature, [this.makeQueryBuilderFactory()]);
         this.fillableFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.FillableFeature);
         this.serializationFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.SerializationFeature);
         this.timestampsFeature = najs_binding_1.make(constants_1.NajsEloquent.Feature.TimestampsFeature);
@@ -47,6 +50,9 @@ class DriverBase {
     }
     getEventFeature() {
         return this.eventFeature;
+    }
+    getQueryFeature() {
+        return this.queryFeature;
     }
     getFillableFeature() {
         return this.fillableFeature;
@@ -73,14 +79,6 @@ class DriverBase {
         this.getRecordManager().initialize(model, isGuarded, data);
         this.attachPublicApiIfNeeded(model);
         return model;
-    }
-    newQuery(model) {
-        const queryBuilder = this.makeQuery(model);
-        const executeMode = this.settingFeature.getSettingProperty(model, 'executeMode', 'default');
-        if (executeMode !== 'default') {
-            queryBuilder.handler.getQueryExecutor().setExecuteMode(executeMode);
-        }
-        return queryBuilder;
     }
     attachPublicApiIfNeeded(model) {
         if (typeof this.attachedModels[model.getModelName()] !== 'undefined') {
@@ -117,6 +115,7 @@ class DriverBase {
         return [
             this.getSettingFeature(),
             this.getEventFeature(),
+            this.getQueryFeature(),
             this.getFillableFeature(),
             this.getSerializationFeature(),
             this.getTimestampsFeature(),

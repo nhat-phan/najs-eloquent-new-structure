@@ -6,7 +6,7 @@ const NajsBinding = require("najs-binding");
 const DriverBase_1 = require("../../../lib/drivers/DriverBase");
 const MongodbDriver_1 = require("../../../lib/drivers/mongodb/MongodbDriver");
 const RecordManager_1 = require("../../../lib/drivers/RecordManager");
-const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
+const MongodbQueryBuilderFactory_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderFactory");
 describe('MongodbDriver', function () {
     it('extends DriverBase, implements Autoload under name "NajsEloquent.Driver.MongodbDriver"', function () {
         const driver = new MongodbDriver_1.MongodbDriver();
@@ -34,18 +34,13 @@ describe('MongodbDriver', function () {
             expect(driver.getRecordManager() === driver['recordManager']).toBe(true);
         });
     });
-    describe('.makeQuery()', function () {
-        it('creates and returns an instance of MongodbQueryBuilder every calls', function () {
-            const model = {
-                getRecordName() {
-                    return 'model';
-                }
-            };
+    describe('.makeQueryBuilderFactory()', function () {
+        it('creates and returns an instance of MongodbQueryBuilderFactory', function () {
             const driver = new MongodbDriver_1.MongodbDriver();
-            const query1 = driver.makeQuery(model);
-            const query2 = driver.makeQuery(model);
-            expect(query1 === query2).toBe(false);
-            expect(query1).toBeInstanceOf(MongodbQueryBuilder_1.MongodbQueryBuilder);
+            const factory1 = driver.makeQueryBuilderFactory();
+            const factory2 = driver.makeQueryBuilderFactory();
+            expect(factory1 === factory2).toBe(true);
+            expect(factory1).toBeInstanceOf(MongodbQueryBuilderFactory_1.MongodbQueryBuilderFactory);
         });
     });
 });

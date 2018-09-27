@@ -8,6 +8,7 @@ const DriverBase_1 = require("../../lib/drivers/DriverBase");
 const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
 const EventFeature_1 = require("../../lib/features/EventFeature");
+const QueryFeature_1 = require("../../lib/features/QueryFeature");
 const FillableFeature_1 = require("../../lib/features/FillableFeature");
 const SerializationFeature_1 = require("../../lib/features/SerializationFeature");
 const TimestampsFeature_1 = require("../../lib/features/TimestampsFeature");
@@ -21,18 +22,24 @@ describe('DriverBase', function () {
         it('creates instance of common features via NajsBinding.make()', function () {
             const makeSpy = Sinon.spy(NajsBinding, 'make');
             const driverBase = createDriver();
+            const stub = Sinon.stub(driverBase, 'makeQueryBuilderFactory');
+            stub.returns('anything');
             expect(driverBase['settingFeature']).toBeInstanceOf(SettingFeature_1.SettingFeature);
             expect(driverBase['eventFeature']).toBeInstanceOf(EventFeature_1.EventFeature);
+            expect(driverBase['queryFeature']).toBeInstanceOf(QueryFeature_1.QueryFeature);
             expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature_1.FillableFeature);
             expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature_1.SerializationFeature);
             expect(driverBase['timestampsFeature']).toBeInstanceOf(TimestampsFeature_1.TimestampsFeature);
             expect(driverBase['softDeletesFeature']).toBeInstanceOf(SoftDeletesFeature_1.SoftDeletesFeature);
-            expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true);
-            expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.EventFeature')).toBe(true);
-            expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true);
-            expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true);
-            expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true);
-            expect(makeSpy.getCall(5).calledWith('NajsEloquent.Feature.SoftDeletesFeature')).toBe(true);
+            expect(makeSpy.getCall(0).calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true);
+            expect(makeSpy.getCall(1).calledWith('NajsEloquent.Feature.EventFeature')).toBe(true);
+            // 2 is MemoryQueryBuilderFactory => QueryFeature is called at 3
+            expect(makeSpy.getCall(2).calledWith('NajsEloquent.Driver.Memory.MemoryQueryBuilderFactory')).toBe(true);
+            expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.QueryFeature')).toBe(true);
+            expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true);
+            expect(makeSpy.getCall(5).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true);
+            expect(makeSpy.getCall(6).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true);
+            expect(makeSpy.getCall(7).calledWith('NajsEloquent.Feature.SoftDeletesFeature')).toBe(true);
             makeSpy.restore();
         });
     });
@@ -139,51 +146,6 @@ describe('DriverBase', function () {
             attachPublicApiIfNeededStub.restore();
         });
     });
-    describe('.newQuery()', function () {
-        const queryExecutor = {
-            setExecuteMode() { }
-        };
-        const query = {
-            handler: {
-                getQueryExecutor() {
-                    return queryExecutor;
-                }
-            }
-        };
-        class ChildDriver extends DriverBase_1.DriverBase {
-            getClassName() {
-                return 'ChildDriver';
-            }
-            getRecordManager() {
-                return {};
-            }
-            makeQuery() {
-                return query;
-            }
-        }
-        it('calls .makeQuery() then returns an instance if there is no setting property "executeMode"', function () {
-            const model = {};
-            const driver = new ChildDriver();
-            const stub = Sinon.stub(driver['settingFeature'], 'getSettingProperty');
-            stub.returns('default');
-            const spy = Sinon.spy(queryExecutor, 'setExecuteMode');
-            expect(driver.newQuery(model) === query).toBe(true);
-            expect(stub.calledWith(model, 'executeMode')).toBe(true);
-            expect(spy.calledWith('disabled')).toBe(false);
-            spy.restore();
-        });
-        it('calls .makeQuery() then passes "executeMode" to .setExecuteMode() if the setting property exists', function () {
-            const model = {};
-            const driver = new ChildDriver();
-            const stub = Sinon.stub(driver['settingFeature'], 'getSettingProperty');
-            stub.returns('disabled');
-            const spy = Sinon.spy(queryExecutor, 'setExecuteMode');
-            expect(driver.newQuery(model) === query).toBe(true);
-            expect(stub.calledWith(model, 'executeMode')).toBe(true);
-            expect(spy.calledWith('disabled')).toBe(true);
-            spy.restore();
-        });
-    });
     describe('.attachPublicApiIfNeeded()', function () {
         it('does nothing if the model is not in property "attachedModels"', function () {
             const getFeaturesSpy = Sinon.spy(driver, 'getFeatures');
@@ -214,7 +176,7 @@ describe('DriverBase', function () {
                 prototype: Test.prototype,
                 bases: bases
             });
-            expect(attachFeatureIfNeededSpy.callCount).toEqual(8);
+            expect(attachFeatureIfNeededSpy.callCount).toEqual(9);
             expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true);
             expect(definePropertiesBeforeAttachFeaturesSpy.called).toBe(true);
             expect(definePropertiesAfterAttachFeatures.called).toBe(true);
@@ -271,6 +233,7 @@ describe('DriverBase', function () {
             expect(driver.getSharedFeatures()).toEqual([
                 driver['settingFeature'],
                 driver['eventFeature'],
+                driver['queryFeature'],
                 driver['fillableFeature'],
                 driver['serializationFeature'],
                 driver['timestampsFeature'],

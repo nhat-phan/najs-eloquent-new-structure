@@ -23,7 +23,12 @@ class QueryFeature extends FeatureBase_1.FeatureBase {
         return constants_1.NajsEloquent.Feature.QueryFeature;
     }
     newQuery(model) {
-        return this.factory.make(model);
+        const queryBuilder = this.factory.make(model);
+        const executeMode = this.useSettingFeatureOf(model).getSettingProperty(model, 'executeMode', 'default');
+        if (executeMode !== 'default') {
+            queryBuilder.handler.getQueryExecutor().setExecuteMode(executeMode);
+        }
+        return queryBuilder;
     }
 }
 exports.QueryFeature = QueryFeature;

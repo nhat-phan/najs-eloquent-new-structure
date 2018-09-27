@@ -155,6 +155,10 @@ declare namespace NajsEloquent.Model {
          */
         all(): Promise<CollectJs.Collection<QueryBuilder.OmittedQueryBuilderResult<this>>>;
         /**
+         * Execute query and returns count of records.
+         */
+        count(): Promise<number>;
+        /**
          * Execute query and returns "pluck" result.
          */
         pluck(valueKey: string): Promise<object>;

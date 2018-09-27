@@ -3,7 +3,7 @@ import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
 import { DriverBase } from '../../../lib/drivers/DriverBase'
 import { MongooseDriver } from '../../../lib/drivers/mongoose/MongooseDriver'
-import { MongooseQueryBuilder } from '../../../lib/drivers/mongoose/MongooseQueryBuilder'
+import { MongooseQueryBuilderFactory } from '../../../lib/drivers/mongoose/MongooseQueryBuilderFactory'
 import { MongooseDocumentManager } from '../../../lib/drivers/mongoose/MongooseDocumentManager'
 
 describe('MongooseDriver', function() {
@@ -38,17 +38,12 @@ describe('MongooseDriver', function() {
   })
 
   describe('.makeQuery()', function() {
-    it('creates and returns an instance of MongooseQueryBuilder every calls', function() {
-      const model: any = {
-        getRecordName() {
-          return 'model'
-        }
-      }
+    it('creates and returns an instance of MongooseQueryBuilderFactory', function() {
       const driver = new MongooseDriver()
-      const query1 = driver.makeQuery(model)
-      const query2 = driver.makeQuery(model)
-      expect(query1 === query2).toBe(false)
-      expect(query1).toBeInstanceOf(MongooseQueryBuilder)
+      const factory1 = driver.makeQueryBuilderFactory()
+      const factory2 = driver.makeQueryBuilderFactory()
+      expect(factory1 === factory2).toBe(true)
+      expect(factory1).toBeInstanceOf(MongooseQueryBuilderFactory)
     })
   })
 })

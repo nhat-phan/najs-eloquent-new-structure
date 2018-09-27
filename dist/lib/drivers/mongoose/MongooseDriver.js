@@ -7,8 +7,7 @@ require("./MongooseDocumentManager");
 const najs_binding_1 = require("najs-binding");
 const DriverBase_1 = require("../DriverBase");
 const constants_1 = require("../../constants");
-const MongooseQueryBuilder_1 = require("./MongooseQueryBuilder");
-const MongooseQueryBuilderHandler_1 = require("./MongooseQueryBuilderHandler");
+const MongooseQueryBuilderFactory_1 = require("./MongooseQueryBuilderFactory");
 const MongooseExecutorFactory_1 = require("./MongooseExecutorFactory");
 class MongooseDriver extends DriverBase_1.DriverBase {
     constructor() {
@@ -23,8 +22,8 @@ class MongooseDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.documentManager;
     }
-    makeQuery(model) {
-        return new MongooseQueryBuilder_1.MongooseQueryBuilder(new MongooseQueryBuilderHandler_1.MongooseQueryBuilderHandler(model));
+    makeQueryBuilderFactory() {
+        return najs_binding_1.make(MongooseQueryBuilderFactory_1.MongooseQueryBuilderFactory.className);
     }
 }
 MongooseDriver.Name = 'mongoose';

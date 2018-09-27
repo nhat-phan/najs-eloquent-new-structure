@@ -1,107 +1,137 @@
 /// <reference path="../../definitions/model/IModel.ts" />
+/// <reference path="../../definitions/model/IModelQuery.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 
 import Model = NajsEloquent.Model.IModel
-import QueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 
-export const QueryPublicApi = {
-  queryName(this: Model, name: string): QueryBuilder<any, any> {
+export const QueryPublicApi: NajsEloquent.Model.IModelQuery = {
+  queryName(this: Model, name: string): IQueryBuilder<any> {
     return this.newQuery(name)
   },
 
-  select(this: Model, ...fields: Array<string | string[]>): QueryBuilder<any, any> {
-    return this.newQuery().select(...fields)
+  setLogGroup(this: Model, group: string): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.setLogGroup.apply(query, arguments)
   },
 
-  limit(this: Model, record: number): QueryBuilder<any, any> {
-    return this.newQuery().limit(record)
+  select(this: Model, ...fields: Array<string | string[]>): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.select.apply(query, arguments)
   },
 
-  orderBy(this: Model, field: string, direction?: any): QueryBuilder<any, any> {
-    return this.newQuery().orderBy(field, direction)
+  limit(this: Model, record: number): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.limit.apply(query, arguments)
   },
 
-  orderByAsc(this: Model, field: string): QueryBuilder<any, any> {
-    return this.newQuery().orderByAsc(field)
+  orderBy(this: Model, field: string, direction?: any): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.orderBy.apply(query, arguments)
   },
 
-  orderByDesc(this: Model, field: string): QueryBuilder<any, any> {
-    return this.newQuery().orderByDesc(field)
+  orderByAsc(this: Model, field: string): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.orderByAsc.apply(query, arguments)
   },
 
-  where(this: Model, arg1: any, arg2?: any, arg3?: any): QueryBuilder<any, any> {
-    return this.newQuery().where(arg1, arg2, arg3)
+  orderByDesc(this: Model, field: string): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.orderByDesc.apply(query, arguments)
   },
 
-  whereNot(this: Model, field: string, value: any): QueryBuilder<any, any> {
-    return this.newQuery().whereNot(field, value)
+  where(this: Model, arg1: any, arg2?: any, arg3?: any): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.where.apply(query, arguments)
   },
 
-  whereIn(this: Model, field: string, values: Array<any>): QueryBuilder<any, any> {
-    return this.newQuery().whereIn(field, values)
+  whereNot(this: Model, field: string, value: any): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereNot.apply(query, arguments)
   },
 
-  whereNotIn(this: Model, field: string, values: Array<any>): QueryBuilder<any, any> {
-    return this.newQuery().whereNotIn(field, values)
+  whereIn(this: Model, field: string, values: Array<any>): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereIn.apply(query, arguments)
   },
 
-  whereNull(this: Model, field: string): QueryBuilder<any, any> {
-    return this.newQuery().whereNull(field)
+  whereNotIn(this: Model, field: string, values: Array<any>): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereNotIn.apply(query, arguments)
   },
 
-  whereNotNull(this: Model, field: string): QueryBuilder<any, any> {
-    return this.newQuery().whereNotNull(field)
+  whereNull(this: Model, field: string): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereNull.apply(query, arguments)
   },
 
-  whereBetween(this: Model, field: string, range: [any, any]): QueryBuilder<any, any> {
-    return this.newQuery().whereBetween(field, range)
+  whereNotNull(this: Model, field: string): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereNotNull.apply(query, arguments)
   },
 
-  whereNotBetween(this: Model, field: string, range: [any, any]): QueryBuilder<any, any> {
-    return this.newQuery().whereNotBetween(field, range)
+  whereBetween(this: Model, field: string, range: [any, any]): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereBetween.apply(query, arguments)
   },
 
-  withTrashed(this: Model): QueryBuilder<any, any> {
-    return this.newQuery().withTrashed()
+  whereNotBetween(this: Model, field: string, range: [any, any]): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.whereNotBetween.apply(query, arguments)
   },
 
-  onlyTrashed(this: Model): QueryBuilder<any, any> {
-    return this.newQuery().onlyTrashed()
+  withTrashed(this: Model): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.withTrashed.apply(query, arguments)
+  },
+
+  onlyTrashed(this: Model): IQueryBuilder<any> {
+    const query = this.newQuery()
+    return query.onlyTrashed.apply(query, arguments)
   },
 
   first(this: Model, id?: any): Promise<any> {
-    return this.newQuery().first(id)
+    const query = this.newQuery()
+    return query.first.apply(query, arguments)
   },
 
   find(this: Model, id?: any): Promise<any> {
-    return this.newQuery().find(id)
+    const query = this.newQuery()
+    return query.find.apply(query, arguments)
   },
 
   get(this: Model): Promise<any> {
-    return this.newQuery().get(...arguments)
+    const query = this.newQuery()
+    return query.get.apply(query, arguments)
   },
 
   all(this: Model): Promise<any> {
-    return this.newQuery().all()
+    const query = this.newQuery()
+    return query.all.apply(query, arguments)
   },
 
   count(this: Model): Promise<number> {
-    return this.newQuery().count()
+    const query = this.newQuery()
+    return query.count.apply(query, arguments)
   },
 
   pluck(this: Model, valueKey: string, indexKey?: any): Promise<object> {
-    return this.newQuery().pluck(valueKey, indexKey)
+    const query = this.newQuery()
+    return query.pluck.apply(query, arguments)
   },
 
   findById(this: Model, id: any): Promise<any> {
-    return this.newQuery().findById(id)
+    const query = this.newQuery()
+    return query.findById.apply(query, arguments)
   },
 
   findOrFail(this: Model, id: any): Promise<any> {
-    return this.newQuery().findOrFail(id)
+    const query = this.newQuery()
+    return query.findOrFail.apply(query, arguments)
   },
 
   firstOrFail(this: Model, id: any): Promise<any> {
-    return this.newQuery().firstOrFail(id)
+    const query = this.newQuery()
+    return query.firstOrFail.apply(query, arguments)
   }
 }

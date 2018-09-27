@@ -1,6 +1,7 @@
 /// <reference types="najs-binding" />
 /// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/features/IEventFeature.ts" />
+/// <reference path="../definitions/features/IQueryFeature.ts" />
 /// <reference path="../definitions/features/ISettingFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
@@ -16,6 +17,8 @@ namespace Najs.Contracts.Eloquent {
 
     getEventFeature(): NajsEloquent.Feature.IEventFeature
 
+    getQueryFeature(): NajsEloquent.Feature.IQueryFeature
+
     getFillableFeature(): NajsEloquent.Feature.IFillableFeature
 
     getSerializationFeature(): NajsEloquent.Feature.ISerializationFeature
@@ -29,7 +32,5 @@ namespace Najs.Contracts.Eloquent {
     getRelationFeature(): NajsEloquent.Feature.IRelationFeature
 
     makeModel<M extends NajsEloquent.Model.IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M
-
-    newQuery<M extends NajsEloquent.Model.IModel>(model: M): NajsEloquent.QueryBuilder.IQueryBuilder<M>
   }
 }

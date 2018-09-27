@@ -2,6 +2,7 @@
 /// <reference path="../contracts/Driver.ts" />
 /// <reference path="../definitions/features/ISettingFeature.ts" />
 /// <reference path="../definitions/features/IEventFeature.ts" />
+/// <reference path="../definitions/features/IQueryFeature.ts" />
 /// <reference path="../definitions/features/IFillableFeature.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
@@ -10,10 +11,10 @@
 /// <reference path="../definitions/query-builders/IQueryBuilder.ts" />
 
 import IModel = NajsEloquent.Model.IModel
-import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 
 import '../features/SettingFeature'
 import '../features/EventFeature'
+import '../features/QueryFeature'
 import '../features/FillableFeature'
 import '../features/SerializationFeature'
 import '../features/TimestampsFeature'
@@ -35,6 +36,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
   protected attachedModels: object
   protected settingFeature: NajsEloquent.Feature.ISettingFeature
   protected eventFeature: NajsEloquent.Feature.IEventFeature
+  protected queryFeature: NajsEloquent.Feature.IQueryFeature
   protected fillableFeature: NajsEloquent.Feature.IFillableFeature
   protected serializationFeature: NajsEloquent.Feature.ISerializationFeature
   protected timestampsFeature: NajsEloquent.Feature.ITimestampsFeature
@@ -46,6 +48,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     this.attachedModels = {}
     this.settingFeature = make(NajsEloquentClasses.Feature.SettingFeature)
     this.eventFeature = make(NajsEloquentClasses.Feature.EventFeature)
+    this.queryFeature = make(NajsEloquentClasses.Feature.QueryFeature, [this.makeQueryBuilderFactory()])
     this.fillableFeature = make(NajsEloquentClasses.Feature.FillableFeature)
     this.serializationFeature = make(NajsEloquentClasses.Feature.SerializationFeature)
     this.timestampsFeature = make(NajsEloquentClasses.Feature.TimestampsFeature)
@@ -61,7 +64,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   abstract getRecordManager(): NajsEloquent.Feature.IRecordManager<T>
 
-  abstract makeQuery<M extends IModel>(model: M): IQueryBuilder<M>
+  abstract makeQueryBuilderFactory(): NajsEloquent.QueryBuilder.IQueryBuilderFactory
 
   getSettingFeature() {
     return this.settingFeature
@@ -69,6 +72,10 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
 
   getEventFeature() {
     return this.eventFeature
+  }
+
+  getQueryFeature() {
+    return this.queryFeature
   }
 
   getFillableFeature() {
@@ -104,15 +111,6 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     this.attachPublicApiIfNeeded(model)
 
     return model
-  }
-
-  newQuery<M extends IModel>(model: M): IQueryBuilder<M> {
-    const queryBuilder = this.makeQuery(model) as NajsEloquent.QueryBuilder.QueryBuilderInternal
-    const executeMode = this.settingFeature.getSettingProperty(model, 'executeMode', 'default')
-    if (executeMode !== 'default') {
-      queryBuilder.handler.getQueryExecutor().setExecuteMode(executeMode)
-    }
-    return queryBuilder
   }
 
   attachPublicApiIfNeeded(model: IModel) {
@@ -159,6 +157,7 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     return [
       this.getSettingFeature(),
       this.getEventFeature(),
+      this.getQueryFeature(),
       this.getFillableFeature(),
       this.getSerializationFeature(),
       this.getTimestampsFeature(),

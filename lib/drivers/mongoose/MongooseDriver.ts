@@ -7,8 +7,7 @@ import { register, make } from 'najs-binding'
 import { DriverBase } from '../DriverBase'
 import { Document } from 'mongoose'
 import { NajsEloquent } from '../../constants'
-import { MongooseQueryBuilder } from './MongooseQueryBuilder'
-import { MongooseQueryBuilderHandler } from './MongooseQueryBuilderHandler'
+import { MongooseQueryBuilderFactory } from './MongooseQueryBuilderFactory'
 import { MongooseExecutorFactory } from './MongooseExecutorFactory'
 
 export class MongooseDriver<T extends Document = Document> extends DriverBase<T> {
@@ -31,8 +30,8 @@ export class MongooseDriver<T extends Document = Document> extends DriverBase<T>
     return this.documentManager
   }
 
-  makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MongooseQueryBuilder<M, MongooseQueryBuilderHandler> {
-    return new MongooseQueryBuilder(new MongooseQueryBuilderHandler(model))
+  makeQueryBuilderFactory() {
+    return make<MongooseQueryBuilderFactory>(MongooseQueryBuilderFactory.className)
   }
 }
 register(MongooseDriver, NajsEloquent.Driver.MongooseDriver)

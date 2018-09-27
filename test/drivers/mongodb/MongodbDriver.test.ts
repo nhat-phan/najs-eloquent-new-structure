@@ -4,7 +4,7 @@ import * as NajsBinding from 'najs-binding'
 import { DriverBase } from '../../../lib/drivers/DriverBase'
 import { MongodbDriver } from '../../../lib/drivers/mongodb/MongodbDriver'
 import { RecordManager } from '../../../lib/drivers/RecordManager'
-import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
+import { MongodbQueryBuilderFactory } from '../../../lib/drivers/mongodb/MongodbQueryBuilderFactory'
 
 describe('MongodbDriver', function() {
   it('extends DriverBase, implements Autoload under name "NajsEloquent.Driver.MongodbDriver"', function() {
@@ -37,18 +37,13 @@ describe('MongodbDriver', function() {
     })
   })
 
-  describe('.makeQuery()', function() {
-    it('creates and returns an instance of MongodbQueryBuilder every calls', function() {
-      const model: any = {
-        getRecordName() {
-          return 'model'
-        }
-      }
+  describe('.makeQueryBuilderFactory()', function() {
+    it('creates and returns an instance of MongodbQueryBuilderFactory', function() {
       const driver = new MongodbDriver()
-      const query1 = driver.makeQuery(model)
-      const query2 = driver.makeQuery(model)
-      expect(query1 === query2).toBe(false)
-      expect(query1).toBeInstanceOf(MongodbQueryBuilder)
+      const factory1 = driver.makeQueryBuilderFactory()
+      const factory2 = driver.makeQueryBuilderFactory()
+      expect(factory1 === factory2).toBe(true)
+      expect(factory1).toBeInstanceOf(MongodbQueryBuilderFactory)
     })
   })
 })

@@ -7,8 +7,7 @@ require("../RecordManager");
 const najs_binding_1 = require("najs-binding");
 const DriverBase_1 = require("../DriverBase");
 const constants_1 = require("../../constants");
-const MemoryQueryBuilder_1 = require("./MemoryQueryBuilder");
-const MemoryQueryBuilderHandler_1 = require("./MemoryQueryBuilderHandler");
+const MemoryQueryBuilderFactory_1 = require("./MemoryQueryBuilderFactory");
 const MemoryExecutorFactory_1 = require("./MemoryExecutorFactory");
 class MemoryDriver extends DriverBase_1.DriverBase {
     constructor() {
@@ -21,8 +20,8 @@ class MemoryDriver extends DriverBase_1.DriverBase {
     getRecordManager() {
         return this.recordManager;
     }
-    makeQuery(model) {
-        return new MemoryQueryBuilder_1.MemoryQueryBuilder(new MemoryQueryBuilderHandler_1.MemoryQueryBuilderHandler(model));
+    makeQueryBuilderFactory() {
+        return najs_binding_1.make(MemoryQueryBuilderFactory_1.MemoryQueryBuilderFactory.className);
     }
 }
 MemoryDriver.Name = 'memory';

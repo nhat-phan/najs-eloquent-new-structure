@@ -7,8 +7,7 @@ import { register, make } from 'najs-binding'
 import { DriverBase } from '../DriverBase'
 import { Record } from '../Record'
 import { NajsEloquent } from '../../constants'
-import { MemoryQueryBuilder } from './MemoryQueryBuilder'
-import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
+import { MemoryQueryBuilderFactory } from './MemoryQueryBuilderFactory'
 import { MemoryExecutorFactory } from './MemoryExecutorFactory'
 
 export class MemoryDriver<T extends Record = Record> extends DriverBase<T> {
@@ -29,8 +28,8 @@ export class MemoryDriver<T extends Record = Record> extends DriverBase<T> {
     return this.recordManager
   }
 
-  makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MemoryQueryBuilder<M, MemoryQueryBuilderHandler> {
-    return new MemoryQueryBuilder(new MemoryQueryBuilderHandler(model))
+  makeQueryBuilderFactory() {
+    return make<MemoryQueryBuilderFactory>(MemoryQueryBuilderFactory.className)
   }
 }
 register(MemoryDriver, NajsEloquent.Driver.MemoryDriver)

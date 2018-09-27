@@ -34,7 +34,7 @@ export class Model {
   }
 
   newQuery(name?: string): IQueryBuilder<this> {
-    const query = this.driver.newQuery(this)
+    const query = this.driver.getQueryFeature().newQuery(this)
 
     return typeof name !== 'undefined' ? query.queryName(name) : query
   }

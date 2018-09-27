@@ -21,7 +21,7 @@ class Model {
         return najs_binding_1.getClassName(this);
     }
     newQuery(name) {
-        const query = this.driver.newQuery(this);
+        const query = this.driver.getQueryFeature().newQuery(this);
         return typeof name !== 'undefined' ? query.queryName(name) : query;
     }
     static newQuery(name) {

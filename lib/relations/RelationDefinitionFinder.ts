@@ -8,6 +8,7 @@ import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
 import { Relation } from './Relation'
 import { EventPublicApi } from '../features/mixin/EventPublicApi'
 import { FillablePublicApi } from '../features/mixin/FillablePublicApi'
+import { QueryPublicApi } from '../features/mixin/QueryPublicApi'
 import { RecordManagerPublicApi } from '../features/mixin/RecordManagerPublicApi'
 import { RelationPublicApi } from '../features/mixin/RelationPublicApi'
 import { SerializationPublicApi } from '../features/mixin/SerializationPublicApi'
@@ -17,6 +18,7 @@ import { PrototypeManager } from '../util/PrototypeManager'
 
 const PublicApiList = ['constructor', 'sharedMetadata'].concat(
   Object.getOwnPropertyNames(EventPublicApi),
+  Object.getOwnPropertyNames(QueryPublicApi),
   Object.getOwnPropertyNames(FillablePublicApi),
   Object.getOwnPropertyNames(RecordManagerPublicApi),
   Object.getOwnPropertyNames(RelationPublicApi),

@@ -6,6 +6,7 @@ import { DriverBase } from '../../lib/drivers/DriverBase'
 import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
 import { SettingFeature } from '../../lib/features/SettingFeature'
 import { EventFeature } from '../../lib/features/EventFeature'
+import { QueryFeature } from '../../lib/features/QueryFeature'
 import { FillableFeature } from '../../lib/features/FillableFeature'
 import { SerializationFeature } from '../../lib/features/SerializationFeature'
 import { TimestampsFeature } from '../../lib/features/TimestampsFeature'
@@ -21,19 +22,27 @@ describe('DriverBase', function() {
     it('creates instance of common features via NajsBinding.make()', function() {
       const makeSpy = Sinon.spy(NajsBinding, 'make')
       const driverBase = createDriver()
+      const stub = Sinon.stub(driverBase, 'makeQueryBuilderFactory')
+      stub.returns('anything')
 
       expect(driverBase['settingFeature']).toBeInstanceOf(SettingFeature)
       expect(driverBase['eventFeature']).toBeInstanceOf(EventFeature)
+      expect(driverBase['queryFeature']).toBeInstanceOf(QueryFeature)
       expect(driverBase['fillableFeature']).toBeInstanceOf(FillableFeature)
       expect(driverBase['serializationFeature']).toBeInstanceOf(SerializationFeature)
       expect(driverBase['timestampsFeature']).toBeInstanceOf(TimestampsFeature)
       expect(driverBase['softDeletesFeature']).toBeInstanceOf(SoftDeletesFeature)
-      expect(makeSpy.firstCall.calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true)
-      expect(makeSpy.secondCall.calledWith('NajsEloquent.Feature.EventFeature')).toBe(true)
-      expect(makeSpy.thirdCall.calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
-      expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true)
-      expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true)
-      expect(makeSpy.getCall(5).calledWith('NajsEloquent.Feature.SoftDeletesFeature')).toBe(true)
+      expect(makeSpy.getCall(0).calledWith('NajsEloquent.Feature.SettingFeature')).toBe(true)
+      expect(makeSpy.getCall(1).calledWith('NajsEloquent.Feature.EventFeature')).toBe(true)
+
+      // 2 is MemoryQueryBuilderFactory => QueryFeature is called at 3
+      expect(makeSpy.getCall(2).calledWith('NajsEloquent.Driver.Memory.MemoryQueryBuilderFactory')).toBe(true)
+      expect(makeSpy.getCall(3).calledWith('NajsEloquent.Feature.QueryFeature')).toBe(true)
+
+      expect(makeSpy.getCall(4).calledWith('NajsEloquent.Feature.FillableFeature')).toBe(true)
+      expect(makeSpy.getCall(5).calledWith('NajsEloquent.Feature.SerializationFeature')).toBe(true)
+      expect(makeSpy.getCall(6).calledWith('NajsEloquent.Feature.TimestampsFeature')).toBe(true)
+      expect(makeSpy.getCall(7).calledWith('NajsEloquent.Feature.SoftDeletesFeature')).toBe(true)
       makeSpy.restore()
     })
   })
@@ -159,62 +168,6 @@ describe('DriverBase', function() {
     })
   })
 
-  describe('.newQuery()', function() {
-    const queryExecutor = {
-      setExecuteMode() {}
-    }
-
-    const query: any = {
-      handler: {
-        getQueryExecutor() {
-          return queryExecutor
-        }
-      }
-    }
-
-    class ChildDriver extends DriverBase<any> {
-      getClassName() {
-        return 'ChildDriver'
-      }
-
-      getRecordManager() {
-        return {} as any
-      }
-
-      makeQuery(): any {
-        return query
-      }
-    }
-
-    it('calls .makeQuery() then returns an instance if there is no setting property "executeMode"', function() {
-      const model: any = {}
-      const driver = new ChildDriver()
-      const stub = Sinon.stub(driver['settingFeature'], 'getSettingProperty')
-      stub.returns('default')
-
-      const spy = Sinon.spy(queryExecutor, 'setExecuteMode')
-
-      expect(driver.newQuery(model) === query).toBe(true)
-      expect(stub.calledWith(model, 'executeMode')).toBe(true)
-      expect(spy.calledWith('disabled')).toBe(false)
-      spy.restore()
-    })
-
-    it('calls .makeQuery() then passes "executeMode" to .setExecuteMode() if the setting property exists', function() {
-      const model: any = {}
-      const driver = new ChildDriver()
-      const stub = Sinon.stub(driver['settingFeature'], 'getSettingProperty')
-      stub.returns('disabled')
-
-      const spy = Sinon.spy(queryExecutor, 'setExecuteMode')
-
-      expect(driver.newQuery(model) === query).toBe(true)
-      expect(stub.calledWith(model, 'executeMode')).toBe(true)
-      expect(spy.calledWith('disabled')).toBe(true)
-      spy.restore()
-    })
-  })
-
   describe('.attachPublicApiIfNeeded()', function() {
     it('does nothing if the model is not in property "attachedModels"', function() {
       const getFeaturesSpy = Sinon.spy(driver, 'getFeatures')
@@ -250,7 +203,7 @@ describe('DriverBase', function() {
         prototype: Test.prototype,
         bases: bases
       })
-      expect(attachFeatureIfNeededSpy.callCount).toEqual(8)
+      expect(attachFeatureIfNeededSpy.callCount).toEqual(9)
       expect(attachFeatureIfNeededSpy.lastCall.calledWith(driver.getRecordManager(), Test.prototype, bases)).toBe(true)
 
       expect(definePropertiesBeforeAttachFeaturesSpy.called).toBe(true)
@@ -315,6 +268,7 @@ describe('DriverBase', function() {
       expect(driver.getSharedFeatures()).toEqual([
         driver['settingFeature'],
         driver['eventFeature'],
+        driver['queryFeature'],
         driver['fillableFeature'],
         driver['serializationFeature'],
         driver['timestampsFeature'],

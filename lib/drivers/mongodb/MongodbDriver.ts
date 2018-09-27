@@ -7,8 +7,7 @@ import { register, make } from 'najs-binding'
 import { DriverBase } from '../DriverBase'
 import { Record } from '../Record'
 import { NajsEloquent } from '../../constants'
-import { MongodbQueryBuilder } from './MongodbQueryBuilder'
-import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
+import { MongodbQueryBuilderFactory } from './MongodbQueryBuilderFactory'
 import { MongodbExecutorFactory } from './MongodbExecutorFactory'
 
 export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
@@ -29,8 +28,8 @@ export class MongodbDriver<T extends Record = Record> extends DriverBase<T> {
     return this.recordManager
   }
 
-  makeQuery<M extends NajsEloquent.Model.IModel>(model: M): MongodbQueryBuilder<M, MongodbQueryBuilderHandler> {
-    return new MongodbQueryBuilder(new MongodbQueryBuilderHandler(model))
+  makeQueryBuilderFactory() {
+    return make<MongodbQueryBuilderFactory>(MongodbQueryBuilderFactory.className)
   }
 }
 register(MongodbDriver, NajsEloquent.Driver.MongodbDriver)
