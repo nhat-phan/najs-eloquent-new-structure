@@ -30,6 +30,7 @@ import { RelationNotDefinedError } from './errors/RelationNotDefinedError'
 import { EventFeature } from './features/EventFeature'
 import { FeatureBase } from './features/FeatureBase'
 import { FillableFeature } from './features/FillableFeature'
+import { QueryFeature } from './features/QueryFeature'
 import { RelationFeature } from './features/RelationFeature'
 import { SerializationFeature } from './features/SerializationFeature'
 import { SettingFeature } from './features/SettingFeature'
@@ -123,6 +124,7 @@ export type FeaturePackage = {
   EventFeature: typeof EventFeature
   FeatureBase: typeof FeatureBase
   FillableFeature: typeof FillableFeature
+  QueryFeature: typeof QueryFeature
   RelationFeature: typeof RelationFeature
   SerializationFeature: typeof SerializationFeature
   SettingFeature: typeof SettingFeature
@@ -238,6 +240,7 @@ export const Builtin: {
     EventFeature: EventFeature,
     FeatureBase: FeatureBase,
     FillableFeature: FillableFeature,
+    QueryFeature: QueryFeature,
     RelationFeature: RelationFeature,
     SerializationFeature: SerializationFeature,
     SettingFeature: SettingFeature,

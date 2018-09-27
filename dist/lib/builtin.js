@@ -29,6 +29,7 @@ const RelationNotDefinedError_1 = require("./errors/RelationNotDefinedError");
 const EventFeature_1 = require("./features/EventFeature");
 const FeatureBase_1 = require("./features/FeatureBase");
 const FillableFeature_1 = require("./features/FillableFeature");
+const QueryFeature_1 = require("./features/QueryFeature");
 const RelationFeature_1 = require("./features/RelationFeature");
 const SerializationFeature_1 = require("./features/SerializationFeature");
 const SettingFeature_1 = require("./features/SettingFeature");
@@ -109,6 +110,7 @@ exports.Builtin = {
         EventFeature: EventFeature_1.EventFeature,
         FeatureBase: FeatureBase_1.FeatureBase,
         FillableFeature: FillableFeature_1.FillableFeature,
+        QueryFeature: QueryFeature_1.QueryFeature,
         RelationFeature: RelationFeature_1.RelationFeature,
         SerializationFeature: SerializationFeature_1.SerializationFeature,
         SettingFeature: SettingFeature_1.SettingFeature,

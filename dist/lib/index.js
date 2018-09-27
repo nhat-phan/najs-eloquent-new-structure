@@ -4,6 +4,7 @@
 /// <reference path="contracts/MemoryDataSource.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="definitions/collect.js/index.d.ts" />
 /// <reference path="definitions/driver/IExecutor.ts" />
 /// <reference path="definitions/driver/IExecutorFactory.ts" />
@@ -45,20 +46,20 @@
 /// <reference path="definitions/relations/IRelationDataBucket.ts" />
 /// <reference path="definitions/relations/IRelationFactory.ts" />
 /// <reference path="definitions/model/IModel.ts" />
-Object.defineProperty(exports, "__esModule", { value: true });
 const MemoryDataSourceProviderFacade_1 = require("./facades/global/MemoryDataSourceProviderFacade");
 const MemoryDataSource_1 = require("./drivers/memory/MemoryDataSource");
+const Model_1 = require("./model/Model");
+exports.Model = Model_1.Model;
+exports.Eloquent = Model_1.Model;
 MemoryDataSourceProviderFacade_1.MemoryDataSourceProvider.register(MemoryDataSource_1.MemoryDataSource, 'memory', true);
+var builtin_1 = require("./builtin");
+exports.NajsEloquent = builtin_1.Builtin;
 var EloquentDriverProviderFacade_1 = require("./facades/global/EloquentDriverProviderFacade");
 exports.EloquentDriverProvider = EloquentDriverProviderFacade_1.EloquentDriverProvider;
 exports.EloquentDriverProviderFacade = EloquentDriverProviderFacade_1.EloquentDriverProviderFacade;
 var QueryLogFacade_1 = require("./facades/global/QueryLogFacade");
 exports.QueryLog = QueryLogFacade_1.QueryLog;
 exports.QueryLogFacade = QueryLogFacade_1.QueryLogFacade;
-var Model_1 = require("./model/Model");
-exports.Model = Model_1.Model;
 var MemoryDataSourceProviderFacade_2 = require("./facades/global/MemoryDataSourceProviderFacade");
 exports.MemoryDataSourceProvider = MemoryDataSourceProviderFacade_2.MemoryDataSourceProvider;
 exports.MemoryDataSourceProviderFacade = MemoryDataSourceProviderFacade_2.MemoryDataSourceProviderFacade;
-var builtin_1 = require("./builtin");
-exports.NajsEloquent = builtin_1.Builtin;

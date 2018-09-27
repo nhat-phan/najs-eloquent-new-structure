@@ -43,8 +43,9 @@
 /// <reference path="definitions/relations/IRelationData.d.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.d.ts" />
 /// <reference path="definitions/relations/IRelationFactory.d.ts" />
+import { Model } from './model/Model';
+export { Model, Model as Eloquent };
+export { Builtin as NajsEloquent } from './builtin';
 export { EloquentDriverProvider, EloquentDriverProviderFacade } from './facades/global/EloquentDriverProviderFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';
-export { Model } from './model/Model';
 export { MemoryDataSourceProvider, MemoryDataSourceProviderFacade } from './facades/global/MemoryDataSourceProviderFacade';
-export { Builtin as NajsEloquent } from './builtin';
