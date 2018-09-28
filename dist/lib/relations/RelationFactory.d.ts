@@ -13,5 +13,5 @@ export declare class RelationFactory {
     protected relation: IRelation<any>;
     constructor(rootModel: IModel, name: string);
     make<T extends IRelation<any>>(className: string, params: any[], modifier?: (relation: T) => void): T;
-    hasOne<T extends IModel>(model: string | ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T>;
+    hasOne<T extends IModel>(model: ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T>;
 }

@@ -35,7 +35,7 @@ export class RelationFactory {
     return this.relation as T
   }
 
-  hasOne<T extends IModel>(model: string | ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T> {
+  hasOne<T extends IModel>(model: ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T> {
     return this.make<HasOne<T>>(NajsEloquentClasses.Relation.HasOneRelation, [])
   }
 }

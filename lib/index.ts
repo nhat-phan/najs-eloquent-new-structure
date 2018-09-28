@@ -55,10 +55,17 @@
 import { MemoryDataSourceProvider } from './facades/global/MemoryDataSourceProviderFacade'
 import { MemoryDataSource } from './drivers/memory/MemoryDataSource'
 import { Model } from './model/Model'
+
+import { EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
+import { MemoryDriver } from './drivers/memory/MemoryDriver'
+
 MemoryDataSourceProvider.register(MemoryDataSource, 'memory', true)
+EloquentDriverProvider.register(MemoryDriver, 'memory')
 
 export { Model, Model as Eloquent }
 export { Builtin as NajsEloquent } from './builtin'
+
+export type HasOne<T extends Model> = T | undefined | null
 
 export { EloquentDriverProvider, EloquentDriverProviderFacade } from './facades/global/EloquentDriverProviderFacade'
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade'

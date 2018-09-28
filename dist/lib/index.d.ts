@@ -46,6 +46,7 @@
 import { Model } from './model/Model';
 export { Model, Model as Eloquent };
 export { Builtin as NajsEloquent } from './builtin';
+export declare type HasOne<T extends Model> = T | undefined | null;
 export { EloquentDriverProvider, EloquentDriverProviderFacade } from './facades/global/EloquentDriverProviderFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';
 export { MemoryDataSourceProvider, MemoryDataSourceProviderFacade } from './facades/global/MemoryDataSourceProviderFacade';
