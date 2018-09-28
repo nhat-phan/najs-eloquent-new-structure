@@ -9,6 +9,7 @@ namespace NajsEloquent.Relation {
   }
 
   export type RelationDefinitions = { [name in string]: RelationDefinition }
+  export type RelationFetchType = 'lazy' | 'eager'
 
   export interface IRelation<T> {
     /**

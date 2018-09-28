@@ -10,20 +10,18 @@ class HasOneRelation extends Relation_1.Relation {
         return constants_1.NajsEloquent.Relation.HasOneRelation;
     }
     getType() {
-        return 'HasOne';
+        return HasOneRelation.type;
     }
-    buildData() {
+    collectData() {
         return undefined;
     }
-    async lazyLoad() {
-        return undefined;
-    }
-    async eagerLoad() {
+    async fetchData(type) {
         return undefined;
     }
     isInverseOf(relation) {
         return false;
     }
 }
+HasOneRelation.type = 'HasOne';
 exports.HasOneRelation = HasOneRelation;
 najs_binding_1.register(HasOneRelation, constants_1.NajsEloquent.Relation.HasOneRelation);

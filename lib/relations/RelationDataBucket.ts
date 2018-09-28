@@ -15,6 +15,7 @@ export class RelationDataBucket<T = {}> implements Autoload, NajsEloquent.Relati
       metadata: GenericData
     }
   }
+
   constructor() {
     this.bucket = {}
   }

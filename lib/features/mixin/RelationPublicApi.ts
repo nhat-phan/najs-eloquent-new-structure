@@ -18,6 +18,6 @@ export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
   },
 
   defineRelationAccessor(this: Model, name: string): IRelationFactory {
-    return this.defineRelationProperty(name)
+    return this.defineRelationProperty(name as any)
   }
 }

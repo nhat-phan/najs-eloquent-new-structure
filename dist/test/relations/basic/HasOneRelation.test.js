@@ -17,25 +17,18 @@ describe('HasOne', function () {
             expect(hasOne.getType()).toEqual('HasOne');
         });
     });
-    describe('.buildData()', function () {
+    describe('.collectData()', function () {
         it('does nothing for now', function () {
             const rootModel = {};
             const hasOne = new HasOneRelation_1.HasOneRelation(rootModel, 'test');
-            hasOne.buildData();
+            hasOne.collectData();
         });
     });
-    describe('.lazyLoad()', function () {
+    describe('.fetch()', function () {
         it('does nothing for now', function () {
             const rootModel = {};
             const hasOne = new HasOneRelation_1.HasOneRelation(rootModel, 'test');
-            hasOne.lazyLoad();
-        });
-    });
-    describe('.eagerLoad()', function () {
-        it('does nothing for now', function () {
-            const rootModel = {};
-            const hasOne = new HasOneRelation_1.HasOneRelation(rootModel, 'test');
-            hasOne.eagerLoad();
+            hasOne.fetchData('eager');
         });
     });
     describe('.isInverseOf()', function () {

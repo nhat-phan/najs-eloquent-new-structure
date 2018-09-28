@@ -17,11 +17,11 @@ describe('RelationDefinitionFinder', function() {
       }
 
       getTestRelation() {
-        return this.defineRelationProperty('test').hasOne('Any')
+        return this.defineRelationProperty('test' as any).hasOne('Any')
       }
 
       getAnotherRelation() {
-        return this.defineRelationAccessor('another').hasOne('Any')
+        return this.defineRelationAccessor('another' as any).hasOne('Any')
       }
 
       getSkipRelation() {
@@ -56,11 +56,11 @@ describe('RelationDefinitionFinder', function() {
       static className = 'DefinedViaGetter'
 
       get testRelation() {
-        return this.defineRelationProperty('test').hasOne('Any')
+        return this.defineRelationProperty('test' as any).hasOne('Any')
       }
 
       get anotherRelation() {
-        return this.defineRelationAccessor('another').hasOne('Any')
+        return this.defineRelationAccessor('another' as any).hasOne('Any')
       }
 
       get skipRelation() {
@@ -101,7 +101,7 @@ describe('RelationDefinitionFinder', function() {
       }
 
       get testRelation() {
-        return this.defineRelationProperty('test').hasOne('Any')
+        return this.defineRelationProperty('test' as any).hasOne('Any')
       }
     }
     register(SkipErrorDefinitions)
@@ -123,7 +123,7 @@ describe('RelationDefinitionFinder', function() {
   it('can find definition which defined in parent class', function() {
     class DefinedParent extends Model {
       getTestRelation() {
-        return this.defineRelationProperty('test').hasOne('Any')
+        return this.defineRelationProperty('test' as any).hasOne('Any')
       }
     }
 
@@ -131,7 +131,7 @@ describe('RelationDefinitionFinder', function() {
       static className = 'DefinedChild'
 
       get anotherRelation() {
-        return this.defineRelationAccessor('another').hasOne('Any')
+        return this.defineRelationAccessor('another' as any).hasOne('Any')
       }
 
       get skipRelation() {
@@ -164,11 +164,11 @@ describe('RelationDefinitionFinder', function() {
       static className = 'RedefinedProperty'
 
       getTestRelation() {
-        return this.defineRelationProperty('test').hasOne('Any')
+        return this.defineRelationProperty('test' as any).hasOne('Any')
       }
 
       getAnotherRelation() {
-        return this.defineRelationAccessor('test').hasOne('Any')
+        return this.defineRelationAccessor('test' as any).hasOne('Any')
       }
     }
     register(RedefinedProperty)

@@ -12,29 +12,23 @@ class RelationData {
     isLoaded() {
         return this.state === 'loaded';
     }
-    isBuilt() {
-        return this.state === 'built';
-    }
-    markLoaded() {
-        this.state = 'loaded';
-        return this;
-    }
-    markBuilt() {
-        this.state = 'built';
-        return this;
+    hasData() {
+        return this.state === 'collected';
     }
     getData() {
         return this.data;
     }
     setData(data) {
         this.data = data;
-        return this;
+        this.state = 'collected';
+        return data;
     }
     getLoadType() {
         return this.loadType || 'unknown';
     }
     setLoadType(type) {
         this.loadType = type;
+        this.state = 'loaded';
         return this;
     }
 }

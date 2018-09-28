@@ -24,38 +24,18 @@ describe('RelationData', function() {
       const factory: any = {}
       const relationData = new RelationData(factory)
       expect(relationData.isLoaded()).toBe(false)
-      relationData.markLoaded()
+      relationData['state'] = 'loaded'
       expect(relationData.isLoaded()).toBe(true)
     })
   })
 
-  describe('.isBuilt()', function() {
-    it('returns true if state = "built"', function() {
+  describe('.hasData()', function() {
+    it('returns true if state = "collected"', function() {
       const factory: any = {}
       const relationData = new RelationData(factory)
-      expect(relationData.isBuilt()).toBe(false)
-      relationData.markBuilt()
-      expect(relationData.isBuilt()).toBe(true)
-    })
-  })
-
-  describe('.markLoaded()', function() {
-    it('is chainable, sets state to "built"', function() {
-      const factory: any = {}
-      const relationData = new RelationData(factory)
-      expect(relationData.isLoaded()).toBe(false)
-      expect(relationData.markLoaded() === relationData).toBe(true)
-      expect(relationData.isLoaded()).toBe(true)
-    })
-  })
-
-  describe('.markBuilt()', function() {
-    it('is chainable, sets state to "built"', function() {
-      const factory: any = {}
-      const relationData = new RelationData(factory)
-      expect(relationData.isBuilt()).toBe(false)
-      expect(relationData.markBuilt() === relationData).toBe(true)
-      expect(relationData.isBuilt()).toBe(true)
+      expect(relationData.hasData()).toBe(false)
+      relationData['state'] = 'collected'
+      expect(relationData.hasData()).toBe(true)
     })
   })
 
@@ -70,11 +50,13 @@ describe('RelationData', function() {
   })
 
   describe('.setData()', function() {
-    it('is chainable, sets given value to property "data"', function() {
+    it('sets given value to property "data", sets state to "collected" and returns data', function() {
       const factory: any = {}
       const data: any = {}
       const relationData = new RelationData(factory)
-      expect(relationData.setData(data) === relationData).toBe(true)
+      expect(relationData.setData(data) === data).toBe(true)
+      expect(relationData.hasData()).toBe(true)
+      expect(relationData['state']).toEqual('collected')
       expect(relationData.getData() === data).toBe(true)
     })
   })
@@ -90,11 +72,12 @@ describe('RelationData', function() {
   })
 
   describe('.setLoadType()', function() {
-    it('is chainable, sets given value to property loadType', function() {
+    it('is chainable, sets given value to property loadType, sets state to "loaded"', function() {
       const factory: any = {}
       const relationData = new RelationData(factory)
       expect(relationData.getLoadType()).toEqual('unknown')
       expect(relationData.setLoadType('eager') === relationData).toBe(true)
+      expect(relationData['state']).toEqual('loaded')
       expect(relationData.getLoadType()).toEqual('eager')
     })
   })

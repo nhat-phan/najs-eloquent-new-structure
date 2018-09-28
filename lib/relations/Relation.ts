@@ -3,6 +3,7 @@
 
 import IModel = NajsEloquent.Model.IModel
 import IRelation = NajsEloquent.Relation.IRelation
+import RelationFetchType = NajsEloquent.Relation.RelationFetchType
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationData = NajsEloquent.Relation.IRelationData
 
@@ -10,6 +11,8 @@ import { flatten } from 'lodash'
 import { relationFeatureOf } from '../util/accessors'
 import { RelationUtilities as Utils } from './RelationUtilities'
 import { array_unique } from '../util/functions'
+// import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
+// import { isModel, isCollection } from '../util/helpers'
 
 export abstract class Relation<T> {
   protected name: string
@@ -26,11 +29,15 @@ export abstract class Relation<T> {
 
   abstract getType(): string
 
-  abstract buildData(): T | undefined | null
+  /**
+   * Collect data from RelationDataBucket.
+   */
+  abstract collectData(): T | undefined | null
 
-  abstract lazyLoad(): Promise<T | undefined | null>
-
-  abstract eagerLoad(): Promise<T | undefined | null>
+  /**
+   * Fetch data from database or data source.
+   */
+  abstract fetchData(type: RelationFetchType): Promise<T | undefined | null>
 
   abstract isInverseOf<K>(relation: IRelation<K>): boolean
 
@@ -57,21 +64,65 @@ export abstract class Relation<T> {
   }
 
   getData(): T | undefined | null {
-    // if (!this.isLoaded()) {
-    //   return undefined
+    if (!this.isLoaded()) {
+      return undefined
+    }
+
+    const relationData = this.getRelationData()
+    if (relationData.hasData()) {
+      return relationData.getData()
+    }
+
+    return this.markInverseRelationsToLoaded(relationData.setData(this.collectData()))
+  }
+
+  markInverseRelationsToLoaded<T>(result: T): T {
+    // TODO: implementation needed
+    // if (!result) {
+    //   return result
     // }
 
-    // const relationData = this.getRelationData()
-    // if (relationData.isBuilt()) {
-    //   return relationData.getData()
+    // if (isModel(result)) {
     // }
 
-    // // return this.setInverseRelationsLoadedStatus(this.buildData())
-    // return this.buildData()
-    return undefined
+    // if (isCollection(result)) {
+    // }
+
+    return result
+  }
+
+  async lazyLoad(): Promise<T | undefined | null> {
+    return this.loadData('lazy')
+  }
+
+  async eagerLoad(): Promise<T | undefined | null> {
+    return this.loadData('eager')
+  }
+
+  protected loadData(type: 'lazy' | 'eager') {
+    this.getRelationData().setLoadType(type)
+    const result = this.fetchData(type)
+
+    // return this.loadChainRelations(result)
+    return result
   }
 
   async load(): Promise<T | undefined | null> {
+    // const relationData = this.getRelationData()
+    // if (this.isLoaded() && relationData.isBuilt()) {
+    //   return relationData.getData()
+    // }
+
+    // const dataBucket = this.getDataBucket()
+    // if (!dataBucket) {
+    //   if (this.rootModel.isNew()) {
+    //     throw new RelationNotFoundInNewInstanceError(this.name, this.rootModel.getModelName())
+    //   }
+
+    //   return await this.lazyLoad()
+    // }
+
+    // return await this.eagerLoad()
     return undefined
   }
 }

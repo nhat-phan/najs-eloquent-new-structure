@@ -6,6 +6,8 @@ const lodash_1 = require("lodash");
 const accessors_1 = require("../util/accessors");
 const RelationUtilities_1 = require("./RelationUtilities");
 const functions_1 = require("../util/functions");
+// import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
+// import { isModel, isCollection } from '../util/helpers'
 class Relation {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
@@ -29,18 +31,51 @@ class Relation {
         return this.getRelationData().isLoaded() || RelationUtilities_1.RelationUtilities.isLoadedInDataBucket(this, this.rootModel, this.name);
     }
     getData() {
-        // if (!this.isLoaded()) {
-        //   return undefined
+        if (!this.isLoaded()) {
+            return undefined;
+        }
+        const relationData = this.getRelationData();
+        if (relationData.hasData()) {
+            return relationData.getData();
+        }
+        return this.markInverseRelationsToLoaded(relationData.setData(this.collectData()));
+    }
+    markInverseRelationsToLoaded(result) {
+        // TODO: implementation needed
+        // if (!result) {
+        //   return result
         // }
-        // const relationData = this.getRelationData()
-        // if (relationData.isBuilt()) {
-        //   return relationData.getData()
+        // if (isModel(result)) {
         // }
-        // // return this.setInverseRelationsLoadedStatus(this.buildData())
-        // return this.buildData()
-        return undefined;
+        // if (isCollection(result)) {
+        // }
+        return result;
+    }
+    async lazyLoad() {
+        return this.loadData('lazy');
+    }
+    async eagerLoad() {
+        return this.loadData('eager');
+    }
+    loadData(type) {
+        this.getRelationData().setLoadType(type);
+        const result = this.fetchData(type);
+        // return this.loadChainRelations(result)
+        return result;
     }
     async load() {
+        // const relationData = this.getRelationData()
+        // if (this.isLoaded() && relationData.isBuilt()) {
+        //   return relationData.getData()
+        // }
+        // const dataBucket = this.getDataBucket()
+        // if (!dataBucket) {
+        //   if (this.rootModel.isNew()) {
+        //     throw new RelationNotFoundInNewInstanceError(this.name, this.rootModel.getModelName())
+        //   }
+        //   return await this.lazyLoad()
+        // }
+        // return await this.eagerLoad()
         return undefined;
     }
 }

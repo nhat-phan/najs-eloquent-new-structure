@@ -9,6 +9,7 @@ declare namespace NajsEloquent.Relation {
     type RelationDefinitions = {
         [name in string]: RelationDefinition;
     };
+    type RelationFetchType = 'lazy' | 'eager';
     interface IRelation<T> {
         /**
          * Set sub-relation with will be loaded when current relation load.

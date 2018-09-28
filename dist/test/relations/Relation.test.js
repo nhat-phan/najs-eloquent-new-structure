@@ -157,17 +157,149 @@ describe('Relation', function () {
         });
     });
     describe('.getData()', function () {
+        it('returns undefined if .isLoaded() returns false', function () {
+            const relationData = {
+                hasData() {
+                    return false;
+                },
+                getData() {
+                    return 'anything';
+                },
+                setData(data) {
+                    return data;
+                }
+            };
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(relation, 'isLoaded');
+            stub.returns(false);
+            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
+            getRelationDataStub.returns(relationData);
+            const collectDataStub = Sinon.stub(relation, 'collectData');
+            collectDataStub.returns('collected-data');
+            const setDataSpy = Sinon.spy(relationData, 'setData');
+            const markInverseRelationsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationsToLoaded');
+            expect(relation.getData()).toBeUndefined();
+            expect(getRelationDataStub.called).toBe(false);
+            expect(setDataSpy.called).toBe(false);
+            expect(collectDataStub.called).toBe(false);
+            expect(markInverseRelationsToLoadedSpy.called).toBe(false);
+        });
+        it('returns getRelationData().getData() if the relation has data', function () {
+            const relationData = {
+                hasData() {
+                    return true;
+                },
+                getData() {
+                    return 'anything';
+                },
+                setData(data) {
+                    return data;
+                }
+            };
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(relation, 'isLoaded');
+            stub.returns(true);
+            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
+            getRelationDataStub.returns(relationData);
+            const collectDataStub = Sinon.stub(relation, 'collectData');
+            collectDataStub.returns('collected-data');
+            const setDataSpy = Sinon.spy(relationData, 'setData');
+            const markInverseRelationsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationsToLoaded');
+            expect(relation.getData()).toEqual('anything');
+            expect(getRelationDataStub.called).toBe(true);
+            expect(setDataSpy.called).toBe(false);
+            expect(collectDataStub.called).toBe(false);
+            expect(markInverseRelationsToLoadedSpy.called).toBe(false);
+        });
+        it('calls .collectData(), then RelationData.setData() then calls and returns .markInverseRelationsToLoaded()', function () {
+            const relationData = {
+                hasData() {
+                    return false;
+                },
+                getData() {
+                    return 'anything';
+                },
+                setData(data) {
+                    return data;
+                }
+            };
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(relation, 'isLoaded');
+            stub.returns(true);
+            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
+            getRelationDataStub.returns(relationData);
+            const collectDataStub = Sinon.stub(relation, 'collectData');
+            collectDataStub.returns('collected-data');
+            const setDataSpy = Sinon.spy(relationData, 'setData');
+            const markInverseRelationsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationsToLoaded');
+            expect(relation.getData()).toEqual('collected-data');
+            expect(getRelationDataStub.called).toBe(true);
+            expect(setDataSpy.calledWith('collected-data')).toBe(true);
+            expect(collectDataStub.called).toBe(true);
+            expect(markInverseRelationsToLoadedSpy.calledWith('collected-data')).toBe(true);
+        });
+    });
+    describe('.lazyLoad()', function () {
+        it('calls and return .loadData() with type = "lazy"', async function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(relation, 'loadData');
+            stub.returns('anything');
+            const result = await relation.lazyLoad();
+            expect(result).toEqual('anything');
+            expect(stub.calledWith('lazy')).toBe(true);
+        });
+    });
+    describe('.eagerLoad()', function () {
+        it('calls and return .loadData() with type = "eager"', async function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(relation, 'loadData');
+            stub.returns('anything');
+            const result = await relation.eagerLoad();
+            expect(result).toEqual('anything');
+            expect(stub.calledWith('eager')).toBe(true);
+        });
+    });
+    describe('.markInverseRelationsToLoaded()', function () {
+        // TODO: implementation needed
         it('does nothing for now', function () {
             const rootModel = {};
             const relation = makeRelation(rootModel, 'test');
-            relation.getData();
+            relation.markInverseRelationsToLoaded({});
         });
     });
     describe('.load()', function () {
+        // TODO: implementation needed
         it('does nothing for now', function () {
             const rootModel = {};
             const relation = makeRelation(rootModel, 'test');
             relation.load();
+        });
+    });
+    describe('.loadData()', function () {
+        // TODO: implementation needed
+        it('does nothing for now', function () {
+            const rootModel = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return {
+                                findDataByName() {
+                                    return {
+                                        setLoadType() { }
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            const relation = makeRelation(rootModel, 'test');
+            relation['loadData']('lazy');
         });
     });
 });

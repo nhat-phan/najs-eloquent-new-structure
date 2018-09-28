@@ -1,7 +1,7 @@
 /// <reference path="../definitions/relations/IRelationData.ts" />
 
 export class RelationData<T> implements NajsEloquent.Relation.IRelationData<T> {
-  protected data: T
+  protected data: T | undefined | null
   protected state: string
   protected factory: NajsEloquent.Relation.IRelationFactory
   protected loadType?: 'lazy' | 'eager'
@@ -19,30 +19,19 @@ export class RelationData<T> implements NajsEloquent.Relation.IRelationData<T> {
     return this.state === 'loaded'
   }
 
-  isBuilt(): boolean {
-    return this.state === 'built'
+  hasData(): boolean {
+    return this.state === 'collected'
   }
 
-  markLoaded(): this {
-    this.state = 'loaded'
-
-    return this
-  }
-
-  markBuilt(): this {
-    this.state = 'built'
-
-    return this
-  }
-
-  getData(): T {
+  getData(): T | undefined | null {
     return this.data
   }
 
-  setData(data: T): this {
+  setData(data: T | undefined | null): T | undefined | null {
     this.data = data
+    this.state = 'collected'
 
-    return this
+    return data
   }
 
   getLoadType(): 'unknown' | 'lazy' | 'eager' {
@@ -51,6 +40,7 @@ export class RelationData<T> implements NajsEloquent.Relation.IRelationData<T> {
 
   setLoadType(type: 'lazy' | 'eager'): this {
     this.loadType = type
+    this.state = 'loaded'
 
     return this
   }

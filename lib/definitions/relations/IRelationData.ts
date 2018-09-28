@@ -6,15 +6,11 @@ namespace NajsEloquent.Relation {
 
     isLoaded(): boolean
 
-    isBuilt(): boolean
+    hasData(): boolean
 
-    markLoaded(): this
+    getData(): T | undefined | null
 
-    markBuilt(): this
-
-    getData(): T
-
-    setData(data: T): this
+    setData(data: T | undefined | null): T | undefined | null
 
     getLoadType(): 'unknown' | 'lazy' | 'eager'
 

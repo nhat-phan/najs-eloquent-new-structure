@@ -19,27 +19,19 @@ describe('HasOne', function() {
     })
   })
 
-  describe('.buildData()', function() {
+  describe('.collectData()', function() {
     it('does nothing for now', function() {
       const rootModel: any = {}
       const hasOne = new HasOneRelation(rootModel, 'test')
-      hasOne.buildData()
+      hasOne.collectData()
     })
   })
 
-  describe('.lazyLoad()', function() {
+  describe('.fetch()', function() {
     it('does nothing for now', function() {
       const rootModel: any = {}
       const hasOne = new HasOneRelation(rootModel, 'test')
-      hasOne.lazyLoad()
-    })
-  })
-
-  describe('.eagerLoad()', function() {
-    it('does nothing for now', function() {
-      const rootModel: any = {}
-      const hasOne = new HasOneRelation(rootModel, 'test')
-      hasOne.eagerLoad()
+      hasOne.fetchData('eager')
     })
   })
 

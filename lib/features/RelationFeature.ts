@@ -103,7 +103,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     if (!propertyDescriptor) {
       Object.defineProperty(prototype, accessor, {
         get: function(this: IModel) {
-          return this.getRelationByName(accessor).getData()
+          return this.getRelationByName(accessor as any).getData()
         }
       })
     }

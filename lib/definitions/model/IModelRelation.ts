@@ -7,20 +7,20 @@ namespace NajsEloquent.Model {
      * Get relation by given name.
      * @param {string} name
      */
-    getRelationByName<T = any>(name: string): Relation.IRelation<T>
+    getRelationByName<T = any>(name: keyof this): Relation.IRelation<T>
 
     /**
      * Define a relation property by name
      *
      * @param {string} name
      */
-    defineRelationProperty(name: string): Relation.IRelationFactory
+    defineRelationProperty(name: keyof this): Relation.IRelationFactory
 
     /**
      * Define a relation property by name
      *
      * @param {string} name
      */
-    defineRelationAccessor(name: string): Relation.IRelationFactory
+    defineRelationAccessor(name: keyof this): Relation.IRelationFactory
   }
 }
