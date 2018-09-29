@@ -1,4 +1,14 @@
 declare namespace NajsEloquent.Model {
+    interface IModelSharedMetadata {
+        /**
+         * The model's known attributes list.
+         */
+        knownAttributes: string[];
+        /**
+         * The model's dynamic attributes list.
+         */
+        dynamicAttributes: Feature.DynamicAttributeSetting[];
+    }
     interface IModelRecord<T = any> {
         /**
          * Get the record's name, i.e

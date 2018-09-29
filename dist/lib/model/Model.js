@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
 const PrototypeManager_1 = require("../util/PrototypeManager");
+const ModelEvent_1 = require("./ModelEvent");
 class Model {
     constructor(data, isGuarded) {
         this.internalData = {
@@ -123,5 +124,7 @@ class Model {
         return query.whereNotBetween.apply(query, arguments);
     }
 }
+// static start query methods ----------------------------------------------------------------------------------------
+Model.Event = ModelEvent_1.ModelEvent;
 exports.Model = Model;
 PrototypeManager_1.PrototypeManager.stopFindingRelationsIn(Model.prototype);

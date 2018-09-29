@@ -48,6 +48,9 @@ export declare abstract class DriverBase<T> implements Najs.Contracts.Eloquent.D
     getGlobalEventEmitter(): Najs.Contracts.Event.AsyncEventEmitter;
     getRelationFeature(): NajsEloquent.Feature.IRelationFeature;
     makeModel<M extends IModel>(model: M, data?: T | object | string, isGuarded?: boolean): M;
+    applyProxy<M extends IModel>(model: M): M;
+    shouldBeProxied(target: NajsEloquent.Model.ModelInternal, name: any): boolean;
+    proxify(type: 'get' | 'set', model: NajsEloquent.Model.IModel, name: string, value?: any): any;
     attachPublicApiIfNeeded(model: IModel): void;
     definePropertiesBeforeAttachFeatures(model: IModel, prototype: object, bases: object[]): void;
     definePropertiesAfterAttachFeatures(model: IModel, prototype: object, bases: object[]): void;

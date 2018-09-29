@@ -6,6 +6,7 @@ import Range = NajsEloquent.QueryGrammar.Range
 import { getClassName } from 'najs-binding'
 import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
 import { PrototypeManager } from '../util/PrototypeManager'
+import { ModelEvent } from './ModelEvent'
 
 export interface Model extends NajsEloquent.Model.IModel {}
 export class Model {
@@ -40,6 +41,8 @@ export class Model {
   }
 
   // static start query methods ----------------------------------------------------------------------------------------
+  static Event: typeof ModelEvent = ModelEvent
+
   /**
    * Start new query of model.
    */

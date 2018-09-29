@@ -2,6 +2,7 @@
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition;
 import Range = NajsEloquent.QueryGrammar.Range;
+import { ModelEvent } from './ModelEvent';
 export interface Model extends NajsEloquent.Model.IModel {
 }
 export declare class Model {
@@ -11,6 +12,7 @@ export declare class Model {
     getDriver(): Najs.Contracts.Eloquent.Driver<any>;
     getModelName(): string;
     newQuery(name?: string): IQueryBuilder<this>;
+    static Event: typeof ModelEvent;
     /**
      * Start new query of model.
      */

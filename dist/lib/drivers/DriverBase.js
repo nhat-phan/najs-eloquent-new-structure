@@ -24,6 +24,7 @@ const najs_event_1 = require("najs-event");
 const ClassSetting_1 = require("../util/ClassSetting");
 const functions_1 = require("../util/functions");
 const constants_1 = require("../constants");
+const ModelProxyHandler_1 = require("../model/ModelProxyHandler");
 /**
  * Base class of all drivers, handling:
  *   - generic initialize for makeModel()
@@ -78,7 +79,22 @@ class DriverBase {
         }
         this.getRecordManager().initialize(model, isGuarded, data);
         this.attachPublicApiIfNeeded(model);
-        return model;
+        return this.applyProxy(model);
+    }
+    applyProxy(model) {
+        return new Proxy(model, ModelProxyHandler_1.ModelProxyHandler);
+    }
+    shouldBeProxied(target, name) {
+        return (typeof name !== 'symbol' &&
+            target.sharedMetadata.knownAttributes.indexOf(name) === -1 &&
+            (typeof target.sharedMetadata.relationDefinitions === 'undefined' ||
+                typeof target.sharedMetadata.relationDefinitions[name] === 'undefined'));
+    }
+    proxify(type, model, name, value) {
+        if (type === 'get') {
+            return this.getRecordManager().getAttribute(model, name);
+        }
+        return this.getRecordManager().setAttribute(model, name, value);
     }
     attachPublicApiIfNeeded(model) {
         if (typeof this.attachedModels[model.getModelName()] !== 'undefined') {

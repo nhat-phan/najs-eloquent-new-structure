@@ -22,9 +22,13 @@ describe('HasOne Relation', function () {
     it('should work', async function () {
         const user = new User();
         await user.save();
-        const userLogin = new UserLogin();
-        userLogin.user_id = user.id;
-        await userLogin.save();
+        // const userLogin = new UserLogin()
+        // userLogin.user_id = user.id
+        // await userLogin.save()
+        // const users = await User.newQuery().all()
+        // console.log(users.first())
+        console.log(user);
+        console.log(user.id);
         // console.log(user)
         // console.log(userLogin)
     });

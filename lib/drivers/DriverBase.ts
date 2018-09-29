@@ -25,6 +25,7 @@ import { EventEmitterFactory } from 'najs-event'
 import { CREATE_SAMPLE } from '../util/ClassSetting'
 import { find_base_prototypes } from '../util/functions'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
+import { ModelProxyHandler } from '../model/ModelProxyHandler'
 
 /**
  * Base class of all drivers, handling:
@@ -110,7 +111,27 @@ export abstract class DriverBase<T> implements Najs.Contracts.Eloquent.Driver<T>
     this.getRecordManager().initialize(model, isGuarded, data as T | object | undefined)
     this.attachPublicApiIfNeeded(model)
 
-    return model
+    return this.applyProxy(model)
+  }
+
+  applyProxy<M extends IModel>(model: M): M {
+    return new Proxy(model, ModelProxyHandler as any)
+  }
+
+  shouldBeProxied(target: NajsEloquent.Model.ModelInternal, name: any) {
+    return (
+      typeof name !== 'symbol' &&
+      target.sharedMetadata.knownAttributes.indexOf(name) === -1 &&
+      (typeof target.sharedMetadata.relationDefinitions === 'undefined' ||
+        typeof target.sharedMetadata.relationDefinitions[name] === 'undefined')
+    )
+  }
+
+  proxify(type: 'get' | 'set', model: NajsEloquent.Model.IModel, name: string, value?: any): any {
+    if (type === 'get') {
+      return this.getRecordManager().getAttribute(model, name)
+    }
+    return this.getRecordManager().setAttribute(model, name, value)
   }
 
   attachPublicApiIfNeeded(model: IModel) {

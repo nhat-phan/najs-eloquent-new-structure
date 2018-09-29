@@ -141,30 +141,130 @@ describe('DriverBase', function() {
       const data = {}
       const model: any = {}
 
-      expect(driver.makeModel(model) === model).toBe(true)
+      driver.makeModel(model)
       expect(initializeStub.calledWith(model, true)).toBe(true)
       expect(attachPublicApiIfNeededStub.calledWith(model)).toBe(true)
       initializeStub.reset()
       attachPublicApiIfNeededStub.reset()
 
-      expect(driver.makeModel(model, data) === model).toBe(true)
+      driver.makeModel(model, data)
       expect(initializeStub.calledWith(model, true, data)).toBe(true)
       expect(attachPublicApiIfNeededStub.calledWith(model)).toBe(true)
       initializeStub.reset()
       attachPublicApiIfNeededStub.reset()
 
-      expect(driver.makeModel(model, data, false) === model).toBe(true)
+      driver.makeModel(model, data, false)
       expect(initializeStub.calledWith(model, false, data)).toBe(true)
       expect(attachPublicApiIfNeededStub.calledWith(model)).toBe(true)
       initializeStub.reset()
       attachPublicApiIfNeededStub.reset()
 
-      expect(driver.makeModel(model, data, true) === model).toBe(true)
+      driver.makeModel(model, data, true)
       expect(initializeStub.calledWith(model, true, data)).toBe(true)
       expect(attachPublicApiIfNeededStub.calledWith(model)).toBe(true)
 
       initializeStub.restore()
       attachPublicApiIfNeededStub.restore()
+    })
+  })
+
+  describe('.applyProxy()', function() {
+    it('creates an proxy which wrap given model instance', function() {
+      const model: any = {
+        driver: driver
+      }
+      const shouldBeProxiedStub = Sinon.stub(driver, 'shouldBeProxied')
+      shouldBeProxiedStub.returns(false)
+
+      // No way to test Proxy instance :(
+      expect(driver.applyProxy(model) === model).toBe(false)
+      shouldBeProxiedStub.restore()
+    })
+  })
+
+  describe('.shouldBeProxied()', function() {
+    it('returns false if the name is Symbol', function() {
+      const model: any = {}
+
+      expect(driver.shouldBeProxied(model, Symbol.for('test'))).toBe(false)
+    })
+
+    it('returns false if the name is defined in knownAttributes', function() {
+      const model: any = {
+        sharedMetadata: {
+          knownAttributes: ['a', 'b']
+        }
+      }
+
+      expect(driver.shouldBeProxied(model, 'a')).toBe(false)
+      expect(driver.shouldBeProxied(model, 'b')).toBe(false)
+      expect(driver.shouldBeProxied(model, 'c')).toBe(true)
+    })
+
+    it('returns false if the name is relation definition', function() {
+      const model: any = {
+        sharedMetadata: {
+          knownAttributes: [],
+          relationDefinitions: {
+            a: {},
+            b: {}
+          }
+        }
+      }
+
+      expect(driver.shouldBeProxied(model, 'a')).toBe(false)
+      expect(driver.shouldBeProxied(model, 'b')).toBe(false)
+      expect(driver.shouldBeProxied(model, 'c')).toBe(true)
+    })
+  })
+
+  describe('.proxify()', function() {
+    it('simply calls and returns RecordManager.getAttribute() if type is "get"', function() {
+      const recordManager = {
+        getAttribute() {
+          return 'get-anything'
+        },
+
+        setAttribute() {
+          return 'set-anything'
+        }
+      }
+      const getRecordManagerStub = Sinon.stub(driver, 'getRecordManager')
+      getRecordManagerStub.returns(recordManager)
+
+      const model: any = {}
+      const getAttributeSpy = Sinon.spy(recordManager, 'getAttribute')
+      const setAttributeSpy = Sinon.spy(recordManager, 'setAttribute')
+
+      expect(driver.proxify('get', model, 'key')).toEqual('get-anything')
+      expect(getAttributeSpy.calledWith(model, 'key')).toBe(true)
+      expect(setAttributeSpy.called).toBe(false)
+
+      getRecordManagerStub.restore()
+    })
+
+    it('simply calls and returns RecordManager.setAttribute() if type is "set"', function() {
+      const recordManager = {
+        getAttribute() {
+          return 'get-anything'
+        },
+
+        setAttribute() {
+          return 'set-anything'
+        }
+      }
+      const getRecordManagerStub = Sinon.stub(driver, 'getRecordManager')
+      getRecordManagerStub.returns(recordManager)
+
+      const model: any = {}
+      const getAttributeSpy = Sinon.spy(recordManager, 'getAttribute')
+      const setAttributeSpy = Sinon.spy(recordManager, 'setAttribute')
+
+      expect(driver.proxify('set', model, 'key', 'value')).toEqual('set-anything')
+      expect(getAttributeSpy.called).toBe(false)
+      expect(setAttributeSpy.calledWith(model, 'key', 'value')).toBe(true)
+
+      getRecordManagerStub.restore()
     })
   })
 
