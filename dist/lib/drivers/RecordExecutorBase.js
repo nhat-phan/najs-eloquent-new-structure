@@ -41,7 +41,9 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         if (shouldFillData) {
             this.fillData(true);
         }
-        return this.createRecord(action);
+        const result = this.createRecord(action);
+        this.record.clearModified();
+        return result;
     }
     async update(shouldFillData = true, action = 'update') {
         if (!this.hasFilter()) {
@@ -53,7 +55,9 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         if (!this.hasModifiedData()) {
             return false;
         }
-        return this.updateRecord(action);
+        const result = this.updateRecord(action);
+        this.record.clearModified();
+        return result;
     }
     async softDelete() {
         const isNew = this.model.isNew();
@@ -66,7 +70,9 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         if (!this.hasFilter()) {
             return false;
         }
-        return this.hardDeleteRecord();
+        const result = this.hardDeleteRecord();
+        this.record.clearModified();
+        return result;
     }
     async restore() {
         const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();

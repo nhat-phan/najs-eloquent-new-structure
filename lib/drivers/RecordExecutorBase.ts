@@ -64,7 +64,9 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
       this.fillData(true)
     }
 
-    return this.createRecord<R>(action)
+    const result = this.createRecord<R>(action)
+    this.record.clearModified()
+    return result
   }
 
   async update<R = any>(shouldFillData: boolean = true, action: string = 'update'): Promise<R> {
@@ -80,7 +82,9 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
       return false as any
     }
 
-    return this.updateRecord<R>(action)
+    const result = this.updateRecord<R>(action)
+    this.record.clearModified()
+    return result
   }
 
   async softDelete<R = any>(): Promise<R> {
@@ -101,7 +105,9 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
       return false as any
     }
 
-    return this.hardDeleteRecord<R>()
+    const result = this.hardDeleteRecord<R>()
+    this.record.clearModified()
+    return result
   }
 
   async restore<R = any>(): Promise<R> {
