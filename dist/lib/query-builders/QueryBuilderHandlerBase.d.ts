@@ -44,7 +44,7 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     getSoftDeleteState(): string;
     shouldAddSoftDeleteCondition(): boolean;
     createCollection(result: object[]): CollectJs.Collection<IModel>;
-    setRelationDataBucket(relationDataBucket: IRelationDataBucket): void;
+    setRelationDataBucket(relationDataBucket: IRelationDataBucket | undefined): void;
     getRelationDataBucket(): IRelationDataBucket;
     createInstance(result: object): IModel;
 }

@@ -8,8 +8,11 @@ import { make } from 'najs-binding'
 
 export class RelationReference<Root extends Model, Target extends Model> implements IRelationReference<Root, Target> {
   protected root: Root
+  protected rootKeyName: string | undefined
+
   protected target: Target
   protected targetName: string
+  protected targetKeyName: string | undefined
 
   constructor(root: Root) {
     this.root = root
@@ -17,6 +20,10 @@ export class RelationReference<Root extends Model, Target extends Model> impleme
 
   getRootModel(): Root {
     return this.root
+  }
+
+  getRootKeyName(): string {
+    return this.rootKeyName || this.root.getPrimaryKeyName()
   }
 
   getTargetModel(): Target {
@@ -35,5 +42,24 @@ export class RelationReference<Root extends Model, Target extends Model> impleme
 
   getQuery(): IQueryBuilder<Target> {
     return this.target.newQuery()
+  }
+
+  createQueryByRootPrimaryKey() {}
+
+  createQueryByRootPrimaryKeys(ids: any[]) {}
+
+  queryThrough() {
+    // const Book: any = {}
+    // const Author: any = {}
+    // const pivotTable = Book.Pivot
+    // Author.whereIn('id', pivotTable.select('author_id').whereIn('id', Book.ids))
+    // class Book {
+    //   authors: Author[]
+    //   get authorsRelation() {
+    //     const factory: any = {}
+    //     return factory.define('authors').belongsToMany(Author)
+    //   }
+    // }
+    // class Author {}
   }
 }

@@ -24,7 +24,7 @@ declare namespace NajsEloquent.QueryBuilder {
         markSoftDeleteState(state: 'should-add' | 'should-not-add' | 'added'): void;
         getSoftDeleteState(): string;
         shouldAddSoftDeleteCondition(): boolean;
-        setRelationDataBucket(relationDataBucket: Relation.IRelationDataBucket): void;
+        setRelationDataBucket(relationDataBucket: Relation.IRelationDataBucket | undefined): void;
         getRelationDataBucket(): Relation.IRelationDataBucket;
         createCollection(result: object[]): CollectJs.Collection<Model.IModel>;
         createInstance(result: object): Model.IModel;

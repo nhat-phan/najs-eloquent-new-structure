@@ -44,7 +44,7 @@ namespace NajsEloquent.QueryBuilder {
 
     shouldAddSoftDeleteCondition(): boolean
 
-    setRelationDataBucket(relationDataBucket: Relation.IRelationDataBucket): void
+    setRelationDataBucket(relationDataBucket: Relation.IRelationDataBucket | undefined): void
 
     getRelationDataBucket(): Relation.IRelationDataBucket
 

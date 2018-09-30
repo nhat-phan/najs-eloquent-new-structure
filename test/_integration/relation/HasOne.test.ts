@@ -1,6 +1,7 @@
 import 'jest'
 import { Model, HasOne } from '../../../lib'
 import { register } from 'najs-binding'
+// import collect from 'collect.js'
 
 describe('HasOne Relation', function() {
   class UserLogin extends Model {
@@ -38,5 +39,19 @@ describe('HasOne Relation', function() {
     // console.log(user)
     // console.log(user.id)
     // console.log(userLogin.user_id)
+  })
+
+  it('test the collection pluck', function() {
+    // const data = {
+    //   1: { a: 1, b: '2', c: '3' },
+    //   2: { a: 2, b: '3', c: '4' },
+    //   3: { a: 3, b: '4', c: '5' }
+    // }
+    // console.log(
+    //   collect(data)
+    //     .keyBy('b')
+    //     .keys()
+    //     .all()
+    // )
   })
 })

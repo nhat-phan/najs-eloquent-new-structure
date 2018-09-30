@@ -118,7 +118,7 @@ export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
     return make_collection(result, item => this.createInstance(item))
   }
 
-  setRelationDataBucket(relationDataBucket: IRelationDataBucket) {
+  setRelationDataBucket(relationDataBucket: IRelationDataBucket | undefined) {
     this.dataBucket = relationDataBucket
   }
 
