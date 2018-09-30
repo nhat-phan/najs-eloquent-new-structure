@@ -1,4 +1,5 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
+/// <reference path="../definitions/relations/IRelationDataBucket.d.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.d.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.d.ts" />
 /// <reference path="../definitions/query-builders/IConvention.d.ts" />
@@ -7,6 +8,7 @@
 /// <reference path="../definitions/query-grammars/IBasicQuery.d.ts" />
 /// <reference path="../definitions/query-grammars/IQuery.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
+import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IExecutorFactory = NajsEloquent.Driver.IExecutorFactory;
 import IQueryExecutor = NajsEloquent.QueryBuilder.IQueryExecutor;
 import IConvention = NajsEloquent.QueryBuilder.IConvention;
@@ -19,6 +21,7 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     protected queryName: string;
     protected logGroup: string;
     protected used: boolean;
+    protected dataBucket: IRelationDataBucket | undefined;
     protected softDeleteState: 'should-add' | 'should-not-add' | 'added';
     constructor(model: IModel, executorFactory: IExecutorFactory);
     abstract getBasicQuery(): IBasicQuery;
@@ -41,5 +44,7 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     getSoftDeleteState(): string;
     shouldAddSoftDeleteCondition(): boolean;
     createCollection(result: object[]): CollectJs.Collection<IModel>;
+    setRelationDataBucket(relationDataBucket: IRelationDataBucket): void;
+    getRelationDataBucket(): IRelationDataBucket;
     createInstance(result: object): IModel;
 }

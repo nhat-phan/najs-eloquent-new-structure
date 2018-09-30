@@ -293,15 +293,51 @@ describe('QueryBuilderHandlerBase', function() {
     })
   })
 
-  describe('.createInstance()', function() {
-    it('makes dataBucket from RelationFeature then calls .makeModel from bucket and push the model to bucket', function() {
-      const instance = {}
-      const dataBucket = {
-        makeModel() {
-          return instance
+  describe('.setRelationDataBucket()', function() {
+    it('simply assigns the dataBucket to property "dataBucket"', function() {
+      const model: any = {}
+      const dataBucket: any = {}
+      const query = makeInstance(model)
+      query.setRelationDataBucket(dataBucket)
+      expect(query['dataBucket'] === dataBucket).toBe(true)
+    })
+  })
+
+  describe('.getRelationDataBucket()', function() {
+    it('returns dataBucket instance in property "dataBucket" if exists', function() {
+      const model: any = {}
+      const dataBucket: any = {}
+      const query = makeInstance(model)
+      query.setRelationDataBucket(dataBucket)
+      expect(query.getRelationDataBucket() === dataBucket).toBe(true)
+    })
+
+    it('can reuse dataBucket in model if exists', function() {
+      const dataBucket: any = {}
+      const relationFeature = {
+        getDataBucket() {
+          return dataBucket
         },
-        add() {}
+        makeDataBucket() {
+          return false
+        }
       }
+      const model = {
+        getDriver() {
+          return {
+            getRelationFeature() {
+              return relationFeature
+            }
+          }
+        }
+      }
+
+      const query = makeInstance(model)
+      expect(query.getRelationDataBucket() === dataBucket).toBe(true)
+    })
+
+    it('make new dataBucket if exists', function() {
+      const dataBucket: any = {}
       const relationFeature = {
         getDataBucket() {
           return undefined
@@ -319,17 +355,14 @@ describe('QueryBuilderHandlerBase', function() {
           }
         }
       }
+
       const query = makeInstance(model)
-      const makeModelSpy = Sinon.spy(dataBucket, 'makeModel')
-      const addSpy = Sinon.spy(dataBucket, 'add')
-
-      const result = {}
-      expect(query.createInstance(result) === instance).toBe(true)
-      expect(makeModelSpy.calledWith(model, result)).toBe(true)
-      expect(addSpy.calledWith(instance)).toBe(true)
+      expect(query.getRelationDataBucket() === dataBucket).toBe(true)
     })
+  })
 
-    it('makes can reuse current bucket if it already exists', function() {
+  describe('.createInstance()', function() {
+    it('calls .getRelationDataBucket() then calls .makeModel from bucket and push the model to bucket', function() {
       const instance = {}
       const dataBucket = {
         makeModel() {
@@ -337,21 +370,12 @@ describe('QueryBuilderHandlerBase', function() {
         },
         add() {}
       }
-      const relationFeature = {
-        getDataBucket() {
-          return dataBucket
-        }
-      }
-      const model = {
-        getDriver() {
-          return {
-            getRelationFeature() {
-              return relationFeature
-            }
-          }
-        }
-      }
+
+      const model = {}
       const query = makeInstance(model)
+      const stub = Sinon.stub(query, 'getRelationDataBucket')
+      stub.returns(dataBucket)
+
       const makeModelSpy = Sinon.spy(dataBucket, 'makeModel')
       const addSpy = Sinon.spy(dataBucket, 'add')
 

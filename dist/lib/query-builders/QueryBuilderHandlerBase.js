@@ -1,5 +1,6 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 /// <reference path="../definitions/features/ISoftDeletesFeature.ts" />
 /// <reference path="../definitions/features/ITimestampsFeature.ts" />
 /// <reference path="../definitions/query-builders/IConvention.ts" />
@@ -79,9 +80,18 @@ class QueryBuilderHandlerBase {
     createCollection(result) {
         return factory_1.make_collection(result, item => this.createInstance(item));
     }
-    createInstance(result) {
+    setRelationDataBucket(relationDataBucket) {
+        this.dataBucket = relationDataBucket;
+    }
+    getRelationDataBucket() {
+        if (typeof this.dataBucket !== 'undefined') {
+            return this.dataBucket;
+        }
         const relationFeature = this.model.getDriver().getRelationFeature();
-        const bucket = relationFeature.getDataBucket(this.model) || relationFeature.makeDataBucket(this.model);
+        return relationFeature.getDataBucket(this.model) || relationFeature.makeDataBucket(this.model);
+    }
+    createInstance(result) {
+        const bucket = this.getRelationDataBucket();
         const model = bucket.makeModel(this.model, result);
         bucket.add(model);
         return model;

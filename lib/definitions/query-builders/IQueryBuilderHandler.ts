@@ -44,6 +44,10 @@ namespace NajsEloquent.QueryBuilder {
 
     shouldAddSoftDeleteCondition(): boolean
 
+    setRelationDataBucket(relationDataBucket: Relation.IRelationDataBucket): void
+
+    getRelationDataBucket(): Relation.IRelationDataBucket
+
     createCollection(result: object[]): CollectJs.Collection<Model.IModel>
 
     createInstance(result: object): Model.IModel
