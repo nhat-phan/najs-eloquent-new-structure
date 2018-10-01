@@ -12,6 +12,12 @@ class DataBuffer {
     getPrimaryKeyName() {
         return this.primaryKeyName;
     }
+    getReader() {
+        return this.reader;
+    }
+    getBuffer() {
+        return this.buffer;
+    }
     add(data) {
         this.buffer.set(this.reader.getAttribute(data, this.primaryKeyName), data);
         return this;

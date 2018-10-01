@@ -18,6 +18,14 @@ export class DataBuffer<T extends object> implements NajsEloquent.Data.IDataBuff
     return this.primaryKeyName
   }
 
+  getReader(): NajsEloquent.Data.IDataReader<T> {
+    return this.reader
+  }
+
+  getBuffer(): Map<any, T> {
+    return this.buffer
+  }
+
   add(data: T): this {
     this.buffer.set(this.reader.getAttribute(data, this.primaryKeyName), data)
 
