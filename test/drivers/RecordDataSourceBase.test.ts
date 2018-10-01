@@ -22,14 +22,14 @@ describe('RecordDataSourceBase', function() {
     })
   })
 
-  describe('.push()', function() {
+  describe('.add()', function() {
     it('is chainable, simply assigns the record to map with id from .getPrimaryKey()', function() {
       const record = new Record()
       const ds = new MemoryDataSource(model)
       const stub = Sinon.stub(ds, 'getPrimaryKey')
       stub.returns('anything')
 
-      expect(ds.push(record) === ds).toBe(true)
+      expect(ds.add(record) === ds).toBe(true)
       expect(ds.getBuffer().get('anything') === record).toBe(true)
     })
   })
@@ -40,7 +40,7 @@ describe('RecordDataSourceBase', function() {
       const ds = new MemoryDataSource(model)
       const stub = Sinon.stub(ds, 'getPrimaryKey')
       stub.returns('anything')
-      ds.push(record)
+      ds.add(record)
 
       expect(ds.remove(record) === ds).toBe(true)
       expect(ds.getBuffer().get('anything')).toBeUndefined()
@@ -55,10 +55,10 @@ describe('RecordDataSourceBase', function() {
       const c = new Record({ name: 'c' })
       const d = new Record({ name: 'd' })
 
-      ds.push(a)
-        .push(b)
-        .push(c)
-        .push(d)
+      ds.add(a)
+        .add(b)
+        .add(c)
+        .add(d)
       const resultOne = ds.filter(item => ['b', 'c'].indexOf(item.getAttribute('name')) !== -1)
       const resultTwo = ds.filter(item => ['a', 'd'].indexOf(item.getAttribute('name')) !== -1)
       const resultThree = ds.filter(item => ['a', 'd'].indexOf(item.getAttribute('name')) !== -1)
@@ -72,9 +72,9 @@ describe('RecordDataSourceBase', function() {
   describe('[Symbol.iterator]()', function() {
     it('returns the iterator of buffer.values()', function() {
       const ds = new MemoryDataSource(model)
-      ds.push(new Record({ name: 'a' }))
-      ds.push(new Record({ name: 'b' }))
-      ds.push(new Record({ name: 'c' }))
+      ds.add(new Record({ name: 'a' }))
+      ds.add(new Record({ name: 'b' }))
+      ds.add(new Record({ name: 'c' }))
       const result = []
       for (const item of ds) {
         result.push(item.getAttribute('name'))

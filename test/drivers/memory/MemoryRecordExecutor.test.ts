@@ -16,7 +16,7 @@ describe('MemoryRecordExecutor', function() {
   })
 
   describe('.saveRecord()', function() {
-    it('calls dataSource.push(record).write() and returns the result', async function() {
+    it('calls dataSource.add(record).write() and returns the result', async function() {
       const record: any = new Record({ a: 'anything' })
       const model: any = {
         getModelName() {
@@ -27,24 +27,24 @@ describe('MemoryRecordExecutor', function() {
         getClassName() {
           return 'DataSource'
         },
-        push() {
+        add() {
           return this
         },
         async write() {
           return true
         }
       }
-      const pushSpy = Sinon.spy(dataSource, 'push')
+      const addSpy = Sinon.spy(dataSource, 'add')
       const writeSpy = Sinon.spy(dataSource, 'write')
 
       QueryLog.enable()
       const executor = new MemoryRecordExecutor(model, record, dataSource, new MemoryQueryLog())
       const result = await executor.saveRecord('any')
       expect(result).toEqual({ ok: true })
-      expect(pushSpy.calledWith(record)).toBe(true)
+      expect(addSpy.calledWith(record)).toBe(true)
       expect(writeSpy.called).toBe(true)
       const log = QueryLog.pull()[0]
-      expect(log.data['raw']).toEqual('DataSource.push({"a":"anything"}).write()')
+      expect(log.data['raw']).toEqual('DataSource.add({"a":"anything"}).write()')
       expect(log.data['action']).toEqual('Model.any()')
     })
 
@@ -59,14 +59,14 @@ describe('MemoryRecordExecutor', function() {
         getClassName() {
           return 'DataSource'
         },
-        push() {
+        add() {
           return this
         },
         async write() {
           return true
         }
       }
-      const pushSpy = Sinon.spy(dataSource, 'push')
+      const addSpy = Sinon.spy(dataSource, 'add')
       const writeSpy = Sinon.spy(dataSource, 'write')
 
       QueryLog.enable()
@@ -75,10 +75,10 @@ describe('MemoryRecordExecutor', function() {
 
       const result = await executor.saveRecord('any')
       expect(result).toEqual({})
-      expect(pushSpy.calledWith(record)).toBe(false)
+      expect(addSpy.calledWith(record)).toBe(false)
       expect(writeSpy.called).toBe(false)
       const log = QueryLog.pull()[0]
-      expect(log.data['raw']).toEqual('DataSource.push({"a":"anything"}).write()')
+      expect(log.data['raw']).toEqual('DataSource.add({"a":"anything"}).write()')
       expect(log.data['action']).toEqual('Model.any()')
     })
   })

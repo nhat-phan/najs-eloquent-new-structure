@@ -43,11 +43,11 @@ describe('MemoryQueryExecutor', function () {
     ];
     beforeAll(async function () {
         for (const data of dataset) {
-            UserDataSource.push(new Record_1.Record(data));
+            UserDataSource.add(new Record_1.Record(data));
         }
         await UserDataSource.write();
         for (let i = 0; i < 10; i++) {
-            RoleDataSource.push(new Record_1.Record({
+            RoleDataSource.add(new Record_1.Record({
                 name: 'role-' + i,
                 deleted_at: new Date()
             }));

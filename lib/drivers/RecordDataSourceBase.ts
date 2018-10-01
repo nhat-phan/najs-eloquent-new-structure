@@ -31,7 +31,7 @@ export abstract class RecordDataSourceBase implements Najs.Contracts.Eloquent.Me
   abstract read(): Promise<boolean>
   abstract write(): Promise<boolean>
 
-  push(data: Record): this {
+  add(data: Record): this {
     this.buffer.set(this.getPrimaryKey(data), data)
 
     return this

@@ -16,7 +16,7 @@ describe('MemoryRecordExecutor', function () {
         expect(executor).toBeInstanceOf(RecordExecutorBase_1.RecordExecutorBase);
     });
     describe('.saveRecord()', function () {
-        it('calls dataSource.push(record).write() and returns the result', async function () {
+        it('calls dataSource.add(record).write() and returns the result', async function () {
             const record = new Record_1.Record({ a: 'anything' });
             const model = {
                 getModelName() {
@@ -27,23 +27,23 @@ describe('MemoryRecordExecutor', function () {
                 getClassName() {
                     return 'DataSource';
                 },
-                push() {
+                add() {
                     return this;
                 },
                 async write() {
                     return true;
                 }
             };
-            const pushSpy = Sinon.spy(dataSource, 'push');
+            const addSpy = Sinon.spy(dataSource, 'add');
             const writeSpy = Sinon.spy(dataSource, 'write');
             QueryLogFacade_1.QueryLog.enable();
             const executor = new MemoryRecordExecutor_1.MemoryRecordExecutor(model, record, dataSource, new MemoryQueryLog_1.MemoryQueryLog());
             const result = await executor.saveRecord('any');
             expect(result).toEqual({ ok: true });
-            expect(pushSpy.calledWith(record)).toBe(true);
+            expect(addSpy.calledWith(record)).toBe(true);
             expect(writeSpy.called).toBe(true);
             const log = QueryLogFacade_1.QueryLog.pull()[0];
-            expect(log.data['raw']).toEqual('DataSource.push({"a":"anything"}).write()');
+            expect(log.data['raw']).toEqual('DataSource.add({"a":"anything"}).write()');
             expect(log.data['action']).toEqual('Model.any()');
         });
         it('writes log but do nothing if the executeMode is disabled', async function () {
@@ -57,24 +57,24 @@ describe('MemoryRecordExecutor', function () {
                 getClassName() {
                     return 'DataSource';
                 },
-                push() {
+                add() {
                     return this;
                 },
                 async write() {
                     return true;
                 }
             };
-            const pushSpy = Sinon.spy(dataSource, 'push');
+            const addSpy = Sinon.spy(dataSource, 'add');
             const writeSpy = Sinon.spy(dataSource, 'write');
             QueryLogFacade_1.QueryLog.enable();
             const executor = new MemoryRecordExecutor_1.MemoryRecordExecutor(model, record, dataSource, new MemoryQueryLog_1.MemoryQueryLog());
             executor.setExecuteMode('disabled');
             const result = await executor.saveRecord('any');
             expect(result).toEqual({});
-            expect(pushSpy.calledWith(record)).toBe(false);
+            expect(addSpy.calledWith(record)).toBe(false);
             expect(writeSpy.called).toBe(false);
             const log = QueryLogFacade_1.QueryLog.pull()[0];
-            expect(log.data['raw']).toEqual('DataSource.push({"a":"anything"}).write()');
+            expect(log.data['raw']).toEqual('DataSource.add({"a":"anything"}).write()');
             expect(log.data['action']).toEqual('Model.any()');
         });
     });

@@ -13,7 +13,7 @@ export declare abstract class RecordDataSourceBase implements Najs.Contracts.Elo
     abstract getPrimaryKey(data: Record): string;
     abstract read(): Promise<boolean>;
     abstract write(): Promise<boolean>;
-    push(data: Record): this;
+    add(data: Record): this;
     remove(data: Record): this;
     filter(cb: (item: Record) => boolean): Record[];
     [Symbol.iterator](): IterableIterator<Record>;

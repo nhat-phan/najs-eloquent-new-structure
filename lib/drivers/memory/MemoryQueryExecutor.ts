@@ -142,7 +142,7 @@ export class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.Qu
       const info = this.getUpdateRecordInfo(record, data)
       if (info.modified) {
         shouldWrite = true
-        this.dataSource.push(record)
+        this.dataSource.add(record)
       }
       this.logger.updateRecordInfo(info)
     }

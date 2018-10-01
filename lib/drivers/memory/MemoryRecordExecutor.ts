@@ -20,11 +20,11 @@ export class MemoryRecordExecutor extends RecordExecutorBase {
   }
 
   async saveRecord<R = any>(action: string): Promise<R> {
-    this.logRaw('push', this.record.toObject()).action(`${this.model.getModelName()}.${action}()`)
+    this.logRaw('add', this.record.toObject()).action(`${this.model.getModelName()}.${action}()`)
 
     return this.shouldExecute()
       ? this.dataSource
-          .push(this.record)
+          .add(this.record)
           .write()
           .then(success => {
             return this.logger.end({

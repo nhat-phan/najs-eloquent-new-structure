@@ -111,7 +111,7 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
             const info = this.getUpdateRecordInfo(record, data);
             if (info.modified) {
                 shouldWrite = true;
-                this.dataSource.push(record);
+                this.dataSource.add(record);
             }
             this.logger.updateRecordInfo(info);
         }

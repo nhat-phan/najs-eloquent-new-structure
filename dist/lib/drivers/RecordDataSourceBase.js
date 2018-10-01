@@ -17,7 +17,7 @@ class RecordDataSourceBase {
     getBuffer() {
         return this.buffer;
     }
-    push(data) {
+    add(data) {
         this.buffer.set(this.getPrimaryKey(data), data);
         return this;
     }
