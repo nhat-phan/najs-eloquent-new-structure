@@ -6,6 +6,10 @@
 
 /// <reference path="definitions/collect.js/index.d.ts" />
 
+/// <reference path="definitions/data/IDataBuffer.ts" />
+/// <reference path="definitions/data/IDataCollector.ts" />
+/// <reference path="definitions/data/IDataReader.ts" />
+
 /// <reference path="definitions/driver/IExecutor.ts" />
 /// <reference path="definitions/driver/IExecutorFactory.ts" />
 

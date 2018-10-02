@@ -1,5 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// package: Data
+const DataBuffer_1 = require("./data/DataBuffer");
+const DataCollector_1 = require("./data/DataCollector");
+const DataConditionMatcher_1 = require("./data/DataConditionMatcher");
 // package: Driver
 const DriverBase_1 = require("./drivers/DriverBase");
 const QueryLogBase_1 = require("./drivers/QueryLogBase");
@@ -78,6 +82,11 @@ const GenericData_1 = require("./util/GenericData");
 const PrototypeManager_1 = require("./util/PrototypeManager");
 const SettingType_1 = require("./util/SettingType");
 exports.Builtin = {
+    Data: {
+        DataBuffer: DataBuffer_1.DataBuffer,
+        DataCollector: DataCollector_1.DataCollector,
+        DataConditionMatcher: DataConditionMatcher_1.DataConditionMatcher
+    },
     Driver: {
         DriverBase: DriverBase_1.DriverBase,
         ExecutorBase: ExecutorBase_1.ExecutorBase,

@@ -1,3 +1,8 @@
+// package: Data
+import { DataBuffer } from './data/DataBuffer'
+import { DataCollector } from './data/DataCollector'
+import { DataConditionMatcher } from './data/DataConditionMatcher'
+
 // package: Driver
 import { DriverBase } from './drivers/DriverBase'
 import { QueryLogBase } from './drivers/QueryLogBase'
@@ -86,6 +91,12 @@ import { ClassSetting } from './util/ClassSetting'
 import { GenericData } from './util/GenericData'
 import { PrototypeManager } from './util/PrototypeManager'
 import { SettingType } from './util/SettingType'
+
+export type DataPackage = {
+  DataBuffer: typeof DataBuffer
+  DataCollector: typeof DataCollector
+  DataConditionMatcher: typeof DataConditionMatcher
+}
 
 export type DriverPackage = {
   DriverBase: typeof DriverBase
@@ -196,6 +207,7 @@ export type UtilPackage = {
 }
 
 export const Builtin: {
+  Data: DataPackage
   Driver: DriverPackage
   Error: ErrorPackage
   Feature: FeaturePackage
@@ -205,6 +217,12 @@ export const Builtin: {
   Relation: RelationPackage
   Util: UtilPackage
 } = {
+  Data: {
+    DataBuffer: DataBuffer,
+    DataCollector: DataCollector,
+    DataConditionMatcher: DataConditionMatcher
+  },
+
   Driver: {
     DriverBase: DriverBase,
     ExecutorBase: ExecutorBase,
