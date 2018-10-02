@@ -2,6 +2,7 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { Record } from '../../lib/drivers/Record'
 import { MemoryDataSource } from '../../lib/drivers/memory/MemoryDataSource'
+import { DataBuffer } from '../../lib/data/DataBuffer'
 
 describe('RecordDataSourceBase', function() {
   const model: any = {
@@ -12,6 +13,11 @@ describe('RecordDataSourceBase', function() {
       return 'id'
     }
   }
+
+  it('extends DataBuffer with RecordDataReader by default', function() {
+    const ds = new MemoryDataSource(model)
+    expect(ds).toBeInstanceOf(DataBuffer)
+  })
 
   describe('constructor()', function() {
     it('assigns modelName and primaryKeyName to respective properties and create new buffer as a Map', function() {
@@ -26,11 +32,11 @@ describe('RecordDataSourceBase', function() {
     it('is chainable, simply assigns the record to map with id from .getPrimaryKey()', function() {
       const record = new Record()
       const ds = new MemoryDataSource(model)
-      const stub = Sinon.stub(ds, 'getPrimaryKey')
-      stub.returns('anything')
+      const spy = Sinon.spy(ds, 'createPrimaryKeyIfNeeded')
 
       expect(ds.add(record) === ds).toBe(true)
-      expect(ds.getBuffer().get('anything') === record).toBe(true)
+      expect(ds.getBuffer().get(record.getAttribute('id')) === record).toBe(true)
+      expect(spy.calledWith(record)).toBe(true)
     })
   })
 
@@ -38,48 +44,14 @@ describe('RecordDataSourceBase', function() {
     it('is chainable, simply removes the record out of map with id from .getPrimaryKey()', function() {
       const record = new Record()
       const ds = new MemoryDataSource(model)
-      const stub = Sinon.stub(ds, 'getPrimaryKey')
-      stub.returns('anything')
+      const spy = Sinon.spy(ds, 'createPrimaryKeyIfNeeded')
+
       ds.add(record)
+      const id = record.getAttribute('id')
 
       expect(ds.remove(record) === ds).toBe(true)
-      expect(ds.getBuffer().get('anything')).toBeUndefined()
-    })
-  })
-
-  describe('.filter()', function() {
-    it('loops each value item then filters based on the callback', function() {
-      const ds = new MemoryDataSource(model)
-      const a = new Record({ name: 'a' })
-      const b = new Record({ name: 'b' })
-      const c = new Record({ name: 'c' })
-      const d = new Record({ name: 'd' })
-
-      ds.add(a)
-        .add(b)
-        .add(c)
-        .add(d)
-      const resultOne = ds.filter(item => ['b', 'c'].indexOf(item.getAttribute('name')) !== -1)
-      const resultTwo = ds.filter(item => ['a', 'd'].indexOf(item.getAttribute('name')) !== -1)
-      const resultThree = ds.filter(item => ['a', 'd'].indexOf(item.getAttribute('name')) !== -1)
-      expect(resultOne).toEqual([b, c])
-      expect(resultTwo).toEqual([a, d])
-      expect(resultThree).toEqual([a, d])
-      expect(resultTwo === resultThree).toBe(false)
-    })
-  })
-
-  describe('[Symbol.iterator]()', function() {
-    it('returns the iterator of buffer.values()', function() {
-      const ds = new MemoryDataSource(model)
-      ds.add(new Record({ name: 'a' }))
-      ds.add(new Record({ name: 'b' }))
-      ds.add(new Record({ name: 'c' }))
-      const result = []
-      for (const item of ds) {
-        result.push(item.getAttribute('name'))
-      }
-      expect(result.join('')).toEqual('abc')
+      expect(ds.getBuffer().get(id)).toBeUndefined()
+      expect(spy.calledWith(record)).toBe(true)
     })
   })
 })

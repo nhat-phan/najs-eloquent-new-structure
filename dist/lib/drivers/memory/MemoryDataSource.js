@@ -8,7 +8,7 @@ class MemoryDataSource extends RecordDataSourceBase_1.RecordDataSourceBase {
     getClassName() {
         return constants_1.NajsEloquent.Driver.Memory.MemoryDataSource;
     }
-    getPrimaryKey(data) {
+    createPrimaryKeyIfNeeded(data) {
         const primaryKey = data.getAttribute(this.primaryKeyName);
         if (primaryKey) {
             return primaryKey;

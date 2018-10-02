@@ -2,58 +2,36 @@
 /// <reference path="../definitions/model/IModel.ts" />
 
 import { Record } from './Record'
+import { RecordDataReader } from './RecordDataReader'
+import { DataBuffer } from '../data/DataBuffer'
 
-export abstract class RecordDataSourceBase implements Najs.Contracts.Eloquent.MemoryDataSource<Record> {
+export abstract class RecordDataSourceBase extends DataBuffer<Record>
+  implements Najs.Contracts.Eloquent.MemoryDataSource<Record> {
   protected modelName: string
-  protected primaryKeyName: string
-  protected buffer: Map<string, Record>
 
   constructor(model: NajsEloquent.Model.IModel) {
+    super(model.getPrimaryKeyName(), RecordDataReader)
     this.modelName = model.getModelName()
-    this.primaryKeyName = model.getPrimaryKeyName()
-    this.buffer = new Map()
   }
 
   getModelName(): string {
     return this.modelName
   }
 
-  getPrimaryKeyName(): string {
-    return this.primaryKeyName
-  }
-
-  getBuffer(): Map<string, Record> {
-    return this.buffer
-  }
-
   abstract getClassName(): string
-  abstract getPrimaryKey(data: Record): string
+  abstract createPrimaryKeyIfNeeded(data: Record): string
   abstract read(): Promise<boolean>
   abstract write(): Promise<boolean>
 
   add(data: Record): this {
-    this.buffer.set(this.getPrimaryKey(data), data)
+    this.createPrimaryKeyIfNeeded(data)
 
-    return this
+    return super.add(data)
   }
 
   remove(data: Record): this {
-    this.buffer.delete(this.getPrimaryKey(data))
+    this.createPrimaryKeyIfNeeded(data)
 
-    return this
-  }
-
-  filter(cb: (item: Record) => boolean): Record[] {
-    const result = []
-    for (const item of this.buffer.values()) {
-      if (cb.call(undefined, item)) {
-        result.push(item)
-      }
-    }
-    return result
-  }
-
-  [Symbol.iterator](): IterableIterator<Record> {
-    return this.buffer.values()
+    return super.remove(data)
   }
 }

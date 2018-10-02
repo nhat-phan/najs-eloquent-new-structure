@@ -11,7 +11,7 @@ export class MemoryDataSource extends RecordDataSourceBase {
     return NajsEloquentClasses.Driver.Memory.MemoryDataSource
   }
 
-  getPrimaryKey(data: Record): string {
+  createPrimaryKeyIfNeeded(data: Record): string {
     const primaryKey = data.getAttribute<string>(this.primaryKeyName)
     if (primaryKey) {
       return primaryKey

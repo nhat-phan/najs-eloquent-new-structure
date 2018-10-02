@@ -20,17 +20,17 @@ describe('MemoryDataSource', function() {
     expect(ds.getClassName()).toEqual('NajsEloquent.Driver.Memory.MemoryDataSource')
   })
 
-  describe('.getPrimaryKey()', function() {
+  describe('.createPrimaryKeyIfNeeded()', function() {
     it('returns the primary key if the record already had one', function() {
       const record = new Record({ id: '1' })
       const ds = new MemoryDataSource(model)
-      expect(ds.getPrimaryKey(record)).toEqual('1')
+      expect(ds.createPrimaryKeyIfNeeded(record)).toEqual('1')
     })
 
     it('creates new objectId and assign to record in case the record does not have primary key', function() {
       const record = new Record()
       const ds = new MemoryDataSource(model)
-      const pk = ds.getPrimaryKey(record)
+      const pk = ds.createPrimaryKeyIfNeeded(record)
       expect(ObjectId.isValid(pk)).toBe(true)
       expect(record.getAttribute('id')).toEqual(pk)
     })
