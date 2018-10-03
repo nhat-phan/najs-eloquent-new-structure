@@ -3,18 +3,20 @@
 
 import Model = NajsEloquent.Model.IModel
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
+import IRelationDataBucketMetadata = NajsEloquent.Relation.IRelationDataBucketMetadata
 import Autoload = Najs.Contracts.Autoload
 import { register, make, getClassName } from 'najs-binding'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
-import { make_collection } from '../util/factory'
 import { relationFeatureOf } from '../util/accessors'
-import { GenericData } from '../util/GenericData'
+import { DataBuffer } from '../data/DataBuffer'
 
-export class RelationDataBucket<T = {}> implements Autoload, IRelationDataBucket<T> {
+export class RelationDataBucket implements Autoload, IRelationDataBucket {
   protected bucket: {
     [key in string]: {
-      records: CollectJs.Collection<T>
-      metadata: GenericData
+      data: DataBuffer<object>
+      meta: {
+        loaded: string[]
+      }
     }
   }
 
@@ -27,30 +29,34 @@ export class RelationDataBucket<T = {}> implements Autoload, IRelationDataBucket
   }
 
   add(model: Model): this {
-    this.getRecords(model).put(model.getPrimaryKey(), model.getRecord())
+    this.getDataOf(model).add(relationFeatureOf(model).getRawDataForDataBucket(model))
+
     return this
   }
 
-  makeModel<M extends Model = Model>(model: M, record: T): M {
-    const instance = make<M>(getClassName(model), [record, false])
-    relationFeatureOf(instance).setDataBucket(instance, this)
+  makeModel<M extends Model = Model>(model: M, data: any): M {
+    const instance = make<M>(getClassName(model), [data, false])
+
+    relationFeatureOf(instance).setDataBucket(instance, this as any)
     return instance
   }
 
-  getRecords<M extends Model = Model>(model: M): CollectJs.Collection<T> {
-    return this.bucket[this.createKey(model)].records
+  getDataOf<M extends Model = Model>(model: M): DataBuffer<object> {
+    return this.bucket[this.createKey(model)].data
   }
 
-  getMetadata(model: Model): GenericData {
-    return this.bucket[this.createKey(model)].metadata
+  getMetadataOf(model: Model): IRelationDataBucketMetadata {
+    return this.bucket[this.createKey(model)].meta
   }
 
   createKey(model: Model): string {
     const key = relationFeatureOf(model).createKeyForDataBucket(model)
     if (typeof this.bucket[key] === 'undefined') {
       this.bucket[key] = {
-        records: make_collection<T>({} as any),
-        metadata: new GenericData({})
+        data: new DataBuffer(model.getPrimaryKeyName(), relationFeatureOf(model).getDataReaderForDataBucket()),
+        meta: {
+          loaded: []
+        }
       }
     }
     return key

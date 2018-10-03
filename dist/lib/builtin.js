@@ -78,7 +78,6 @@ const RelationUtilities_1 = require("./relations/RelationUtilities");
 const HasOneRelation_1 = require("./relations/basic/HasOneRelation");
 // package Util
 const ClassSetting_1 = require("./util/ClassSetting");
-const GenericData_1 = require("./util/GenericData");
 const PrototypeManager_1 = require("./util/PrototypeManager");
 const SettingType_1 = require("./util/SettingType");
 exports.Builtin = {
@@ -172,7 +171,6 @@ exports.Builtin = {
     },
     Util: {
         ClassSetting: ClassSetting_1.ClassSetting,
-        GenericData: GenericData_1.GenericData,
         PrototypeManager: PrototypeManager_1.PrototypeManager,
         SettingType: SettingType_1.SettingType
     }

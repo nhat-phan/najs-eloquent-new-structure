@@ -88,7 +88,6 @@ import { HasOneRelation } from './relations/basic/HasOneRelation'
 
 // package Util
 import { ClassSetting } from './util/ClassSetting'
-import { GenericData } from './util/GenericData'
 import { PrototypeManager } from './util/PrototypeManager'
 import { SettingType } from './util/SettingType'
 
@@ -201,7 +200,6 @@ export type RelationPackage = {
 
 export type UtilPackage = {
   ClassSetting: typeof ClassSetting
-  GenericData: typeof GenericData
   PrototypeManager: typeof PrototypeManager
   SettingType: typeof SettingType
 }
@@ -319,7 +317,6 @@ export const Builtin: {
 
   Util: {
     ClassSetting: ClassSetting,
-    GenericData: GenericData,
     PrototypeManager: PrototypeManager,
     SettingType: SettingType
   }

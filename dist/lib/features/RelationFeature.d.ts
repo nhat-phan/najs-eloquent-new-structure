@@ -1,3 +1,4 @@
+/// <reference path="../definitions/data/IDataReader.d.ts" />
 /// <reference path="../definitions/model/IModel.d.ts" />
 /// <reference path="../definitions/features/IRelationFeature.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
@@ -16,6 +17,8 @@ export declare class RelationFeature extends FeatureBase implements NajsEloquent
     getDataBucket(model: NajsEloquent.Model.IModel): IRelationDataBucket | undefined;
     setDataBucket(model: NajsEloquent.Model.IModel, dataBucket: IRelationDataBucket): void;
     createKeyForDataBucket(model: NajsEloquent.Model.IModel): string;
+    getDataReaderForDataBucket(): NajsEloquent.Data.IDataReader<any>;
+    getRawDataForDataBucket<R>(model: NajsEloquent.Model.IModel): R;
     getDefinitions(model: IModel): RelationDefinitions;
     buildDefinitions(model: IModel, prototype: object, bases: object[]): RelationDefinitions;
     findByName<T = {}>(model: IModel, name: string): IRelation<T>;

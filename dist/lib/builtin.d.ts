@@ -63,7 +63,6 @@ import { RelationFactory } from './relations/RelationFactory';
 import { RelationUtilities } from './relations/RelationUtilities';
 import { HasOneRelation } from './relations/basic/HasOneRelation';
 import { ClassSetting } from './util/ClassSetting';
-import { GenericData } from './util/GenericData';
 import { PrototypeManager } from './util/PrototypeManager';
 import { SettingType } from './util/SettingType';
 export declare type DataPackage = {
@@ -160,7 +159,6 @@ export declare type RelationPackage = {
 };
 export declare type UtilPackage = {
     ClassSetting: typeof ClassSetting;
-    GenericData: typeof GenericData;
     PrototypeManager: typeof PrototypeManager;
     SettingType: typeof SettingType;
 };

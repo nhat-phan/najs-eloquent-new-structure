@@ -4,9 +4,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
-const factory_1 = require("../util/factory");
 const accessors_1 = require("../util/accessors");
-const GenericData_1 = require("../util/GenericData");
+const DataBuffer_1 = require("../data/DataBuffer");
 class RelationDataBucket {
     constructor() {
         this.bucket = {};
@@ -15,26 +14,28 @@ class RelationDataBucket {
         return constants_1.NajsEloquent.Relation.RelationDataBucket;
     }
     add(model) {
-        this.getRecords(model).put(model.getPrimaryKey(), model.getRecord());
+        this.getDataOf(model).add(accessors_1.relationFeatureOf(model).getRawDataForDataBucket(model));
         return this;
     }
-    makeModel(model, record) {
-        const instance = najs_binding_1.make(najs_binding_1.getClassName(model), [record, false]);
+    makeModel(model, data) {
+        const instance = najs_binding_1.make(najs_binding_1.getClassName(model), [data, false]);
         accessors_1.relationFeatureOf(instance).setDataBucket(instance, this);
         return instance;
     }
-    getRecords(model) {
-        return this.bucket[this.createKey(model)].records;
+    getDataOf(model) {
+        return this.bucket[this.createKey(model)].data;
     }
-    getMetadata(model) {
-        return this.bucket[this.createKey(model)].metadata;
+    getMetadataOf(model) {
+        return this.bucket[this.createKey(model)].meta;
     }
     createKey(model) {
         const key = accessors_1.relationFeatureOf(model).createKeyForDataBucket(model);
         if (typeof this.bucket[key] === 'undefined') {
             this.bucket[key] = {
-                records: factory_1.make_collection({}),
-                metadata: new GenericData_1.GenericData({})
+                data: new DataBuffer_1.DataBuffer(model.getPrimaryKeyName(), accessors_1.relationFeatureOf(model).getDataReaderForDataBucket()),
+                meta: {
+                    loaded: []
+                }
             };
         }
         return key;

@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="../definitions/data/IDataReader.ts" />
 /// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/features/IRelationFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -11,6 +12,7 @@ const RelationFactory_1 = require("../relations/RelationFactory");
 const RelationPublicApi_1 = require("./mixin/RelationPublicApi");
 const RelationNotDefinedError_1 = require("../errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../relations/RelationDefinitionFinder");
+const RecordDataReader_1 = require("../drivers/RecordDataReader");
 const functions_1 = require("../util/functions");
 class RelationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
@@ -36,6 +38,12 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     }
     createKeyForDataBucket(model) {
         return this.useRecordManagerOf(model).getRecordName(model);
+    }
+    getDataReaderForDataBucket() {
+        return RecordDataReader_1.RecordDataReader;
+    }
+    getRawDataForDataBucket(model) {
+        return this.useRecordManagerOf(model).getRecord(model);
     }
     getDefinitions(model) {
         return this.useInternalOf(model).sharedMetadata.relationDefinitions;

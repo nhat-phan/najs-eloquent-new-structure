@@ -34,7 +34,7 @@ declare namespace NajsEloquent.Model {
         /**
          * The model's relation data bucket.
          */
-        relationDataBucket: NajsEloquent.Relation.IRelationDataBucket<any>;
+        relationDataBucket: NajsEloquent.Relation.IRelationDataBucket;
         /**
          * The model's relations data.
          */

@@ -8,6 +8,7 @@ import { RelationData } from '../../lib/relations/RelationData'
 import { RelationFactory } from '../../lib/relations/RelationFactory'
 import { RelationNotDefinedError } from '../../lib/errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../../lib/relations/RelationDefinitionFinder'
+import { RecordDataReader } from '../../lib/drivers/RecordDataReader'
 
 describe('RelationFeature', function() {
   const feature = new RelationFeature()
@@ -87,6 +88,32 @@ describe('RelationFeature', function() {
       }
 
       expect(feature.createKeyForDataBucket(model)).toEqual('anything')
+    })
+  })
+
+  describe('.getDataReaderForDataBucket()', function() {
+    it('returns RecordDataReader', function() {
+      expect(feature.getDataReaderForDataBucket() === RecordDataReader).toBe(true)
+    })
+  })
+
+  describe('.getRawDataForDataBucket()', function() {
+    it('returns a record instance via .getRecord()', function() {
+      const model: any = {
+        getDriver() {
+          return {
+            getRecordManager() {
+              return {
+                getRecord() {
+                  return 'anything'
+                }
+              }
+            }
+          }
+        }
+      }
+
+      expect(feature.getRawDataForDataBucket(model)).toEqual('anything')
     })
   })
 

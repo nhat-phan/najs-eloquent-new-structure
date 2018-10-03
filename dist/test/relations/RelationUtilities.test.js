@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
-const GenericData_1 = require("../../lib/util/GenericData");
 const RelationUtilities_1 = require("./../../lib/relations/RelationUtilities");
 describe('RelationUtilities', function () {
     describe('.isLoadedInDataBucket()', function () {
@@ -16,11 +15,6 @@ describe('RelationUtilities', function () {
         });
         it('returns false if the name is not in array DataBucket.metadata."loaded"', function () {
             const dataset = [
-                {
-                    metadata: {},
-                    name: 'a',
-                    result: false
-                },
                 {
                     metadata: { loaded: [] },
                     name: 'a',
@@ -42,8 +36,8 @@ describe('RelationUtilities', function () {
                 const relation = {
                     getDataBucket() {
                         return {
-                            getMetadata() {
-                                return new GenericData_1.GenericData(item.metadata);
+                            getMetadataOf() {
+                                return item.metadata;
                             }
                         };
                     }
@@ -62,13 +56,8 @@ describe('RelationUtilities', function () {
             };
             RelationUtilities_1.RelationUtilities.markLoadedInDataBucket(relation, model, 'test');
         });
-        it('pushes name into DataBucket.metadata."loaded" array, creates it if needed', function () {
+        it('pushes name into DataBucket.metadata."loaded" array', function () {
             const dataset = [
-                {
-                    before: {},
-                    name: 'a',
-                    after: { loaded: ['a'] }
-                },
                 {
                     before: { loaded: [] },
                     name: 'a',
@@ -87,18 +76,17 @@ describe('RelationUtilities', function () {
             ];
             for (const item of dataset) {
                 const model = {};
-                const data = new GenericData_1.GenericData(item.before);
                 const relation = {
                     getDataBucket() {
                         return {
-                            getMetadata() {
-                                return data;
+                            getMetadataOf() {
+                                return item.before;
                             }
                         };
                     }
                 };
                 RelationUtilities_1.RelationUtilities.markLoadedInDataBucket(relation, model, item.name);
-                expect(data.all()).toEqual(item.after);
+                expect(item.before).toEqual(item.after);
             }
         });
     });

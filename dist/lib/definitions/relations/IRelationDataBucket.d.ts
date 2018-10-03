@@ -2,7 +2,13 @@
 /// <reference path="../model/IModel.d.ts" />
 /// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 declare namespace NajsEloquent.Relation {
-    interface IRelationDataBucket<T = {}> {
+    interface IRelationDataBucketMetadata {
+        /**
+         * Contains loaded relations of this model
+         */
+        loaded: string[];
+    }
+    interface IRelationDataBucket {
         /**
          * add the model to bucket.
          *
@@ -13,20 +19,20 @@ declare namespace NajsEloquent.Relation {
          * Create new model instance and push the record to eager bucket under given model.
          *
          * @param {Model} model
-         * @param {object} record
+         * @param {object} rawData
          */
-        makeModel<M extends Model.IModel = Model.IModel>(model: M, record: T): M;
+        makeModel<M extends Model.IModel = Model.IModel>(model: M, data: any): M;
         /**
          * Get records gathered data of the RecordBucket by given model.
          *
          * @param {Model} model
          */
-        getRecords(model: Model.IModel): CollectJs.Collection<T>;
+        getDataOf(model: Model.IModel): Data.IDataBuffer<object>;
         /**
          * Get metadata object of given model.
          *
          * @param {Model} model
          */
-        getMetadata(model: Model.IModel): Util.IDataReader & Util.IDataWriter;
+        getMetadataOf(model: Model.IModel): IRelationDataBucketMetadata;
     }
 }

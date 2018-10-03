@@ -10,6 +10,7 @@ const RelationData_1 = require("../../lib/relations/RelationData");
 const RelationFactory_1 = require("../../lib/relations/RelationFactory");
 const RelationNotDefinedError_1 = require("../../lib/errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../../lib/relations/RelationDefinitionFinder");
+const RecordDataReader_1 = require("../../lib/drivers/RecordDataReader");
 describe('RelationFeature', function () {
     const feature = new RelationFeature_1.RelationFeature();
     it('extends FeatureBase and implements Autoload under name "NajsEloquent.Feature.RelationFeature"', function () {
@@ -78,6 +79,29 @@ describe('RelationFeature', function () {
                 }
             };
             expect(feature.createKeyForDataBucket(model)).toEqual('anything');
+        });
+    });
+    describe('.getDataReaderForDataBucket()', function () {
+        it('returns RecordDataReader', function () {
+            expect(feature.getDataReaderForDataBucket() === RecordDataReader_1.RecordDataReader).toBe(true);
+        });
+    });
+    describe('.getRawDataForDataBucket()', function () {
+        it('returns a record instance via .getRecord()', function () {
+            const model = {
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                getRecord() {
+                                    return 'anything';
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            expect(feature.getRawDataForDataBucket(model)).toEqual('anything');
         });
     });
     describe('.getDefinitions()', function () {

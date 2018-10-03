@@ -1,5 +1,4 @@
 import 'jest'
-import { GenericData } from '../../lib/util/GenericData'
 import { RelationUtilities } from './../../lib/relations/RelationUtilities'
 
 describe('RelationUtilities', function() {
@@ -17,11 +16,6 @@ describe('RelationUtilities', function() {
 
     it('returns false if the name is not in array DataBucket.metadata."loaded"', function() {
       const dataset = [
-        {
-          metadata: {},
-          name: 'a',
-          result: false
-        },
         {
           metadata: { loaded: [] },
           name: 'a',
@@ -44,8 +38,8 @@ describe('RelationUtilities', function() {
         const relation: any = {
           getDataBucket() {
             return {
-              getMetadata() {
-                return new GenericData(item.metadata)
+              getMetadataOf() {
+                return item.metadata
               }
             }
           }
@@ -68,13 +62,8 @@ describe('RelationUtilities', function() {
       RelationUtilities.markLoadedInDataBucket(relation, model, 'test')
     })
 
-    it('pushes name into DataBucket.metadata."loaded" array, creates it if needed', function() {
+    it('pushes name into DataBucket.metadata."loaded" array', function() {
       const dataset = [
-        {
-          before: {},
-          name: 'a',
-          after: { loaded: ['a'] }
-        },
         {
           before: { loaded: [] },
           name: 'a',
@@ -94,19 +83,18 @@ describe('RelationUtilities', function() {
 
       for (const item of dataset) {
         const model: any = {}
-        const data = new GenericData(item.before)
         const relation: any = {
           getDataBucket() {
             return {
-              getMetadata() {
-                return data
+              getMetadataOf() {
+                return item.before
               }
             }
           }
         }
 
         RelationUtilities.markLoadedInDataBucket(relation, model, item.name)
-        expect(data.all()).toEqual(item.after)
+        expect(item.before).toEqual(item.after)
       }
     })
   })

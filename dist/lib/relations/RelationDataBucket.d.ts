@@ -2,20 +2,23 @@
 /// <reference path="../../../lib/definitions/collect.js/index.d.ts" />
 import Model = NajsEloquent.Model.IModel;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
+import IRelationDataBucketMetadata = NajsEloquent.Relation.IRelationDataBucketMetadata;
 import Autoload = Najs.Contracts.Autoload;
-import { GenericData } from '../util/GenericData';
-export declare class RelationDataBucket<T = {}> implements Autoload, IRelationDataBucket<T> {
+import { DataBuffer } from '../data/DataBuffer';
+export declare class RelationDataBucket implements Autoload, IRelationDataBucket {
     protected bucket: {
         [key in string]: {
-            records: CollectJs.Collection<T>;
-            metadata: GenericData;
+            data: DataBuffer<object>;
+            meta: {
+                loaded: string[];
+            };
         };
     };
     constructor();
     getClassName(): string;
     add(model: Model): this;
-    makeModel<M extends Model = Model>(model: M, record: T): M;
-    getRecords<M extends Model = Model>(model: M): CollectJs.Collection<T>;
-    getMetadata(model: Model): GenericData;
+    makeModel<M extends Model = Model>(model: M, data: any): M;
+    getDataOf<M extends Model = Model>(model: M): DataBuffer<object>;
+    getMetadataOf(model: Model): IRelationDataBucketMetadata;
     createKey(model: Model): string;
 }

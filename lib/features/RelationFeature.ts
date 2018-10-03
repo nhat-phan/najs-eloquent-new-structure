@@ -1,3 +1,4 @@
+/// <reference path="../definitions/data/IDataReader.ts" />
 /// <reference path="../definitions/model/IModel.ts" />
 /// <reference path="../definitions/features/IRelationFeature.ts" />
 
@@ -17,6 +18,7 @@ import { RelationFactory } from '../relations/RelationFactory'
 import { RelationPublicApi } from './mixin/RelationPublicApi'
 import { RelationNotDefinedError } from '../errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../relations/RelationDefinitionFinder'
+import { RecordDataReader } from '../drivers/RecordDataReader'
 import { parse_string_with_dot_notation } from '../util/functions'
 
 export class RelationFeature extends FeatureBase implements NajsEloquent.Feature.IRelationFeature {
@@ -50,6 +52,14 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
 
   createKeyForDataBucket(model: NajsEloquent.Model.IModel): string {
     return this.useRecordManagerOf(model).getRecordName(model)
+  }
+
+  getDataReaderForDataBucket(): NajsEloquent.Data.IDataReader<any> {
+    return RecordDataReader
+  }
+
+  getRawDataForDataBucket<R>(model: NajsEloquent.Model.IModel): R {
+    return this.useRecordManagerOf(model).getRecord(model) as R
   }
 
   getDefinitions(model: IModel): RelationDefinitions {

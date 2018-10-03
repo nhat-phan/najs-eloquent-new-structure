@@ -8,12 +8,7 @@ export const RelationUtilities = {
       return false
     }
 
-    return (
-      bucket
-        .getMetadata(model)
-        .get<string[]>('loaded', [])
-        .indexOf(name) !== -1
-    )
+    return bucket.getMetadataOf(model).loaded.indexOf(name) !== -1
   },
 
   markLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string) {
@@ -22,11 +17,6 @@ export const RelationUtilities = {
       return
     }
 
-    const metadata = bucket.getMetadata(model)
-
-    if (!metadata.exists('loaded')) {
-      metadata.set('loaded', [])
-    }
-    metadata.get<string[]>('loaded').push(name)
+    bucket.getMetadataOf(model).loaded.push(name)
   }
 }

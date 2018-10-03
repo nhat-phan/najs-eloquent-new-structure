@@ -1,9 +1,19 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
+import { pick } from 'lodash'
 import { RelationDataBucket } from '../../lib/relations/RelationDataBucket'
-import { make_collection } from '../../lib/util/factory'
+import { DataBuffer } from '../../lib/data/DataBuffer'
 
+const reader = {
+  getAttribute(data: object, field: string) {
+    return data[field]
+  },
+
+  pick(data: object, fields: string[]) {
+    return pick(data, fields)
+  }
+}
 describe('RelationDataBucket', function() {
   it('implements Autoload under name "NajsEloquent.Relation.RelationDataBucket"', function() {
     const dataBucket = new RelationDataBucket()
@@ -18,27 +28,31 @@ describe('RelationDataBucket', function() {
   })
 
   describe('.add()', function() {
-    it('is chainable, it calls this.getRecords() then .put() the record of model to bucket', function() {
-      const record = {}
+    it('is chainable, it calls this.getDataOf() then .add() the rawData for data bucket of model', function() {
+      const rawData = {
+        id: 'key'
+      }
       const model: any = {
-        getPrimaryKey() {
-          return 'key'
-        },
-        getRecord() {
-          return record
+        getDriver() {
+          return {
+            getRelationFeature() {
+              return {
+                getRawDataForDataBucket() {
+                  return rawData
+                }
+              }
+            }
+          }
         }
       }
 
-      const collection = make_collection({})
-
+      const dataBuffer = new DataBuffer('id', reader)
       const dataBucket = new RelationDataBucket()
-      const getRecordsStub = Sinon.stub(dataBucket, 'getRecords')
-      getRecordsStub.returns(collection)
+      const getDataOfStub = Sinon.stub(dataBucket, 'getDataOf')
+      getDataOfStub.returns(dataBuffer)
 
       expect(dataBucket.add(model) === dataBucket).toBe(true)
-      expect(collection.all()).toEqual({
-        key: record
-      })
+      expect(Array.from(dataBuffer.getBuffer().entries())).toEqual([['key', rawData]])
     })
   })
 
@@ -79,14 +93,21 @@ describe('RelationDataBucket', function() {
     })
   })
 
-  describe('.getRecords()', function() {
-    it('simply returns property records in .bucket[key] with the key created from .createKey()', function() {
+  describe('.getDataOf()', function() {
+    it('simply returns property data in .bucket[key] with the key created from .createKey()', function() {
       const relationFeature = {
         createKeyForDataBucket(model: any) {
           return 'anything'
+        },
+        getDataReaderForDataBucket() {
+          return reader
         }
       }
       const model: any = {
+        getPrimaryKeyName() {
+          return 'id'
+        },
+
         getDriver() {
           return {
             getRelationFeature() {
@@ -96,19 +117,25 @@ describe('RelationDataBucket', function() {
         }
       }
       const dataBucket = new RelationDataBucket()
-      expect(dataBucket.getRecords(model).all()).toEqual({})
-      expect(dataBucket.getRecords(model) === dataBucket['bucket']['anything'].records).toBe(true)
+      expect(dataBucket.getDataOf(model) === dataBucket['bucket']['anything'].data).toBe(true)
     })
   })
 
   describe('.getMetadata()', function() {
-    it('simply returns property metadata in .bucket[key] with the key created from .createKey()', function() {
+    it('simply returns property meta in .bucket[key] with the key created from .createKey()', function() {
       const relationFeature = {
         createKeyForDataBucket(model: any) {
           return 'anything'
+        },
+        getDataReaderForDataBucket() {
+          return reader
         }
       }
       const model: any = {
+        getPrimaryKeyName() {
+          return 'id'
+        },
+
         getDriver() {
           return {
             getRelationFeature() {
@@ -118,8 +145,8 @@ describe('RelationDataBucket', function() {
         }
       }
       const dataBucket = new RelationDataBucket()
-      expect(dataBucket.getMetadata(model).all()).toEqual({})
-      expect(dataBucket.getMetadata(model) === dataBucket['bucket']['anything'].metadata).toBe(true)
+      expect(dataBucket.getMetadataOf(model)).toEqual({ loaded: [] })
+      expect(dataBucket.getMetadataOf(model) === dataBucket['bucket']['anything'].meta).toBe(true)
     })
   })
 
@@ -128,9 +155,16 @@ describe('RelationDataBucket', function() {
       const relationFeature = {
         createKeyForDataBucket(model: any) {
           return 'anything'
+        },
+        getDataReaderForDataBucket() {
+          return reader
         }
       }
       const model: any = {
+        getPrimaryKeyName() {
+          return 'id'
+        },
+
         getDriver() {
           return {
             getRelationFeature() {

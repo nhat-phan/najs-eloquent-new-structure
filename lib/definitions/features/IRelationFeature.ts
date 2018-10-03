@@ -43,6 +43,18 @@ namespace NajsEloquent.Feature {
     createKeyForDataBucket(model: Model.IModel): string
 
     /**
+     * Get DataReader which read raw data in DataBucket
+     */
+    getDataReaderForDataBucket(): Data.IDataReader<any>
+
+    /**
+     * Get raw data which is stored in DataBucket
+     *
+     * @param {Model} model
+     */
+    getRawDataForDataBucket<R>(model: Model.IModel): R
+
+    /**
      * Get defined relations of given model.
      *
      * @param {Model} model
