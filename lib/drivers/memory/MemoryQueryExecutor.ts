@@ -1,4 +1,5 @@
 /// <reference path="../../contracts/MemoryDataSource.ts" />
+/// <reference path="../../definitions/data/IDataCollector.ts" />
 /// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 
 import MemoryDataSource = Najs.Contracts.Eloquent.MemoryDataSource
@@ -13,7 +14,6 @@ import { MemoryQueryLog, IUpdateRecordInfo } from './MemoryQueryLog'
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
-import { RecordCollector } from '../RecordCollector'
 import * as Moment from 'moment'
 
 export class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
@@ -164,17 +164,18 @@ export class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.Qu
     return info
   }
 
-  async collectResult(collector: RecordCollector): Promise<Record[]> {
+  async collectResult(collector: NajsEloquent.Data.IDataCollector<Record>): Promise<Record[]> {
     await this.dataSource.read()
 
     return collector.exec()
   }
 
   makeCollector() {
-    const collector = RecordCollector.use(this.dataSource)
+    const collector = this.dataSource.getCollector()
+
     this.logger
       .dataSource(this.dataSource)
-      .raw(`RecordCollector.use(MemoryDataSourceProvider.create("${this.queryHandler.getModel().getModelName()}"))`)
+      .raw(`MemoryDataSourceProvider.create("${this.queryHandler.getModel().getModelName()}").getCollector()`)
 
     const limit = this.basicQuery.getLimit()
     if (limit) {

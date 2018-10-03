@@ -9,9 +9,9 @@ const DriverBase_1 = require("./drivers/DriverBase");
 const QueryLogBase_1 = require("./drivers/QueryLogBase");
 const ExecutorBase_1 = require("./drivers/ExecutorBase");
 const Record_1 = require("./drivers/Record");
-const RecordCollector_1 = require("./drivers/RecordCollector");
 const RecordConditionMatcher_1 = require("./drivers/RecordConditionMatcher");
 const RecordConditionMatcherFactory_1 = require("./drivers/RecordConditionMatcherFactory");
+const RecordDataReader_1 = require("./drivers/RecordDataReader");
 const RecordDataSourceBase_1 = require("./drivers/RecordDataSourceBase");
 const RecordExecutorBase_1 = require("./drivers/RecordExecutorBase");
 const RecordManager_1 = require("./drivers/RecordManager");
@@ -92,9 +92,9 @@ exports.Builtin = {
         ExecutorBase: ExecutorBase_1.ExecutorBase,
         QueryLogBase: QueryLogBase_1.QueryLogBase,
         Record: Record_1.Record,
-        RecordCollector: RecordCollector_1.RecordCollector,
         RecordConditionMatcher: RecordConditionMatcher_1.RecordConditionMatcher,
         RecordConditionMatcherFactory: RecordConditionMatcherFactory_1.RecordConditionMatcherFactory,
+        RecordDataReader: RecordDataReader_1.RecordDataReader,
         RecordDataSourceBase: RecordDataSourceBase_1.RecordDataSourceBase,
         RecordExecutorBase: RecordExecutorBase_1.RecordExecutorBase,
         RecordManager: RecordManager_1.RecordManager,

@@ -62,7 +62,7 @@ class DataCollector {
     hasFilterByConfig() {
         return typeof this.conditions !== 'undefined';
     }
-    hasSortedByConfig() {
+    hasOrderByConfig() {
         return typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0;
     }
     hasSelectedFieldsConfig() {
@@ -71,7 +71,7 @@ class DataCollector {
     exec() {
         const filtered = [];
         const shouldMatchItem = this.hasFilterByConfig();
-        const shouldSortResult = this.hasSortedByConfig();
+        const shouldSortResult = this.hasOrderByConfig();
         const shouldPickFields = this.hasSelectedFieldsConfig();
         for (const item of this.dataBuffer) {
             if (shouldMatchItem && !this.isMatch(item, this.conditions)) {

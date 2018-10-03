@@ -31,6 +31,14 @@ declare namespace NajsEloquent.Data {
          */
         filterBy(conditions: IConditions): this;
         /**
+         * Determine that there is order by config or not.
+         */
+        hasOrderByConfig(): boolean;
+        /**
+         * Determine that there is filter by config or not.
+         */
+        hasFilterByConfig(): boolean;
+        /**
          * Execute and get filtered data.
          */
         exec(): T[];

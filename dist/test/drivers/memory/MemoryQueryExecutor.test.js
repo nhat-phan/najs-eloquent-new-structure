@@ -5,8 +5,8 @@ const Sinon = require("sinon");
 const ExecutorBase_1 = require("../../../lib/drivers/ExecutorBase");
 const ExecutorUtils_1 = require("../../../lib/query-builders/shared/ExecutorUtils");
 const Record_1 = require("../../../lib/drivers/Record");
-const RecordCollector_1 = require("../../../lib/drivers/RecordCollector");
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
+const DataCollector_1 = require("../../../lib/data/DataCollector");
 const MemoryDataSource_1 = require("../../../lib/drivers/memory/MemoryDataSource");
 const MemoryDataSourceProviderFacade_1 = require("../../../lib/facades/global/MemoryDataSourceProviderFacade");
 const MemoryQueryBuilder_1 = require("../../../lib/drivers/memory/MemoryQueryBuilder");
@@ -119,7 +119,7 @@ describe('MemoryQueryExecutor', function () {
             const handler = makeQueryBuilderHandler('User');
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: 'RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()',
+                raw: 'MemoryDataSourceProvider.create("User").getCollector().exec()',
                 action: 'get'
             }, result);
             expect(result.length).toEqual(7);
@@ -132,7 +132,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'no-one');
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
                 })}).exec()`
             }, result);
@@ -143,7 +143,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('age', 1000);
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 1000 }]
                 })}).exec()`,
                 action: 'get'
@@ -156,7 +156,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('age', 40);
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 40 }]
                 })}).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -173,7 +173,7 @@ describe('MemoryQueryExecutor', function () {
                 .where('last_name', 'stark');
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 40 }, { field: 'last_name', operator: '=', value: 'stark' }]
                 })}).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -189,7 +189,7 @@ describe('MemoryQueryExecutor', function () {
                 .orWhere('first_name', 'peter');
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'peter' }]
                 })}).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -208,7 +208,7 @@ describe('MemoryQueryExecutor', function () {
                 .orderBy('id', 'desc');
             const result = await handler.getQueryExecutor().get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).orderBy(${JSON.stringify([
+                raw: `MemoryDataSourceProvider.create("User").getCollector().orderBy(${JSON.stringify([
                     ['id', 'desc']
                 ])}).filterBy(${JSON.stringify({
                     $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'peter' }]
@@ -232,7 +232,7 @@ describe('MemoryQueryExecutor', function () {
                 .setExecuteMode('disabled')
                 .get();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).orderBy(${JSON.stringify([
+                raw: `MemoryDataSourceProvider.create("User").getCollector().orderBy(${JSON.stringify([
                     ['id', 'desc']
                 ])}).filterBy(${JSON.stringify({
                     $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'peter' }]
@@ -248,7 +248,7 @@ describe('MemoryQueryExecutor', function () {
             const handler = makeQueryBuilderHandler('User');
             const result = await handler.getQueryExecutor().first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).limit(1).exec()`,
+                raw: `MemoryDataSourceProvider.create("User").getCollector().limit(1).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
                 action: 'first'
             }, result);
@@ -259,7 +259,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).orderBy('id', 'desc');
             const result = await handler.getQueryExecutor().first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).orderBy(${JSON.stringify([
+                raw: `MemoryDataSourceProvider.create("User").getCollector().orderBy(${JSON.stringify([
                     ['id', 'desc']
                 ])}).limit(1).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -272,7 +272,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'no-one');
             const result = await handler.getQueryExecutor().first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
                 })}).limit(1).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -285,7 +285,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('age', 1000);
             const result = await handler.getQueryExecutor().first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 1000 }]
                 })}).limit(1).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -300,7 +300,7 @@ describe('MemoryQueryExecutor', function () {
                 .orWhere('first_name', 'jane');
             const result = await handler.getQueryExecutor().first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'jane' }]
                 })}).limit(1).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -315,7 +315,7 @@ describe('MemoryQueryExecutor', function () {
                 .where('last_name', 'stewart');
             const result = await handler.getQueryExecutor().first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [
                         { field: 'first_name', operator: '=', value: 'tony' },
                         { field: 'last_name', operator: '=', value: 'stewart' }
@@ -371,7 +371,7 @@ describe('MemoryQueryExecutor', function () {
                 .setExecuteMode('disabled')
                 .first();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $or: [{ field: 'age', operator: '=', value: 40 }, { field: 'first_name', operator: '=', value: 'jane' }]
                 })}).limit(1).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -385,7 +385,7 @@ describe('MemoryQueryExecutor', function () {
             const handler = makeQueryBuilderHandler('User');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()`,
+                raw: `MemoryDataSourceProvider.create("User").getCollector().exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
                 action: 'count'
             }, result);
@@ -396,7 +396,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'no-one');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
                 })}).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -409,7 +409,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).select('abc', 'def');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()`,
+                raw: `MemoryDataSourceProvider.create("User").getCollector().exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
                 action: 'count'
             }, result);
@@ -420,7 +420,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).orderBy('abc');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).exec()`,
+                raw: `MemoryDataSourceProvider.create("User").getCollector().exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
                 action: 'count'
             }, result);
@@ -433,7 +433,7 @@ describe('MemoryQueryExecutor', function () {
                 .orWhere('first_name', 'tony');
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $or: [{ field: 'age', operator: '=', value: 18 }, { field: 'first_name', operator: '=', value: 'tony' }]
                 })}).exec()`,
                 dataSource: 'NajsEloquent.Driver.Memory.MemoryDataSource',
@@ -450,7 +450,7 @@ describe('MemoryQueryExecutor', function () {
                 .limit(10);
             const result = await handler.getQueryExecutor().count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).limit(10).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().limit(10).filterBy(${JSON.stringify({
                     $or: [
                         { field: 'age', operator: '=', value: 1000 },
                         { field: 'first_name', operator: '=', value: 'captain' }
@@ -473,7 +473,7 @@ describe('MemoryQueryExecutor', function () {
                 .setExecuteMode('disabled')
                 .count();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).limit(10).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().limit(10).filterBy(${JSON.stringify({
                     $or: [
                         { field: 'age', operator: '=', value: 1000 },
                         { field: 'first_name', operator: '=', value: 'captain' }
@@ -491,7 +491,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'peter');
             const result = await handler.getQueryExecutor().update({ age: 19 });
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'peter' }]
                 })}).exec() >> update records >> dataSource.write()`,
                 action: 'update',
@@ -514,7 +514,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'peter');
             const result = await handler.getQueryExecutor().update({ age: 19 });
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'peter' }]
                 })}).exec() >> update records >> dataSource.write()`,
                 action: 'update',
@@ -537,7 +537,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'no-one');
             const result = await handler.getQueryExecutor().update({ $set: { age: 19 } });
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'no-one' }]
                 })}).exec() >> empty, do nothing`,
                 action: 'update'
@@ -549,7 +549,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('age', 1000);
             const result = await handler.getQueryExecutor().update({ age: 1001 });
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 1000 }]
                 })}).exec() >> update records >> dataSource.write()`,
                 action: 'update'
@@ -565,7 +565,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('age', 40);
             const result = await handler.getQueryExecutor().update({ age: 41 });
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 40 }]
                 })}).exec() >> update records >> dataSource.write()`,
                 action: 'update'
@@ -646,7 +646,7 @@ describe('MemoryQueryExecutor', function () {
                 .setExecuteMode('disabled')
                 .update({ $inc: { age: 1 } });
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [
                         { field: 'first_name', operator: '=', value: 'tony' },
                         { field: 'last_name', operator: '=', value: 'stewart' }
@@ -669,7 +669,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('first_name', 'peter');
             const result = await handler.getQueryExecutor().delete();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'first_name', operator: '=', value: 'peter' }]
                 })}).exec() >> delete records >> dataSource.write()`,
                 action: 'delete'
@@ -690,7 +690,7 @@ describe('MemoryQueryExecutor', function () {
                 .setExecuteMode('disabled')
                 .delete();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [
                         { field: 'first_name', operator: '=', value: 'john' },
                         { field: 'last_name', operator: '=', value: 'doe' }
@@ -709,7 +709,7 @@ describe('MemoryQueryExecutor', function () {
             makeQueryBuilder(handler).where('age', 1001);
             const result = await handler.getQueryExecutor().delete();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [{ field: 'age', operator: '=', value: 1001 }]
                 })}).exec() >> delete records >> dataSource.write()`,
                 action: 'delete'
@@ -727,7 +727,7 @@ describe('MemoryQueryExecutor', function () {
                 .orWhere('first_name', 'jane');
             const result = await handler.getQueryExecutor().delete();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $or: [
                         { field: 'first_name', operator: '=', value: 'tony' },
                         { field: 'first_name', operator: '=', value: 'jane' }
@@ -748,7 +748,7 @@ describe('MemoryQueryExecutor', function () {
                 .where('last_name', 'doe');
             const result = await handler.getQueryExecutor().delete();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("User")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("User").getCollector().filterBy(${JSON.stringify({
                     $and: [
                         { field: 'first_name', operator: '=', value: 'john' },
                         { field: 'last_name', operator: '=', value: 'doe' }
@@ -840,7 +840,7 @@ describe('MemoryQueryExecutor', function () {
                 .where('name', 'role-0');
             const result = await handler.getQueryExecutor().restore();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("Role")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("Role").getCollector().filterBy(${JSON.stringify({
                     $and: [
                         // tslint:disable-next-line
                         { field: 'deleted_at', operator: '<>', value: null },
@@ -866,7 +866,7 @@ describe('MemoryQueryExecutor', function () {
                 .setExecuteMode('disabled')
                 .restore();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("Role")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("Role").getCollector().filterBy(${JSON.stringify({
                     $or: [
                         { field: 'name', operator: '=', value: 'role-1' },
                         { field: 'name', operator: '=', value: 'role-2' },
@@ -889,7 +889,7 @@ describe('MemoryQueryExecutor', function () {
                 .orWhere('name', 'role-3');
             const result = await handler.getQueryExecutor().restore();
             expect_query_log({
-                raw: `RecordCollector.use(MemoryDataSourceProvider.create("Role")).filterBy(${JSON.stringify({
+                raw: `MemoryDataSourceProvider.create("Role").getCollector().filterBy(${JSON.stringify({
                     $or: [
                         { field: 'name', operator: '=', value: 'role-1' },
                         { field: 'name', operator: '=', value: 'role-2' },
@@ -951,11 +951,11 @@ describe('MemoryQueryExecutor', function () {
         });
     });
     describe('.makeCollector()', function () {
-        it('makes and return a RecordCollector instance which using the DataSource', function () {
+        it('makes and return a DataCollector instance which using the DataSource', function () {
             const handler = makeQueryBuilderHandler('User');
             const executor = handler.getQueryExecutor();
             const collector = executor.makeCollector();
-            expect(collector['dataSource'] === UserDataSource).toBe(true);
+            expect(collector['dataBuffer'] === UserDataSource).toBe(true);
         });
         it('calls collector.limit() if query builder has limit data', function () {
             const handler = makeQueryBuilderHandler('User');
@@ -971,7 +971,7 @@ describe('MemoryQueryExecutor', function () {
                 .orderBy('b', 'desc');
             const executor = handler.getQueryExecutor();
             const collector = executor.makeCollector();
-            expect(collector).toBeInstanceOf(RecordCollector_1.RecordCollector);
+            expect(collector).toBeInstanceOf(DataCollector_1.DataCollector);
             expect(collector['sortedBy']).toEqual([['a', 'asc'], ['b', 'desc']]);
         });
         it('calls collector.select() if query builder has selected data', function () {

@@ -1,5 +1,6 @@
 "use strict";
 /// <reference path="../../contracts/MemoryDataSource.ts" />
+/// <reference path="../../definitions/data/IDataCollector.ts" />
 /// <reference path="../../definitions/query-builders/IQueryExecutor.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
@@ -8,7 +9,6 @@ const RecordConditionMatcherFactory_1 = require("../RecordConditionMatcherFactor
 const BasicQueryConverter_1 = require("../../query-builders/shared/BasicQueryConverter");
 const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
-const RecordCollector_1 = require("../RecordCollector");
 const Moment = require("moment");
 class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, dataSource, logger) {
@@ -135,10 +135,10 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
         return collector.exec();
     }
     makeCollector() {
-        const collector = RecordCollector_1.RecordCollector.use(this.dataSource);
+        const collector = this.dataSource.getCollector();
         this.logger
             .dataSource(this.dataSource)
-            .raw(`RecordCollector.use(MemoryDataSourceProvider.create("${this.queryHandler.getModel().getModelName()}"))`);
+            .raw(`MemoryDataSourceProvider.create("${this.queryHandler.getModel().getModelName()}").getCollector()`);
         const limit = this.basicQuery.getLimit();
         if (limit) {
             collector.limit(limit);

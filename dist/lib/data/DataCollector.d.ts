@@ -23,7 +23,7 @@ export declare class DataCollector<T> implements IDataCollector<T> {
     isMatchAtLeastOneCondition(item: T, conditions: Array<IConditions | IConditionMatcher<T>>): boolean;
     isMatchAllConditions(item: T, conditions: Array<IConditions | IConditionMatcher<T>>): boolean;
     hasFilterByConfig(): boolean;
-    hasSortedByConfig(): boolean;
+    hasOrderByConfig(): boolean;
     hasSelectedFieldsConfig(): boolean;
     exec(): T[];
     sortLimitAndSelectItems(items: T[]): T[];

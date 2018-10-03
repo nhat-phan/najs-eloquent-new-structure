@@ -95,7 +95,7 @@ export class DataCollector<T> implements IDataCollector<T> {
     return typeof this.conditions !== 'undefined'
   }
 
-  hasSortedByConfig(): boolean {
+  hasOrderByConfig(): boolean {
     return typeof this.sortedBy !== 'undefined' && this.sortedBy.length > 0
   }
 
@@ -106,7 +106,7 @@ export class DataCollector<T> implements IDataCollector<T> {
   exec(): T[] {
     const filtered: T[] = []
     const shouldMatchItem = this.hasFilterByConfig()
-    const shouldSortResult = this.hasSortedByConfig()
+    const shouldSortResult = this.hasOrderByConfig()
     const shouldPickFields = this.hasSelectedFieldsConfig()
 
     for (const item of this.dataBuffer) {
