@@ -1,9 +1,9 @@
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/relations/IRelation.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
-import IRelation = NajsEloquent.Relation.IRelation
-import RelationFetchType = NajsEloquent.Relation.RelationFetchType
+import IRelationship = NajsEloquent.Relation.IRelationship
+import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationData = NajsEloquent.Relation.IRelationData
 
@@ -14,7 +14,7 @@ import { array_unique } from '../util/functions'
 import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
 // import { isModel, isCollection } from '../util/helpers'
 
-export abstract class Relation<T> {
+export abstract class Relationship<T> implements IRelationship<T> {
   protected name: string
   protected rootModel: IModel
   protected loadChains: string[]
@@ -37,9 +37,9 @@ export abstract class Relation<T> {
   /**
    * Fetch data from database or data source.
    */
-  abstract fetchData(type: RelationFetchType): Promise<T | undefined | null>
+  abstract fetchData(type: RelationshipFetchType): Promise<T | undefined | null>
 
-  abstract isInverseOf<K>(relation: IRelation<K>): boolean
+  abstract isInverseOf<K>(relation: IRelationship<K>): boolean
 
   getName() {
     return this.name

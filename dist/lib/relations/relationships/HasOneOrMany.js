@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
-const Relation_1 = require("../Relation");
+const Relationship_1 = require("../Relationship");
 const DataConditionMatcher_1 = require("../../data/DataConditionMatcher");
-class HasOneOrMany extends Relation_1.Relation {
+class HasOneOrMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, targetKey, rootKey) {
         super(root, relationName);
         this.rootKeyName = rootKey;

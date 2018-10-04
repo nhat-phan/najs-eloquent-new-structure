@@ -1,26 +1,26 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/relations/IRelation.ts" />
-/// <reference path="../definitions/relations/IRelationFactory.ts" />
-/// <reference path="../definitions/relations/IHasOne.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
+/// <reference path="../definitions/relations/IRelationshipFactory.ts" />
+/// <reference path="../definitions/relations/IHasOneRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./relationships/HasOne");
 const HasOne_1 = require("./relationships/HasOne");
 const najs_binding_1 = require("najs-binding");
 const functions_1 = require("../util/functions");
-class RelationFactory {
+class RelationshipFactory {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
         this.name = name;
     }
     make(className, params, modifier) {
-        if (!this.relation) {
-            this.relation = najs_binding_1.make(className, [this.rootModel, this.name, ...params]);
+        if (!this.relationship) {
+            this.relationship = najs_binding_1.make(className, [this.rootModel, this.name, ...params]);
             if (modifier) {
-                modifier(this.relation);
+                modifier(this.relationship);
             }
         }
-        return this.relation;
+        return this.relationship;
     }
     findForeignKeyName(referencing, referenced) {
         const referencingModel = najs_binding_1.make(referencing);
@@ -33,4 +33,4 @@ class RelationFactory {
         return this.make(HasOne_1.HasOne.className, [target, targetKeyName, rootKeyName]);
     }
 }
-exports.RelationFactory = RelationFactory;
+exports.RelationshipFactory = RelationshipFactory;

@@ -1,18 +1,18 @@
 "use strict";
 /// <reference path="../../definitions/model/IModel.ts" />
-/// <reference path="../../definitions/relations/IRelation.ts" />
-/// <reference path="../../definitions/relations/IHasOne.ts" />
+/// <reference path="../../definitions/relations/IRelationship.ts" />
+/// <reference path="../../definitions/relations/IHasOneRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const HasOneOrMany_1 = require("./HasOneOrMany");
-const RelationType_1 = require("../RelationType");
+const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 class HasOne extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.HasOne;
     }
     getType() {
-        return RelationType_1.RelationType.HasOne;
+        return RelationshipType_1.RelationshipType.HasOne;
     }
     async executeQuery(queryBuilder) {
         return queryBuilder.first();

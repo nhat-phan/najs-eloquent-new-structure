@@ -1,7 +1,7 @@
 /// <reference path="../../definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.ts" />
-/// <reference path="../../definitions/relations/IRelation.ts" />
-/// <reference path="../../definitions/relations/IHasOne.ts" />
+/// <reference path="../../definitions/relations/IRelationship.ts" />
+/// <reference path="../../definitions/relations/IHasOneRelationship.ts" />
 
 import Model = NajsEloquent.Model.IModel
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
@@ -10,7 +10,7 @@ import Collection = CollectJs.Collection
 
 import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
-import { RelationType } from '../RelationType'
+import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { make_collection } from '../../util/factory'
 
@@ -20,7 +20,7 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> {
   }
 
   getType(): string {
-    return RelationType.HasOne
+    return RelationshipType.HasOne
   }
 
   async executeQuery(queryBuilder: IQueryBuilder<T>): Promise<Collection<T>> {

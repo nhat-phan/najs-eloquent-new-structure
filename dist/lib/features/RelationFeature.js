@@ -8,7 +8,7 @@ const FeatureBase_1 = require("./FeatureBase");
 const constants_1 = require("../constants");
 const RelationDataBucket_1 = require("../relations/RelationDataBucket");
 const RelationData_1 = require("../relations/RelationData");
-const RelationFactory_1 = require("../relations/RelationFactory");
+const RelationshipFactory_1 = require("../relations/RelationshipFactory");
 const RelationPublicApi_1 = require("./mixin/RelationPublicApi");
 const RelationNotDefinedError_1 = require("../errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../relations/RelationDefinitionFinder");
@@ -28,7 +28,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         return new RelationDataBucket_1.RelationDataBucket();
     }
     makeFactory(model, accessor) {
-        return new RelationFactory_1.RelationFactory(model, accessor);
+        return new RelationshipFactory_1.RelationshipFactory(model, accessor);
     }
     getDataBucket(model) {
         return this.useInternalOf(model).internalData.relationDataBucket;
@@ -83,7 +83,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         if (!propertyDescriptor) {
             Object.defineProperty(prototype, accessor, {
                 get: function () {
-                    return this.getRelationByName(accessor).getData();
+                    return this.getRelationshipByName(accessor).getData();
                 }
             });
         }

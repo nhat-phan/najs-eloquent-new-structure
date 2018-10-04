@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const NajsBinding = require("najs-binding");
 const Sinon = require("sinon");
-const Relation_1 = require("../../../lib/relations/Relation");
+const Relationship_1 = require("../../../lib/relations/Relationship");
 const HasOne_1 = require("../../../lib/relations/relationships/HasOne");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
 const DataBuffer_1 = require("../../../lib/data/DataBuffer");
@@ -22,7 +22,7 @@ describe('HasOneOrMany', function () {
     }
     it('extends Relation', function () {
         const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
-        expect(relation).toBeInstanceOf(Relation_1.Relation);
+        expect(relation).toBeInstanceOf(Relationship_1.Relationship);
         expect(relation).toBeInstanceOf(HasOneOrMany_1.HasOneOrMany);
     });
     describe('constructor()', function () {

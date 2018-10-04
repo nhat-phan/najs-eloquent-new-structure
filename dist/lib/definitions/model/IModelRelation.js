@@ -1,2 +1,2 @@
-/// <reference path="../relations/IRelation.ts" />
-/// <reference path="../relations/IRelationFactory.ts" />
+/// <reference path="../relations/IRelationship.ts" />
+/// <reference path="../relations/IRelationshipFactory.ts" />

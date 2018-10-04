@@ -9,9 +9,9 @@ namespace NajsEloquent.Relation {
   }
 
   export type RelationDefinitions = { [name in string]: RelationDefinition }
-  export type RelationFetchType = 'lazy' | 'eager'
+  export type RelationshipFetchType = 'lazy' | 'eager'
 
-  export interface IRelation<T> {
+  export interface IRelationship<T> {
     /**
      * Set sub-relation with will be loaded when current relation load.
      *
@@ -20,27 +20,27 @@ namespace NajsEloquent.Relation {
     with(...relations: Array<string | string[]>): this
 
     /**
-     * Get new query based on the relation.
+     * Get data of the relationship.
      */
     getData(): T | undefined | null
 
     /**
-     * Determine the relation is loaded or not.
+     * Determine the relationship is loaded or not.
      */
     isLoaded(): boolean
 
     /**
-     * load relation data, use eagerLoad() if it's possible otherwise will use lazyLoad().
+     * load relationship data, use eagerLoad() if it's possible otherwise will use lazyLoad().
      */
     load(): Promise<T | undefined | null>
 
     /**
-     * Lazy load relation data.
+     * Lazy load relationship.
      */
     lazyLoad(): Promise<T | undefined | null>
 
     /**
-     * Eager load relation data.
+     * Eager load relationship.
      */
     eagerLoad(): Promise<T | undefined | null>
 
@@ -50,15 +50,15 @@ namespace NajsEloquent.Relation {
     getDataBucket(): IRelationDataBucket | undefined
 
     /**
-     * Get relation type
+     * Get relationship type
      */
     getType(): string
 
     /**
-     * Determine that current relation is an inverse of given relation or not.
+     * Determine that current relationship is an inverse of given relationship or not.
      *
-     * @param {Relation} relation
+     * @param {Relationship} relation
      */
-    isInverseOf<K = any>(relation: IRelation<K>): boolean
+    isInverseOf<K = any>(relation: IRelationship<K>): boolean
   }
 }

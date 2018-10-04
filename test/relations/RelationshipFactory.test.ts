@@ -1,13 +1,13 @@
 import 'jest'
 import * as Sinon from 'sinon'
 import * as NajsBinding from 'najs-binding'
-import { RelationFactory } from '../../lib/relations/RelationFactory'
+import { RelationshipFactory } from '../../lib/relations/RelationshipFactory'
 
-describe('RelationFactory', function() {
+describe('RelationshipFactory', function() {
   describe('constructor()', function() {
     it('assigns rootModel & name from params to properties', function() {
       const rootModel: any = {}
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
       expect(factory['rootModel'] === rootModel).toBe(true)
       expect(factory['name']).toEqual('test')
     })
@@ -25,12 +25,12 @@ describe('RelationFactory', function() {
       const a = {}
       const b = {}
       const rootModel: any = {}
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
       factory.make('Test', [a, b], modifierContainer.modifier)
 
       expect(makeStub.calledWith('Test', [rootModel, 'test', a, b])).toBe(true)
       expect(modifierSpy.calledWith('anything')).toBe(true)
-      expect(factory['relation']).toEqual('anything')
+      expect(factory['relationship']).toEqual('anything')
       makeStub.restore()
     })
 
@@ -45,12 +45,12 @@ describe('RelationFactory', function() {
       const a = {}
       const b = {}
       const rootModel: any = {}
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
       factory.make('Test', [a, b])
 
       expect(makeStub.calledWith('Test', [rootModel, 'test', a, b])).toBe(true)
       expect(modifierSpy.calledWith('anything')).toBe(false)
-      expect(factory['relation']).toEqual('anything')
+      expect(factory['relationship']).toEqual('anything')
       makeStub.restore()
     })
 
@@ -65,13 +65,13 @@ describe('RelationFactory', function() {
       const a = {}
       const b = {}
       const rootModel: any = {}
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
       factory.make('Test', [a, b], modifierContainer.modifier)
       factory.make('Test', [a, b], modifierContainer.modifier)
 
       expect(makeStub.calledOnce).toBe(true)
       expect(modifierSpy.calledOnce).toBe(true)
-      expect(factory['relation']).toEqual('anything')
+      expect(factory['relationship']).toEqual('anything')
       makeStub.restore()
     })
   })
@@ -99,7 +99,7 @@ describe('RelationFactory', function() {
             return data.name
           }
         }
-        const factory = new RelationFactory(rootModel, 'test')
+        const factory = new RelationshipFactory(rootModel, 'test')
         const result = factory.findForeignKeyName(referencing, rootModel)
         expect(result).toEqual(data.output)
         expect(makeStub.calledWith(referencing)).toBe(true)
@@ -117,7 +117,7 @@ describe('RelationFactory', function() {
           return 'id'
         }
       }
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
 
       const makeStub = Sinon.stub(factory, 'make')
       makeStub.returns('anything')
@@ -136,7 +136,7 @@ describe('RelationFactory', function() {
           return 'id'
         }
       }
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
 
       const makeStub = Sinon.stub(factory, 'make')
       makeStub.returns('anything')
@@ -157,7 +157,7 @@ describe('RelationFactory', function() {
           return 'found_id'
         }
       }
-      const factory = new RelationFactory(rootModel, 'test')
+      const factory = new RelationshipFactory(rootModel, 'test')
 
       const makeStub = Sinon.stub(factory, 'make')
       makeStub.returns('anything')

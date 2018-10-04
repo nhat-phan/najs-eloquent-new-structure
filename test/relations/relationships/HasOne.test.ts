@@ -2,15 +2,15 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { HasOne } from '../../../lib/relations/relationships/HasOne'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
-import { Relation } from '../../../lib/relations/Relation'
-import { RelationType } from '../../../lib/relations/RelationType'
+import { Relationship } from '../../../lib/relations/Relationship'
+import { RelationshipType } from '../../../lib/relations/RelationshipType'
 
 describe('HasOne', function() {
   it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.HasOneRelation"', function() {
     const rootModel: any = {}
     const hasOne = new HasOne(rootModel, 'test', 'Target', 'target_id', 'id')
     expect(hasOne).toBeInstanceOf(HasOneOrMany)
-    expect(hasOne).toBeInstanceOf(Relation)
+    expect(hasOne).toBeInstanceOf(Relationship)
     expect(hasOne.getClassName()).toEqual('NajsEloquent.Relation.Relationship.HasOne')
   })
 
@@ -18,7 +18,7 @@ describe('HasOne', function() {
     it('returns literal string "HasOne"', function() {
       const rootModel: any = {}
       const hasOne = new HasOne(rootModel, 'test', 'Target', 'target_id', 'id')
-      expect(hasOne.getType()).toEqual(RelationType.HasOne)
+      expect(hasOne.getType()).toEqual(RelationshipType.HasOne)
     })
   })
 

@@ -1,14 +1,14 @@
 /// <reference path="../../definitions/model/IModel.d.ts" />
-/// <reference path="../../definitions/relations/IRelation.d.ts" />
+/// <reference path="../../definitions/relations/IRelationship.d.ts" />
 /// <reference path="../../definitions/data/IDataCollector.d.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.d.ts" />
 import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
-import RelationFetchType = NajsEloquent.Relation.RelationFetchType;
+import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import IDataCollector = NajsEloquent.Data.IDataCollector;
-import { Relation } from '../Relation';
-export declare abstract class HasOneOrMany<T> extends Relation<T> {
+import { Relationship } from '../Relationship';
+export declare abstract class HasOneOrMany<T> extends Relationship<T> {
     protected rootKeyName: string;
     private targetModelInstance;
     protected targetDefinition: ModelDefinition;
@@ -22,6 +22,6 @@ export declare abstract class HasOneOrMany<T> extends Relation<T> {
     abstract getEmptyValue(): T | undefined;
     getQueryBuilder(name: string | undefined): IQueryBuilder<any>;
     collectData(): T | undefined | null;
-    fetchData(type: RelationFetchType): Promise<T | undefined | null>;
-    isInverseOf<K>(relation: NajsEloquent.Relation.IRelation<K>): boolean;
+    fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
+    isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
 }

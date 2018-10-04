@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const NajsBinding = require("najs-binding");
-const RelationFactory_1 = require("../../lib/relations/RelationFactory");
-describe('RelationFactory', function () {
+const RelationshipFactory_1 = require("../../lib/relations/RelationshipFactory");
+describe('RelationshipFactory', function () {
     describe('constructor()', function () {
         it('assigns rootModel & name from params to properties', function () {
             const rootModel = {};
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             expect(factory['rootModel'] === rootModel).toBe(true);
             expect(factory['name']).toEqual('test');
         });
@@ -24,11 +24,11 @@ describe('RelationFactory', function () {
             const a = {};
             const b = {};
             const rootModel = {};
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             factory.make('Test', [a, b], modifierContainer.modifier);
             expect(makeStub.calledWith('Test', [rootModel, 'test', a, b])).toBe(true);
             expect(modifierSpy.calledWith('anything')).toBe(true);
-            expect(factory['relation']).toEqual('anything');
+            expect(factory['relationship']).toEqual('anything');
             makeStub.restore();
         });
         it('does not call modifier if not provided', function () {
@@ -41,11 +41,11 @@ describe('RelationFactory', function () {
             const a = {};
             const b = {};
             const rootModel = {};
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             factory.make('Test', [a, b]);
             expect(makeStub.calledWith('Test', [rootModel, 'test', a, b])).toBe(true);
             expect(modifierSpy.calledWith('anything')).toBe(false);
-            expect(factory['relation']).toEqual('anything');
+            expect(factory['relationship']).toEqual('anything');
             makeStub.restore();
         });
         it('just returns the relation if it already exist', function () {
@@ -58,12 +58,12 @@ describe('RelationFactory', function () {
             const a = {};
             const b = {};
             const rootModel = {};
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             factory.make('Test', [a, b], modifierContainer.modifier);
             factory.make('Test', [a, b], modifierContainer.modifier);
             expect(makeStub.calledOnce).toBe(true);
             expect(modifierSpy.calledOnce).toBe(true);
-            expect(factory['relation']).toEqual('anything');
+            expect(factory['relationship']).toEqual('anything');
             makeStub.restore();
         });
     });
@@ -88,7 +88,7 @@ describe('RelationFactory', function () {
                         return data.name;
                     }
                 };
-                const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+                const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
                 const result = factory.findForeignKeyName(referencing, rootModel);
                 expect(result).toEqual(data.output);
                 expect(makeStub.calledWith(referencing)).toBe(true);
@@ -104,7 +104,7 @@ describe('RelationFactory', function () {
                     return 'id';
                 }
             };
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             const makeStub = Sinon.stub(factory, 'make');
             makeStub.returns('anything');
             const findTargetKeyNameStub = Sinon.stub(factory, 'findForeignKeyName');
@@ -119,7 +119,7 @@ describe('RelationFactory', function () {
                     return 'id';
                 }
             };
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             const makeStub = Sinon.stub(factory, 'make');
             makeStub.returns('anything');
             const findTargetKeyNameStub = Sinon.stub(factory, 'findForeignKeyName');
@@ -134,7 +134,7 @@ describe('RelationFactory', function () {
                     return 'found_id';
                 }
             };
-            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
             const makeStub = Sinon.stub(factory, 'make');
             makeStub.returns('anything');
             expect(factory.hasOne('Target', 'target_id')).toEqual('anything');

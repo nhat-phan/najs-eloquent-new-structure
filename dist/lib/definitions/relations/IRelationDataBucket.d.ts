@@ -1,4 +1,4 @@
-/// <reference path="IRelation.d.ts" />
+/// <reference path="IRelationship.d.ts" />
 /// <reference path="../model/IModel.d.ts" />
 /// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 declare namespace NajsEloquent.Relation {

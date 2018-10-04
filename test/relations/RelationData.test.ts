@@ -3,7 +3,7 @@ import { RelationData } from '../../lib/relations/RelationData'
 
 describe('RelationData', function() {
   describe('constructor()', function() {
-    it('inits the data with RelationFactory and state = "unload"', function() {
+    it('inits the data with RelationshipFactory and state = "unload"', function() {
       const factory: any = {}
       const relationData = new RelationData(factory)
       expect(relationData['factory'] === factory).toBe(true)

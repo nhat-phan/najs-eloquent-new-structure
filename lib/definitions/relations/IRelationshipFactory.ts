@@ -1,13 +1,13 @@
 /// <reference path="../model/IModel.ts" />
 
 namespace NajsEloquent.Relation {
-  export interface IRelationFactory {
+  export interface IRelationshipFactory {
     /**
      * Has one relationship
      *
      * @param {string|ModelDefinition} model
      */
-    hasOne<T extends Model.IModel>(model: Model.ModelDefinition<T> | string): IHasOne<T>
+    hasOne<T extends Model.IModel>(model: Model.ModelDefinition<T> | string): IHasOneRelationship<T>
 
     /**
      * Has one relationship
@@ -15,7 +15,7 @@ namespace NajsEloquent.Relation {
      * @param {string|ModelDefinition} model
      * @param {string} foreignKey
      */
-    hasOne<T extends Model.IModel>(model: Model.ModelDefinition<T> | string, foreignKey: string): IHasOne<T>
+    hasOne<T extends Model.IModel>(model: Model.ModelDefinition<T> | string, foreignKey: string): IHasOneRelationship<T>
 
     /**
      * Has one relationship
@@ -28,7 +28,7 @@ namespace NajsEloquent.Relation {
       model: Model.ModelDefinition<T> | string,
       foreignKey: string,
       localKey: string
-    ): IHasOne<T>
+    ): IHasOneRelationship<T>
 
     // /**
     //  * Has one relationship

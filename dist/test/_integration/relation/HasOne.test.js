@@ -16,7 +16,7 @@ describe('HasOne Relation', function () {
             return 'User';
         }
         get loginRelation() {
-            return this.defineRelationAccessor('login').hasOne(UserLogin);
+            return this.defineRelation('login').hasOne(UserLogin);
         }
     }
     najs_binding_1.register(User);

@@ -2,8 +2,8 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
 /// <reference path="../definitions/features/IRelationFeature.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
-import IRelation = NajsEloquent.Relation.IRelation;
-import IRelationFactory = NajsEloquent.Relation.IRelationFactory;
+import IRelation = NajsEloquent.Relation.IRelationship;
+import IRelationshipFactory = NajsEloquent.Relation.IRelationshipFactory;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IRelationData = NajsEloquent.Relation.IRelationData;
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions;
@@ -13,7 +13,7 @@ export declare class RelationFeature extends FeatureBase implements NajsEloquent
     getFeatureName(): string;
     getClassName(): string;
     makeDataBucket(model: IModel): IRelationDataBucket;
-    makeFactory(model: IModel, accessor: string): IRelationFactory;
+    makeFactory(model: IModel, accessor: string): IRelationshipFactory;
     getDataBucket(model: NajsEloquent.Model.IModel): IRelationDataBucket | undefined;
     setDataBucket(model: NajsEloquent.Model.IModel, dataBucket: IRelationDataBucket): void;
     createKeyForDataBucket(model: NajsEloquent.Model.IModel): string;

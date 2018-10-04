@@ -16,7 +16,7 @@ declare namespace NajsEloquent.Feature {
          * @param {string} accessor
          * @param {boolean} isSample
          */
-        makeFactory(model: Model.IModel, accessor: string): Relation.IRelationFactory;
+        makeFactory(model: Model.IModel, accessor: string): Relation.IRelationshipFactory;
         /**
          * Set attached data bucket of model instance.
          *
@@ -66,7 +66,7 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {string} name
          */
-        findByName<T = {}>(model: Model.IModel, name: string): Relation.IRelation<T>;
+        findByName<T = {}>(model: Model.IModel, name: string): Relation.IRelationship<T>;
         /**
          * Find relation data by given name.
          */

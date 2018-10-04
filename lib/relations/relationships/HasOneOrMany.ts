@@ -1,19 +1,19 @@
 /// <reference path="../../definitions/model/IModel.ts" />
-/// <reference path="../../definitions/relations/IRelation.ts" />
+/// <reference path="../../definitions/relations/IRelationship.ts" />
 /// <reference path="../../definitions/data/IDataCollector.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
-import RelationFetchType = NajsEloquent.Relation.RelationFetchType
+import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 import IDataCollector = NajsEloquent.Data.IDataCollector
 
 import { make } from 'najs-binding'
-import { Relation } from '../Relation'
+import { Relationship } from '../Relationship'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 
-export abstract class HasOneOrMany<T> extends Relation<T> {
+export abstract class HasOneOrMany<T> extends Relationship<T> {
   protected rootKeyName: string
 
   private targetModelInstance: Model
@@ -66,7 +66,7 @@ export abstract class HasOneOrMany<T> extends Relation<T> {
     return this.executeCollector(collector)
   }
 
-  async fetchData(type: RelationFetchType): Promise<T | undefined | null> {
+  async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
     const query = this.getQueryBuilder(`${this.getType()}:${this.targetModel.getModelName()}`)
 
     if (type === 'lazy') {
@@ -83,7 +83,7 @@ export abstract class HasOneOrMany<T> extends Relation<T> {
     return this.executeQuery(query)
   }
 
-  isInverseOf<K>(relation: NajsEloquent.Relation.IRelation<K>): boolean {
+  isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean {
     return false
   }
 }

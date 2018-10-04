@@ -1,7 +1,7 @@
 import 'jest'
 import * as NajsBinding from 'najs-binding'
 import * as Sinon from 'sinon'
-import { Relation } from '../../../lib/relations/Relation'
+import { Relationship } from '../../../lib/relations/Relationship'
 import { HasOne } from '../../../lib/relations/relationships/HasOne'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
 import { DataBuffer } from '../../../lib/data/DataBuffer'
@@ -23,7 +23,7 @@ describe('HasOneOrMany', function() {
 
   it('extends Relation', function() {
     const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
-    expect(relation).toBeInstanceOf(Relation)
+    expect(relation).toBeInstanceOf(Relationship)
     expect(relation).toBeInstanceOf(HasOneOrMany)
   })
 

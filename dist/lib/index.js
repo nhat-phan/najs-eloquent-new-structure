@@ -43,11 +43,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="definitions/query-grammars/IConditionQuery.ts" />
 /// <reference path="definitions/query-grammars/IExecuteQuery.ts" />
 /// <reference path="definitions/query-grammars/IQuery.ts" />
-/// <reference path="definitions/relations/IHasOne.ts" />
-/// <reference path="definitions/relations/IRelation.ts" />
+/// <reference path="definitions/relations/IHasOneRelationship.ts" />
+/// <reference path="definitions/relations/IRelationship.ts" />
 /// <reference path="definitions/relations/IRelationData.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.ts" />
-/// <reference path="definitions/relations/IRelationFactory.ts" />
+/// <reference path="definitions/relations/IRelationshipFactory.ts" />
 /// <reference path="definitions/model/IModel.ts" />
 const MemoryDataSourceProviderFacade_1 = require("./facades/global/MemoryDataSourceProviderFacade");
 const MemoryDataSource_1 = require("./drivers/memory/MemoryDataSource");

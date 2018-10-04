@@ -4,7 +4,7 @@ require("jest");
 const RelationData_1 = require("../../lib/relations/RelationData");
 describe('RelationData', function () {
     describe('constructor()', function () {
-        it('inits the data with RelationFactory and state = "unload"', function () {
+        it('inits the data with RelationshipFactory and state = "unload"', function () {
             const factory = {};
             const relationData = new RelationData_1.RelationData(factory);
             expect(relationData['factory'] === factory).toBe(true);

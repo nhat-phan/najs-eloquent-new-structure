@@ -1,4 +1,4 @@
-export declare enum RelationType {
+export declare enum RelationshipType {
     HasOne = "HasOne",
     HasMany = "HasMany",
     BelongsTo = "BelongsTo",

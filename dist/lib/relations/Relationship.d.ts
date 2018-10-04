@@ -1,11 +1,11 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
-/// <reference path="../definitions/relations/IRelation.d.ts" />
+/// <reference path="../definitions/relations/IRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
-import IRelation = NajsEloquent.Relation.IRelation;
-import RelationFetchType = NajsEloquent.Relation.RelationFetchType;
+import IRelationship = NajsEloquent.Relation.IRelationship;
+import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IRelationData = NajsEloquent.Relation.IRelationData;
-export declare abstract class Relation<T> {
+export declare abstract class Relationship<T> implements IRelationship<T> {
     protected name: string;
     protected rootModel: IModel;
     protected loadChains: string[];
@@ -19,8 +19,8 @@ export declare abstract class Relation<T> {
     /**
      * Fetch data from database or data source.
      */
-    abstract fetchData(type: RelationFetchType): Promise<T | undefined | null>;
-    abstract isInverseOf<K>(relation: IRelation<K>): boolean;
+    abstract fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
+    abstract isInverseOf<K>(relation: IRelationship<K>): boolean;
     getName(): string;
     getRelationData(): IRelationData<T>;
     getDataBucket(): IRelationDataBucket | undefined;

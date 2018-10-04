@@ -3,8 +3,8 @@
 /// <reference path="../definitions/features/IRelationFeature.ts" />
 
 import IModel = NajsEloquent.Model.IModel
-import IRelation = NajsEloquent.Relation.IRelation
-import IRelationFactory = NajsEloquent.Relation.IRelationFactory
+import IRelation = NajsEloquent.Relation.IRelationship
+import IRelationshipFactory = NajsEloquent.Relation.IRelationshipFactory
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationData = NajsEloquent.Relation.IRelationData
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
@@ -14,7 +14,7 @@ import { FeatureBase } from './FeatureBase'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
 import { RelationDataBucket } from '../relations/RelationDataBucket'
 import { RelationData } from '../relations/RelationData'
-import { RelationFactory } from '../relations/RelationFactory'
+import { RelationshipFactory } from '../relations/RelationshipFactory'
 import { RelationPublicApi } from './mixin/RelationPublicApi'
 import { RelationNotDefinedError } from '../errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../relations/RelationDefinitionFinder'
@@ -38,8 +38,8 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     return new RelationDataBucket()
   }
 
-  makeFactory(model: IModel, accessor: string): IRelationFactory {
-    return new RelationFactory(model, accessor)
+  makeFactory(model: IModel, accessor: string): IRelationshipFactory {
+    return new RelationshipFactory(model, accessor)
   }
 
   getDataBucket(model: NajsEloquent.Model.IModel): IRelationDataBucket | undefined {
@@ -113,7 +113,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     if (!propertyDescriptor) {
       Object.defineProperty(prototype, accessor, {
         get: function(this: IModel) {
-          return this.getRelationByName(accessor as any).getData()
+          return this.getRelationshipByName(accessor as any).getData()
         }
       })
     }

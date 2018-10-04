@@ -1,18 +1,18 @@
 /// <reference path="../../definitions/model/IModel.ts" />
-/// <reference path="../../definitions/relations/IRelation.ts" />
-/// <reference path="../../definitions/relations/IHasOne.ts" />
+/// <reference path="../../definitions/relations/IRelationship.ts" />
+/// <reference path="../../definitions/relations/IHasOneRelationship.ts" />
 
 import Model = NajsEloquent.Model.IModel
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import IDataCollector = NajsEloquent.Data.IDataCollector
-import IHasOne = NajsEloquent.Relation.IHasOne
+import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
 
 import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
-import { RelationType } from '../RelationType'
+import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 
-export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOne<T> {
+export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasOne
 
   getClassName(): string {
@@ -20,7 +20,7 @@ export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOne<
   }
 
   getType(): string {
-    return RelationType.HasOne
+    return RelationshipType.HasOne
   }
 
   async executeQuery(queryBuilder: IQueryBuilder<T>): Promise<T | undefined | null> {

@@ -41,11 +41,11 @@
 /// <reference path="definitions/query-grammars/IConditionQuery.d.ts" />
 /// <reference path="definitions/query-grammars/IExecuteQuery.d.ts" />
 /// <reference path="definitions/query-grammars/IQuery.d.ts" />
-/// <reference path="definitions/relations/IHasOne.d.ts" />
-/// <reference path="definitions/relations/IRelation.d.ts" />
+/// <reference path="definitions/relations/IHasOneRelationship.d.ts" />
+/// <reference path="definitions/relations/IRelationship.d.ts" />
 /// <reference path="definitions/relations/IRelationData.d.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.d.ts" />
-/// <reference path="definitions/relations/IRelationFactory.d.ts" />
+/// <reference path="definitions/relations/IRelationshipFactory.d.ts" />
 import { Model } from './model/Model';
 export { Model, Model as Eloquent };
 export { Builtin as NajsEloquent } from './builtin';

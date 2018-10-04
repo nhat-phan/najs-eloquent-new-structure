@@ -1,38 +1,38 @@
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/relations/IRelation.ts" />
-/// <reference path="../definitions/relations/IRelationFactory.ts" />
-/// <reference path="../definitions/relations/IHasOne.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
+/// <reference path="../definitions/relations/IRelationshipFactory.ts" />
+/// <reference path="../definitions/relations/IHasOneRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
-import IRelation = NajsEloquent.Relation.IRelation
-import IHasOne = NajsEloquent.Relation.IHasOne
+import IRelationship = NajsEloquent.Relation.IRelationship
+import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
 
 import './relationships/HasOne'
 import { HasOne } from './relationships/HasOne'
 import { make } from 'najs-binding'
 import { parse_string_with_dot_notation } from '../util/functions'
 
-export class RelationFactory {
+export class RelationshipFactory {
   protected rootModel: IModel
   protected name: string
-  protected relation: IRelation<any>
+  protected relationship: IRelationship<any>
 
   constructor(rootModel: IModel, name: string) {
     this.rootModel = rootModel
     this.name = name
   }
 
-  make<T extends IRelation<any>>(className: string, params: any[], modifier?: (relation: T) => void): T {
-    if (!this.relation) {
-      this.relation = make<T>(className, [this.rootModel, this.name, ...params])
+  make<T extends IRelationship<any>>(className: string, params: any[], modifier?: (relation: T) => void): T {
+    if (!this.relationship) {
+      this.relationship = make<T>(className, [this.rootModel, this.name, ...params])
 
       if (modifier) {
-        modifier(this.relation as T)
+        modifier(this.relationship as T)
       }
     }
 
-    return this.relation as T
+    return this.relationship as T
   }
 
   findForeignKeyName(referencing: ModelDefinition<any>, referenced: IModel) {
@@ -42,7 +42,11 @@ export class RelationFactory {
     return referencingModel.formatAttributeName(referencedNameParts.last + '_id')
   }
 
-  hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOne<T> {
+  hasOne<T extends IModel>(
+    target: ModelDefinition<any>,
+    targetKey?: string,
+    localKey?: string
+  ): IHasOneRelationship<T> {
     const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(target, this.rootModel) : targetKey
     const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey
 

@@ -1,6 +1,6 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/relations/IRelation.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const accessors_1 = require("../util/accessors");
@@ -8,7 +8,7 @@ const RelationUtilities_1 = require("./RelationUtilities");
 const functions_1 = require("../util/functions");
 const RelationNotFoundInNewInstanceError_1 = require("../errors/RelationNotFoundInNewInstanceError");
 // import { isModel, isCollection } from '../util/helpers'
-class Relation {
+class Relationship {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
         this.name = name;
@@ -79,4 +79,4 @@ class Relation {
         return await this.eagerLoad();
     }
 }
-exports.Relation = Relation;
+exports.Relationship = Relationship;

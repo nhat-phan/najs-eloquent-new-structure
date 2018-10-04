@@ -1,9 +1,9 @@
-import { Relation } from './Relation'
+import { Relationship } from './Relationship'
 import IModel = NajsEloquent.Model.IModel
 
 export const RelationUtilities = {
-  isLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string) {
-    const bucket = relation.getDataBucket()
+  isLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string) {
+    const bucket = relationship.getDataBucket()
     if (!bucket) {
       return false
     }
@@ -11,8 +11,8 @@ export const RelationUtilities = {
     return bucket.getMetadataOf(model).loaded.indexOf(name) !== -1
   },
 
-  markLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string) {
-    const bucket = relation.getDataBucket()
+  markLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string) {
+    const bucket = relationship.getDataBucket()
     if (!bucket) {
       return
     }

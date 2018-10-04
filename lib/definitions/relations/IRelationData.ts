@@ -1,8 +1,8 @@
-/// <reference path="IRelationFactory.ts" />
+/// <reference path="./IRelationshipFactory.ts" />
 
 namespace NajsEloquent.Relation {
   export interface IRelationData<T> {
-    getFactory(): IRelationFactory
+    getFactory(): IRelationshipFactory
 
     isLoaded(): boolean
 

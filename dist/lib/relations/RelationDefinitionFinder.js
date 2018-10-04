@@ -1,8 +1,8 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/relations/IRelation.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-const Relation_1 = require("./Relation");
+const Relationship_1 = require("./Relationship");
 const EventPublicApi_1 = require("../features/mixin/EventPublicApi");
 const FillablePublicApi_1 = require("../features/mixin/FillablePublicApi");
 const QueryPublicApi_1 = require("../features/mixin/QueryPublicApi");
@@ -61,7 +61,7 @@ class RelationDefinitionFinder {
         try {
             if (typeof descriptor.value === 'function') {
                 const relation = descriptor.value.call(this.model);
-                if (relation instanceof Relation_1.Relation) {
+                if (relation instanceof Relationship_1.Relationship) {
                     return {
                         target: target,
                         accessor: relation.getName(),
@@ -72,7 +72,7 @@ class RelationDefinitionFinder {
             }
             if (typeof descriptor.get === 'function') {
                 const relation = descriptor.get.call(this.model);
-                if (relation instanceof Relation_1.Relation) {
+                if (relation instanceof Relationship_1.Relationship) {
                     return {
                         accessor: relation.getName(),
                         target: target,

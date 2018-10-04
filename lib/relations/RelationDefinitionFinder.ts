@@ -1,11 +1,11 @@
 /// <reference path="../definitions/model/IModel.ts" />
-/// <reference path="../definitions/relations/IRelation.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import RelationDefinition = NajsEloquent.Relation.RelationDefinition
 import RelationDefinitions = NajsEloquent.Relation.RelationDefinitions
 
-import { Relation } from './Relation'
+import { Relationship } from './Relationship'
 import { EventPublicApi } from '../features/mixin/EventPublicApi'
 import { FillablePublicApi } from '../features/mixin/FillablePublicApi'
 import { QueryPublicApi } from '../features/mixin/QueryPublicApi'
@@ -88,7 +88,7 @@ export class RelationDefinitionFinder {
     try {
       if (typeof descriptor.value === 'function') {
         const relation = descriptor.value!.call(this.model)
-        if (relation instanceof Relation) {
+        if (relation instanceof Relationship) {
           return {
             target: target,
             accessor: relation.getName(),
@@ -100,7 +100,7 @@ export class RelationDefinitionFinder {
 
       if (typeof descriptor.get === 'function') {
         const relation = descriptor.get!.call(this.model)
-        if (relation instanceof Relation) {
+        if (relation instanceof Relationship) {
           return {
             accessor: relation.getName(),
             target: target,

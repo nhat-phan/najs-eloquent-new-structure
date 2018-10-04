@@ -7,7 +7,7 @@ const RelationFeature_1 = require("../../lib/features/RelationFeature");
 const RelationDataBucket_1 = require("../../lib/relations/RelationDataBucket");
 const RelationPublicApi_1 = require("../../lib/features/mixin/RelationPublicApi");
 const RelationData_1 = require("../../lib/relations/RelationData");
-const RelationFactory_1 = require("../../lib/relations/RelationFactory");
+const RelationshipFactory_1 = require("../../lib/relations/RelationshipFactory");
 const RelationNotDefinedError_1 = require("../../lib/errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../../lib/relations/RelationDefinitionFinder");
 const RecordDataReader_1 = require("../../lib/drivers/RecordDataReader");
@@ -34,10 +34,10 @@ describe('RelationFeature', function () {
         });
     });
     describe('.makeFactory()', function () {
-        it('makes and returns an instance of RelationFactory', function () {
+        it('makes and returns an instance of RelationshipFactory', function () {
             const model = {};
             const factory = feature.makeFactory(model, 'test');
-            expect(factory).toBeInstanceOf(RelationFactory_1.RelationFactory);
+            expect(factory).toBeInstanceOf(RelationshipFactory_1.RelationshipFactory);
             expect(factory['rootModel'] === model).toBe(true);
             expect(factory['name'] === 'test').toBe(true);
         });
@@ -261,9 +261,9 @@ describe('RelationFeature', function () {
             feature.defineAccessor(model, 'test');
             expect(model.test).toEqual('anything');
         });
-        it('defines an accessor which call this.getRelationByName(accessor).getData() in model prototype', function () {
+        it('defines an accessor which call this.getRelationshipByName(accessor).getData() in model prototype', function () {
             class B {
-                getRelationByName(name) {
+                getRelationshipByName(name) {
                     return {
                         getData() {
                             return name + '-data';

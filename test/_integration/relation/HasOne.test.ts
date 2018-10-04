@@ -21,7 +21,7 @@ describe('HasOne Relation', function() {
     }
 
     get loginRelation() {
-      return this.defineRelationAccessor('login').hasOne(UserLogin)
+      return this.defineRelation('login').hasOne(UserLogin)
     }
   }
   register(User)

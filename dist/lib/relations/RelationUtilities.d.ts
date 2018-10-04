@@ -1,6 +1,6 @@
-import { Relation } from './Relation';
+import { Relationship } from './Relationship';
 import IModel = NajsEloquent.Model.IModel;
 export declare const RelationUtilities: {
-    isLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string): boolean;
-    markLoadedInDataBucket<T>(relation: Relation<T>, model: IModel, name: string): void;
+    isLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string): boolean;
+    markLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string): void;
 };

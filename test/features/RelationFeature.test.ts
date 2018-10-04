@@ -5,7 +5,7 @@ import { RelationFeature } from '../../lib/features/RelationFeature'
 import { RelationDataBucket } from '../../lib/relations/RelationDataBucket'
 import { RelationPublicApi } from '../../lib/features/mixin/RelationPublicApi'
 import { RelationData } from '../../lib/relations/RelationData'
-import { RelationFactory } from '../../lib/relations/RelationFactory'
+import { RelationshipFactory } from '../../lib/relations/RelationshipFactory'
 import { RelationNotDefinedError } from '../../lib/errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../../lib/relations/RelationDefinitionFinder'
 import { RecordDataReader } from '../../lib/drivers/RecordDataReader'
@@ -38,10 +38,10 @@ describe('RelationFeature', function() {
   })
 
   describe('.makeFactory()', function() {
-    it('makes and returns an instance of RelationFactory', function() {
+    it('makes and returns an instance of RelationshipFactory', function() {
       const model: any = {}
       const factory = feature.makeFactory(model, 'test')
-      expect(factory).toBeInstanceOf(RelationFactory)
+      expect(factory).toBeInstanceOf(RelationshipFactory)
       expect(factory['rootModel'] === model).toBe(true)
       expect(factory['name'] === 'test').toBe(true)
     })
@@ -294,9 +294,9 @@ describe('RelationFeature', function() {
       expect(model.test).toEqual('anything')
     })
 
-    it('defines an accessor which call this.getRelationByName(accessor).getData() in model prototype', function() {
+    it('defines an accessor which call this.getRelationshipByName(accessor).getData() in model prototype', function() {
       class B {
-        getRelationByName(name: string) {
+        getRelationshipByName(name: string) {
           return {
             getData() {
               return name + '-data'

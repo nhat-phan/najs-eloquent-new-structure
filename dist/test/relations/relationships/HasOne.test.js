@@ -4,21 +4,21 @@ require("jest");
 const Sinon = require("sinon");
 const HasOne_1 = require("../../../lib/relations/relationships/HasOne");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
-const Relation_1 = require("../../../lib/relations/Relation");
-const RelationType_1 = require("../../../lib/relations/RelationType");
+const Relationship_1 = require("../../../lib/relations/Relationship");
+const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
 describe('HasOne', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.HasOneRelation"', function () {
         const rootModel = {};
         const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
         expect(hasOne).toBeInstanceOf(HasOneOrMany_1.HasOneOrMany);
-        expect(hasOne).toBeInstanceOf(Relation_1.Relation);
+        expect(hasOne).toBeInstanceOf(Relationship_1.Relationship);
         expect(hasOne.getClassName()).toEqual('NajsEloquent.Relation.Relationship.HasOne');
     });
     describe('.getType()', function () {
         it('returns literal string "HasOne"', function () {
             const rootModel = {};
             const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
-            expect(hasOne.getType()).toEqual(RelationType_1.RelationType.HasOne);
+            expect(hasOne.getType()).toEqual(RelationshipType_1.RelationshipType.HasOne);
         });
     });
     describe('.executeCollector()', function () {
