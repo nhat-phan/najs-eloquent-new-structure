@@ -6,7 +6,7 @@ export declare class DataBuffer<T extends object> implements NajsEloquent.Data.I
     protected buffer: Map<any, T>;
     constructor(primaryKeyName: string, reader: NajsEloquent.Data.IDataReader<T>);
     getPrimaryKeyName(): string;
-    getReader(): NajsEloquent.Data.IDataReader<T>;
+    getDataReader(): NajsEloquent.Data.IDataReader<T>;
     getBuffer(): Map<any, T>;
     add(data: T): this;
     remove(data: T): this;

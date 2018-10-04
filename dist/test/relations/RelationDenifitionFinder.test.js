@@ -16,10 +16,10 @@ describe('RelationDefinitionFinder', function () {
                 return 'DefinedViaFunction';
             }
             getTestRelation() {
-                return this.defineRelationProperty('test').hasOne('Any');
+                return this.defineRelationProperty('test').hasOne('Target', 'target_id', 'id');
             }
             getAnotherRelation() {
-                return this.defineRelationAccessor('another').hasOne('Any');
+                return this.defineRelationAccessor('another').hasOne('Target', 'target_id', 'id');
             }
             getSkipRelation() {
                 return 'invalid';
@@ -48,10 +48,10 @@ describe('RelationDefinitionFinder', function () {
     it('can find definition which defined via getter', function () {
         class DefinedViaGetter extends Model_1.Model {
             get testRelation() {
-                return this.defineRelationProperty('test').hasOne('Any');
+                return this.defineRelationProperty('test').hasOne('Target', 'target_id', 'id');
             }
             get anotherRelation() {
-                return this.defineRelationAccessor('another').hasOne('Any');
+                return this.defineRelationAccessor('another').hasOne('Target', 'target_id', 'id');
             }
             get skipRelation() {
                 return 'invalid';
@@ -85,7 +85,7 @@ describe('RelationDefinitionFinder', function () {
                 throw new Error('any');
             }
             get testRelation() {
-                return this.defineRelationProperty('test').hasOne('Any');
+                return this.defineRelationProperty('test').hasOne('Target', 'target_id', 'id');
             }
         }
         SkipErrorDefinitions.className = 'SkipErrorDefinitions';
@@ -105,12 +105,12 @@ describe('RelationDefinitionFinder', function () {
     it('can find definition which defined in parent class', function () {
         class DefinedParent extends Model_1.Model {
             getTestRelation() {
-                return this.defineRelationProperty('test').hasOne('Any');
+                return this.defineRelationProperty('test').hasOne('Target', 'target_id', 'id');
             }
         }
         class DefinedChild extends DefinedParent {
             get anotherRelation() {
-                return this.defineRelationAccessor('another').hasOne('Any');
+                return this.defineRelationAccessor('another').hasOne('Target', 'target_id', 'id');
             }
             get skipRelation() {
                 return 'invalid';
@@ -138,10 +138,10 @@ describe('RelationDefinitionFinder', function () {
     it('can warning if the relation function redefine under the same property', function () {
         class RedefinedProperty extends Model_1.Model {
             getTestRelation() {
-                return this.defineRelationProperty('test').hasOne('Any');
+                return this.defineRelationProperty('test').hasOne('Target', 'target_id', 'id');
             }
             getAnotherRelation() {
-                return this.defineRelationAccessor('test').hasOne('Any');
+                return this.defineRelationAccessor('test').hasOne('Target', 'target_id', 'id');
             }
         }
         RedefinedProperty.className = 'RedefinedProperty';

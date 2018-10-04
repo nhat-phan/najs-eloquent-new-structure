@@ -6,7 +6,7 @@ const lodash_1 = require("lodash");
 const accessors_1 = require("../util/accessors");
 const RelationUtilities_1 = require("./RelationUtilities");
 const functions_1 = require("../util/functions");
-// import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
+const RelationNotFoundInNewInstanceError_1 = require("../errors/RelationNotFoundInNewInstanceError");
 // import { isModel, isCollection } from '../util/helpers'
 class Relation {
     constructor(rootModel, name) {
@@ -57,26 +57,26 @@ class Relation {
     async eagerLoad() {
         return this.loadData('eager');
     }
-    loadData(type) {
+    async loadData(type) {
+        // const relationData = this.getRelationData().setLoadType(type)
         this.getRelationData().setLoadType(type);
-        const result = this.fetchData(type);
+        const result = await this.fetchData(type);
         // return this.loadChainRelations(result)
+        // return type === 'lazy' ? relationData.setData(result) : result
         return result;
     }
     async load() {
-        // const relationData = this.getRelationData()
-        // if (this.isLoaded() && relationData.isBuilt()) {
-        //   return relationData.getData()
-        // }
-        // const dataBucket = this.getDataBucket()
-        // if (!dataBucket) {
-        //   if (this.rootModel.isNew()) {
-        //     throw new RelationNotFoundInNewInstanceError(this.name, this.rootModel.getModelName())
-        //   }
-        //   return await this.lazyLoad()
-        // }
-        // return await this.eagerLoad()
-        return undefined;
+        if (this.isLoaded()) {
+            return this.getData();
+        }
+        const dataBucket = this.getDataBucket();
+        if (!dataBucket) {
+            if (this.rootModel.isNew()) {
+                throw new RelationNotFoundInNewInstanceError_1.RelationNotFoundInNewInstanceError(this.name, this.rootModel.getModelName());
+            }
+            return await this.lazyLoad();
+        }
+        return await this.eagerLoad();
     }
 }
 exports.Relation = Relation;

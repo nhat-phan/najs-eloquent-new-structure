@@ -49,8 +49,10 @@ export declare const NajsEloquent: {
         FlipFlopQueryLog: string;
     };
     Relation: {
+        Relationship: {
+            HasOne: string;
+        };
         RelationDataBucket: string;
-        HasOneRelation: string;
     };
 };
 export declare const QueryFunctions: {

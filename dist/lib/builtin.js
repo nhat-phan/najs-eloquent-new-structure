@@ -29,6 +29,7 @@ const MemoryRecordExecutor_1 = require("./drivers/memory/MemoryRecordExecutor");
 // package: Error
 const NotFoundError_1 = require("./errors/NotFoundError");
 const RelationNotDefinedError_1 = require("./errors/RelationNotDefinedError");
+const RelationNotFoundInNewInstanceError_1 = require("./errors/RelationNotFoundInNewInstanceError");
 // package: Feature
 const EventFeature_1 = require("./features/EventFeature");
 const FeatureBase_1 = require("./features/FeatureBase");
@@ -69,13 +70,13 @@ const QueryCondition_1 = require("./query-builders/shared/QueryCondition");
 // package QueryLog
 const FlipFlopQueryLog_1 = require("./query-log/FlipFlopQueryLog");
 // package Relation
-const Relation_1 = require("./relations/Relation");
-const RelationData_1 = require("./relations/RelationData");
-const RelationDataBucket_1 = require("./relations/RelationDataBucket");
-const RelationDefinitionFinder_1 = require("./relations/RelationDefinitionFinder");
-const RelationFactory_1 = require("./relations/RelationFactory");
-const RelationUtilities_1 = require("./relations/RelationUtilities");
-const HasOneRelation_1 = require("./relations/basic/HasOneRelation");
+// import { Relation } from './relations/Relation'
+// import { RelationData } from './relations/RelationData'
+// import { RelationDataBucket } from './relations/RelationDataBucket'
+// import { RelationDefinitionFinder } from './relations/RelationDefinitionFinder'
+// import { RelationFactory } from './relations/RelationFactory'
+// import { RelationUtilities } from './relations/RelationUtilities'
+// import { HasOneRelation } from './relations/basic/HasOneRelation'
 // package Util
 const ClassSetting_1 = require("./util/ClassSetting");
 const PrototypeManager_1 = require("./util/PrototypeManager");
@@ -112,7 +113,8 @@ exports.Builtin = {
     },
     Error: {
         NotFoundError: NotFoundError_1.NotFoundError,
-        RelationNotDefinedError: RelationNotDefinedError_1.RelationNotDefinedError
+        RelationNotDefinedError: RelationNotDefinedError_1.RelationNotDefinedError,
+        RelationNotFoundInNewInstanceError: RelationNotFoundInNewInstanceError_1.RelationNotFoundInNewInstanceError
     },
     Feature: {
         EventFeature: EventFeature_1.EventFeature,
@@ -160,15 +162,15 @@ exports.Builtin = {
     QueryLog: {
         FlipFlopQueryLog: FlipFlopQueryLog_1.FlipFlopQueryLog
     },
-    Relation: {
-        Relation: Relation_1.Relation,
-        RelationData: RelationData_1.RelationData,
-        RelationDataBucket: RelationDataBucket_1.RelationDataBucket,
-        RelationDefinitionFinder: RelationDefinitionFinder_1.RelationDefinitionFinder,
-        RelationFactory: RelationFactory_1.RelationFactory,
-        RelationUtilities: RelationUtilities_1.RelationUtilities,
-        HasOneRelation: HasOneRelation_1.HasOneRelation
-    },
+    // Relation: {
+    //   Relation: Relation,
+    //   RelationData: RelationData,
+    //   RelationDataBucket: RelationDataBucket,
+    //   RelationDefinitionFinder: RelationDefinitionFinder,
+    //   RelationFactory: RelationFactory,
+    //   RelationUtilities: RelationUtilities,
+    //   HasOneRelation: HasOneRelation
+    // },
     Util: {
         ClassSetting: ClassSetting_1.ClassSetting,
         PrototypeManager: PrototypeManager_1.PrototypeManager,

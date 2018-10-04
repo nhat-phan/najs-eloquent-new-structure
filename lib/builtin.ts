@@ -30,6 +30,7 @@ import { MemoryRecordExecutor } from './drivers/memory/MemoryRecordExecutor'
 // package: Error
 import { NotFoundError } from './errors/NotFoundError'
 import { RelationNotDefinedError } from './errors/RelationNotDefinedError'
+import { RelationNotFoundInNewInstanceError } from './errors/RelationNotFoundInNewInstanceError'
 
 // package: Feature
 import { EventFeature } from './features/EventFeature'
@@ -78,13 +79,13 @@ import { QueryCondition } from './query-builders/shared/QueryCondition'
 import { FlipFlopQueryLog } from './query-log/FlipFlopQueryLog'
 
 // package Relation
-import { Relation } from './relations/Relation'
-import { RelationData } from './relations/RelationData'
-import { RelationDataBucket } from './relations/RelationDataBucket'
-import { RelationDefinitionFinder } from './relations/RelationDefinitionFinder'
-import { RelationFactory } from './relations/RelationFactory'
-import { RelationUtilities } from './relations/RelationUtilities'
-import { HasOneRelation } from './relations/basic/HasOneRelation'
+// import { Relation } from './relations/Relation'
+// import { RelationData } from './relations/RelationData'
+// import { RelationDataBucket } from './relations/RelationDataBucket'
+// import { RelationDefinitionFinder } from './relations/RelationDefinitionFinder'
+// import { RelationFactory } from './relations/RelationFactory'
+// import { RelationUtilities } from './relations/RelationUtilities'
+// import { HasOneRelation } from './relations/basic/HasOneRelation'
 
 // package Util
 import { ClassSetting } from './util/ClassSetting'
@@ -128,6 +129,7 @@ export type DriverMemoryPackage = {
 export type ErrorPackage = {
   NotFoundError: typeof NotFoundError
   RelationNotDefinedError: typeof RelationNotDefinedError
+  RelationNotFoundInNewInstanceError: typeof RelationNotFoundInNewInstanceError
 }
 
 export type FeaturePackage = {
@@ -188,15 +190,15 @@ export type QueryLogPackage = {
   FlipFlopQueryLog: typeof FlipFlopQueryLog
 }
 
-export type RelationPackage = {
-  Relation: typeof Relation
-  RelationData: typeof RelationData
-  RelationDataBucket: typeof RelationDataBucket
-  RelationDefinitionFinder: typeof RelationDefinitionFinder
-  RelationFactory: typeof RelationFactory
-  RelationUtilities: typeof RelationUtilities
-  HasOneRelation: typeof HasOneRelation
-}
+// export type RelationPackage = {
+//   Relation: typeof Relation
+//   RelationData: typeof RelationData
+//   RelationDataBucket: typeof RelationDataBucket
+//   RelationDefinitionFinder: typeof RelationDefinitionFinder
+//   RelationFactory: typeof RelationFactory
+//   RelationUtilities: typeof RelationUtilities
+//   HasOneRelation: typeof HasOneRelation
+// }
 
 export type UtilPackage = {
   ClassSetting: typeof ClassSetting
@@ -212,7 +214,7 @@ export const Builtin: {
   Provider: ProviderPackage
   QueryBuilder: QueryBuilderPackage
   QueryLog: QueryLogPackage
-  Relation: RelationPackage
+  // Relation: RelationPackage
   Util: UtilPackage
 } = {
   Data: {
@@ -249,7 +251,8 @@ export const Builtin: {
 
   Error: {
     NotFoundError: NotFoundError,
-    RelationNotDefinedError: RelationNotDefinedError
+    RelationNotDefinedError: RelationNotDefinedError,
+    RelationNotFoundInNewInstanceError: RelationNotFoundInNewInstanceError
   },
 
   Feature: {
@@ -305,15 +308,15 @@ export const Builtin: {
     FlipFlopQueryLog: FlipFlopQueryLog
   },
 
-  Relation: {
-    Relation: Relation,
-    RelationData: RelationData,
-    RelationDataBucket: RelationDataBucket,
-    RelationDefinitionFinder: RelationDefinitionFinder,
-    RelationFactory: RelationFactory,
-    RelationUtilities: RelationUtilities,
-    HasOneRelation: HasOneRelation
-  },
+  // Relation: {
+  //   Relation: Relation,
+  //   RelationData: RelationData,
+  //   RelationDataBucket: RelationDataBucket,
+  //   RelationDefinitionFinder: RelationDefinitionFinder,
+  //   RelationFactory: RelationFactory,
+  //   RelationUtilities: RelationUtilities,
+  //   HasOneRelation: HasOneRelation
+  // },
 
   Util: {
     ClassSetting: ClassSetting,

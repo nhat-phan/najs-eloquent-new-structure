@@ -12,7 +12,7 @@ class DataBuffer {
     getPrimaryKeyName() {
         return this.primaryKeyName;
     }
-    getReader() {
+    getDataReader() {
         return this.reader;
     }
     getBuffer() {

@@ -18,7 +18,14 @@ describe('DataBuffer', function () {
         it('assigns modelName and primaryKeyName to respective properties and create new buffer as a Map', function () {
             const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);
             expect(dataBuffer.getPrimaryKeyName()).toEqual('id');
-            expect(dataBuffer.getReader() === reader).toBe(true);
+            expect(dataBuffer.getDataReader() === reader).toBe(true);
+        });
+    });
+    describe('.getDataReader()', function () {
+        it('simply returns the reader which is used by the buffer', function () {
+            const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);
+            expect(dataBuffer.getPrimaryKeyName()).toEqual('id');
+            expect(dataBuffer.getDataReader() === reader).toBe(true);
         });
     });
     describe('.add()', function () {

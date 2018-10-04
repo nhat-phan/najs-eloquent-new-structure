@@ -26,11 +26,15 @@ describe('HasOne Relation', function () {
         const userLogin = new UserLogin();
         userLogin.user_id = user.id;
         await userLogin.save();
-        // const users = await User.newQuery().all()
-        // console.log(users.first())
-        // console.log(user)
-        // console.log(user.id)
-        // console.log(userLogin.user_id)
+        // console.log('data', userLogin.toObject())
+        const result = await User.newQuery().findOrFail(user.id);
+        // console.log('before loading', result.login)
+        // console.log('data before loading', result['internalData']['relations']['login'])
+        await result.loginRelation.load();
+        // console.log('data after loading', result['internalData']['relations']['login'])
+        // console.log('after loading', result.login!.toObject())
+        // console.log('data after using', result['internalData']['relations']['login'])
+        expect(result.login.toObject()).toEqual(userLogin.toObject());
     });
     it('test the collection pluck', function () {
         // const data = {

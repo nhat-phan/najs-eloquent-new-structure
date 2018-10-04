@@ -18,7 +18,7 @@ export class DataBuffer<T extends object> implements NajsEloquent.Data.IDataBuff
     return this.primaryKeyName
   }
 
-  getReader(): NajsEloquent.Data.IDataReader<T> {
+  getDataReader(): NajsEloquent.Data.IDataReader<T> {
     return this.reader
   }
 

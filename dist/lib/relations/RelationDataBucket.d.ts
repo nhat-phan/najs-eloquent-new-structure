@@ -18,6 +18,7 @@ export declare class RelationDataBucket implements Autoload, IRelationDataBucket
     getClassName(): string;
     add(model: Model): this;
     makeModel<M extends Model = Model>(model: M, data: any): M;
+    makeCollection<M extends Model = Model>(model: M, data: any[]): CollectJs.Collection<M>;
     getDataOf<M extends Model = Model>(model: M): DataBuffer<object>;
     getMetadataOf(model: Model): IRelationDataBucketMetadata;
     createKey(model: Model): string;

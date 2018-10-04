@@ -6,6 +6,7 @@ const NajsBinding = require("najs-binding");
 const lodash_1 = require("lodash");
 const RelationDataBucket_1 = require("../../lib/relations/RelationDataBucket");
 const DataBuffer_1 = require("../../lib/data/DataBuffer");
+const helpers_1 = require("../../lib/util/helpers");
 const reader = {
     getAttribute(data, field) {
         return data[field];
@@ -83,6 +84,20 @@ describe('RelationDataBucket', function () {
             expect(result['internalData']['relationDataBucket'] === dataBucket).toBe(true);
             expect(makeStub.calledWith('ModelClassName')).toBe(true);
             makeStub.restore();
+        });
+    });
+    describe('.makeCollection()', function () {
+        it('creates an collection based on .makeModel() function', function () {
+            const dataBucket = new RelationDataBucket_1.RelationDataBucket();
+            const makeModelStub = Sinon.stub(dataBucket, 'makeModel');
+            makeModelStub.returns('anything');
+            const data = [{ a: 1 }, { b: 2 }, { c: 3 }];
+            const model = {};
+            const result = dataBucket.makeCollection(model, data);
+            expect(helpers_1.isCollection(result)).toBe(true);
+            expect(makeModelStub.getCall(0).calledWith(model, { a: 1 })).toBe(true);
+            expect(makeModelStub.getCall(1).calledWith(model, { b: 2 })).toBe(true);
+            expect(makeModelStub.getCall(2).calledWith(model, { c: 3 })).toBe(true);
         });
     });
     describe('.getDataOf()', function () {

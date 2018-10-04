@@ -4,6 +4,7 @@ import * as NajsBinding from 'najs-binding'
 import { pick } from 'lodash'
 import { RelationDataBucket } from '../../lib/relations/RelationDataBucket'
 import { DataBuffer } from '../../lib/data/DataBuffer'
+import { isCollection } from '../../lib/util/helpers'
 
 const reader = {
   getAttribute(data: object, field: string) {
@@ -90,6 +91,22 @@ describe('RelationDataBucket', function() {
       expect(result['internalData']['relationDataBucket'] === dataBucket).toBe(true)
       expect(makeStub.calledWith('ModelClassName')).toBe(true)
       makeStub.restore()
+    })
+  })
+
+  describe('.makeCollection()', function() {
+    it('creates an collection based on .makeModel() function', function() {
+      const dataBucket = new RelationDataBucket()
+      const makeModelStub = Sinon.stub(dataBucket, 'makeModel')
+      makeModelStub.returns('anything')
+
+      const data = [{ a: 1 }, { b: 2 }, { c: 3 }]
+      const model: any = {}
+      const result = dataBucket.makeCollection(model, data)
+      expect(isCollection(result)).toBe(true)
+      expect(makeModelStub.getCall(0).calledWith(model, { a: 1 })).toBe(true)
+      expect(makeModelStub.getCall(1).calledWith(model, { b: 2 })).toBe(true)
+      expect(makeModelStub.getCall(2).calledWith(model, { c: 3 })).toBe(true)
     })
   })
 

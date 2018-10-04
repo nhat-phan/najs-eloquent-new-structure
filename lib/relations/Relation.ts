@@ -11,7 +11,7 @@ import { flatten } from 'lodash'
 import { relationFeatureOf } from '../util/accessors'
 import { RelationUtilities as Utils } from './RelationUtilities'
 import { array_unique } from '../util/functions'
-// import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
+import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
 // import { isModel, isCollection } from '../util/helpers'
 
 export abstract class Relation<T> {
@@ -99,30 +99,31 @@ export abstract class Relation<T> {
     return this.loadData('eager')
   }
 
-  protected loadData(type: 'lazy' | 'eager') {
+  protected async loadData(type: 'lazy' | 'eager') {
+    // const relationData = this.getRelationData().setLoadType(type)
     this.getRelationData().setLoadType(type)
-    const result = this.fetchData(type)
+
+    const result = await this.fetchData(type)
 
     // return this.loadChainRelations(result)
+    // return type === 'lazy' ? relationData.setData(result) : result
     return result
   }
 
   async load(): Promise<T | undefined | null> {
-    // const relationData = this.getRelationData()
-    // if (this.isLoaded() && relationData.isBuilt()) {
-    //   return relationData.getData()
-    // }
+    if (this.isLoaded()) {
+      return this.getData()
+    }
 
-    // const dataBucket = this.getDataBucket()
-    // if (!dataBucket) {
-    //   if (this.rootModel.isNew()) {
-    //     throw new RelationNotFoundInNewInstanceError(this.name, this.rootModel.getModelName())
-    //   }
+    const dataBucket = this.getDataBucket()
+    if (!dataBucket) {
+      if (this.rootModel.isNew()) {
+        throw new RelationNotFoundInNewInstanceError(this.name, this.rootModel.getModelName())
+      }
 
-    //   return await this.lazyLoad()
-    // }
+      return await this.lazyLoad()
+    }
 
-    // return await this.eagerLoad()
-    return undefined
+    return await this.eagerLoad()
   }
 }

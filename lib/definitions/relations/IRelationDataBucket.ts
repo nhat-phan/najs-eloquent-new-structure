@@ -24,7 +24,15 @@ namespace NajsEloquent.Relation {
      * @param {Model} model
      * @param {object} rawData
      */
-    makeModel<M extends Model.IModel = Model.IModel>(model: M, data: any): M
+    makeModel<M extends Model.IModel = Model.IModel>(model: M, rawData: any): M
+
+    /**
+     * Create new collection of model instance and push each model to eager bucket.
+     *
+     * @param {Model} model
+     * @param {object} rawDataList
+     */
+    makeCollection<M extends Model.IModel = Model.IModel>(model: M, rawDataList: any[]): CollectJs.Collection<M>
 
     /**
      * Get records gathered data of the RecordBucket by given model.

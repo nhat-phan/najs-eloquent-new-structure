@@ -67,14 +67,78 @@ describe('RelationFactory', function () {
             makeStub.restore();
         });
     });
+    describe('.findForeignKeyName()', function () {
+        it('returns ReferencedModel + "Id" which is formatted by ReferencingModel.formatAttributeName()', function () {
+            const referencing = 'Referencing';
+            const referencingModel = {
+                formatAttributeName(name) {
+                    return name + '<formatted>';
+                }
+            };
+            const makeStub = Sinon.stub(NajsBinding, 'make');
+            makeStub.returns(referencingModel);
+            const dataset = [
+                { name: 'Test', output: 'Test_id<formatted>' },
+                { name: 'Namespace.Test', output: 'Test_id<formatted>' },
+                { name: 'Long.Namespace.Test', output: 'Test_id<formatted>' }
+            ];
+            for (const data of dataset) {
+                const rootModel = {
+                    getModelName() {
+                        return data.name;
+                    }
+                };
+                const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+                const result = factory.findForeignKeyName(referencing, rootModel);
+                expect(result).toEqual(data.output);
+                expect(makeStub.calledWith(referencing)).toBe(true);
+                makeStub.resetHistory();
+            }
+            makeStub.restore();
+        });
+    });
     describe('.hasOne()', function () {
         it('calls .make() with class "NajsEloquent.Relation.HasOneRelation"', function () {
-            const rootModel = {};
+            const rootModel = {
+                getPrimaryKeyName() {
+                    return 'id';
+                }
+            };
             const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
             const makeStub = Sinon.stub(factory, 'make');
             makeStub.returns('anything');
-            expect(factory.hasOne('Test')).toEqual('anything');
-            expect(makeStub.calledWith('NajsEloquent.Relation.HasOneRelation', [])).toBe(true);
+            const findTargetKeyNameStub = Sinon.stub(factory, 'findForeignKeyName');
+            findTargetKeyNameStub.returns('test');
+            expect(factory.hasOne('Target', 'target_id', 'id')).toEqual('anything');
+            expect(findTargetKeyNameStub.called).toBe(false);
+            expect(makeStub.calledWith('NajsEloquent.Relation.Relationship.HasOne', ['Target', 'target_id', 'id'])).toBe(true);
+        });
+        it('calls .findForeignKeyName() to find targetKey if the targetKey is not found', function () {
+            const rootModel = {
+                getPrimaryKeyName() {
+                    return 'id';
+                }
+            };
+            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const makeStub = Sinon.stub(factory, 'make');
+            makeStub.returns('anything');
+            const findTargetKeyNameStub = Sinon.stub(factory, 'findForeignKeyName');
+            findTargetKeyNameStub.returns('found_target_id');
+            expect(factory.hasOne('Target', undefined, 'id')).toEqual('anything');
+            expect(findTargetKeyNameStub.calledWith('Target', rootModel)).toBe(true);
+            expect(makeStub.calledWith('NajsEloquent.Relation.Relationship.HasOne', ['Target', 'found_target_id', 'id'])).toBe(true);
+        });
+        it('calls .findForeignKeyName() to find targetKey if the targetKey is not found', function () {
+            const rootModel = {
+                getPrimaryKeyName() {
+                    return 'found_id';
+                }
+            };
+            const factory = new RelationFactory_1.RelationFactory(rootModel, 'test');
+            const makeStub = Sinon.stub(factory, 'make');
+            makeStub.returns('anything');
+            expect(factory.hasOne('Target', 'target_id')).toEqual('anything');
+            expect(makeStub.calledWith('NajsEloquent.Relation.Relationship.HasOne', ['Target', 'target_id', 'found_id'])).toBe(true);
         });
     });
 });

@@ -4,9 +4,10 @@
 /// <reference path="../definitions/relations/IRelationFactory.ts" />
 /// <reference path="../definitions/relations/IHasOne.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./basic/HasOneRelation");
+require("./relationships/HasOne");
+const HasOne_1 = require("./relationships/HasOne");
 const najs_binding_1 = require("najs-binding");
-const constants_1 = require("../constants");
+const functions_1 = require("../util/functions");
 class RelationFactory {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
@@ -21,8 +22,15 @@ class RelationFactory {
         }
         return this.relation;
     }
-    hasOne(model, foreignKey, localKey) {
-        return this.make(constants_1.NajsEloquent.Relation.HasOneRelation, []);
+    findForeignKeyName(referencing, referenced) {
+        const referencingModel = najs_binding_1.make(referencing);
+        const referencedNameParts = functions_1.parse_string_with_dot_notation(referenced.getModelName());
+        return referencingModel.formatAttributeName(referencedNameParts.last + '_id');
+    }
+    hasOne(target, targetKey, localKey) {
+        const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(target, this.rootModel) : targetKey;
+        const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey;
+        return this.make(HasOne_1.HasOne.className, [target, targetKeyName, rootKeyName]);
     }
 }
 exports.RelationFactory = RelationFactory;

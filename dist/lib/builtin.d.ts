@@ -23,6 +23,7 @@ import { MemoryQueryLog } from './drivers/memory/MemoryQueryLog';
 import { MemoryRecordExecutor } from './drivers/memory/MemoryRecordExecutor';
 import { NotFoundError } from './errors/NotFoundError';
 import { RelationNotDefinedError } from './errors/RelationNotDefinedError';
+import { RelationNotFoundInNewInstanceError } from './errors/RelationNotFoundInNewInstanceError';
 import { EventFeature } from './features/EventFeature';
 import { FeatureBase } from './features/FeatureBase';
 import { FillableFeature } from './features/FillableFeature';
@@ -55,13 +56,6 @@ import { ExecutorUtils } from './query-builders/shared/ExecutorUtils';
 import { Operator } from './query-builders/shared/Operator';
 import { QueryCondition } from './query-builders/shared/QueryCondition';
 import { FlipFlopQueryLog } from './query-log/FlipFlopQueryLog';
-import { Relation } from './relations/Relation';
-import { RelationData } from './relations/RelationData';
-import { RelationDataBucket } from './relations/RelationDataBucket';
-import { RelationDefinitionFinder } from './relations/RelationDefinitionFinder';
-import { RelationFactory } from './relations/RelationFactory';
-import { RelationUtilities } from './relations/RelationUtilities';
-import { HasOneRelation } from './relations/basic/HasOneRelation';
 import { ClassSetting } from './util/ClassSetting';
 import { PrototypeManager } from './util/PrototypeManager';
 import { SettingType } from './util/SettingType';
@@ -98,6 +92,7 @@ export declare type DriverMemoryPackage = {
 export declare type ErrorPackage = {
     NotFoundError: typeof NotFoundError;
     RelationNotDefinedError: typeof RelationNotDefinedError;
+    RelationNotFoundInNewInstanceError: typeof RelationNotFoundInNewInstanceError;
 };
 export declare type FeaturePackage = {
     EventFeature: typeof EventFeature;
@@ -148,15 +143,6 @@ export declare type QueryBuilderSharedPackage = {
 export declare type QueryLogPackage = {
     FlipFlopQueryLog: typeof FlipFlopQueryLog;
 };
-export declare type RelationPackage = {
-    Relation: typeof Relation;
-    RelationData: typeof RelationData;
-    RelationDataBucket: typeof RelationDataBucket;
-    RelationDefinitionFinder: typeof RelationDefinitionFinder;
-    RelationFactory: typeof RelationFactory;
-    RelationUtilities: typeof RelationUtilities;
-    HasOneRelation: typeof HasOneRelation;
-};
 export declare type UtilPackage = {
     ClassSetting: typeof ClassSetting;
     PrototypeManager: typeof PrototypeManager;
@@ -170,6 +156,5 @@ export declare const Builtin: {
     Provider: ProviderPackage;
     QueryBuilder: QueryBuilderPackage;
     QueryLog: QueryLogPackage;
-    Relation: RelationPackage;
     Util: UtilPackage;
 };

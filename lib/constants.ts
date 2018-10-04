@@ -51,8 +51,10 @@ export const NajsEloquent = {
     FlipFlopQueryLog: 'NajsEloquent.QueryLog.FlipFlopQueryLog'
   },
   Relation: {
-    RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket',
-    HasOneRelation: 'NajsEloquent.Relation.HasOneRelation'
+    Relationship: {
+      HasOne: 'NajsEloquent.Relation.Relationship.HasOne'
+    },
+    RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket'
   }
 }
 

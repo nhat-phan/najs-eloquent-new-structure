@@ -1,11 +1,12 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { HasOneRelation } from '../../lib/relations/basic/HasOneRelation'
+import { HasOne } from '../../lib/relations/relationships/HasOne'
 import { RelationUtilities } from '../../lib/relations/RelationUtilities'
+import { RelationNotFoundInNewInstanceError } from '../../lib/errors/RelationNotFoundInNewInstanceError'
 
 describe('Relation', function() {
   function makeRelation(model: any, name: string) {
-    return new HasOneRelation(model, name)
+    return new HasOne(model, name, {} as any, '', '')
   }
 
   describe('constructor()', function() {
@@ -309,11 +310,101 @@ describe('Relation', function() {
   })
 
   describe('.load()', function() {
-    // TODO: implementation needed
-    it('does nothing for now', function() {
+    it('calls and returns this.getData() if the relation is loaded', async function() {
       const rootModel: any = {}
       const relation = makeRelation(rootModel, 'test')
-      relation.load()
+
+      const isLoadedStub = Sinon.stub(relation, 'isLoaded')
+      isLoadedStub.returns(true)
+
+      const getDataStub = Sinon.stub(relation, 'getData')
+      getDataStub.returns('get-data-result')
+
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns({})
+
+      const lazyLoadStub = Sinon.stub(relation, 'lazyLoad')
+      lazyLoadStub.returns(Promise.resolve('lazy-load-result'))
+
+      const eagerLoadStub = Sinon.stub(relation, 'eagerLoad')
+      eagerLoadStub.returns(Promise.resolve('eager-load-result'))
+
+      expect(await relation.load()).toEqual('get-data-result')
+    })
+
+    it('calls and returns this.eagerLoad() if the relation is not loaded and dataBucket is found', async function() {
+      const rootModel: any = {}
+      const relation = makeRelation(rootModel, 'test')
+
+      const isLoadedStub = Sinon.stub(relation, 'isLoaded')
+      isLoadedStub.returns(false)
+
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns({})
+
+      const lazyLoadStub = Sinon.stub(relation, 'lazyLoad')
+      lazyLoadStub.returns(Promise.resolve('lazy-load-result'))
+
+      const eagerLoadStub = Sinon.stub(relation, 'eagerLoad')
+      eagerLoadStub.returns(Promise.resolve('eager-load-result'))
+
+      expect(await relation.load()).toEqual('eager-load-result')
+    })
+
+    it('calls and returns this.lazyLoad() if the relation is not loaded and dataBucket is NOT found', async function() {
+      const rootModel: any = {
+        isNew() {
+          return false
+        }
+      }
+      const relation = makeRelation(rootModel, 'test')
+
+      const isLoadedStub = Sinon.stub(relation, 'isLoaded')
+      isLoadedStub.returns(false)
+
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns(undefined)
+
+      const lazyLoadStub = Sinon.stub(relation, 'lazyLoad')
+      lazyLoadStub.returns(Promise.resolve('lazy-load-result'))
+
+      const eagerLoadStub = Sinon.stub(relation, 'eagerLoad')
+      eagerLoadStub.returns(Promise.resolve('eager-load-result'))
+
+      expect(await relation.load()).toEqual('lazy-load-result')
+    })
+
+    it('throws an RelationNotFoundInNewInstanceError if the dataBucket NOT found and the model is new instance', async function() {
+      const rootModel: any = {
+        isNew() {
+          return true
+        },
+        getModelName() {
+          return 'ModelName'
+        }
+      }
+
+      const relation = makeRelation(rootModel, 'test')
+
+      const isLoadedStub = Sinon.stub(relation, 'isLoaded')
+      isLoadedStub.returns(false)
+
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns(undefined)
+
+      const lazyLoadStub = Sinon.stub(relation, 'lazyLoad')
+      lazyLoadStub.returns(Promise.resolve('lazy-load-result'))
+
+      const eagerLoadStub = Sinon.stub(relation, 'eagerLoad')
+      eagerLoadStub.returns(Promise.resolve('eager-load-result'))
+
+      try {
+        await relation.load()
+      } catch (error) {
+        expect(error).toBeInstanceOf(RelationNotFoundInNewInstanceError)
+        return
+      }
+      expect('should not reach this line').toEqual('hm')
     })
   })
 
@@ -336,6 +427,9 @@ describe('Relation', function() {
         }
       }
       const relation = makeRelation(rootModel, 'test')
+      const stub = Sinon.stub(relation, 'fetchData')
+      stub.returns('anything')
+
       relation['loadData']('lazy')
     })
   })

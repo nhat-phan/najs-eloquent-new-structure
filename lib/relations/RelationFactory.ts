@@ -8,10 +8,10 @@ import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelation = NajsEloquent.Relation.IRelation
 import IHasOne = NajsEloquent.Relation.IHasOne
 
-import './basic/HasOneRelation'
-import { HasOneRelation as HasOne } from './basic/HasOneRelation'
+import './relationships/HasOne'
+import { HasOne } from './relationships/HasOne'
 import { make } from 'najs-binding'
-import { NajsEloquent as NajsEloquentClasses } from '../constants'
+import { parse_string_with_dot_notation } from '../util/functions'
 
 export class RelationFactory {
   protected rootModel: IModel
@@ -35,7 +35,17 @@ export class RelationFactory {
     return this.relation as T
   }
 
-  hasOne<T extends IModel>(model: ModelDefinition<any>, foreignKey?: string, localKey?: string): IHasOne<T> {
-    return this.make<HasOne<T>>(NajsEloquentClasses.Relation.HasOneRelation, [])
+  findForeignKeyName(referencing: ModelDefinition<any>, referenced: IModel) {
+    const referencingModel = make<IModel>(referencing)
+    const referencedNameParts = parse_string_with_dot_notation(referenced.getModelName())
+
+    return referencingModel.formatAttributeName(referencedNameParts.last + '_id')
+  }
+
+  hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOne<T> {
+    const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(target, this.rootModel) : targetKey
+    const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey
+
+    return this.make<HasOne<T>>(HasOne.className, [target, targetKeyName, rootKeyName])
   }
 }

@@ -6,6 +6,7 @@ const najs_binding_1 = require("najs-binding");
 const constants_1 = require("../constants");
 const accessors_1 = require("../util/accessors");
 const DataBuffer_1 = require("../data/DataBuffer");
+const factory_1 = require("../util/factory");
 class RelationDataBucket {
     constructor() {
         this.bucket = {};
@@ -21,6 +22,9 @@ class RelationDataBucket {
         const instance = najs_binding_1.make(najs_binding_1.getClassName(model), [data, false]);
         accessors_1.relationFeatureOf(instance).setDataBucket(instance, this);
         return instance;
+    }
+    makeCollection(model, data) {
+        return factory_1.make_collection(data, item => this.makeModel(model, item));
     }
     getDataOf(model) {
         return this.bucket[this.createKey(model)].data;

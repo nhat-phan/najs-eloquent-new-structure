@@ -9,6 +9,7 @@ import { register, make, getClassName } from 'najs-binding'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
 import { relationFeatureOf } from '../util/accessors'
 import { DataBuffer } from '../data/DataBuffer'
+import { make_collection } from '../util/factory'
 
 export class RelationDataBucket implements Autoload, IRelationDataBucket {
   protected bucket: {
@@ -39,6 +40,10 @@ export class RelationDataBucket implements Autoload, IRelationDataBucket {
 
     relationFeatureOf(instance).setDataBucket(instance, this as any)
     return instance
+  }
+
+  makeCollection<M extends Model = Model>(model: M, data: any[]): CollectJs.Collection<M> {
+    return make_collection(data, item => this.makeModel(model, item))
   }
 
   getDataOf<M extends Model = Model>(model: M): DataBuffer<object> {

@@ -3,6 +3,11 @@
 namespace NajsEloquent.Data {
   export interface IDataBuffer<T> {
     /**
+     * Get DataReader which is used by current DataBuffer.
+     */
+    getDataReader(): IDataReader<T>
+
+    /**
      * Add data to buffer
      *
      * @param {object} data
