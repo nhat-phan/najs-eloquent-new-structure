@@ -2,7 +2,7 @@
 /// <reference path="../../definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.ts" />
 /// <reference path="../../definitions/relations/IRelationship.ts" />
-/// <reference path="../../definitions/relations/IHasOneRelationship.ts" />
+/// <reference path="../../definitions/relations/IHasManyRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const HasOneOrMany_1 = require("./HasOneOrMany");
@@ -11,10 +11,10 @@ const constants_1 = require("../../constants");
 const factory_1 = require("../../util/factory");
 class HasMany extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
-        return constants_1.NajsEloquent.Relation.Relationship.HasOne;
+        return constants_1.NajsEloquent.Relation.Relationship.HasMany;
     }
     getType() {
-        return RelationshipType_1.RelationshipType.HasOne;
+        return RelationshipType_1.RelationshipType.HasMany;
     }
     async executeQuery(queryBuilder) {
         return queryBuilder.get();
@@ -26,5 +26,6 @@ class HasMany extends HasOneOrMany_1.HasOneOrMany {
         return factory_1.make_collection([]);
     }
 }
+HasMany.className = constants_1.NajsEloquent.Relation.Relationship.HasMany;
 exports.HasMany = HasMany;
-najs_binding_1.register(HasMany, constants_1.NajsEloquent.Relation.Relationship.HasOne);
+najs_binding_1.register(HasMany, constants_1.NajsEloquent.Relation.Relationship.HasMany);

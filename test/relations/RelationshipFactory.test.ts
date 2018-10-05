@@ -176,6 +176,81 @@ describe('RelationshipFactory', function() {
     })
   })
 
+  describe('.hasMany()', function() {
+    it('calls .make() with class "NajsEloquent.Relation.HasManyRelation"', function() {
+      const rootModel: any = {
+        getPrimaryKeyName() {
+          return 'id'
+        }
+      }
+      const factory = new RelationshipFactory(rootModel, 'test')
+
+      const makeStub = Sinon.stub(factory, 'make')
+      makeStub.returns('anything')
+
+      const findTargetKeyNameStub = Sinon.stub(factory, 'findForeignKeyName')
+      findTargetKeyNameStub.returns('test')
+
+      expect(factory.hasMany('Target', 'target_id', 'id')).toEqual('anything')
+      expect(findTargetKeyNameStub.called).toBe(false)
+      expect(makeStub.calledWith('NajsEloquent.Relation.Relationship.HasMany', ['Target', 'target_id', 'id'])).toBe(
+        true
+      )
+    })
+
+    it('calls .findForeignKeyName() to find targetKey if the targetKey is not found', function() {
+      const rootModel: any = {
+        getPrimaryKeyName() {
+          return 'id'
+        }
+      }
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return 'found_' + name
+        }
+      }
+
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+
+      const factoryMakeStub = Sinon.stub(factory, 'make')
+      factoryMakeStub.returns('anything')
+
+      const findTargetKeyNameStub = Sinon.stub(factory, 'findForeignKeyName')
+      findTargetKeyNameStub.returns('found_target_id')
+
+      expect(factory.hasMany('Target', undefined, 'id')).toEqual('anything')
+      expect(findTargetKeyNameStub.calledWith(targetModel, rootModel)).toBe(true)
+      expect(
+        factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.HasMany', ['Target', 'found_target_id', 'id'])
+      ).toBe(true)
+
+      makeStub.restore()
+    })
+
+    it('calls .getPrimaryKeyName() to find rootKeyName if the localKey is not found', function() {
+      const rootModel: any = {
+        getPrimaryKeyName() {
+          return 'found_id'
+        }
+      }
+      const factory = new RelationshipFactory(rootModel, 'test')
+
+      const makeStub = Sinon.stub(factory, 'make')
+      makeStub.returns('anything')
+
+      expect(factory.hasMany('Target', 'target_id')).toEqual('anything')
+      expect(
+        makeStub.calledWith('NajsEloquent.Relation.Relationship.HasMany', ['Target', 'target_id', 'found_id'])
+      ).toBe(true)
+    })
+  })
+
   describe('.belongsTo()', function() {
     it('calls .make() with class "NajsEloquent.Relation.HasOneRelation"', function() {
       const rootModel: any = {

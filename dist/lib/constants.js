@@ -53,7 +53,8 @@ exports.NajsEloquent = {
     },
     Relation: {
         Relationship: {
-            HasOne: 'NajsEloquent.Relation.Relationship.HasOne'
+            HasOne: 'NajsEloquent.Relation.Relationship.HasOne',
+            HasMany: 'NajsEloquent.Relation.Relationship.HasMany'
         },
         RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket'
     }

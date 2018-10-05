@@ -7,9 +7,11 @@ import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelationship = NajsEloquent.Relation.IRelationship
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
+import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship
 
 import './relationships/HasOne'
 import { HasOne } from './relationships/HasOne'
+import { HasMany } from './relationships/HasMany'
 import { make } from 'najs-binding'
 import { parse_string_with_dot_notation } from '../util/functions'
 
@@ -41,16 +43,32 @@ export class RelationshipFactory {
     return referencing.formatAttributeName(referencedNameParts.last + '_id')
   }
 
+  protected findHasOneOrHasManyKeys(target: ModelDefinition<any>, targetKey?: string, localKey?: string) {
+    const targetKeyName =
+      typeof targetKey === 'undefined' ? this.findForeignKeyName(make<IModel>(target), this.rootModel) : targetKey
+    const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey
+
+    return { targetKeyName, rootKeyName }
+  }
+
   hasOne<T extends IModel>(
     target: ModelDefinition<any>,
     targetKey?: string,
     localKey?: string
   ): IHasOneRelationship<T> {
-    const targetKeyName =
-      typeof targetKey === 'undefined' ? this.findForeignKeyName(make<IModel>(target), this.rootModel) : targetKey
-    const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey
+    const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey)
 
-    return this.make<HasOne<T>>(HasOne.className, [target, targetKeyName, rootKeyName])
+    return this.make<HasOne<T>>(HasOne.className, [target, keys.targetKeyName, keys.rootKeyName])
+  }
+
+  hasMany<T extends IModel>(
+    target: ModelDefinition<any>,
+    targetKey?: string,
+    localKey?: string
+  ): IHasManyRelationship<T> {
+    const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey)
+
+    return this.make<HasMany<T>>(HasMany.className, [target, keys.targetKeyName, keys.rootKeyName])
   }
 
   belongsTo<T extends IModel>(
