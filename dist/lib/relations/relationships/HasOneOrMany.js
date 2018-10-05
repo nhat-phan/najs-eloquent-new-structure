@@ -44,7 +44,10 @@ class HasOneOrMany extends Relationship_1.Relationship {
             if (!dataBucket) {
                 return this.getEmptyValue();
             }
-            query.whereIn(this.targetKeyName, dataBucket.getDataOf(this.rootModel).keys());
+            const dataBuffer = dataBucket.getDataOf(this.rootModel);
+            const reader = dataBuffer.getDataReader();
+            const ids = dataBuffer.map(item => reader.getAttribute(item, this.rootKeyName));
+            query.whereIn(this.targetKeyName, ids);
         }
         return this.executeQuery(query);
     }

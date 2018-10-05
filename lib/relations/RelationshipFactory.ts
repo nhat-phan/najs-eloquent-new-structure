@@ -35,11 +35,10 @@ export class RelationshipFactory {
     return this.relationship as T
   }
 
-  findForeignKeyName(referencing: ModelDefinition<any>, referenced: IModel) {
-    const referencingModel = make<IModel>(referencing)
+  findForeignKeyName(referencing: IModel, referenced: IModel) {
     const referencedNameParts = parse_string_with_dot_notation(referenced.getModelName())
 
-    return referencingModel.formatAttributeName(referencedNameParts.last + '_id')
+    return referencing.formatAttributeName(referencedNameParts.last + '_id')
   }
 
   hasOne<T extends IModel>(
@@ -47,9 +46,24 @@ export class RelationshipFactory {
     targetKey?: string,
     localKey?: string
   ): IHasOneRelationship<T> {
-    const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(target, this.rootModel) : targetKey
+    const targetKeyName =
+      typeof targetKey === 'undefined' ? this.findForeignKeyName(make<IModel>(target), this.rootModel) : targetKey
     const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey
 
     return this.make<HasOne<T>>(HasOne.className, [target, targetKeyName, rootKeyName])
+  }
+
+  belongsTo<T extends IModel>(
+    target: ModelDefinition<any>,
+    targetKey?: string,
+    localKey?: string
+  ): IHasOneRelationship<T> {
+    const targetModel = make<IModel>(target)
+    const targetKeyName = typeof targetKey === 'undefined' ? targetModel.getPrimaryKeyName() : targetKey
+    const rootKeyName =
+      typeof localKey === 'undefined' ? this.findForeignKeyName(this.rootModel, targetModel) : localKey
+
+    const relationship = this.make<HasOne<T>>(HasOne.className, [target, targetKeyName, rootKeyName])
+    return relationship
   }
 }

@@ -23,14 +23,20 @@ class RelationshipFactory {
         return this.relationship;
     }
     findForeignKeyName(referencing, referenced) {
-        const referencingModel = najs_binding_1.make(referencing);
         const referencedNameParts = functions_1.parse_string_with_dot_notation(referenced.getModelName());
-        return referencingModel.formatAttributeName(referencedNameParts.last + '_id');
+        return referencing.formatAttributeName(referencedNameParts.last + '_id');
     }
     hasOne(target, targetKey, localKey) {
-        const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(target, this.rootModel) : targetKey;
+        const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(najs_binding_1.make(target), this.rootModel) : targetKey;
         const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey;
         return this.make(HasOne_1.HasOne.className, [target, targetKeyName, rootKeyName]);
+    }
+    belongsTo(target, targetKey, localKey) {
+        const targetModel = najs_binding_1.make(target);
+        const targetKeyName = typeof targetKey === 'undefined' ? targetModel.getPrimaryKeyName() : targetKey;
+        const rootKeyName = typeof localKey === 'undefined' ? this.findForeignKeyName(this.rootModel, targetModel) : localKey;
+        const relationship = this.make(HasOne_1.HasOne.className, [target, targetKeyName, rootKeyName]);
+        return relationship;
     }
 }
 exports.RelationshipFactory = RelationshipFactory;

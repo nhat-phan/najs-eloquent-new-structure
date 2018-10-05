@@ -37,6 +37,8 @@ export class RecordConditionMatcher implements IConditionMatcher<Record> {
   }
 
   isInArray(record: Record): boolean {
+    // console.log(record)
+    // console.log(this.value)
     return Lodash.includes(this.value, record.getAttribute(this.field))
   }
 

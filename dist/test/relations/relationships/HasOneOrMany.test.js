@@ -182,7 +182,7 @@ describe('HasOneOrMany', function () {
             expect(whereSpy.called).toBe(false);
             expect(whereInSpy.called).toBe(false);
         });
-        it('gets query from .getQueryBuilder() then pass .whereIn() then calls and returns .executeQuery() for lazy load', async function () {
+        it('gets query from .getQueryBuilder() then pass .whereIn() then calls and returns .executeQuery() for eager load', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -192,12 +192,12 @@ describe('HasOneOrMany', function () {
                     return name + '-value';
                 }
             };
-            const relation = makeRelation(rootModel, 'test', 'Target', 'target_id', 'id');
+            const relation = makeRelation(rootModel, 'test', 'Target', 'target_id', 'field');
             const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);
             dataBuffer
-                .add({ id: 1 })
-                .add({ id: 2 })
-                .add({ id: 3 });
+                .add({ id: 1, field: 'a' })
+                .add({ id: 2, field: 'b' })
+                .add({ id: 3, field: 'c' });
             const dataBucket = {
                 getDataOf() {
                     return dataBuffer;
@@ -221,7 +221,7 @@ describe('HasOneOrMany', function () {
             expect(getQueryBuilderStub.calledWith('HasOne:Target')).toBe(true);
             expect(executeQueryStub.calledWith(query)).toBe(true);
             expect(whereSpy.called).toBe(false);
-            expect(whereInSpy.calledWith('target_id', [1, 2, 3])).toBe(true);
+            expect(whereInSpy.calledWith('target_id', ['a', 'b', 'c'])).toBe(true);
         });
     });
     describe('.isInverseOf()', function () {

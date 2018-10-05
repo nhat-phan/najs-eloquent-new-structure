@@ -70,6 +70,7 @@ export { Model, Model as Eloquent }
 export { Builtin as NajsEloquent } from './builtin'
 
 export type HasOne<T extends Model> = T | undefined | null
+export type BelongsTo<T extends Model> = T | undefined | null
 
 export { EloquentDriverProvider, EloquentDriverProviderFacade } from './facades/global/EloquentDriverProviderFacade'
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade'

@@ -9,6 +9,9 @@ describe('HasOne Relation', function () {
         getClassName() {
             return 'UserLogin';
         }
+        get userRelation() {
+            return this.defineRelation('user').belongsTo(User);
+        }
     }
     najs_binding_1.register(UserLogin);
     class User extends lib_1.Model {
@@ -20,21 +23,25 @@ describe('HasOne Relation', function () {
         }
     }
     najs_binding_1.register(User);
-    it('should work', async function () {
+    it('should work with .hasOne()', async function () {
         const user = new User();
         await user.save();
         const userLogin = new UserLogin();
         userLogin.user_id = user.id;
         await userLogin.save();
-        // console.log('data', userLogin.toObject())
-        const result = await User.newQuery().findOrFail(user.id);
-        // console.log('before loading', result.login)
-        // console.log('data before loading', result['internalData']['relations']['login'])
-        await result.loginRelation.load();
-        // console.log('data after loading', result['internalData']['relations']['login'])
-        // console.log('after loading', result.login!.toObject())
-        // console.log('data after using', result['internalData']['relations']['login'])
-        expect(result.login.toObject()).toEqual(userLogin.toObject());
+        const userResult = await User.newQuery().findOrFail(user.id);
+        await userResult.loginRelation.load();
+        expect(userResult.login.toObject()).toEqual(userLogin.toObject());
+    });
+    it('should work with .belongsTo()', async function () {
+        const user = new User();
+        await user.save();
+        const userLogin = new UserLogin();
+        userLogin.user_id = user.id;
+        await userLogin.save();
+        const loginResult = await UserLogin.newQuery().firstOrFail(userLogin.id);
+        await loginResult.userRelation.load();
+        expect(loginResult.user.toObject()).toEqual(user.toObject());
     });
     it('test the collection pluck', function () {
         // const data = {

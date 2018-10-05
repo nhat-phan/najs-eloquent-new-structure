@@ -24,6 +24,8 @@ class RecordConditionMatcher {
         return Lodash.gte(record.getAttribute(this.field), this.value);
     }
     isInArray(record) {
+        // console.log(record)
+        // console.log(this.value)
         return Lodash.includes(this.value, record.getAttribute(this.field));
     }
     isMatch(record) {
