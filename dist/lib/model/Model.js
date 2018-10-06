@@ -1,4 +1,6 @@
 "use strict";
+/// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/collect.js/index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
@@ -122,6 +124,53 @@ class Model {
     static whereNotBetween(field, range) {
         const query = this.newQuery();
         return query.whereNotBetween.apply(query, arguments);
+    }
+    static get() {
+        const query = this.newQuery();
+        return query.get.apply(query, arguments);
+    }
+    /**
+     * Execute query and return result as a Collection.
+     */
+    static all() {
+        const query = this.newQuery();
+        return query.all.apply(query, arguments);
+    }
+    /**
+     * return count of the records.
+     */
+    static count() {
+        const query = this.newQuery();
+        return query.count.apply(query, arguments);
+    }
+    static pluck() {
+        const query = this.newQuery();
+        return query.pluck.apply(query, arguments);
+    }
+    /**
+     * Find first record by id.
+     *
+     * @param {string} id
+     */
+    static findById(id) {
+        const query = this.newQuery();
+        return query.findById.apply(query, arguments);
+    }
+    /**
+     * Find first record by id and throws NotFoundException if there is no record
+     * @param {string} id
+     */
+    static findOrFail(id) {
+        const query = this.newQuery();
+        return query.findOrFail.apply(query, arguments);
+    }
+    /**
+     * Find first record by id and throws NotFoundException if there is no record
+     * @param {string} id
+     */
+    static firstOrFail(id) {
+        const query = this.newQuery();
+        return query.firstOrFail.apply(query, arguments);
     }
 }
 // static start query methods ----------------------------------------------------------------------------------------

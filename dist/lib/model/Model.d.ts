@@ -1,5 +1,7 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
+/// <reference path="../../../lib/definitions/collect.js/index.d.ts" />
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
+import OmittedQueryBuilderResult = NajsEloquent.QueryBuilder.OmittedQueryBuilderResult;
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition;
 import Range = NajsEloquent.QueryGrammar.Range;
 import { ModelEvent } from './ModelEvent';
@@ -145,4 +147,44 @@ export declare class Model {
      * @param {string} field
      */
     static whereNotBetween<T extends typeof Model>(this: T, field: string, range: Range): IQueryBuilder<InstanceType<T>>;
+    /**
+     * Execute query and return result as a Collection.
+     */
+    static get<T extends typeof Model>(this: T): Promise<CollectJs.Collection<InstanceType<T>>>;
+    /**
+     * Select some fields and get result as Collection.
+     */
+    static get<T extends typeof Model>(this: T, ...fields: Array<string | string[]>): Promise<CollectJs.Collection<InstanceType<T>>>;
+    /**
+     * Execute query and return result as a Collection.
+     */
+    static all<T extends typeof Model>(this: T): Promise<CollectJs.Collection<InstanceType<T>>>;
+    /**
+     * return count of the records.
+     */
+    static count<T extends typeof Model>(this: T): Promise<number>;
+    /**
+     * Execute query and returns "pluck" result.
+     */
+    static pluck<T extends typeof Model>(this: T, valueKey: string): Promise<object>;
+    /**
+     * Execute query and returns "pluck" result.
+     */
+    static pluck<T extends typeof Model>(this: T, valueKey: string, indexKey: string): Promise<object>;
+    /**
+     * Find first record by id.
+     *
+     * @param {string} id
+     */
+    static findById<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>> | null>;
+    /**
+     * Find first record by id and throws NotFoundException if there is no record
+     * @param {string} id
+     */
+    static findOrFail<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>>>;
+    /**
+     * Find first record by id and throws NotFoundException if there is no record
+     * @param {string} id
+     */
+    static firstOrFail<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>>>;
 }

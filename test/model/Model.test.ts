@@ -90,7 +90,14 @@ describe('Model', function() {
       'whereNull',
       'whereNotNull',
       'whereBetween',
-      'whereNotBetween'
+      'whereNotBetween',
+      'get',
+      'all',
+      'count',
+      'pluck',
+      'findById',
+      'findOrFail',
+      'firstOrFail'
     ]
     for (const method of methods) {
       describe(`.${method}()`, function() {

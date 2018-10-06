@@ -1,5 +1,8 @@
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/collect.js/index.d.ts" />
+
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
+import OmittedQueryBuilderResult = NajsEloquent.QueryBuilder.OmittedQueryBuilderResult
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Range = NajsEloquent.QueryGrammar.Range
 
@@ -264,6 +267,82 @@ export class Model {
   static whereNotBetween(field: string, range: Range) {
     const query = this.newQuery()
     return query.whereNotBetween.apply(query, arguments)
+  }
+
+  /**
+   * Execute query and return result as a Collection.
+   */
+  static get<T extends typeof Model>(this: T): Promise<CollectJs.Collection<InstanceType<T>>>
+  /**
+   * Select some fields and get result as Collection.
+   */
+  static get<T extends typeof Model>(
+    this: T,
+    ...fields: Array<string | string[]>
+  ): Promise<CollectJs.Collection<InstanceType<T>>>
+  static get() {
+    const query = this.newQuery()
+    return query.get.apply(query, arguments)
+  }
+
+  /**
+   * Execute query and return result as a Collection.
+   */
+  static all<T extends typeof Model>(this: T): Promise<CollectJs.Collection<InstanceType<T>>> {
+    const query = this.newQuery()
+    return query.all.apply(query, arguments)
+  }
+
+  /**
+   * return count of the records.
+   */
+  static count<T extends typeof Model>(this: T): Promise<number> {
+    const query = this.newQuery()
+    return query.count.apply(query, arguments)
+  }
+
+  /**
+   * Execute query and returns "pluck" result.
+   */
+  static pluck<T extends typeof Model>(this: T, valueKey: string): Promise<object>
+  /**
+   * Execute query and returns "pluck" result.
+   */
+  static pluck<T extends typeof Model>(this: T, valueKey: string, indexKey: string): Promise<object>
+  static pluck(): Promise<object> {
+    const query = this.newQuery()
+    return query.pluck.apply(query, arguments)
+  }
+
+  /**
+   * Find first record by id.
+   *
+   * @param {string} id
+   */
+  static findById<T extends typeof Model>(
+    this: T,
+    id: any
+  ): Promise<OmittedQueryBuilderResult<InstanceType<T>> | null> {
+    const query = this.newQuery()
+    return query.findById.apply(query, arguments)
+  }
+
+  /**
+   * Find first record by id and throws NotFoundException if there is no record
+   * @param {string} id
+   */
+  static findOrFail<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>>> {
+    const query = this.newQuery()
+    return query.findOrFail.apply(query, arguments)
+  }
+
+  /**
+   * Find first record by id and throws NotFoundException if there is no record
+   * @param {string} id
+   */
+  static firstOrFail<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>>> {
+    const query = this.newQuery()
+    return query.firstOrFail.apply(query, arguments)
   }
 }
 
