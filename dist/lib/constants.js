@@ -54,7 +54,8 @@ exports.NajsEloquent = {
     Relation: {
         Relationship: {
             HasOne: 'NajsEloquent.Relation.Relationship.HasOne',
-            HasMany: 'NajsEloquent.Relation.Relationship.HasMany'
+            HasMany: 'NajsEloquent.Relation.Relationship.HasMany',
+            ManyToMany: 'NajsEloquent.Relation.Relationship.ManyToMany'
         },
         RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket'
     }

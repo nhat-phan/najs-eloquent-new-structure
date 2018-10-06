@@ -9,12 +9,7 @@ import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import IDataCollector = NajsEloquent.Data.IDataCollector;
 import { Relationship } from '../Relationship';
 export declare abstract class HasOneOrMany<T> extends Relationship<T> {
-    protected rootKeyName: string;
-    private targetModelInstance;
-    protected targetDefinition: ModelDefinition;
-    protected targetKeyName: string;
     constructor(root: Model, relationName: string, target: ModelDefinition, targetKey: string, rootKey: string);
-    protected readonly targetModel: Model;
     abstract getClassName(): string;
     abstract getType(): string;
     abstract executeQuery(queryBuilder: IQueryBuilder<any>): Promise<T | undefined | null>;

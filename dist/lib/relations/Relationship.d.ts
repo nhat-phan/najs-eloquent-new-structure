@@ -1,14 +1,20 @@
 /// <reference path="../definitions/model/IModel.d.ts" />
 /// <reference path="../definitions/relations/IRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
+import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IRelationship = NajsEloquent.Relation.IRelationship;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IRelationData = NajsEloquent.Relation.IRelationData;
 export declare abstract class Relationship<T> implements IRelationship<T> {
     protected name: string;
-    protected rootModel: IModel;
     protected loadChains: string[];
+    protected rootModel: IModel;
+    protected rootKeyName: string;
+    private targetModelInstance;
+    protected targetDefinition: ModelDefinition;
+    protected readonly targetModel: IModel;
+    protected targetKeyName: string;
     constructor(rootModel: IModel, name: string);
     abstract getClassName(): string;
     abstract getType(): string;

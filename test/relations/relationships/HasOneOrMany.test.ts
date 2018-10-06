@@ -1,5 +1,4 @@
 import 'jest'
-import * as NajsBinding from 'najs-binding'
 import * as Sinon from 'sinon'
 import { Relationship } from '../../../lib/relations/Relationship'
 import { HasOne } from '../../../lib/relations/relationships/HasOne'
@@ -33,25 +32,6 @@ describe('HasOneOrMany', function() {
       expect(relation['rootKeyName']).toEqual('id')
       expect(relation['targetKeyName']).toEqual('target_id')
       expect(relation['targetDefinition']).toEqual('Target')
-    })
-  })
-
-  describe('.targetModel', function() {
-    it('calls make() to creates an instance of Target model, then assigns to reuse property "targetModelInstance"', function() {
-      const instance: any = {}
-      const makeStub = Sinon.stub(NajsBinding, 'make')
-      makeStub.returns(instance)
-
-      const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
-
-      expect(relation['targetModel'] === instance).toBe(true)
-      expect(makeStub.calledWith('Target')).toBe(true)
-      makeStub.resetHistory()
-
-      expect(relation['targetModel'] === instance).toBe(true)
-      expect(makeStub.calledWith('Target')).toBe(false)
-
-      makeStub.restore()
     })
   })
 

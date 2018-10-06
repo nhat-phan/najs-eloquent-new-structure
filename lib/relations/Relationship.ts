@@ -2,11 +2,13 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
+import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelationship = NajsEloquent.Relation.IRelationship
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationData = NajsEloquent.Relation.IRelationData
 
+import { make } from 'najs-binding'
 import { flatten } from 'lodash'
 import { relationFeatureOf } from '../util/accessors'
 import { RelationUtilities as Utils } from './RelationUtilities'
@@ -16,8 +18,22 @@ import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundIn
 
 export abstract class Relationship<T> implements IRelationship<T> {
   protected name: string
-  protected rootModel: IModel
   protected loadChains: string[]
+
+  // Root information
+  protected rootModel: IModel
+  protected rootKeyName: string
+
+  // Target information
+  private targetModelInstance: IModel
+  protected targetDefinition: ModelDefinition
+  protected get targetModel(): IModel {
+    if (!this.targetModelInstance) {
+      this.targetModelInstance = make<IModel>(this.targetDefinition)
+    }
+    return this.targetModelInstance
+  }
+  protected targetKeyName: string
 
   constructor(rootModel: IModel, name: string) {
     this.rootModel = rootModel

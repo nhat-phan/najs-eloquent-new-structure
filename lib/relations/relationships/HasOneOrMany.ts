@@ -9,29 +9,15 @@ import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 import IDataCollector = NajsEloquent.Data.IDataCollector
 
-import { make } from 'najs-binding'
 import { Relationship } from '../Relationship'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 
 export abstract class HasOneOrMany<T> extends Relationship<T> {
-  protected rootKeyName: string
-
-  private targetModelInstance: Model
-  protected targetDefinition: ModelDefinition
-  protected targetKeyName: string
-
   constructor(root: Model, relationName: string, target: ModelDefinition, targetKey: string, rootKey: string) {
     super(root, relationName)
     this.rootKeyName = rootKey
     this.targetDefinition = target
     this.targetKeyName = targetKey
-  }
-
-  protected get targetModel(): Model {
-    if (!this.targetModelInstance) {
-      this.targetModelInstance = make<Model>(this.targetDefinition)
-    }
-    return this.targetModelInstance
   }
 
   abstract getClassName(): string

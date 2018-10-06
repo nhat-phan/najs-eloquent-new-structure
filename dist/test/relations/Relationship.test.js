@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
+const NajsBinding = require("najs-binding");
 const Sinon = require("sinon");
 const HasOne_1 = require("../../lib/relations/relationships/HasOne");
 const RelationUtilities_1 = require("../../lib/relations/RelationUtilities");
@@ -16,6 +17,21 @@ describe('Relation', function () {
             expect(relation['rootModel'] === rootModel).toBe(true);
             expect(relation['name']).toEqual('test');
             expect(relation['loadChains']).toEqual([]);
+        });
+    });
+    describe('.targetModel', function () {
+        it('calls make() to creates an instance of Target model, then assigns to reuse property "targetModelInstance"', function () {
+            const instance = {};
+            const makeStub = Sinon.stub(NajsBinding, 'make');
+            makeStub.returns(instance);
+            const relation = makeRelation({}, 'test');
+            relation['targetDefinition'] = 'Target';
+            expect(relation['targetModel'] === instance).toBe(true);
+            expect(makeStub.calledWith('Target')).toBe(true);
+            makeStub.resetHistory();
+            expect(relation['targetModel'] === instance).toBe(true);
+            expect(makeStub.calledWith('Target')).toBe(false);
+            makeStub.restore();
         });
     });
     describe('.getName()', function () {

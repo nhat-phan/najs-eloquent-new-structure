@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const najs_binding_1 = require("najs-binding");
 const Relationship_1 = require("../Relationship");
 const DataConditionMatcher_1 = require("../../data/DataConditionMatcher");
 class HasOneOrMany extends Relationship_1.Relationship {
@@ -9,12 +8,6 @@ class HasOneOrMany extends Relationship_1.Relationship {
         this.rootKeyName = rootKey;
         this.targetDefinition = target;
         this.targetKeyName = targetKey;
-    }
-    get targetModel() {
-        if (!this.targetModelInstance) {
-            this.targetModelInstance = najs_binding_1.make(this.targetDefinition);
-        }
-        return this.targetModelInstance;
     }
     getQueryBuilder(name) {
         const queryBuilder = this.targetModel.newQuery(name);

@@ -52,6 +52,7 @@ export declare const NajsEloquent: {
         Relationship: {
             HasOne: string;
             HasMany: string;
+            ManyToMany: string;
         };
         RelationDataBucket: string;
     };
