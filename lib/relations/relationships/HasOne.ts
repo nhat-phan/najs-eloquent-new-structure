@@ -11,6 +11,7 @@ import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
+import { ModelEvent } from '../../model/ModelEvent'
 
 export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasOne
@@ -38,6 +39,24 @@ export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneR
 
   getEmptyValue(): T | undefined {
     return undefined
+  }
+
+  associate(model: T): this {
+    // root provides primary key for target, whenever the root get saved target should be updated as well
+    const primaryKey = this.rootModel.getAttribute(this.rootKeyName)
+    if (!primaryKey) {
+      this.rootModel.once(ModelEvent.Saved, async () => {
+        model.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))
+        await model.save()
+      })
+      return this
+    }
+
+    model.setAttribute(this.targetKeyName, primaryKey)
+    this.rootModel.once(ModelEvent.Saved, async () => {
+      await model.save()
+    })
+    return this
   }
 }
 register(HasOne, NajsEloquentClasses.Relation.Relationship.HasOne)

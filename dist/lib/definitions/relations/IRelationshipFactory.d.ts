@@ -48,14 +48,14 @@ declare namespace NajsEloquent.Relation {
          *
          * @param {string|ModelDefinition} model
          */
-        belongsTo<T>(model: Model.ModelDefinition): IHasOneRelationship<T>;
+        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>): IHasOneRelationship<T>;
         /**
          * Has one inverse relationship
          *
          * @param {string|ModelDefinition} model
          * @param {string} targetKey
          */
-        belongsTo<T>(model: Model.ModelDefinition, targetKey: string): IHasOneRelationship<T>;
+        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>, targetKey: string): IHasOneRelationship<T>;
         /**
          * Has one inverse relationship
          *
@@ -63,6 +63,6 @@ declare namespace NajsEloquent.Relation {
          * @param {string} targetKey
          * @param {string} localKey
          */
-        belongsTo<T>(model: Model.ModelDefinition, targetKey: string, localKey: string): IHasOneRelationship<T>;
+        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>, targetKey: string, localKey: string): IHasOneRelationship<T>;
     }
 }

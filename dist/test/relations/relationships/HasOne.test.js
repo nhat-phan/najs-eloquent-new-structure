@@ -83,4 +83,57 @@ describe('HasOne', function () {
             expect(hasOne.getEmptyValue()).toBeUndefined();
         });
     });
+    describe('.associate()', function () {
+        it('sets targetKeyName with key get from root model, then save the model when root model get saved', async function () {
+            const rootModel = {
+                getAttribute() {
+                    return 'anything';
+                },
+                once() { }
+            };
+            const model = {
+                setAttribute() { },
+                save() {
+                    return Promise.resolve(true);
+                }
+            };
+            const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
+            const setAttributeSpy = Sinon.spy(model, 'setAttribute');
+            const onceSpy = Sinon.spy(rootModel, 'once');
+            const saveSpy = Sinon.spy(model, 'save');
+            hasOne.associate(model);
+            expect(setAttributeSpy.calledWith('target_id', 'anything')).toBe(true);
+            expect(onceSpy.calledWith('saved')).toBe(true);
+            expect(saveSpy.called).toBe(false);
+            const handler = onceSpy.lastCall.args[1];
+            handler();
+            expect(saveSpy.called).toBe(true);
+        });
+        it('sets targetKeyName after root model get saved if the key in rootModel is not found', function () {
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                },
+                once() { }
+            };
+            const model = {
+                setAttribute() { },
+                save() {
+                    return Promise.resolve(true);
+                }
+            };
+            const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
+            const setAttributeSpy = Sinon.spy(model, 'setAttribute');
+            const onceSpy = Sinon.spy(rootModel, 'once');
+            const saveSpy = Sinon.spy(model, 'save');
+            hasOne.associate(model);
+            expect(setAttributeSpy.called).toBe(false);
+            expect(onceSpy.calledWith('saved')).toBe(true);
+            expect(saveSpy.called).toBe(false);
+            const handler = onceSpy.lastCall.args[1];
+            handler();
+            expect(saveSpy.called).toBe(true);
+            expect(setAttributeSpy.called).toBe(true);
+        });
+    });
 });

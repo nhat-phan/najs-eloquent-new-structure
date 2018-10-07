@@ -13,4 +13,5 @@ export declare class HasOne<T extends Model> extends HasOneOrMany<T> implements 
     executeQuery(queryBuilder: IQueryBuilder<T>): Promise<T | undefined | null>;
     executeCollector(collector: IDataCollector<any>): T | undefined | null;
     getEmptyValue(): T | undefined;
+    associate(model: T): this;
 }
