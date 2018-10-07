@@ -26,6 +26,10 @@ export const NajsEloquent = {
       KnexWrapper: 'NajsEloquent.Driver.Knex.KnexWrapper'
     }
   },
+  Factory: {
+    FactoryManager: 'NajsEloquent.Factory.FactoryManager',
+    FactoryBuilder: 'NajsEloquent.Factory.FactoryBuilder'
+  },
   Feature: {
     RecordManager: 'NajsEloquent.Feature.RecordManager',
     SettingFeature: 'NajsEloquent.Feature.SettingFeature',

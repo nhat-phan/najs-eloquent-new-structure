@@ -24,6 +24,10 @@ export declare const NajsEloquent: {
             KnexWrapper: string;
         };
     };
+    Factory: {
+        FactoryManager: string;
+        FactoryBuilder: string;
+    };
     Feature: {
         RecordManager: string;
         SettingFeature: string;
