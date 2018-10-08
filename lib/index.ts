@@ -60,11 +60,11 @@ import { MemoryDataSourceProvider } from './facades/global/MemoryDataSourceProvi
 import { MemoryDataSource } from './drivers/memory/MemoryDataSource'
 import { Model } from './model/Model'
 
-import { EloquentDriverProvider } from './facades/global/EloquentDriverProviderFacade'
+import { DriverProvider } from './facades/global/DriverProviderFacade'
 import { MemoryDriver } from './drivers/memory/MemoryDriver'
 
 MemoryDataSourceProvider.register(MemoryDataSource, 'memory', true)
-EloquentDriverProvider.register(MemoryDriver, 'memory')
+DriverProvider.register(MemoryDriver, 'memory')
 
 export { Model, Model as Eloquent }
 export { Builtin as NajsEloquent } from './builtin'
@@ -72,7 +72,14 @@ export { Builtin as NajsEloquent } from './builtin'
 export type HasOne<T extends Model> = T | undefined | null
 export type BelongsTo<T extends Model> = T | undefined | null
 
-export { EloquentDriverProvider, EloquentDriverProviderFacade } from './facades/global/EloquentDriverProviderFacade'
+export {
+  DriverProvider,
+  DriverProvider as ModelDriverProvider,
+  DriverProvider as EloquentDriverProvider,
+  DriverProviderFacade,
+  DriverProviderFacade as ModelDriverProviderFacade,
+  DriverProviderFacade as EloquentDriverProviderFacade
+} from './facades/global/DriverProviderFacade'
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade'
 export {
   MemoryDataSourceProvider,

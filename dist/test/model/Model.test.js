@@ -4,9 +4,9 @@ require("jest");
 const Sinon = require("sinon");
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../lib/model/Model");
-const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
+const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderFacade");
 const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
-EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
+DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 class TestModel extends Model_1.Model {
     getClassName() {
         return 'TestModel';

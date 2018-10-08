@@ -3,11 +3,11 @@ import * as Sinon from 'sinon'
 import { register } from 'najs-binding'
 import { Model } from '../../lib/model/Model'
 import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
-import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
+import { DriverProvider } from '../../lib/facades/global/DriverProviderFacade'
 import { find_base_prototypes } from '../../lib/util/functions'
 import { RelationDefinitionFinder } from '../../lib/relations/RelationDefinitionFinder'
 
-EloquentDriverProvider.register(MemoryDriver, 'memory', true)
+DriverProvider.register(MemoryDriver, 'memory', true)
 
 describe('RelationDefinitionFinder', function() {
   it('can find definition which defined via function', function() {

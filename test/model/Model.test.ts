@@ -2,10 +2,10 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { register } from 'najs-binding'
 import { Model } from '../../lib/model/Model'
-import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
+import { DriverProvider } from '../../lib/facades/global/DriverProviderFacade'
 import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
 
-EloquentDriverProvider.register(MemoryDriver, 'memory', true)
+DriverProvider.register(MemoryDriver, 'memory', true)
 
 class TestModel extends Model {
   getClassName() {

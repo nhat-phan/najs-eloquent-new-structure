@@ -5,10 +5,10 @@ import * as Utils from '../../lib/util/factory'
 import collect from 'collect.js'
 import { FactoryBuilder } from '../../lib/factory/FactoryBuilder'
 import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
-import { EloquentDriverProvider } from '../../lib/facades/global/EloquentDriverProviderFacade'
+import { DriverProvider } from '../../lib/facades/global/DriverProviderFacade'
 import { Model } from '../../lib/model/Model'
 
-EloquentDriverProvider.register(MemoryDriver, 'memory', true)
+DriverProvider.register(MemoryDriver, 'memory', true)
 
 class TestModel extends Model {
   getClassName() {

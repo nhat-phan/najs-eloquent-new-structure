@@ -6,10 +6,10 @@ const najs_binding_1 = require("najs-binding");
 const chance_1 = require("chance");
 const najs_facade_1 = require("najs-facade");
 const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
-const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
+const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderFacade");
 const FactoryManager_1 = require("../../lib/factory/FactoryManager");
 const FactoryBuilder_1 = require("../../lib/factory/FactoryBuilder");
-EloquentDriverProviderFacade_1.EloquentDriverProviderFacade.register(MemoryDriver_1.MemoryDriver, 'memory', true);
+DriverProviderFacade_1.DriverProviderFacade.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 describe('FactoryManager', function () {
     it('extends Facade and implements IAutoload under name "NajsEloquent.Factory.FactoryManager"', function () {
         const factoryManager = new FactoryManager_1.FactoryManager();

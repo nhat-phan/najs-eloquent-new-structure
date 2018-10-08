@@ -3,7 +3,7 @@
 /// <reference path="../definitions/collect.js/index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
-const EloquentDriverProviderFacade_1 = require("../facades/global/EloquentDriverProviderFacade");
+const DriverProviderFacade_1 = require("../facades/global/DriverProviderFacade");
 const PrototypeManager_1 = require("../util/PrototypeManager");
 const ModelEvent_1 = require("./ModelEvent");
 class Model {
@@ -14,7 +14,7 @@ class Model {
         return this.makeDriver().makeModel(this, data, isGuarded);
     }
     makeDriver() {
-        this.driver = EloquentDriverProviderFacade_1.EloquentDriverProvider.create(this);
+        this.driver = DriverProviderFacade_1.DriverProvider.create(this);
         return this.driver;
     }
     getDriver() {

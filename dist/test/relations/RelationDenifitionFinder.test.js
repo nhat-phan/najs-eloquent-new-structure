@@ -5,10 +5,10 @@ const Sinon = require("sinon");
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../lib/model/Model");
 const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
-const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
+const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderFacade");
 const functions_1 = require("../../lib/util/functions");
 const RelationDefinitionFinder_1 = require("../../lib/relations/RelationDefinitionFinder");
-EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
+DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 describe('RelationDefinitionFinder', function () {
     it('can find definition which defined via function', function () {
         class DefinedViaFunction extends Model_1.Model {

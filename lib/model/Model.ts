@@ -7,7 +7,7 @@ import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Range = NajsEloquent.QueryGrammar.Range
 
 import { getClassName } from 'najs-binding'
-import { EloquentDriverProvider } from '../facades/global/EloquentDriverProviderFacade'
+import { DriverProvider } from '../facades/global/DriverProviderFacade'
 import { PrototypeManager } from '../util/PrototypeManager'
 import { ModelEvent } from './ModelEvent'
 
@@ -24,7 +24,7 @@ export class Model {
   }
 
   protected makeDriver<T>(): Najs.Contracts.Eloquent.Driver<T> {
-    this.driver = EloquentDriverProvider.create(this)
+    this.driver = DriverProvider.create(this)
 
     return this.driver
   }

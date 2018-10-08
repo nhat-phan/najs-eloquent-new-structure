@@ -4,11 +4,11 @@ import { register } from 'najs-binding'
 import { Chance } from 'chance'
 import { Facade } from 'najs-facade'
 import { MemoryDriver } from '../../lib/drivers/memory/MemoryDriver'
-import { EloquentDriverProviderFacade } from '../../lib/facades/global/EloquentDriverProviderFacade'
+import { DriverProviderFacade } from '../../lib/facades/global/DriverProviderFacade'
 import { FactoryManager } from '../../lib/factory/FactoryManager'
 import { FactoryBuilder } from '../../lib/factory/FactoryBuilder'
 
-EloquentDriverProviderFacade.register(MemoryDriver, 'memory', true)
+DriverProviderFacade.register(MemoryDriver, 'memory', true)
 
 describe('FactoryManager', function() {
   it('extends Facade and implements IAutoload under name "NajsEloquent.Factory.FactoryManager"', function() {

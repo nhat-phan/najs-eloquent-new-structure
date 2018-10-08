@@ -7,9 +7,9 @@ const Utils = require("../../lib/util/factory");
 const collect_js_1 = require("collect.js");
 const FactoryBuilder_1 = require("../../lib/factory/FactoryBuilder");
 const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
-const EloquentDriverProviderFacade_1 = require("../../lib/facades/global/EloquentDriverProviderFacade");
+const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderFacade");
 const Model_1 = require("../../lib/model/Model");
-EloquentDriverProviderFacade_1.EloquentDriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
+DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 class TestModel extends Model_1.Model {
     getClassName() {
         return 'TestModel';

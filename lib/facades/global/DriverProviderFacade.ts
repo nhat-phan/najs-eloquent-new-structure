@@ -10,5 +10,5 @@ const facade = Facade.create<Najs.Contracts.Eloquent.DriverProvider>(container, 
   return make<Najs.Contracts.Eloquent.DriverProvider>(NajsEloquent.Provider.DriverProvider)
 })
 
-export const EloquentDriverProviderFacade: Najs.Contracts.Eloquent.DriverProvider & IFacade = facade
-export const EloquentDriverProvider: Najs.Contracts.Eloquent.DriverProvider & IFacadeBase = facade
+export const DriverProviderFacade: Najs.Contracts.Eloquent.DriverProvider & IFacade = facade
+export const DriverProvider: Najs.Contracts.Eloquent.DriverProvider & IFacadeBase = facade
