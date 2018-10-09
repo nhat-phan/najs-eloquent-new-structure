@@ -30,6 +30,9 @@ const MemoryRecordExecutor_1 = require("./drivers/memory/MemoryRecordExecutor");
 const NotFoundError_1 = require("./errors/NotFoundError");
 const RelationNotDefinedError_1 = require("./errors/RelationNotDefinedError");
 const RelationNotFoundInNewInstanceError_1 = require("./errors/RelationNotFoundInNewInstanceError");
+// package: Factory
+const FactoryBuilder_1 = require("./factory/FactoryBuilder");
+const FactoryManager_1 = require("./factory/FactoryManager");
 // package: Feature
 const EventFeature_1 = require("./features/EventFeature");
 const FeatureBase_1 = require("./features/FeatureBase");
@@ -115,6 +118,10 @@ exports.Builtin = {
         NotFoundError: NotFoundError_1.NotFoundError,
         RelationNotDefinedError: RelationNotDefinedError_1.RelationNotDefinedError,
         RelationNotFoundInNewInstanceError: RelationNotFoundInNewInstanceError_1.RelationNotFoundInNewInstanceError
+    },
+    Factory: {
+        FactoryBuilder: FactoryBuilder_1.FactoryBuilder,
+        FactoryManager: FactoryManager_1.FactoryManager
     },
     Feature: {
         EventFeature: EventFeature_1.EventFeature,

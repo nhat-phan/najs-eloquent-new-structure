@@ -1,5 +1,7 @@
 /// <reference path="contracts/Driver.d.ts" />
 /// <reference path="contracts/DriverProvider.d.ts" />
+/// <reference path="contracts/FactoryBuilder.d.ts" />
+/// <reference path="contracts/FactoryManager.d.ts" />
 /// <reference path="contracts/MemoryDataSource.d.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.d.ts" />
 /// <reference path="contracts/QueryLog.d.ts" />
@@ -9,6 +11,7 @@
 /// <reference path="definitions/data/IDataReader.d.ts" />
 /// <reference path="definitions/driver/IExecutor.d.ts" />
 /// <reference path="definitions/driver/IExecutorFactory.d.ts" />
+/// <reference path="definitions/factory/IFactoryDefinition.d.ts" />
 /// <reference path="definitions/features/IEventFeature.d.ts" />
 /// <reference path="definitions/features/IFeature.d.ts" />
 /// <reference path="definitions/features/IFillableFeature.d.ts" />
@@ -52,5 +55,6 @@ export { Builtin as NajsEloquent } from './builtin';
 export declare type HasOne<T extends Model> = T | undefined | null;
 export declare type BelongsTo<T extends Model> = T | undefined | null;
 export { DriverProvider, DriverProvider as ModelDriverProvider, DriverProvider as EloquentDriverProvider, DriverProviderFacade, DriverProviderFacade as ModelDriverProviderFacade, DriverProviderFacade as EloquentDriverProviderFacade } from './facades/global/DriverProviderFacade';
+export { factory, Factory, FactoryFacade } from './facades/global/FactoryFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';
 export { MemoryDataSourceProvider, MemoryDataSourceProviderFacade } from './facades/global/MemoryDataSourceProviderFacade';

@@ -24,6 +24,8 @@ import { MemoryRecordExecutor } from './drivers/memory/MemoryRecordExecutor';
 import { NotFoundError } from './errors/NotFoundError';
 import { RelationNotDefinedError } from './errors/RelationNotDefinedError';
 import { RelationNotFoundInNewInstanceError } from './errors/RelationNotFoundInNewInstanceError';
+import { FactoryBuilder } from './factory/FactoryBuilder';
+import { FactoryManager } from './factory/FactoryManager';
 import { EventFeature } from './features/EventFeature';
 import { FeatureBase } from './features/FeatureBase';
 import { FillableFeature } from './features/FillableFeature';
@@ -94,6 +96,10 @@ export declare type ErrorPackage = {
     RelationNotDefinedError: typeof RelationNotDefinedError;
     RelationNotFoundInNewInstanceError: typeof RelationNotFoundInNewInstanceError;
 };
+export declare type FactoryPackage = {
+    FactoryBuilder: typeof FactoryBuilder;
+    FactoryManager: typeof FactoryManager;
+};
 export declare type FeaturePackage = {
     EventFeature: typeof EventFeature;
     FeatureBase: typeof FeatureBase;
@@ -152,6 +158,7 @@ export declare const Builtin: {
     Data: DataPackage;
     Driver: DriverPackage;
     Error: ErrorPackage;
+    Factory: FactoryPackage;
     Feature: FeaturePackage;
     Provider: ProviderPackage;
     QueryBuilder: QueryBuilderPackage;

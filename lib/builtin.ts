@@ -32,6 +32,10 @@ import { NotFoundError } from './errors/NotFoundError'
 import { RelationNotDefinedError } from './errors/RelationNotDefinedError'
 import { RelationNotFoundInNewInstanceError } from './errors/RelationNotFoundInNewInstanceError'
 
+// package: Factory
+import { FactoryBuilder } from './factory/FactoryBuilder'
+import { FactoryManager } from './factory/FactoryManager'
+
 // package: Feature
 import { EventFeature } from './features/EventFeature'
 import { FeatureBase } from './features/FeatureBase'
@@ -132,6 +136,11 @@ export type ErrorPackage = {
   RelationNotFoundInNewInstanceError: typeof RelationNotFoundInNewInstanceError
 }
 
+export type FactoryPackage = {
+  FactoryBuilder: typeof FactoryBuilder
+  FactoryManager: typeof FactoryManager
+}
+
 export type FeaturePackage = {
   EventFeature: typeof EventFeature
   FeatureBase: typeof FeatureBase
@@ -210,6 +219,7 @@ export const Builtin: {
   Data: DataPackage
   Driver: DriverPackage
   Error: ErrorPackage
+  Factory: FactoryPackage
   Feature: FeaturePackage
   Provider: ProviderPackage
   QueryBuilder: QueryBuilderPackage
@@ -253,6 +263,11 @@ export const Builtin: {
     NotFoundError: NotFoundError,
     RelationNotDefinedError: RelationNotDefinedError,
     RelationNotFoundInNewInstanceError: RelationNotFoundInNewInstanceError
+  },
+
+  Factory: {
+    FactoryBuilder: FactoryBuilder,
+    FactoryManager: FactoryManager
   },
 
   Feature: {

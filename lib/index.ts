@@ -1,5 +1,7 @@
 /// <reference path="contracts/Driver.ts" />
 /// <reference path="contracts/DriverProvider.ts" />
+/// <reference path="contracts/FactoryBuilder.ts" />
+/// <reference path="contracts/FactoryManager.ts" />
 /// <reference path="contracts/MemoryDataSource.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
@@ -12,6 +14,8 @@
 
 /// <reference path="definitions/driver/IExecutor.ts" />
 /// <reference path="definitions/driver/IExecutorFactory.ts" />
+
+/// <reference path="definitions/factory/IFactoryDefinition.ts" />
 
 /// <reference path="definitions/features/IEventFeature.ts" />
 /// <reference path="definitions/features/IFeature.ts" />
@@ -80,6 +84,7 @@ export {
   DriverProviderFacade as ModelDriverProviderFacade,
   DriverProviderFacade as EloquentDriverProviderFacade
 } from './facades/global/DriverProviderFacade'
+export { factory, Factory, FactoryFacade } from './facades/global/FactoryFacade'
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade'
 export {
   MemoryDataSourceProvider,

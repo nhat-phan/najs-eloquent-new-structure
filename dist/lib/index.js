@@ -1,6 +1,8 @@
 "use strict";
 /// <reference path="contracts/Driver.ts" />
 /// <reference path="contracts/DriverProvider.ts" />
+/// <reference path="contracts/FactoryBuilder.ts" />
+/// <reference path="contracts/FactoryManager.ts" />
 /// <reference path="contracts/MemoryDataSource.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
@@ -11,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="definitions/data/IDataReader.ts" />
 /// <reference path="definitions/driver/IExecutor.ts" />
 /// <reference path="definitions/driver/IExecutorFactory.ts" />
+/// <reference path="definitions/factory/IFactoryDefinition.ts" />
 /// <reference path="definitions/features/IEventFeature.ts" />
 /// <reference path="definitions/features/IFeature.ts" />
 /// <reference path="definitions/features/IFillableFeature.ts" />
@@ -67,6 +70,10 @@ exports.EloquentDriverProvider = DriverProviderFacade_2.DriverProvider;
 exports.DriverProviderFacade = DriverProviderFacade_2.DriverProviderFacade;
 exports.ModelDriverProviderFacade = DriverProviderFacade_2.DriverProviderFacade;
 exports.EloquentDriverProviderFacade = DriverProviderFacade_2.DriverProviderFacade;
+var FactoryFacade_1 = require("./facades/global/FactoryFacade");
+exports.factory = FactoryFacade_1.factory;
+exports.Factory = FactoryFacade_1.Factory;
+exports.FactoryFacade = FactoryFacade_1.FactoryFacade;
 var QueryLogFacade_1 = require("./facades/global/QueryLogFacade");
 exports.QueryLog = QueryLogFacade_1.QueryLog;
 exports.QueryLogFacade = QueryLogFacade_1.QueryLogFacade;
