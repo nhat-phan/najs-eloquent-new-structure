@@ -15,4 +15,5 @@ export declare class HasMany<T extends Model> extends HasOneOrMany<Collection<T>
     executeQuery(queryBuilder: IQueryBuilder<T>): Promise<Collection<T>>;
     executeCollector(collector: IDataCollector<any>): Collection<T>;
     getEmptyValue(): Collection<T>;
+    associate(...models: Array<T | T[]>): this;
 }

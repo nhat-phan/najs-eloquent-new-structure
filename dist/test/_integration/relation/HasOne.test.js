@@ -3,26 +3,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const lib_1 = require("../../../lib");
 const najs_binding_1 = require("najs-binding");
-// import collect from 'collect.js'
-describe('HasOne Relation', function () {
-    class LoginToken extends lib_1.Model {
-        getClassName() {
-            return 'LoginToken';
-        }
-        get userRelation() {
-            return this.defineRelation('user').belongsTo(User);
-        }
+class LoginToken extends lib_1.Model {
+    getClassName() {
+        return 'LoginToken';
     }
-    najs_binding_1.register(LoginToken);
-    class User extends lib_1.Model {
-        getClassName() {
-            return 'User';
-        }
-        get loginRelation() {
-            return this.defineRelation('login').hasOne(LoginToken);
-        }
+    get userRelation() {
+        return this.defineRelation('user').belongsTo(User);
     }
-    najs_binding_1.register(User);
+}
+najs_binding_1.register(LoginToken);
+class User extends lib_1.Model {
+    getClassName() {
+        return 'User';
+    }
+    get loginRelation() {
+        return this.defineRelation('login').hasOne(LoginToken);
+    }
+}
+najs_binding_1.register(User);
+describe('HasOne/BelongsTo Relationships', function () {
     describe('HasOne', function () {
         it('should work as expected', async function () {
             const user = new User();

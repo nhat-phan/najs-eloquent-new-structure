@@ -54,6 +54,7 @@ export { Model, Model as Eloquent };
 export { Builtin as NajsEloquent } from './builtin';
 export declare type HasOne<T extends Model> = T | undefined | null;
 export declare type BelongsTo<T extends Model> = T | undefined | null;
+export declare type HasMany<T extends Model> = CollectJs.Collection<T> | undefined;
 export { DriverProvider, DriverProvider as ModelDriverProvider, DriverProvider as EloquentDriverProvider, DriverProviderFacade, DriverProviderFacade as ModelDriverProviderFacade, DriverProviderFacade as EloquentDriverProviderFacade } from './facades/global/DriverProviderFacade';
 export { factory, Factory, FactoryFacade } from './facades/global/FactoryFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';

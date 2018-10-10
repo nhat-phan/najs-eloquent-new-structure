@@ -1,37 +1,36 @@
 import 'jest'
 import { Model, HasOne, BelongsTo } from '../../../lib'
 import { register } from 'najs-binding'
-// import collect from 'collect.js'
 
-describe('HasOne Relation', function() {
-  class LoginToken extends Model {
-    user: BelongsTo<User>
+class LoginToken extends Model {
+  user: BelongsTo<User>
 
-    user_id: string
+  user_id: string
 
-    getClassName() {
-      return 'LoginToken'
-    }
-
-    get userRelation() {
-      return this.defineRelation('user').belongsTo(User)
-    }
+  getClassName() {
+    return 'LoginToken'
   }
-  register(LoginToken)
 
-  class User extends Model {
-    login: HasOne<LoginToken>
-
-    getClassName() {
-      return 'User'
-    }
-
-    get loginRelation() {
-      return this.defineRelation('login').hasOne(LoginToken)
-    }
+  get userRelation() {
+    return this.defineRelation('user').belongsTo(User)
   }
-  register(User)
+}
+register(LoginToken)
 
+class User extends Model {
+  login: HasOne<LoginToken>
+
+  getClassName() {
+    return 'User'
+  }
+
+  get loginRelation() {
+    return this.defineRelation('login').hasOne(LoginToken)
+  }
+}
+register(User)
+
+describe('HasOne/BelongsTo Relationships', function() {
   describe('HasOne', function() {
     it('should work as expected', async function() {
       const user = new User()

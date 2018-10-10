@@ -2,7 +2,8 @@
 
 namespace NajsEloquent.Relation {
   export interface IHasManyRelationship<T> extends IRelationship<CollectJs.Collection<T>> {
-    // associate(model: T): this
+    associate(...models: Array<T | T[]>): this
+
     // dissociate(): this
   }
 }
