@@ -1,4 +1,7 @@
 /// <reference path="../model/IModel.d.ts" />
+/// <reference path="IHasOneRelationship.d.ts" />
+/// <reference path="IBelongsToRelationship.d.ts" />
+/// <reference path="IHasManyRelationship.d.ts" />
 declare namespace NajsEloquent.Relation {
     interface IRelationshipFactory {
         /**
@@ -48,14 +51,14 @@ declare namespace NajsEloquent.Relation {
          *
          * @param {string|ModelDefinition} model
          */
-        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>): IHasOneRelationship<T>;
+        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>): IBelongsToRelationship<T>;
         /**
          * Has one inverse relationship
          *
          * @param {string|ModelDefinition} model
          * @param {string} targetKey
          */
-        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>, targetKey: string): IHasOneRelationship<T>;
+        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>, targetKey: string): IBelongsToRelationship<T>;
         /**
          * Has one inverse relationship
          *
@@ -63,6 +66,6 @@ declare namespace NajsEloquent.Relation {
          * @param {string} targetKey
          * @param {string} localKey
          */
-        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>, targetKey: string, localKey: string): IHasOneRelationship<T>;
+        belongsTo<T extends Model.IModel>(model: Model.ModelDefinition<T>, targetKey: string, localKey: string): IBelongsToRelationship<T>;
     }
 }

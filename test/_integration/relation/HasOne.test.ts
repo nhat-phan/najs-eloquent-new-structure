@@ -98,6 +98,36 @@ describe('HasOne Relation', function() {
       await loginResult.userRelation.load()
       expect(loginResult.user!.toObject()).toEqual(user.toObject())
     })
+
+    describe('.associate()', function() {
+      it('should work if the user is not saved yet', async function() {
+        const user = new User()
+        const login = new LoginToken()
+
+        expect(user.id).toBeUndefined()
+
+        expect(login.user_id).toBeUndefined()
+        login.userRelation.dissociate()
+        expect(login.user_id).toBeNull()
+        await login.save()
+        expect(login.user_id).toBeNull()
+      })
+
+      it('should work if the user which already saved.', async function() {
+        const user = new User()
+        await user.save()
+
+        const login = new LoginToken()
+        login.user_id = user.id
+        expect(login.user_id).not.toBeUndefined()
+        await login.save()
+
+        login.userRelation.dissociate()
+        expect(login.user_id).toBeNull()
+        await login.save()
+        expect(login.user_id).toBeNull()
+      })
+    })
   })
 
   // it('test the collection pluck', function() {

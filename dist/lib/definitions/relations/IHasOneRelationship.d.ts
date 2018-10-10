@@ -1,5 +1,5 @@
 declare namespace NajsEloquent.Relation {
     interface IHasOneRelationship<T> extends IRelationship<T> {
-        associate(model: T): this;
+        associate(model: T): void;
     }
 }

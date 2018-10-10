@@ -104,6 +104,12 @@ describe('RelationFeature', function () {
             expect(feature.getRawDataForDataBucket(model)).toEqual('anything');
         });
     });
+    describe('.getEmptyValueForRelationshipForeignKey()', function () {
+        it('returns null by default', function () {
+            const model = {};
+            expect(feature.getEmptyValueForRelationshipForeignKey(model, 'test')).toBeNull();
+        });
+    });
     describe('.getDefinitions()', function () {
         it('simply returns an property sharedMetadata."relationDefinitions" of model', function () {
             const relationDefinitions = {};

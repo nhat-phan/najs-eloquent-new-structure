@@ -55,6 +55,11 @@ namespace NajsEloquent.Feature {
     getRawDataForDataBucket<R>(model: Model.IModel): R
 
     /**
+     * Get an empty value for relationship foreign key.
+     */
+    getEmptyValueForRelationshipForeignKey(model: Model.IModel, key: string): any
+
+    /**
      * Get defined relations of given model.
      *
      * @param {Model} model

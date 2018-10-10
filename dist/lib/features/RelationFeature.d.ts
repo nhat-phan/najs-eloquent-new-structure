@@ -19,6 +19,7 @@ export declare class RelationFeature extends FeatureBase implements NajsEloquent
     createKeyForDataBucket(model: NajsEloquent.Model.IModel): string;
     getDataReaderForDataBucket(): NajsEloquent.Data.IDataReader<any>;
     getRawDataForDataBucket<R>(model: NajsEloquent.Model.IModel): R;
+    getEmptyValueForRelationshipForeignKey(model: NajsEloquent.Model.IModel, key: string): any;
     getDefinitions(model: IModel): RelationDefinitions;
     buildDefinitions(model: IModel, prototype: object, bases: object[]): RelationDefinitions;
     findByName<T = {}>(model: IModel, name: string): IRelation<T>;

@@ -6,14 +6,17 @@ import Model = NajsEloquent.Model.IModel
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import IDataCollector = NajsEloquent.Data.IDataCollector
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
+import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship
 
 import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { ModelEvent } from '../../model/ModelEvent'
+import { relationFeatureOf } from '../../util/accessors'
 
-export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneRelationship<T> {
+export class HasOne<T extends Model> extends HasOneOrMany<T>
+  implements IHasOneRelationship<T>, IBelongsToRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasOne
 
   getClassName(): string {
@@ -41,7 +44,7 @@ export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneR
     return undefined
   }
 
-  associate(model: T): this {
+  associate(model: T) {
     // root provides primary key for target, whenever the root get saved target should be updated as well
     const primaryKey = this.rootModel.getAttribute(this.rootKeyName)
     if (!primaryKey) {
@@ -49,14 +52,20 @@ export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneR
         model.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))
         await model.save()
       })
-      return this
+      return
     }
 
     model.setAttribute(this.targetKeyName, primaryKey)
     this.rootModel.once(ModelEvent.Saved, async () => {
       await model.save()
     })
-    return this
+  }
+
+  dissociate() {
+    this.rootModel.setAttribute(
+      this.rootKeyName,
+      relationFeatureOf(this.rootModel).getEmptyValueForRelationshipForeignKey(this.rootModel, this.rootKeyName)
+    )
   }
 }
 register(HasOne, NajsEloquentClasses.Relation.Relationship.HasOne)

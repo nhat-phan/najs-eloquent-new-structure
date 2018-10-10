@@ -7,6 +7,7 @@ import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelationship = NajsEloquent.Relation.IRelationship
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
+import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship
 import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship
 
 import './relationships/HasOne'
@@ -75,7 +76,7 @@ export class RelationshipFactory {
     target: ModelDefinition<any>,
     targetKey?: string,
     localKey?: string
-  ): IHasOneRelationship<T> {
+  ): IBelongsToRelationship<T> {
     const targetModel = make<IModel>(target)
     const targetKeyName = typeof targetKey === 'undefined' ? targetModel.getPrimaryKeyName() : targetKey
     const rootKeyName =

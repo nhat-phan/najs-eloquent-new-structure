@@ -8,6 +8,7 @@ const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const ModelEvent_1 = require("../../model/ModelEvent");
+const accessors_1 = require("../../util/accessors");
 class HasOne extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.HasOne;
@@ -37,13 +38,15 @@ class HasOne extends HasOneOrMany_1.HasOneOrMany {
                 model.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName));
                 await model.save();
             });
-            return this;
+            return;
         }
         model.setAttribute(this.targetKeyName, primaryKey);
         this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
             await model.save();
         });
-        return this;
+    }
+    dissociate() {
+        this.rootModel.setAttribute(this.rootKeyName, accessors_1.relationFeatureOf(this.rootModel).getEmptyValueForRelationshipForeignKey(this.rootModel, this.rootKeyName));
     }
 }
 HasOne.className = constants_1.NajsEloquent.Relation.Relationship.HasOne;

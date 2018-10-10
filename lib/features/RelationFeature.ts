@@ -62,6 +62,11 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     return this.useRecordManagerOf(model).getRecord(model) as R
   }
 
+  getEmptyValueForRelationshipForeignKey(model: NajsEloquent.Model.IModel, key: string): any {
+    // tslint:disable-next-line
+    return null
+  }
+
   getDefinitions(model: IModel): RelationDefinitions {
     return this.useInternalOf(model).sharedMetadata.relationDefinitions
   }

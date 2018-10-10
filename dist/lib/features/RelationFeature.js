@@ -45,6 +45,10 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     getRawDataForDataBucket(model) {
         return this.useRecordManagerOf(model).getRecord(model);
     }
+    getEmptyValueForRelationshipForeignKey(model, key) {
+        // tslint:disable-next-line
+        return null;
+    }
     getDefinitions(model) {
         return this.useInternalOf(model).sharedMetadata.relationDefinitions;
     }
