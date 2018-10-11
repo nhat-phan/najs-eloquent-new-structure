@@ -42,4 +42,43 @@ describe('RelationPublicApi', function () {
             stub.restore();
         });
     });
+    describe('.load()', function () {
+        it('flattens arguments then runs and returns .getRelationshipByName().load() via Promise.all()', async function () {
+            const relations = {
+                a: {
+                    async load() {
+                        return new Promise(resolve => {
+                            setTimeout(function () {
+                                resolve('a');
+                            }, 20);
+                        });
+                    }
+                },
+                b: {
+                    async load() {
+                        return new Promise(resolve => {
+                            setTimeout(function () {
+                                resolve('b');
+                            }, 30);
+                        });
+                    }
+                },
+                c: {
+                    async load() {
+                        return new Promise(resolve => {
+                            setTimeout(function () {
+                                resolve('c');
+                            }, 10);
+                        });
+                    }
+                }
+            };
+            const stub = Sinon.stub(RelationPublicApi_1.RelationPublicApi, 'getRelationshipByName');
+            stub.callsFake(function (name) {
+                return relations[name];
+            });
+            expect(await RelationPublicApi_1.RelationPublicApi.load(['b'], 'a')).toEqual(['b', 'a']);
+            expect(await RelationPublicApi_1.RelationPublicApi.load(['c'], ['a', 'b'])).toEqual(['c', 'a', 'b']);
+        });
+    });
 });

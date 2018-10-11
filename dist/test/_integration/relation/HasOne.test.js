@@ -30,7 +30,7 @@ describe('HasOne/BelongsTo Relationships', function () {
             login.user_id = user.id;
             await login.save();
             const userResult = await User.newQuery().findOrFail(user.id);
-            await userResult.loginRelation.load();
+            await userResult.load('login');
             expect(userResult.login.toObject()).toEqual(login.toObject());
         });
         describe('.associate()', function () {
@@ -68,7 +68,7 @@ describe('HasOne/BelongsTo Relationships', function () {
             userLogin.user_id = user.id;
             await userLogin.save();
             const loginResult = await LoginToken.newQuery().firstOrFail(userLogin.id);
-            await loginResult.userRelation.load();
+            await loginResult.load('user');
             expect(loginResult.user.toObject()).toEqual(user.toObject());
         });
         describe('.associate()', function () {

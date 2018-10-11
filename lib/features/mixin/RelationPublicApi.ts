@@ -4,6 +4,7 @@
 import Model = NajsEloquent.Model.ModelInternal
 import IRelationship = NajsEloquent.Relation.IRelationship
 import IRelationshipFactory = NajsEloquent.Relation.IRelationshipFactory
+import { flatten } from 'lodash'
 
 export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
   getRelationshipByName<T = any>(this: Model, name: string): IRelationship<T> {
@@ -15,5 +16,14 @@ export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
       .getRelationFeature()
       .findDataByName(this, name)
       .getFactory()
+  },
+
+  load(this: Model, ...args: Array<string | string[]>): Promise<any> {
+    const relationNames: string[] = flatten(arguments)
+    return Promise.all(
+      relationNames.map(name => {
+        return this.getRelationshipByName(name as any).load()
+      })
+    )
   }
 }

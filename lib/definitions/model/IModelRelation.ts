@@ -15,5 +15,10 @@ namespace NajsEloquent.Model {
      * @param {string} name
      */
     defineRelation(name: keyof this): Relation.IRelationshipFactory
+
+    /**
+     * Load the relationship
+     */
+    load<T>(...args: Array<keyof this | string | string[]>): Promise<T>
   }
 }

@@ -115,10 +115,27 @@ export abstract class Relationship<T> implements IRelationship<T> {
     return this.loadData('eager')
   }
 
+  // protected distinctModelByClassInCollection(collection: CollectJs.Collection<Model>) {
+  //   const result: Model[] = []
+  //   if (!isCollection(collection) || collection.isEmpty()) {
+  //     return result
+  //   }
+
+  //   const collected = {}
+  //   for (let i = 0, l = collection.count(); i < l; i++) {
+  //     const model = collection.get(i)!
+  //     if (collected[model.getModelName()] === true) {
+  //       continue
+  //     }
+  //     collected[model.getModelName()] = true
+  //     result.push(model)
+  //   }
+  //   return result
+  // }
+
   protected async loadData(type: 'lazy' | 'eager') {
     // const relationData = this.getRelationData().setLoadType(type)
     this.getRelationData().setLoadType(type)
-
     const result = await this.fetchData(type)
 
     // return this.loadChainRelations(result)
