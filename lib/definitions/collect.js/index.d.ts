@@ -1,6 +1,7 @@
 namespace CollectJs {
   export type Operator = '===' | '==' | '!==' | '!=' | '<>' | '>' | '<' | '>=' | '<='
 
+  // TODO: create PR for the collect.js package to correct type definition
   export interface Collection<Item> {
     /**
      * The all method returns the underlying array represented by the collection.
@@ -210,7 +211,7 @@ namespace CollectJs {
      * The map method iterates through the collection and passes each value to the given callback.
      * The callback is free to modify the item and return it, thus forming a new collection of modified items.
      */
-    map<T>(fn: <T>(...any) => T): Collection<T>
+    map<T>(fn: (item: Item, index: any) => T): Collection<T>
 
     /**
      * The mapInto method iterates through the collection and instantiates the given class with each element as a constructor.
