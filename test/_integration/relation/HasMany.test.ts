@@ -1,5 +1,5 @@
 import 'jest'
-import { Model, HasMany, BelongsTo, Factory, factory, QueryLog } from '../../../lib'
+import { Model, HasMany, BelongsTo, Factory, factory } from '../../../lib'
 import { register } from 'najs-binding'
 
 class Post extends Model {
@@ -51,12 +51,16 @@ describe('HasMany Relationship', function() {
     )
     await user.save()
 
-    // console.log(user.toJson())
+    expect(user.posts).toBeUndefined()
+    await user.load('posts')
+    for (const post of user.posts!) {
+      expect(post.user_id).toEqual(user.id)
+    }
     // const posts = await Post.where('user_id', user.id).get()
     // console.log(posts.map(item => item.toJson()))
 
     // const userResult = await User.findOrFail(user.id)
-    QueryLog.disable()
+    // QueryLog.disable()
     // console.log(userResult.posts)
     // await userResult.postsRelation.load()
     // console.log(userResult.posts)

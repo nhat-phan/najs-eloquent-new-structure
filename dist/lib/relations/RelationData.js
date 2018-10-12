@@ -10,7 +10,7 @@ class RelationData {
         return this.factory;
     }
     isLoaded() {
-        return this.state === 'loaded';
+        return this.state === 'loaded' || this.state === 'collected';
     }
     hasData() {
         return this.state === 'collected';

@@ -430,28 +430,81 @@ describe('Relation', function() {
   })
 
   describe('.loadData()', function() {
-    // TODO: implementation needed
-    it('does nothing for now', function() {
-      const rootModel: any = {
-        getDriver() {
-          return {
-            getRelationFeature() {
-              return {
-                findDataByName() {
-                  return {
-                    setLoadType() {}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      const relation = makeRelation(rootModel, 'test')
-      const stub = Sinon.stub(relation, 'fetchData')
-      stub.returns('anything')
+    it('always sets load type to relationData', async function() {
+      const relationData: any = {
+        setLoadType() {
+          return this
+        },
 
-      relation['loadData']('lazy')
+        setData() {}
+      }
+      const rootModel: any = {}
+
+      const relation = makeRelation(rootModel, 'test')
+
+      const getRelationDataStub = Sinon.stub(relation, 'getRelationData')
+      getRelationDataStub.returns(relationData)
+
+      const spy = Sinon.spy(relationData, 'setLoadType')
+
+      const fetchDataStub = Sinon.stub(relation, 'fetchData')
+      fetchDataStub.returns('anything')
+
+      await relation.lazyLoad()
+      expect(spy.calledWith('lazy')).toBe(true)
+      spy.resetHistory()
+
+      await relation.eagerLoad()
+      expect(spy.calledWith('eager')).toBe(true)
+    })
+
+    it('calls .fetchData() to get result, and always returns the result', async function() {
+      const relationData: any = {
+        setLoadType() {
+          return this
+        },
+
+        setData() {}
+      }
+      const rootModel: any = {}
+
+      const relation = makeRelation(rootModel, 'test')
+
+      const getRelationDataStub = Sinon.stub(relation, 'getRelationData')
+      getRelationDataStub.returns(relationData)
+
+      const fetchDataStub = Sinon.stub(relation, 'fetchData')
+      fetchDataStub.returns('anything')
+
+      expect(await relation.lazyLoad()).toEqual('anything')
+    })
+
+    it('call RelationData.setData() if the load type is "lazy"', async function() {
+      const relationData: any = {
+        setLoadType() {
+          return this
+        },
+
+        setData() {}
+      }
+      const rootModel: any = {}
+
+      const relation = makeRelation(rootModel, 'test')
+
+      const getRelationDataStub = Sinon.stub(relation, 'getRelationData')
+      getRelationDataStub.returns(relationData)
+
+      const spy = Sinon.spy(relationData, 'setData')
+
+      const fetchDataStub = Sinon.stub(relation, 'fetchData')
+      fetchDataStub.returns('anything')
+
+      await relation.lazyLoad()
+      expect(spy.calledWith('anything')).toBe(true)
+      spy.resetHistory()
+
+      await relation.eagerLoad()
+      expect(spy.called).toBe(false)
     })
   })
 })

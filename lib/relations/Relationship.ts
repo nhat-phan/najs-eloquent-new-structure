@@ -134,12 +134,12 @@ export abstract class Relationship<T> implements IRelationship<T> {
   // }
 
   protected async loadData(type: 'lazy' | 'eager') {
-    // const relationData = this.getRelationData().setLoadType(type)
-    this.getRelationData().setLoadType(type)
+    const relationData = this.getRelationData().setLoadType(type)
     const result = await this.fetchData(type)
-
+    if (type === 'lazy') {
+      relationData.setData(result)
+    }
     // return this.loadChainRelations(result)
-    // return type === 'lazy' ? relationData.setData(result) : result
     return result
   }
 

@@ -34,11 +34,15 @@ describe('HasMany Relationship', function () {
             .make()
             .all());
         await user.save();
-        // console.log(user.toJson())
+        expect(user.posts).toBeUndefined();
+        await user.load('posts');
+        for (const post of user.posts) {
+            expect(post.user_id).toEqual(user.id);
+        }
         // const posts = await Post.where('user_id', user.id).get()
         // console.log(posts.map(item => item.toJson()))
         // const userResult = await User.findOrFail(user.id)
-        lib_1.QueryLog.disable();
+        // QueryLog.disable()
         // console.log(userResult.posts)
         // await userResult.postsRelation.load()
         // console.log(userResult.posts)

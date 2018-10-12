@@ -20,11 +20,16 @@ describe('RelationData', function() {
   })
 
   describe('.isLoaded()', function() {
-    it('returns true if state = "loaded"', function() {
+    it('returns true if state = "loaded" or state = "collected"', function() {
       const factory: any = {}
       const relationData = new RelationData(factory)
       expect(relationData.isLoaded()).toBe(false)
       relationData['state'] = 'loaded'
+      expect(relationData.isLoaded()).toBe(true)
+
+      relationData['state'] = 'unloaded'
+      expect(relationData.isLoaded()).toBe(false)
+      relationData['state'] = 'collected'
       expect(relationData.isLoaded()).toBe(true)
     })
   })

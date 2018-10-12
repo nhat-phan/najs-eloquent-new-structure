@@ -16,7 +16,7 @@ export class RelationData<T> implements NajsEloquent.Relation.IRelationData<T> {
   }
 
   isLoaded(): boolean {
-    return this.state === 'loaded'
+    return this.state === 'loaded' || this.state === 'collected'
   }
 
   hasData(): boolean {
