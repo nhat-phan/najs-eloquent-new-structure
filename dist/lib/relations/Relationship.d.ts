@@ -8,7 +8,7 @@ import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IRelationData = NajsEloquent.Relation.IRelationData;
 export declare abstract class Relationship<T> implements IRelationship<T> {
     protected name: string;
-    protected loadChains: string[];
+    protected chains: string[];
     protected rootModel: IModel;
     protected rootKeyName: string;
     private targetModelInstance;
@@ -36,6 +36,7 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     markInverseRelationsToLoaded<T>(result: T): T;
     lazyLoad(): Promise<T | undefined | null>;
     eagerLoad(): Promise<T | undefined | null>;
-    protected loadData(type: 'lazy' | 'eager'): Promise<T | null | undefined>;
+    loadData(type: 'lazy' | 'eager'): Promise<any>;
+    loadChains(result: any): Promise<any>;
     load(): Promise<T | undefined | null>;
 }

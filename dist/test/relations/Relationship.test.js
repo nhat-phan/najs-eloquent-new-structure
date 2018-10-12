@@ -3,9 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const NajsBinding = require("najs-binding");
 const Sinon = require("sinon");
+const Helper = require("../../lib/util/helpers");
+const Model_1 = require("../../lib/model/Model");
+const MemoryDriver_1 = require("../../lib/drivers/memory/MemoryDriver");
+const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderFacade");
 const HasOne_1 = require("../../lib/relations/relationships/HasOne");
 const RelationUtilities_1 = require("../../lib/relations/RelationUtilities");
 const RelationNotFoundInNewInstanceError_1 = require("../../lib/errors/RelationNotFoundInNewInstanceError");
+DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 describe('Relation', function () {
     function makeRelation(model, name) {
         return new HasOne_1.HasOne(model, name, {}, '', '');
@@ -16,7 +21,7 @@ describe('Relation', function () {
             const relation = makeRelation(rootModel, 'test');
             expect(relation['rootModel'] === rootModel).toBe(true);
             expect(relation['name']).toEqual('test');
-            expect(relation['loadChains']).toEqual([]);
+            expect(relation['chains']).toEqual([]);
         });
     });
     describe('.targetModel', function () {
@@ -88,13 +93,13 @@ describe('Relation', function () {
         });
     });
     describe('.with()', function () {
-        it('is chainable, flattens arguments then append to property loadChains', function () {
+        it('is chainable, flattens arguments then append to property "chains"', function () {
             const rootModel = {};
             const relation = makeRelation(rootModel, 'test');
             expect(relation.with('a', 'b', ['c', 'd']) === relation).toBe(true);
-            expect(relation['loadChains']).toEqual(['a', 'b', 'c', 'd']);
+            expect(relation['chains']).toEqual(['a', 'b', 'c', 'd']);
             expect(relation.with(['a', 'e'], 'b', 'f', ['c', 'd']) === relation).toBe(true);
-            expect(relation['loadChains']).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
+            expect(relation['chains']).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
         });
     });
     describe('.isLoaded()', function () {
@@ -289,6 +294,135 @@ describe('Relation', function () {
             relation.markInverseRelationsToLoaded({});
         });
     });
+    describe('.loadData()', function () {
+        it('always sets load type to relationData', async function () {
+            const relationData = {
+                setLoadType() {
+                    return this;
+                },
+                setData() { }
+            };
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
+            getRelationDataStub.returns(relationData);
+            const spy = Sinon.spy(relationData, 'setLoadType');
+            const fetchDataStub = Sinon.stub(relation, 'fetchData');
+            fetchDataStub.returns('anything');
+            await relation.lazyLoad();
+            expect(spy.calledWith('lazy')).toBe(true);
+            spy.resetHistory();
+            await relation.eagerLoad();
+            expect(spy.calledWith('eager')).toBe(true);
+        });
+        it('calls .fetchData() to get result, then calls and returns .loadChains(result)', async function () {
+            const relationData = {
+                setLoadType() {
+                    return this;
+                },
+                setData() { }
+            };
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
+            getRelationDataStub.returns(relationData);
+            const fetchDataStub = Sinon.stub(relation, 'fetchData');
+            fetchDataStub.returns('anything');
+            const loadChainsStub = Sinon.stub(relation, 'loadChains');
+            loadChainsStub.returns('modified');
+            expect(await relation.lazyLoad()).toEqual('modified');
+        });
+        it('call RelationData.setData() if the load type is "lazy"', async function () {
+            const relationData = {
+                setLoadType() {
+                    return this;
+                },
+                setData() { }
+            };
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
+            getRelationDataStub.returns(relationData);
+            const spy = Sinon.spy(relationData, 'setData');
+            const fetchDataStub = Sinon.stub(relation, 'fetchData');
+            fetchDataStub.returns('anything');
+            await relation.lazyLoad();
+            expect(spy.calledWith('anything')).toBe(true);
+            spy.resetHistory();
+            await relation.eagerLoad();
+            expect(spy.called).toBe(false);
+        });
+    });
+    describe('.loadChains()', function () {
+        it('returns result if the result is falsy', async function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const dataset = [false, undefined, 0, ''];
+            for (const item in dataset) {
+                expect((await relation.loadChains(item)) === item).toBe(true);
+            }
+        });
+        it('returns result when the "chains" is undefined or has length = 0', async function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const result = {};
+            relation['chains'] = undefined;
+            expect((await relation.loadChains(result)) === result).toBe(true);
+            relation['chains'] = [];
+            expect((await relation.loadChains(result)) === result).toBe(true);
+        });
+        it('calls Model.load() then returns the result if result is a Model instance', async function () {
+            class TestModel extends Model_1.Model {
+                getClassName() {
+                    return 'TestModel';
+                }
+            }
+            NajsBinding.register(TestModel);
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const result = new TestModel();
+            const chains = 'test';
+            relation.with(chains);
+            const stub = Sinon.stub(result, 'load');
+            stub.returns('anything');
+            expect((await relation.loadChains(result)) === result).toBe(true);
+            expect(stub.calledWith(['test'])).toBe(true);
+        });
+        it('calls helpers.distinctModelByClassInCollection() then do nothing and returns result if distinctModelByClassInCollection() is empty', async function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(Helper, 'distinctModelByClassInCollection');
+            stub.returns([]);
+            const result = {};
+            relation.with('chains');
+            expect((await relation.loadChains(result)) === result).toBe(true);
+            stub.restore();
+        });
+        it('calls helpers.distinctModelByClassInCollection() then calls and wait all result via Promise.all() and finally returns result', async function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(Helper, 'distinctModelByClassInCollection');
+            const model1 = {
+                load() {
+                    return Promise.resolve('1');
+                }
+            };
+            const model2 = {
+                load() {
+                    return Promise.resolve('2');
+                }
+            };
+            stub.returns([model1, model2]);
+            const result = {};
+            relation.with('chains');
+            const spy1 = Sinon.spy(model1, 'load');
+            const spy2 = Sinon.spy(model2, 'load');
+            expect((await relation.loadChains(result)) === result).toBe(true);
+            expect(spy1.calledWith(['chains'])).toBe(true);
+            expect(spy2.calledWith(['chains'])).toBe(true);
+            stub.restore();
+        });
+    });
     describe('.load()', function () {
         it('calls and returns this.getData() if the relation is loaded', async function () {
             const rootModel = {};
@@ -361,63 +495,6 @@ describe('Relation', function () {
                 return;
             }
             expect('should not reach this line').toEqual('hm');
-        });
-    });
-    describe('.loadData()', function () {
-        it('always sets load type to relationData', async function () {
-            const relationData = {
-                setLoadType() {
-                    return this;
-                },
-                setData() { }
-            };
-            const rootModel = {};
-            const relation = makeRelation(rootModel, 'test');
-            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
-            getRelationDataStub.returns(relationData);
-            const spy = Sinon.spy(relationData, 'setLoadType');
-            const fetchDataStub = Sinon.stub(relation, 'fetchData');
-            fetchDataStub.returns('anything');
-            await relation.lazyLoad();
-            expect(spy.calledWith('lazy')).toBe(true);
-            spy.resetHistory();
-            await relation.eagerLoad();
-            expect(spy.calledWith('eager')).toBe(true);
-        });
-        it('calls .fetchData() to get result, and always returns the result', async function () {
-            const relationData = {
-                setLoadType() {
-                    return this;
-                },
-                setData() { }
-            };
-            const rootModel = {};
-            const relation = makeRelation(rootModel, 'test');
-            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
-            getRelationDataStub.returns(relationData);
-            const fetchDataStub = Sinon.stub(relation, 'fetchData');
-            fetchDataStub.returns('anything');
-            expect(await relation.lazyLoad()).toEqual('anything');
-        });
-        it('call RelationData.setData() if the load type is "lazy"', async function () {
-            const relationData = {
-                setLoadType() {
-                    return this;
-                },
-                setData() { }
-            };
-            const rootModel = {};
-            const relation = makeRelation(rootModel, 'test');
-            const getRelationDataStub = Sinon.stub(relation, 'getRelationData');
-            getRelationDataStub.returns(relationData);
-            const spy = Sinon.spy(relationData, 'setData');
-            const fetchDataStub = Sinon.stub(relation, 'fetchData');
-            fetchDataStub.returns('anything');
-            await relation.lazyLoad();
-            expect(spy.calledWith('anything')).toBe(true);
-            spy.resetHistory();
-            await relation.eagerLoad();
-            expect(spy.called).toBe(false);
         });
     });
 });

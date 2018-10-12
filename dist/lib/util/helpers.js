@@ -12,3 +12,20 @@ function isCollection(value) {
     return value instanceof Collection;
 }
 exports.isCollection = isCollection;
+function distinctModelByClassInCollection(collection) {
+    const result = [];
+    if (!isCollection(collection) || collection.isEmpty()) {
+        return result;
+    }
+    const collected = {};
+    for (let i = 0, l = collection.count(); i < l; i++) {
+        const model = collection.get(i);
+        if (collected[model.getModelName()] === true) {
+            continue;
+        }
+        collected[model.getModelName()] = true;
+        result.push(model);
+    }
+    return result;
+}
+exports.distinctModelByClassInCollection = distinctModelByClassInCollection;

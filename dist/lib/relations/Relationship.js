@@ -8,12 +8,12 @@ const accessors_1 = require("../util/accessors");
 const RelationUtilities_1 = require("./RelationUtilities");
 const functions_1 = require("../util/functions");
 const RelationNotFoundInNewInstanceError_1 = require("../errors/RelationNotFoundInNewInstanceError");
-// import { isModel, isCollection } from '../util/helpers'
+const helpers_1 = require("../util/helpers");
 class Relationship {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
         this.name = name;
-        this.loadChains = [];
+        this.chains = [];
     }
     get targetModel() {
         if (!this.targetModelInstance) {
@@ -31,7 +31,7 @@ class Relationship {
         return accessors_1.relationFeatureOf(this.rootModel).getDataBucket(this.rootModel);
     }
     with(...relations) {
-        this.loadChains = functions_1.array_unique(this.loadChains, lodash_1.flatten(arguments).filter(item => item !== ''));
+        this.chains = functions_1.array_unique(this.chains, lodash_1.flatten(arguments).filter(item => item !== ''));
         return this;
     }
     isLoaded() {
@@ -64,29 +64,26 @@ class Relationship {
     async eagerLoad() {
         return this.loadData('eager');
     }
-    // protected distinctModelByClassInCollection(collection: CollectJs.Collection<Model>) {
-    //   const result: Model[] = []
-    //   if (!isCollection(collection) || collection.isEmpty()) {
-    //     return result
-    //   }
-    //   const collected = {}
-    //   for (let i = 0, l = collection.count(); i < l; i++) {
-    //     const model = collection.get(i)!
-    //     if (collected[model.getModelName()] === true) {
-    //       continue
-    //     }
-    //     collected[model.getModelName()] = true
-    //     result.push(model)
-    //   }
-    //   return result
-    // }
     async loadData(type) {
         const relationData = this.getRelationData().setLoadType(type);
         const result = await this.fetchData(type);
         if (type === 'lazy') {
             relationData.setData(result);
         }
-        // return this.loadChainRelations(result)
+        return this.loadChains(result);
+    }
+    async loadChains(result) {
+        if (!result || !this.chains || this.chains.length === 0) {
+            return result;
+        }
+        if (helpers_1.isModel(result)) {
+            await result.load(this.chains);
+            return result;
+        }
+        const models = helpers_1.distinctModelByClassInCollection(result);
+        if (models.length > 0) {
+            await Promise.all(models.map(model => model.load(this.chains)));
+        }
         return result;
     }
     async load() {

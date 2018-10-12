@@ -14,11 +14,11 @@ import { relationFeatureOf } from '../util/accessors'
 import { RelationUtilities as Utils } from './RelationUtilities'
 import { array_unique } from '../util/functions'
 import { RelationNotFoundInNewInstanceError } from '../errors/RelationNotFoundInNewInstanceError'
-// import { isModel, isCollection } from '../util/helpers'
+import { isModel, distinctModelByClassInCollection } from '../util/helpers'
 
 export abstract class Relationship<T> implements IRelationship<T> {
   protected name: string
-  protected loadChains: string[]
+  protected chains: string[]
 
   // Root information
   protected rootModel: IModel
@@ -38,7 +38,7 @@ export abstract class Relationship<T> implements IRelationship<T> {
   constructor(rootModel: IModel, name: string) {
     this.rootModel = rootModel
     this.name = name
-    this.loadChains = []
+    this.chains = []
   }
 
   abstract getClassName(): string
@@ -70,7 +70,7 @@ export abstract class Relationship<T> implements IRelationship<T> {
   }
 
   with(...relations: Array<string | string[]>): this {
-    this.loadChains = array_unique(this.loadChains, flatten(arguments).filter(item => item !== ''))
+    this.chains = array_unique(this.chains, flatten(arguments).filter(item => item !== ''))
 
     return this
   }
@@ -115,31 +115,31 @@ export abstract class Relationship<T> implements IRelationship<T> {
     return this.loadData('eager')
   }
 
-  // protected distinctModelByClassInCollection(collection: CollectJs.Collection<Model>) {
-  //   const result: Model[] = []
-  //   if (!isCollection(collection) || collection.isEmpty()) {
-  //     return result
-  //   }
-
-  //   const collected = {}
-  //   for (let i = 0, l = collection.count(); i < l; i++) {
-  //     const model = collection.get(i)!
-  //     if (collected[model.getModelName()] === true) {
-  //       continue
-  //     }
-  //     collected[model.getModelName()] = true
-  //     result.push(model)
-  //   }
-  //   return result
-  // }
-
-  protected async loadData(type: 'lazy' | 'eager') {
+  async loadData(type: 'lazy' | 'eager') {
     const relationData = this.getRelationData().setLoadType(type)
     const result = await this.fetchData(type)
     if (type === 'lazy') {
       relationData.setData(result)
     }
-    // return this.loadChainRelations(result)
+
+    return this.loadChains(result)
+  }
+
+  async loadChains(result: any) {
+    if (!result || !this.chains || this.chains.length === 0) {
+      return result
+    }
+
+    if (isModel(result)) {
+      await (result as Model).load(this.chains)
+      return result
+    }
+
+    const models = distinctModelByClassInCollection(result)
+    if (models.length > 0) {
+      await Promise.all(models.map(model => model.load(this.chains)))
+    }
+
     return result
   }
 
