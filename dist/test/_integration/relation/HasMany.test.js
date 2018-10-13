@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const lib_1 = require("../../../lib");
-const najs_binding_1 = require("najs-binding");
 class Post extends lib_1.Model {
     getClassName() {
         return 'Post';
@@ -10,8 +9,11 @@ class Post extends lib_1.Model {
     get userRelation() {
         return this.defineRelation('user').belongsTo(User);
     }
+    get commentsRelation() {
+        return this.defineRelation('comments').hasMany(Comment);
+    }
 }
-najs_binding_1.register(Post);
+lib_1.Model.register(Post);
 class User extends lib_1.Model {
     getClassName() {
         return 'User';
@@ -20,10 +22,30 @@ class User extends lib_1.Model {
         return this.defineRelation('posts').hasMany(Post);
     }
 }
-najs_binding_1.register(User);
+lib_1.Model.register(User);
+class Comment extends lib_1.Model {
+    getClassName() {
+        return 'Comment';
+    }
+    get postRelation() {
+        return this.defineRelation('post').hasOne(Post);
+    }
+    get userRelation() {
+        return this.defineRelation('user').hasOne(User);
+    }
+}
+lib_1.Model.register(Comment);
+lib_1.Factory.define(User, (faker, attributes) => {
+    return Object.assign({}, attributes, {});
+});
 lib_1.Factory.define(Post, (faker, attributes) => {
     return Object.assign({}, attributes, {
         title: faker.sentence()
+    });
+});
+lib_1.Factory.define(Comment, (faker, attributes) => {
+    return Object.assign({}, attributes, {
+        content: faker.paragraph()
     });
 });
 describe('HasMany Relationship', function () {
@@ -49,6 +71,26 @@ describe('HasMany Relationship', function () {
         // for (const log of QueryLog.pull()) {
         //   console.log(log)
         // }
+    });
+    it('could be loaded via chain', async function () {
+        const user = await lib_1.factory(User).create();
+        const post = await lib_1.factory(Post).create({ user_id: user.id });
+        user.postsRelation.associate(post, lib_1.factory(Post, 3)
+            .times(3)
+            .make()
+            .all());
+        await user.save();
+        post.commentsRelation.associate(lib_1.factory(Comment, 2)
+            .times(2)
+            .make()
+            .all());
+        await post.save();
+        const firstUser = await User.findOrFail(user.id);
+        await firstUser.load('posts.comments');
+        const firstPost = firstUser.posts.first();
+        expect(firstPost.comments.count()).toEqual(2);
+        expect(firstPost.comments.map(item => item.post_id).all()).toEqual([firstPost.id, firstPost.id]);
+        expect(firstPost.comments.map(item => item.id).all()).toEqual((await Comment.where('post_id', firstPost.id).get()).map(item => item.id).all());
     });
     describe('.associate()', function () {
         it('should work with new model', async function () {

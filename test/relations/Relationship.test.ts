@@ -349,6 +349,9 @@ describe('Relation', function() {
 
       const relation = makeRelation(rootModel, 'test')
 
+      const markLoadedInDataBucketStub = Sinon.stub(RelationUtilities, 'markLoadedInDataBucket')
+      markLoadedInDataBucketStub.returns('anything')
+
       const getRelationDataStub = Sinon.stub(relation, 'getRelationData')
       getRelationDataStub.returns(relationData)
 
@@ -363,6 +366,7 @@ describe('Relation', function() {
 
       await relation.eagerLoad()
       expect(spy.calledWith('eager')).toBe(true)
+      markLoadedInDataBucketStub.restore()
     })
 
     it('calls .fetchData() to get result, then calls and returns .loadChains(result)', async function() {
@@ -377,6 +381,9 @@ describe('Relation', function() {
 
       const relation = makeRelation(rootModel, 'test')
 
+      const markLoadedInDataBucketStub = Sinon.stub(RelationUtilities, 'markLoadedInDataBucket')
+      markLoadedInDataBucketStub.returns('anything')
+
       const getRelationDataStub = Sinon.stub(relation, 'getRelationData')
       getRelationDataStub.returns(relationData)
 
@@ -387,9 +394,10 @@ describe('Relation', function() {
       loadChainsStub.returns('modified')
 
       expect(await relation.lazyLoad()).toEqual('modified')
+      markLoadedInDataBucketStub.restore()
     })
 
-    it('call RelationData.setData() if the load type is "lazy"', async function() {
+    it('call RelationData.setData() if the load type is "lazy", calls RelationUtilities.markLoadedInDataBucket() if type is "eager"', async function() {
       const relationData: any = {
         setLoadType() {
           return this
@@ -401,6 +409,9 @@ describe('Relation', function() {
 
       const relation = makeRelation(rootModel, 'test')
 
+      const markLoadedInDataBucketStub = Sinon.stub(RelationUtilities, 'markLoadedInDataBucket')
+      markLoadedInDataBucketStub.returns('anything')
+
       const getRelationDataStub = Sinon.stub(relation, 'getRelationData')
       getRelationDataStub.returns(relationData)
 
@@ -411,10 +422,14 @@ describe('Relation', function() {
 
       await relation.lazyLoad()
       expect(spy.calledWith('anything')).toBe(true)
+      expect(markLoadedInDataBucketStub.called).toBe(false)
       spy.resetHistory()
 
       await relation.eagerLoad()
       expect(spy.called).toBe(false)
+      expect(markLoadedInDataBucketStub.calledWith(relation, rootModel, 'test')).toBe(true)
+
+      markLoadedInDataBucketStub.restore()
     })
   })
 

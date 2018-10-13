@@ -118,10 +118,12 @@ export abstract class Relationship<T> implements IRelationship<T> {
   async loadData(type: 'lazy' | 'eager') {
     const relationData = this.getRelationData().setLoadType(type)
     const result = await this.fetchData(type)
+
     if (type === 'lazy') {
       relationData.setData(result)
+    } else {
+      Utils.markLoadedInDataBucket(this, this.rootModel, this.name)
     }
-
     return this.loadChains(result)
   }
 

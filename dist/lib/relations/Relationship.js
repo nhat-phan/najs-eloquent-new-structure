@@ -70,6 +70,9 @@ class Relationship {
         if (type === 'lazy') {
             relationData.setData(result);
         }
+        else {
+            RelationUtilities_1.RelationUtilities.markLoadedInDataBucket(this, this.rootModel, this.name);
+        }
         return this.loadChains(result);
     }
     async loadChains(result) {
