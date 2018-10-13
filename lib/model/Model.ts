@@ -6,7 +6,7 @@ import OmittedQueryBuilderResult = NajsEloquent.QueryBuilder.OmittedQueryBuilder
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Range = NajsEloquent.QueryGrammar.Range
 
-import { getClassName } from 'najs-binding'
+import { register, getClassName } from 'najs-binding'
 import { DriverProvider } from '../facades/global/DriverProviderFacade'
 import { PrototypeManager } from '../util/PrototypeManager'
 import { ModelEvent } from './ModelEvent'
@@ -41,6 +41,15 @@ export class Model {
     const query = this.driver.getQueryFeature().newQuery(this)
 
     return typeof name !== 'undefined' ? query.queryName(name) : query
+  }
+
+  /**
+   * Register a model class.
+   *
+   * @param modelClass
+   */
+  static register(modelClass: typeof Model) {
+    register(modelClass)
   }
 
   // static start query methods ----------------------------------------------------------------------------------------

@@ -14,6 +14,12 @@ export declare class Model {
     getDriver(): Najs.Contracts.Eloquent.Driver<any>;
     getModelName(): string;
     newQuery(name?: string): IQueryBuilder<this>;
+    /**
+     * Register a model class.
+     *
+     * @param modelClass
+     */
+    static register(modelClass: typeof Model): void;
     static Event: typeof ModelEvent;
     /**
      * Start new query of model.

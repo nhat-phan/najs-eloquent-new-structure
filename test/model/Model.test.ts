@@ -1,5 +1,6 @@
 import 'jest'
 import * as Sinon from 'sinon'
+import * as NajsBinding from 'najs-binding'
 import { register } from 'najs-binding'
 import { Model } from '../../lib/model/Model'
 import { DriverProvider } from '../../lib/facades/global/DriverProviderFacade'
@@ -36,6 +37,17 @@ describe('Model', function() {
     try {
       test.newQuery('test')
     } catch (error) {}
+  })
+
+  describe('.register()', function() {
+    it('is a shortcut of NajsBinding, simply calls the NajsBinding.register()', function() {
+      const spy = Sinon.spy(NajsBinding, 'register')
+      function test() {}
+
+      Model.register(test as any)
+      expect(spy.calledWith(test)).toBe(true)
+      spy.restore()
+    })
   })
 
   describe('Static Query Methods', function() {

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
+const NajsBinding = require("najs-binding");
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../lib/model/Model");
 const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderFacade");
@@ -34,6 +35,15 @@ describe('Model', function () {
             test.newQuery('test');
         }
         catch (error) { }
+    });
+    describe('.register()', function () {
+        it('is a shortcut of NajsBinding, simply calls the NajsBinding.register()', function () {
+            const spy = Sinon.spy(NajsBinding, 'register');
+            function test() { }
+            Model_1.Model.register(test);
+            expect(spy.calledWith(test)).toBe(true);
+            spy.restore();
+        });
     });
     describe('Static Query Methods', function () {
         describe('.newQuery()', function () {

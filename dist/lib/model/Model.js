@@ -27,6 +27,14 @@ class Model {
         const query = this.driver.getQueryFeature().newQuery(this);
         return typeof name !== 'undefined' ? query.queryName(name) : query;
     }
+    /**
+     * Register a model class.
+     *
+     * @param modelClass
+     */
+    static register(modelClass) {
+        najs_binding_1.register(modelClass);
+    }
     static newQuery(name) {
         return new this().newQuery(name);
     }
