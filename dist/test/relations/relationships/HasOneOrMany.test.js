@@ -7,6 +7,7 @@ const HasOne_1 = require("../../../lib/relations/relationships/HasOne");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
 const DataBuffer_1 = require("../../../lib/data/DataBuffer");
 const DataCollector_1 = require("../../../lib/data/DataCollector");
+const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
 const reader = {
     getAttribute(data, field) {
         return data[field];
@@ -237,10 +238,94 @@ describe('HasOneOrMany', function () {
         });
     });
     describe('.isInverseOf()', function () {
-        // TODO: implementation needed
-        it('should work', function () {
+        it('returns false if the given relationship is not instance of HasOneOrMany', function () {
             const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
-            relation.isInverseOf({});
+            expect(relation.isInverseOf({})).toBe(false);
+        });
+        it('returns false immediately if the .isInverseOfTypeMatched() returns false', function () {
+            const relationA = makeRelation({}, 'test', 'Target', 'target_id', 'id');
+            const relationB = makeRelation({}, 'test', 'Target', 'target_id', 'id');
+            expect(relationA.isInverseOf(relationB)).toBe(false);
+        });
+        it('returns true if the rootModel of current relationship is matched with the target of given relationship and vice verse', function () {
+            const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
+            const comparedRelation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
+            const stub = Sinon.stub(relation, 'isInverseOfTypeMatched');
+            stub.returns(true);
+            const a = {
+                getModelName() {
+                    return 'A';
+                }
+            };
+            const b = {
+                getModelName() {
+                    return 'B';
+                }
+            };
+            const dataset = [
+                {
+                    current: { rootModel: a, rootKeyName: 'id', targetModel: b, targetKeyName: 'b_id' },
+                    compared: { targetModel: a, targetKeyName: 'id', rootModel: b, rootKeyName: 'b_id' },
+                    result: true
+                },
+                {
+                    current: { rootModel: a, rootKeyName: 'id', targetModel: b, targetKeyName: 'b_id' },
+                    compared: { targetModel: b, targetKeyName: 'id', rootModel: b, rootKeyName: 'b_id' },
+                    result: false
+                },
+                {
+                    current: { rootModel: a, rootKeyName: 'id', targetModel: b, targetKeyName: 'b_id' },
+                    compared: { targetModel: a, targetKeyName: 'wrong', rootModel: b, rootKeyName: 'b_id' },
+                    result: false
+                },
+                {
+                    current: { rootModel: a, rootKeyName: 'id', targetModel: b, targetKeyName: 'b_id' },
+                    compared: { targetModel: a, targetKeyName: 'id', rootModel: a, rootKeyName: 'b_id' },
+                    result: false
+                },
+                {
+                    current: { rootModel: a, rootKeyName: 'id', targetModel: b, targetKeyName: 'b_id' },
+                    compared: { targetModel: a, targetKeyName: 'id', rootModel: b, rootKeyName: 'wrong' },
+                    result: false
+                }
+            ];
+            for (const data of dataset) {
+                relation['rootModel'] = data.current.rootModel;
+                relation['rootKeyName'] = data.current.rootKeyName;
+                relation['targetModelInstance'] = data.current.targetModel;
+                relation['targetKeyName'] = data.current.targetKeyName;
+                comparedRelation['rootModel'] = data.compared.rootModel;
+                comparedRelation['rootKeyName'] = data.compared.rootKeyName;
+                comparedRelation['targetModelInstance'] = data.compared.targetModel;
+                comparedRelation['targetKeyName'] = data.compared.targetKeyName;
+                expect(relation.isInverseOf(comparedRelation)).toBe(data.result);
+            }
+        });
+    });
+    describe('.isInverseOfTypeMatched()', function () {
+        it('detects the inverse of based on type', function () {
+            const dataset = [
+                { a: RelationshipType_1.RelationshipType.HasOne, b: RelationshipType_1.RelationshipType.HasOne, result: false },
+                { a: RelationshipType_1.RelationshipType.HasOne, b: RelationshipType_1.RelationshipType.HasMany, result: false },
+                { a: RelationshipType_1.RelationshipType.HasOne, b: RelationshipType_1.RelationshipType.BelongsTo, result: true },
+                { a: RelationshipType_1.RelationshipType.BelongsTo, b: RelationshipType_1.RelationshipType.HasOne, result: true },
+                { a: RelationshipType_1.RelationshipType.BelongsTo, b: RelationshipType_1.RelationshipType.BelongsTo, result: false },
+                { a: RelationshipType_1.RelationshipType.BelongsTo, b: RelationshipType_1.RelationshipType.HasMany, result: true },
+                { a: RelationshipType_1.RelationshipType.HasMany, b: RelationshipType_1.RelationshipType.HasOne, result: false },
+                { a: RelationshipType_1.RelationshipType.HasMany, b: RelationshipType_1.RelationshipType.BelongsTo, result: true },
+                { a: RelationshipType_1.RelationshipType.HasMany, b: RelationshipType_1.RelationshipType.HasMany, result: false }
+            ];
+            const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
+            const aStub = Sinon.stub(relation, 'getType');
+            for (const data of dataset) {
+                aStub.returns(data.a);
+                const bRelation = {
+                    getType() {
+                        return data.b;
+                    }
+                };
+                expect(relation.isInverseOfTypeMatched(bRelation)).toBe(data.result);
+            }
         });
     });
 });

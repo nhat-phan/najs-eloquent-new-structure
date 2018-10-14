@@ -17,4 +17,5 @@ export declare abstract class HasOneOrMany<T> extends Relationship<T> {
     collectData(): T | undefined | null;
     fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
     isInverseOf<K>(relationship: NajsEloquent.Relation.IRelationship<K>): boolean;
+    isInverseOfTypeMatched(relationship: HasOneOrMany<any>): boolean;
 }

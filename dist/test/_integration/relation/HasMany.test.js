@@ -28,7 +28,7 @@ class Comment extends lib_1.Model {
         return 'Comment';
     }
     get postRelation() {
-        return this.defineRelation('post').hasOne(Post);
+        return this.defineRelation('post').belongsTo(Post);
     }
     get userRelation() {
         return this.defineRelation('user').hasOne(User);
@@ -120,13 +120,16 @@ describe('HasMany Relationship', function () {
         });
     });
     describe('.isInverseOf()', function () {
-        it.skip('could be detect the inverse relationship', function () {
+        it('could be detect the inverse relationship', function () {
             const user = new User();
             const post = new Post();
             const comment = new Comment();
-            console.log(user.postsRelation.isInverseOf(post.userRelation));
-            console.log(post.userRelation.isInverseOf(user.postsRelation));
-            console.log(post.commentsRelation.isInverseOf(comment.postRelation));
+            expect(user.postsRelation.isInverseOf(post.userRelation)).toBe(true);
+            expect(post.userRelation.isInverseOf(user.postsRelation)).toBe(true);
+            expect(post.commentsRelation.isInverseOf(comment.postRelation)).toBe(true);
+            expect(comment.postRelation.isInverseOf(post.commentsRelation)).toBe(true);
+            expect(comment.userRelation.isInverseOf(post.commentsRelation)).toBe(false);
+            expect(post.commentsRelation.isInverseOf(comment.userRelation)).toBe(false);
         });
     });
 });

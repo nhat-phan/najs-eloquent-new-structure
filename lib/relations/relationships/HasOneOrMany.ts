@@ -11,7 +11,7 @@ import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 
 import { Relationship } from '../Relationship'
-// import { RelationshipType } from '../RelationshipType'
+import { RelationshipType } from '../RelationshipType'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 
 export abstract class HasOneOrMany<T> extends Relationship<T> {
@@ -71,38 +71,34 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
   }
 
   isInverseOf<K>(relationship: NajsEloquent.Relation.IRelationship<K>): boolean {
-    return false
-    // if (!(relationship instanceof HasOneOrMany)) {
-    //   console.log('a')
-    //   return false
-    // }
+    if (!(relationship instanceof HasOneOrMany)) {
+      return false
+    }
 
-    // if (!this.isInverseOfTypeMatched(relationship)) {
-    //   console.log('b')
-    //   return false
-    // }
+    if (!this.isInverseOfTypeMatched(relationship)) {
+      return false
+    }
 
-    // console.log('c')
-    // return (
-    //   this.rootModel.getModelName() === relationship.targetModel.getModelName() &&
-    //   this.rootKeyName === relationship.targetKeyName &&
-    //   this.targetModel.getModelName() === relationship.rootModel.getModelName() &&
-    //   this.targetKeyName === relationship.rootKeyName
-    // )
+    return (
+      this.rootModel.getModelName() === relationship.targetModel.getModelName() &&
+      this.rootKeyName === relationship.targetKeyName &&
+      this.targetModel.getModelName() === relationship.rootModel.getModelName() &&
+      this.targetKeyName === relationship.rootKeyName
+    )
   }
 
-  // isInverseOfTypeMatched(relationship: HasOneOrMany<any>) {
-  //   const thisType = this.getType()
-  //   const comparedType = relationship.getType()
+  isInverseOfTypeMatched(relationship: HasOneOrMany<any>) {
+    const thisType = this.getType()
+    const comparedType = relationship.getType()
 
-  //   if (thisType !== RelationshipType.BelongsTo && comparedType !== RelationshipType.BelongsTo) {
-  //     return false
-  //   }
+    if (thisType !== RelationshipType.BelongsTo && comparedType !== RelationshipType.BelongsTo) {
+      return false
+    }
 
-  //   if (thisType === RelationshipType.BelongsTo) {
-  //     return comparedType === RelationshipType.HasMany || comparedType === RelationshipType.HasOne
-  //   }
+    if (thisType === RelationshipType.BelongsTo) {
+      return comparedType === RelationshipType.HasMany || comparedType === RelationshipType.HasOne
+    }
 
-  //   return thisType === RelationshipType.HasMany || thisType === RelationshipType.HasOne
-  // }
+    return thisType === RelationshipType.HasMany || thisType === RelationshipType.HasOne
+  }
 }
