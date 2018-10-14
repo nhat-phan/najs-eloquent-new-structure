@@ -55,6 +55,7 @@ export declare const NajsEloquent: {
     Relation: {
         Relationship: {
             HasOne: string;
+            BelongsTo: string;
             HasMany: string;
             ManyToMany: string;
         };

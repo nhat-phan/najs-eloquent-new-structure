@@ -92,7 +92,7 @@ describe('RelationshipFactory', function () {
         });
     });
     describe('.hasOne()', function () {
-        it('calls .make() with class "NajsEloquent.Relation.HasOneRelation"', function () {
+        it('calls .make() with class "NajsEloquent.Relation.Relationship.HasOne"', function () {
             const rootModel = {
                 getPrimaryKeyName() {
                     return 'id';
@@ -202,7 +202,7 @@ describe('RelationshipFactory', function () {
         });
     });
     describe('.belongsTo()', function () {
-        it('calls .make() with class "NajsEloquent.Relation.HasOneRelation"', function () {
+        it('calls .make() with class "NajsEloquent.Relation.Relationship.BelongsTo"', function () {
             const rootModel = {
                 getPrimaryKeyName() {
                     return 'id';
@@ -225,7 +225,7 @@ describe('RelationshipFactory', function () {
             findTargetKeyNameStub.returns('test');
             expect(factory.belongsTo('Target', 'id', 'target_id')).toEqual('anything');
             expect(findTargetKeyNameStub.called).toBe(false);
-            expect(factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.HasOne', ['Target', 'id', 'target_id'])).toBe(true);
+            expect(factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsTo', ['Target', 'id', 'target_id'])).toBe(true);
             makeStub.restore();
         });
         it('calls target.getPrimaryKeyName() to find targetKeyName if the targetKey is not found', function () {
@@ -254,7 +254,7 @@ describe('RelationshipFactory', function () {
             findTargetKeyNameStub.returns('test');
             expect(factory.belongsTo('Target', undefined, 'target_id')).toEqual('anything');
             expect(findTargetKeyNameStub.called).toBe(false);
-            expect(factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.HasOne', ['Target', 'id', 'target_id'])).toBe(true);
+            expect(factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsTo', ['Target', 'id', 'target_id'])).toBe(true);
             makeStub.restore();
         });
         it('calls findForeignKeyName() with rootModel & targetModel to find rootKeyName if rootKeyName not found', function () {
@@ -283,7 +283,7 @@ describe('RelationshipFactory', function () {
             findTargetKeyNameStub.returns('test');
             expect(factory.belongsTo('Target', 'id', undefined)).toEqual('anything');
             expect(findTargetKeyNameStub.calledWith(rootModel, targetModel)).toBe(true);
-            expect(factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.HasOne', ['Target', 'id', 'test'])).toBe(true);
+            expect(factoryMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsTo', ['Target', 'id', 'test'])).toBe(true);
             makeStub.restore();
         });
     });

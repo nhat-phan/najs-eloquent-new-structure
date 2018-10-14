@@ -12,6 +12,7 @@ import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship
 
 import './relationships/HasOne'
 import { HasOne } from './relationships/HasOne'
+import { BelongsTo } from './relationships/BelongsTo'
 import { HasMany } from './relationships/HasMany'
 import { make } from 'najs-binding'
 import { parse_string_with_dot_notation } from '../util/functions'
@@ -82,7 +83,7 @@ export class RelationshipFactory {
     const rootKeyName =
       typeof localKey === 'undefined' ? this.findForeignKeyName(this.rootModel, targetModel) : localKey
 
-    const relationship = this.make<HasOne<T>>(HasOne.className, [target, targetKeyName, rootKeyName])
+    const relationship = this.make<BelongsTo<T>>(BelongsTo.className, [target, targetKeyName, rootKeyName])
     return relationship
   }
 }

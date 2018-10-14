@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./relationships/HasOne");
 const HasOne_1 = require("./relationships/HasOne");
+const BelongsTo_1 = require("./relationships/BelongsTo");
 const HasMany_1 = require("./relationships/HasMany");
 const najs_binding_1 = require("najs-binding");
 const functions_1 = require("../util/functions");
@@ -44,7 +45,7 @@ class RelationshipFactory {
         const targetModel = najs_binding_1.make(target);
         const targetKeyName = typeof targetKey === 'undefined' ? targetModel.getPrimaryKeyName() : targetKey;
         const rootKeyName = typeof localKey === 'undefined' ? this.findForeignKeyName(this.rootModel, targetModel) : localKey;
-        const relationship = this.make(HasOne_1.HasOne.className, [target, targetKeyName, rootKeyName]);
+        const relationship = this.make(BelongsTo_1.BelongsTo.className, [target, targetKeyName, rootKeyName]);
         return relationship;
     }
 }

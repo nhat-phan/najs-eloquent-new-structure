@@ -4,10 +4,10 @@ import { HasMany } from '../../../lib/relations/relationships/HasMany'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
 import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
-import { isCollection } from '../../../lib/util/helpers'
+import { ManyRowsExecutor } from '../../../lib/relations/relationships/executors/ManyRowsExecutor'
 
 describe('HasOne', function() {
-  it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.HasManyRelation"', function() {
+  it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.HasMany"', function() {
     const rootModel: any = {}
     const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
     expect(hasMany).toBeInstanceOf(HasOneOrMany)
@@ -23,58 +23,16 @@ describe('HasOne', function() {
     })
   })
 
-  describe('.executeCollector()', function() {
-    it('calls collector.exec(), then create a Collection by DataBucket.makeCollection() with the result', function() {
-      const collector: any = {
-        limit() {},
-        exec() {}
-      }
-      const execStub = Sinon.stub(collector, 'exec')
-
-      const itemOne = {}
-      const itemTwo = {}
-      const result = [itemOne, itemTwo]
-      execStub.returns(result)
-
+  describe('.getExecutor()', function() {
+    it('returns an cached instance of ManyRowsExecutor in property "executor"', function() {
       const rootModel: any = {}
       const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
-
-      const targetModel: any = {}
-      hasMany['targetModelInstance'] = targetModel
-      const dataBucket: any = {
-        makeCollection(target: any, data: any) {
-          return data
-        }
-      }
+      hasMany['targetModelInstance'] = {} as any
       const getDataBucketStub = Sinon.stub(hasMany, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
+      getDataBucketStub.returns({})
 
-      const spy = Sinon.spy(dataBucket, 'makeCollection')
-
-      expect((hasMany.executeCollector(collector) as any) === result).toBe(true)
-      expect(execStub.calledWith()).toBe(true)
-      expect(spy.calledWith(targetModel, [itemOne, itemTwo])).toBe(true)
-    })
-  })
-
-  describe('.executeQuery()', function() {
-    it('returns query.get()', async function() {
-      const rootModel: any = {}
-      const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
-      const query: any = {
-        async get() {
-          return 'anything'
-        }
-      }
-      expect(await hasMany.executeQuery(query)).toBe('anything')
-    })
-  })
-
-  describe('.getEmptyValue()', function() {
-    it('returns empty collection', function() {
-      const rootModel: any = {}
-      const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
-      expect(isCollection(hasMany.getEmptyValue())).toBe(true)
+      expect(hasMany.getExecutor()).toBeInstanceOf(ManyRowsExecutor)
+      expect(hasMany.getExecutor() === hasMany['executor']).toBe(true)
     })
   })
 

@@ -173,4 +173,16 @@ describe('HasMany Relationship', function() {
       }
     })
   })
+
+  describe('.isInverseOf()', function() {
+    it.skip('could be detect the inverse relationship', function() {
+      const user = new User()
+      const post = new Post()
+      const comment = new Comment()
+
+      console.log(user.postsRelation.isInverseOf(post.userRelation))
+      console.log(post.userRelation.isInverseOf(user.postsRelation))
+      console.log(post.commentsRelation.isInverseOf(comment.postRelation))
+    })
+  })
 })

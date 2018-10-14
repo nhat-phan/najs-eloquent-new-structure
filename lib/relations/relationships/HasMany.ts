@@ -4,8 +4,6 @@
 /// <reference path="../../definitions/relations/IHasManyRelationship.ts" />
 
 import Model = NajsEloquent.Model.IModel
-import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
-import IDataCollector = NajsEloquent.Data.IDataCollector
 import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship
 import Collection = CollectJs.Collection
 
@@ -14,11 +12,12 @@ import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
-import { make_collection } from '../../util/factory'
+import { ManyRowsExecutor } from './executors/ManyRowsExecutor'
 import { ModelEvent } from '../../model/ModelEvent'
 
 export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasMany
+  protected executor: ManyRowsExecutor<T>
 
   getClassName(): string {
     return NajsEloquentClasses.Relation.Relationship.HasMany
@@ -28,16 +27,11 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
     return RelationshipType.HasMany
   }
 
-  async executeQuery(queryBuilder: IQueryBuilder<T>): Promise<Collection<T>> {
-    return queryBuilder.get() as any
-  }
-
-  executeCollector(collector: IDataCollector<any>): Collection<T> {
-    return this.getDataBucket()!.makeCollection(this.targetModel, collector.exec()) as any
-  }
-
-  getEmptyValue(): Collection<T> {
-    return make_collection([]) as Collection<T>
+  getExecutor(): ManyRowsExecutor<T> {
+    if (!this.executor) {
+      this.executor = new ManyRowsExecutor(this.getDataBucket()!, this.targetModel)
+    }
+    return this.executor
   }
 
   associate(...models: Array<T | T[]>): this {

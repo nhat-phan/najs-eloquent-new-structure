@@ -2,14 +2,16 @@
 /// <reference path="../../definitions/relations/IRelationship.ts" />
 /// <reference path="../../definitions/data/IDataCollector.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
+
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
+import IRelationshipExecutor = NajsEloquent.Relation.IRelationshipExecutor
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
-import IDataCollector = NajsEloquent.Data.IDataCollector
 
 import { Relationship } from '../Relationship'
+// import { RelationshipType } from '../RelationshipType'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 
 export abstract class HasOneOrMany<T> extends Relationship<T> {
@@ -24,11 +26,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
 
   abstract getType(): string
 
-  abstract executeQuery(queryBuilder: IQueryBuilder<any>): Promise<T | undefined | null>
-
-  abstract executeCollector(collector: IDataCollector<any>): T | undefined | null
-
-  abstract getEmptyValue(): T | undefined
+  abstract getExecutor(): IRelationshipExecutor<T>
 
   getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
     const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
@@ -49,7 +47,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
     collector.filterBy({
       $and: [new DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())]
     })
-    return this.executeCollector(collector)
+    return this.getExecutor().executeCollector(collector)
   }
 
   async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
@@ -60,7 +58,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
     } else {
       const dataBucket = this.getDataBucket()
       if (!dataBucket) {
-        return this.getEmptyValue()
+        return this.getExecutor().getEmptyValue()
       }
 
       const dataBuffer = dataBucket.getDataOf(this.rootModel)
@@ -69,10 +67,42 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
       query.whereIn(this.targetKeyName, ids)
     }
 
-    return this.executeQuery(query)
+    return this.getExecutor().executeQuery(query)
   }
 
-  isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean {
+  isInverseOf<K>(relationship: NajsEloquent.Relation.IRelationship<K>): boolean {
     return false
+    // if (!(relationship instanceof HasOneOrMany)) {
+    //   console.log('a')
+    //   return false
+    // }
+
+    // if (!this.isInverseOfTypeMatched(relationship)) {
+    //   console.log('b')
+    //   return false
+    // }
+
+    // console.log('c')
+    // return (
+    //   this.rootModel.getModelName() === relationship.targetModel.getModelName() &&
+    //   this.rootKeyName === relationship.targetKeyName &&
+    //   this.targetModel.getModelName() === relationship.rootModel.getModelName() &&
+    //   this.targetKeyName === relationship.rootKeyName
+    // )
   }
+
+  // isInverseOfTypeMatched(relationship: HasOneOrMany<any>) {
+  //   const thisType = this.getType()
+  //   const comparedType = relationship.getType()
+
+  //   if (thisType !== RelationshipType.BelongsTo && comparedType !== RelationshipType.BelongsTo) {
+  //     return false
+  //   }
+
+  //   if (thisType === RelationshipType.BelongsTo) {
+  //     return comparedType === RelationshipType.HasMany || comparedType === RelationshipType.HasOne
+  //   }
+
+  //   return thisType === RelationshipType.HasMany || thisType === RelationshipType.HasOne
+  // }
 }

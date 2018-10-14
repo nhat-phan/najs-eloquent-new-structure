@@ -3,21 +3,18 @@
 /// <reference path="../../definitions/relations/IHasOneRelationship.ts" />
 
 import Model = NajsEloquent.Model.IModel
-import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
-import IDataCollector = NajsEloquent.Data.IDataCollector
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
-import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship
 
 import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { ModelEvent } from '../../model/ModelEvent'
-import { relationFeatureOf } from '../../util/accessors'
+import { OneRowExecutor } from './executors/OneRowExecutor'
 
-export class HasOne<T extends Model> extends HasOneOrMany<T>
-  implements IHasOneRelationship<T>, IBelongsToRelationship<T> {
+export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasOne
+  protected executor: OneRowExecutor<T>
 
   getClassName(): string {
     return NajsEloquentClasses.Relation.Relationship.HasOne
@@ -27,21 +24,11 @@ export class HasOne<T extends Model> extends HasOneOrMany<T>
     return RelationshipType.HasOne
   }
 
-  async executeQuery(queryBuilder: IQueryBuilder<T>): Promise<T | undefined | null> {
-    return queryBuilder.first() as any
-  }
-
-  executeCollector(collector: IDataCollector<any>): T | undefined | null {
-    collector.limit(1)
-    const result = collector.exec()
-    if (result.length === 0) {
-      return undefined
+  getExecutor(): OneRowExecutor<T> {
+    if (!this.executor) {
+      this.executor = new OneRowExecutor(this.getDataBucket()!, this.targetModel)
     }
-    return this.getDataBucket()!.makeModel(this.targetModel, result[0]) as any
-  }
-
-  getEmptyValue(): T | undefined {
-    return undefined
+    return this.executor
   }
 
   associate(model: T) {
@@ -59,13 +46,6 @@ export class HasOne<T extends Model> extends HasOneOrMany<T>
     this.rootModel.once(ModelEvent.Saved, async () => {
       await model.save()
     })
-  }
-
-  dissociate() {
-    this.rootModel.setAttribute(
-      this.rootKeyName,
-      relationFeatureOf(this.rootModel).getEmptyValueForRelationshipForeignKey(this.rootModel, this.rootKeyName)
-    )
   }
 }
 register(HasOne, NajsEloquentClasses.Relation.Relationship.HasOne)

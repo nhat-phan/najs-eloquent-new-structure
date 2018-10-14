@@ -8,7 +8,7 @@ const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const ModelEvent_1 = require("../../model/ModelEvent");
-const accessors_1 = require("../../util/accessors");
+const OneRowExecutor_1 = require("./executors/OneRowExecutor");
 class HasOne extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.HasOne;
@@ -16,19 +16,11 @@ class HasOne extends HasOneOrMany_1.HasOneOrMany {
     getType() {
         return RelationshipType_1.RelationshipType.HasOne;
     }
-    async executeQuery(queryBuilder) {
-        return queryBuilder.first();
-    }
-    executeCollector(collector) {
-        collector.limit(1);
-        const result = collector.exec();
-        if (result.length === 0) {
-            return undefined;
+    getExecutor() {
+        if (!this.executor) {
+            this.executor = new OneRowExecutor_1.OneRowExecutor(this.getDataBucket(), this.targetModel);
         }
-        return this.getDataBucket().makeModel(this.targetModel, result[0]);
-    }
-    getEmptyValue() {
-        return undefined;
+        return this.executor;
     }
     associate(model) {
         // root provides primary key for target, whenever the root get saved target should be updated as well
@@ -44,9 +36,6 @@ class HasOne extends HasOneOrMany_1.HasOneOrMany {
         this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
             await model.save();
         });
-    }
-    dissociate() {
-        this.rootModel.setAttribute(this.rootKeyName, accessors_1.relationFeatureOf(this.rootModel).getEmptyValueForRelationshipForeignKey(this.rootModel, this.rootKeyName));
     }
 }
 HasOne.className = constants_1.NajsEloquent.Relation.Relationship.HasOne;

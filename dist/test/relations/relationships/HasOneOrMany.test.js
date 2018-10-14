@@ -61,11 +61,16 @@ describe('HasOneOrMany', function () {
             const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
             const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
             getDataBucketStub.returns(undefined);
-            const spy = Sinon.spy(relation, 'executeCollector');
+            const executor = {
+                executeCollector() { }
+            };
+            const getExecutorStub = Sinon.stub(relation, 'getExecutor');
+            getExecutorStub.returns(executor);
+            const spy = Sinon.spy(executor, 'executeCollector');
             expect(relation.collectData()).toBe(undefined);
             expect(spy.called).toBe(false);
         });
-        it('creates collector which created for DataBuffer of Target then calls and returns .executorCollector()', function () {
+        it('creates collector which created for DataBuffer of Target then calls and returns .getExecutor().executorCollector()', function () {
             const rootModel = {
                 getAttribute(name) {
                     return name + '-value';
@@ -83,7 +88,12 @@ describe('HasOneOrMany', function () {
             const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
             getDataBucketStub.returns(dataBucket);
             const getDataOfSpy = Sinon.spy(dataBucket, 'getDataOf');
-            const executeCollectorStub = Sinon.stub(relation, 'executeCollector');
+            const executor = {
+                executeCollector() { }
+            };
+            const getExecutorStub = Sinon.stub(relation, 'getExecutor');
+            getExecutorStub.returns(executor);
+            const executeCollectorStub = Sinon.stub(executor, 'executeCollector');
             executeCollectorStub.returns('anything');
             expect(relation.collectData()).toEqual('anything');
             expect(getDataOfSpy.calledWith(targetModel));
@@ -103,7 +113,7 @@ describe('HasOneOrMany', function () {
         });
     });
     describe('.fetchData()', function () {
-        it('gets query from .getQueryBuilder() then pass .where() then calls and returns .executeQuery() for lazy load', async function () {
+        it('gets query from .getQueryBuilder() then pass .where() then calls and returns .getExecutor().executeQuery() for lazy load', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -124,7 +134,12 @@ describe('HasOneOrMany', function () {
             relation['targetModelInstance'] = targetModel;
             const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
             getQueryBuilderStub.returns(query);
-            const executeQueryStub = Sinon.stub(relation, 'executeQuery');
+            const executor = {
+                executeQuery() { }
+            };
+            const getExecutorStub = Sinon.stub(relation, 'getExecutor');
+            getExecutorStub.returns(executor);
+            const executeQueryStub = Sinon.stub(executor, 'executeQuery');
             executeQueryStub.returns('anything');
             const whereSpy = Sinon.spy(query, 'where');
             const whereInSpy = Sinon.spy(query, 'whereIn');
@@ -134,7 +149,7 @@ describe('HasOneOrMany', function () {
             expect(whereSpy.calledWith('target_id', 'id-value')).toBe(true);
             expect(whereInSpy.called).toBe(false);
         });
-        it('gets query from .getQueryBuilder() then calls and returns .getEmptyValue() for eager load if there is no dataBucket', async function () {
+        it('gets query from .getQueryBuilder() then calls and returns .getExecutor().getEmptyValue() for eager load if there is no dataBucket', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -155,9 +170,15 @@ describe('HasOneOrMany', function () {
             relation['targetModelInstance'] = targetModel;
             const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
             getQueryBuilderStub.returns(query);
-            const executeQueryStub = Sinon.stub(relation, 'executeQuery');
+            const executor = {
+                executeQuery() { },
+                getEmptyValue() { }
+            };
+            const getExecutorStub = Sinon.stub(relation, 'getExecutor');
+            getExecutorStub.returns(executor);
+            const executeQueryStub = Sinon.stub(executor, 'executeQuery');
             executeQueryStub.returns('anything');
-            const getEmptyValueStub = Sinon.stub(relation, 'getEmptyValue');
+            const getEmptyValueStub = Sinon.stub(executor, 'getEmptyValue');
             getEmptyValueStub.returns('empty');
             const whereSpy = Sinon.spy(query, 'where');
             const whereInSpy = Sinon.spy(query, 'whereIn');
@@ -167,7 +188,7 @@ describe('HasOneOrMany', function () {
             expect(whereSpy.called).toBe(false);
             expect(whereInSpy.called).toBe(false);
         });
-        it('gets query from .getQueryBuilder() then pass .whereIn() then calls and returns .executeQuery() for eager load', async function () {
+        it('gets query from .getQueryBuilder() then pass .whereIn() then calls and returns .getExecutor().executeQuery() for eager load', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -198,7 +219,13 @@ describe('HasOneOrMany', function () {
             relation['targetModelInstance'] = targetModel;
             const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
             getQueryBuilderStub.returns(query);
-            const executeQueryStub = Sinon.stub(relation, 'executeQuery');
+            const executor = {
+                executeQuery() { },
+                getEmptyValue() { }
+            };
+            const getExecutorStub = Sinon.stub(relation, 'getExecutor');
+            getExecutorStub.returns(executor);
+            const executeQueryStub = Sinon.stub(executor, 'executeQuery');
             executeQueryStub.returns('anything');
             const whereSpy = Sinon.spy(query, 'where');
             const whereInSpy = Sinon.spy(query, 'whereIn');

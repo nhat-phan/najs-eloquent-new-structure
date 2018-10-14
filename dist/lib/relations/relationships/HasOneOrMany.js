@@ -1,6 +1,11 @@
 "use strict";
+/// <reference path="../../definitions/model/IModel.ts" />
+/// <reference path="../../definitions/relations/IRelationship.ts" />
+/// <reference path="../../definitions/data/IDataCollector.ts" />
+/// <reference path="../../definitions/query-builders/IQueryBuilder.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const Relationship_1 = require("../Relationship");
+// import { RelationshipType } from '../RelationshipType'
 const DataConditionMatcher_1 = require("../../data/DataConditionMatcher");
 class HasOneOrMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, targetKey, rootKey) {
@@ -25,7 +30,7 @@ class HasOneOrMany extends Relationship_1.Relationship {
         collector.filterBy({
             $and: [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())]
         });
-        return this.executeCollector(collector);
+        return this.getExecutor().executeCollector(collector);
     }
     async fetchData(type) {
         const query = this.getQueryBuilder(`${this.getType()}:${this.targetModel.getModelName()}`);
@@ -35,17 +40,32 @@ class HasOneOrMany extends Relationship_1.Relationship {
         else {
             const dataBucket = this.getDataBucket();
             if (!dataBucket) {
-                return this.getEmptyValue();
+                return this.getExecutor().getEmptyValue();
             }
             const dataBuffer = dataBucket.getDataOf(this.rootModel);
             const reader = dataBuffer.getDataReader();
             const ids = dataBuffer.map(item => reader.getAttribute(item, this.rootKeyName));
             query.whereIn(this.targetKeyName, ids);
         }
-        return this.executeQuery(query);
+        return this.getExecutor().executeQuery(query);
     }
-    isInverseOf(relation) {
+    isInverseOf(relationship) {
         return false;
+        // if (!(relationship instanceof HasOneOrMany)) {
+        //   console.log('a')
+        //   return false
+        // }
+        // if (!this.isInverseOfTypeMatched(relationship)) {
+        //   console.log('b')
+        //   return false
+        // }
+        // console.log('c')
+        // return (
+        //   this.rootModel.getModelName() === relationship.targetModel.getModelName() &&
+        //   this.rootKeyName === relationship.targetKeyName &&
+        //   this.targetModel.getModelName() === relationship.rootModel.getModelName() &&
+        //   this.targetKeyName === relationship.rootKeyName
+        // )
     }
 }
 exports.HasOneOrMany = HasOneOrMany;
