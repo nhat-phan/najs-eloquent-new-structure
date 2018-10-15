@@ -4,6 +4,7 @@
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelationship = NajsEloquent.Relation.IRelationship
+import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationData = NajsEloquent.Relation.IRelationData
@@ -35,6 +36,8 @@ export abstract class Relationship<T> implements IRelationship<T> {
   }
   protected targetKeyName: string
 
+  protected customQueryFn: IRelationshipQuery<T>
+
   constructor(rootModel: IModel, name: string) {
     this.rootModel = rootModel
     this.name = name
@@ -57,6 +60,18 @@ export abstract class Relationship<T> implements IRelationship<T> {
 
   abstract isInverseOf<K>(relation: IRelationship<K>): boolean
 
+  with(...relations: Array<string | string[]>): this {
+    this.chains = array_unique(this.chains, flatten(arguments).filter(item => item !== ''))
+
+    return this
+  }
+
+  query(cb: IRelationshipQuery<T>): this {
+    this.customQueryFn = cb
+
+    return this
+  }
+
   getName(): string {
     return this.name
   }
@@ -67,12 +82,6 @@ export abstract class Relationship<T> implements IRelationship<T> {
 
   getDataBucket(): IRelationDataBucket | undefined {
     return relationFeatureOf(this.rootModel).getDataBucket(this.rootModel)
-  }
-
-  with(...relations: Array<string | string[]>): this {
-    this.chains = array_unique(this.chains, flatten(arguments).filter(item => item !== ''))
-
-    return this
   }
 
   isLoaded(): boolean {
