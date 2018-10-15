@@ -189,5 +189,23 @@ describe('HasMany Relationship', function() {
       expect(comment.userRelation.isInverseOf(post.commentsRelation)).toBe(false)
       expect(post.commentsRelation.isInverseOf(comment.userRelation)).toBe(false)
     })
+
+    it('should mark the inverse relation loaded automatically', async function() {
+      const user = new User()
+      user.postsRelation.associate(
+        factory(Post, 3)
+          .times(3)
+          .make()
+          .all()
+      )
+      await user.save()
+
+      const result = await User.firstOrFail(user.id)
+      result.load('posts')
+      for (const post of result.posts!) {
+        expect(post.userRelation.isLoaded()).toBe(true)
+        expect(post.user!.toJson()).toEqual(user.toJson())
+      }
+    })
   })
 })

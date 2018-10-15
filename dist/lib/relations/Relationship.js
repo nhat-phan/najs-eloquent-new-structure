@@ -45,17 +45,34 @@ class Relationship {
         if (relationData.hasData()) {
             return relationData.getData();
         }
-        return this.markInverseRelationsToLoaded(relationData.setData(this.collectData()));
+        return this.markInverseRelationshipsToLoaded(relationData.setData(this.collectData()));
     }
-    markInverseRelationsToLoaded(result) {
-        // TODO: implementation needed
-        // if (!result) {
-        //   return result
-        // }
-        // if (isModel(result)) {
-        // }
-        // if (isCollection(result)) {
-        // }
+    markInverseRelationshipsToLoaded(result) {
+        if (!result || !this.getDataBucket()) {
+            return result;
+        }
+        if (helpers_1.isModel(result)) {
+            this.getInverseRelationships(result).forEach(relation => {
+                RelationUtilities_1.RelationUtilities.markLoadedInDataBucket(this, result, relation.getName());
+            });
+            return result;
+        }
+        helpers_1.distinctModelByClassInCollection(result).forEach(model => {
+            this.getInverseRelationships(model).forEach(relation => {
+                RelationUtilities_1.RelationUtilities.markLoadedInDataBucket(this, model, relation.getName());
+            });
+        });
+        return result;
+    }
+    getInverseRelationships(model) {
+        const result = [];
+        const definitions = accessors_1.relationFeatureOf(model).getDefinitions(model);
+        for (const name in definitions) {
+            const relation = model.getRelationshipByName(name);
+            if (this.isInverseOf(relation)) {
+                result.push(relation);
+            }
+        }
         return result;
     }
     async lazyLoad() {

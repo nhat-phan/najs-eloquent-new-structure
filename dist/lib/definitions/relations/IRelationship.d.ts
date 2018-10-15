@@ -18,6 +18,10 @@ declare namespace NajsEloquent.Relation {
          */
         with(...relations: Array<string | string[]>): this;
         /**
+         * Get defined name of the relation.
+         */
+        getName(): string;
+        /**
          * Get data of the relationship.
          */
         getData(): T | undefined | null;

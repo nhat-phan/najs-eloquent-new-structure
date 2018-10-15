@@ -200,12 +200,12 @@ describe('Relation', function () {
             const collectDataStub = Sinon.stub(relation, 'collectData');
             collectDataStub.returns('collected-data');
             const setDataSpy = Sinon.spy(relationData, 'setData');
-            const markInverseRelationsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationsToLoaded');
+            const markInverseRelationshipsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationshipsToLoaded');
             expect(relation.getData()).toBeUndefined();
             expect(getRelationDataStub.called).toBe(false);
             expect(setDataSpy.called).toBe(false);
             expect(collectDataStub.called).toBe(false);
-            expect(markInverseRelationsToLoadedSpy.called).toBe(false);
+            expect(markInverseRelationshipsToLoadedSpy.called).toBe(false);
         });
         it('returns getRelationData().getData() if the relation has data', function () {
             const relationData = {
@@ -228,14 +228,14 @@ describe('Relation', function () {
             const collectDataStub = Sinon.stub(relation, 'collectData');
             collectDataStub.returns('collected-data');
             const setDataSpy = Sinon.spy(relationData, 'setData');
-            const markInverseRelationsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationsToLoaded');
+            const markInverseRelationshipsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationshipsToLoaded');
             expect(relation.getData()).toEqual('anything');
             expect(getRelationDataStub.called).toBe(true);
             expect(setDataSpy.called).toBe(false);
             expect(collectDataStub.called).toBe(false);
-            expect(markInverseRelationsToLoadedSpy.called).toBe(false);
+            expect(markInverseRelationshipsToLoadedSpy.called).toBe(false);
         });
-        it('calls .collectData(), then RelationData.setData() then calls and returns .markInverseRelationsToLoaded()', function () {
+        it('calls .collectData(), then RelationData.setData() then calls and returns .markInverseRelationshipsToLoaded()', function () {
             const relationData = {
                 hasData() {
                     return false;
@@ -256,12 +256,13 @@ describe('Relation', function () {
             const collectDataStub = Sinon.stub(relation, 'collectData');
             collectDataStub.returns('collected-data');
             const setDataSpy = Sinon.spy(relationData, 'setData');
-            const markInverseRelationsToLoadedSpy = Sinon.spy(relation, 'markInverseRelationsToLoaded');
+            const markInverseRelationshipsToLoadedStub = Sinon.stub(relation, 'markInverseRelationshipsToLoaded');
+            markInverseRelationshipsToLoadedStub.returns('collected-data');
             expect(relation.getData()).toEqual('collected-data');
             expect(getRelationDataStub.called).toBe(true);
             expect(setDataSpy.calledWith('collected-data')).toBe(true);
             expect(collectDataStub.called).toBe(true);
-            expect(markInverseRelationsToLoadedSpy.calledWith('collected-data')).toBe(true);
+            expect(markInverseRelationshipsToLoadedStub.calledWith('collected-data')).toBe(true);
         });
     });
     describe('.lazyLoad()', function () {
@@ -286,12 +287,144 @@ describe('Relation', function () {
             expect(stub.calledWith('eager')).toBe(true);
         });
     });
-    describe('.markInverseRelationsToLoaded()', function () {
-        // TODO: implementation needed
-        it('does nothing for now', function () {
+    describe('.markInverseRelationshipsToLoaded()', function () {
+        it('returns the result immediately if result is falsy', function () {
             const rootModel = {};
             const relation = makeRelation(rootModel, 'test');
-            relation.markInverseRelationsToLoaded({});
+            const stub = Sinon.stub(relation, 'getDataBucket');
+            stub.returns({});
+            const dataset = [false, undefined, 0, ''];
+            for (const item in dataset) {
+                expect(relation.markInverseRelationshipsToLoaded(item) === item).toBe(true);
+            }
+        });
+        it('returns the result immediately if there is no dataBucket', function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const stub = Sinon.stub(relation, 'getDataBucket');
+            stub.returns(undefined);
+            const dataset = [true, 1, {}, []];
+            for (const item in dataset) {
+                expect(relation.markInverseRelationshipsToLoaded(item) === item).toBe(true);
+            }
+        });
+        it('calls .getInverseRelationships() and loops then call Utils.markLoadedInDataBucket() if the result isModel()', function () {
+            const distinctModelByClassInCollectionStub = Sinon.stub(Helper, 'distinctModelByClassInCollection');
+            distinctModelByClassInCollectionStub.returns('anything');
+            const isModelStub = Sinon.stub(Helper, 'isModel');
+            isModelStub.returns(true);
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            dataBucketStub.returns({});
+            const relations = [
+                {
+                    getName() {
+                        return 'a';
+                    }
+                },
+                {
+                    getName() {
+                        return 'b';
+                    }
+                }
+            ];
+            const getInverseRelationshipsStub = Sinon.stub(relation, 'getInverseRelationships');
+            getInverseRelationshipsStub.returns(relations);
+            const markLoadedInDataBucketStub = Sinon.stub(RelationUtilities_1.RelationUtilities, 'markLoadedInDataBucket');
+            markLoadedInDataBucketStub.returns('anything');
+            const result = {};
+            expect(relation.markInverseRelationshipsToLoaded(result) === result).toBe(true);
+            expect(distinctModelByClassInCollectionStub.called).toBe(false);
+            expect(isModelStub.called).toBe(true);
+            expect(getInverseRelationshipsStub.calledWith(result)).toBe(true);
+            expect(markLoadedInDataBucketStub.calledTwice).toBe(true);
+            expect(markLoadedInDataBucketStub.firstCall.calledWith(relation, result, 'a')).toBe(true);
+            expect(markLoadedInDataBucketStub.secondCall.calledWith(relation, result, 'b')).toBe(true);
+            markLoadedInDataBucketStub.restore();
+            isModelStub.restore();
+            distinctModelByClassInCollectionStub.restore();
+        });
+        it('uses .distinctModelByClassInCollection() to get sample Model then calls .getInverseRelationships() and loops then call Utils.markLoadedInDataBucket() if the result', function () {
+            const distinctModelByClassInCollectionStub = Sinon.stub(Helper, 'distinctModelByClassInCollection');
+            const modelA = { model: 'a' };
+            const modelB = { model: 'b' };
+            distinctModelByClassInCollectionStub.returns([modelA, modelB]);
+            const isModelStub = Sinon.stub(Helper, 'isModel');
+            isModelStub.returns(false);
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            dataBucketStub.returns({});
+            const relations = [
+                {
+                    getName() {
+                        return 'a';
+                    }
+                },
+                {
+                    getName() {
+                        return 'b';
+                    }
+                }
+            ];
+            const getInverseRelationshipsStub = Sinon.stub(relation, 'getInverseRelationships');
+            getInverseRelationshipsStub.returns(relations);
+            const markLoadedInDataBucketStub = Sinon.stub(RelationUtilities_1.RelationUtilities, 'markLoadedInDataBucket');
+            markLoadedInDataBucketStub.returns('anything');
+            const result = {};
+            expect(relation.markInverseRelationshipsToLoaded(result) === result).toBe(true);
+            expect(isModelStub.called).toBe(true);
+            expect(distinctModelByClassInCollectionStub.called).toBe(true);
+            expect(getInverseRelationshipsStub.calledTwice).toBe(true);
+            expect(getInverseRelationshipsStub.firstCall.calledWith(modelA)).toBe(true);
+            expect(getInverseRelationshipsStub.secondCall.calledWith(modelB)).toBe(true);
+            expect(markLoadedInDataBucketStub.callCount).toEqual(4);
+            expect(markLoadedInDataBucketStub.getCall(0).calledWith(relation, modelA, 'a')).toBe(true);
+            expect(markLoadedInDataBucketStub.getCall(1).calledWith(relation, modelA, 'b')).toBe(true);
+            expect(markLoadedInDataBucketStub.getCall(2).calledWith(relation, modelB, 'a')).toBe(true);
+            expect(markLoadedInDataBucketStub.getCall(3).calledWith(relation, modelB, 'b')).toBe(true);
+            markLoadedInDataBucketStub.restore();
+            isModelStub.restore();
+            distinctModelByClassInCollectionStub.restore();
+        });
+    });
+    describe('.getInverseRelationships()', function () {
+        it('loops all relation in relationDefinitions of given model, then filters out which one matched by .isInverseOf()', function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const data = {
+                a: { name: 'a' },
+                b: { name: 'b' },
+                c: { name: 'c' }
+            };
+            const relationFeature = {
+                getDefinitions() {
+                    return { a: {}, b: {}, c: {} };
+                }
+            };
+            const giveModel = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                },
+                getRelationshipByName(name) {
+                    return data[name];
+                }
+            };
+            const stub = Sinon.stub(relation, 'isInverseOf');
+            stub.callsFake(function (relation) {
+                if (relation['name'] === 'b') {
+                    return false;
+                }
+                return true;
+            });
+            const result = relation.getInverseRelationships(giveModel);
+            expect(result[0] === data.a).toBe(true);
+            expect(result[1] === data.c).toBe(true);
         });
     });
     describe('.loadData()', function () {

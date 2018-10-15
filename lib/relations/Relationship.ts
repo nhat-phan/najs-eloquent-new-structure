@@ -57,7 +57,7 @@ export abstract class Relationship<T> implements IRelationship<T> {
 
   abstract isInverseOf<K>(relation: IRelationship<K>): boolean
 
-  getName() {
+  getName(): string {
     return this.name
   }
 
@@ -89,20 +89,40 @@ export abstract class Relationship<T> implements IRelationship<T> {
       return relationData.getData()
     }
 
-    return this.markInverseRelationsToLoaded(relationData.setData(this.collectData()))
+    return this.markInverseRelationshipsToLoaded(relationData.setData(this.collectData()))
   }
 
-  markInverseRelationsToLoaded<T>(result: T): T {
-    // TODO: implementation needed
-    // if (!result) {
-    //   return result
-    // }
+  markInverseRelationshipsToLoaded(result: any) {
+    if (!result || !this.getDataBucket()) {
+      return result
+    }
 
-    // if (isModel(result)) {
-    // }
+    if (isModel(result)) {
+      this.getInverseRelationships(result).forEach(relation => {
+        Utils.markLoadedInDataBucket(this, result, relation.getName())
+      })
+      return result
+    }
 
-    // if (isCollection(result)) {
-    // }
+    distinctModelByClassInCollection(result).forEach(model => {
+      this.getInverseRelationships(model).forEach(relation => {
+        Utils.markLoadedInDataBucket(this, model, relation.getName())
+      })
+    })
+
+    return result
+  }
+
+  getInverseRelationships(model: IModel): IRelationship<any>[] {
+    const result: IRelationship<any>[] = []
+
+    const definitions = relationFeatureOf(model).getDefinitions(model)
+    for (const name in definitions) {
+      const relation = model.getRelationshipByName(name)
+      if (this.isInverseOf(relation)) {
+        result.push(relation)
+      }
+    }
 
     return result
   }

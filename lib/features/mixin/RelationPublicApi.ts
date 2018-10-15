@@ -22,7 +22,7 @@ export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
     const relationNames: string[] = flatten(arguments)
     return Promise.all(
       relationNames.map(name => {
-        return this.getRelationshipByName(name as any).load()
+        return this.getRelationshipByName(name).load()
       })
     )
   }

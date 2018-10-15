@@ -396,7 +396,7 @@ namespace CollectJs {
      */
     sum<K>(key?: K | ((item: Item) => number | string)): number | string
 
-    [Symbol.iterator]
+    [Symbol.iterator](): IterableIterator<Item>
 
     /**
      * The take method returns a new collection with the specified number of items:

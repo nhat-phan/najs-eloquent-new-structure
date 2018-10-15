@@ -33,7 +33,8 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     with(...relations: Array<string | string[]>): this;
     isLoaded(): boolean;
     getData(): T | undefined | null;
-    markInverseRelationsToLoaded<T>(result: T): T;
+    markInverseRelationshipsToLoaded(result: any): any;
+    getInverseRelationships(model: IModel): IRelationship<any>[];
     lazyLoad(): Promise<T | undefined | null>;
     eagerLoad(): Promise<T | undefined | null>;
     loadData(type: 'lazy' | 'eager'): Promise<any>;
