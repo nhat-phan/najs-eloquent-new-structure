@@ -21,6 +21,14 @@ class Relationship {
         }
         return this.targetModelInstance;
     }
+    with(...relations) {
+        this.chains = functions_1.array_unique(this.chains, lodash_1.flatten(arguments).filter(item => item !== ''));
+        return this;
+    }
+    query(cb) {
+        this.customQueryFn = cb;
+        return this;
+    }
     getName() {
         return this.name;
     }
@@ -29,10 +37,6 @@ class Relationship {
     }
     getDataBucket() {
         return accessors_1.relationFeatureOf(this.rootModel).getDataBucket(this.rootModel);
-    }
-    with(...relations) {
-        this.chains = functions_1.array_unique(this.chains, lodash_1.flatten(arguments).filter(item => item !== ''));
-        return this;
     }
     isLoaded() {
         return this.getRelationData().isLoaded() || RelationUtilities_1.RelationUtilities.isLoadedInDataBucket(this, this.rootModel, this.name);

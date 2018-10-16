@@ -10,7 +10,11 @@ class Post extends lib_1.Model {
         return this.defineRelation('user').belongsTo(User);
     }
     get commentsRelation() {
-        return this.defineRelation('comments').hasMany(Comment);
+        return this.defineRelation('comments')
+            .hasMany(Comment)
+            .query(qb => {
+            qb.where('status', 'accepted');
+        });
     }
 }
 lib_1.Model.register(Post);
@@ -44,7 +48,7 @@ lib_1.Factory.define(Post, (faker, attributes) => {
     });
 });
 lib_1.Factory.define(Comment, (faker, attributes) => {
-    return Object.assign({}, attributes, {
+    return Object.assign({ status: 'accepted' }, attributes, {
         content: faker.paragraph()
     });
 });
@@ -91,6 +95,21 @@ describe('HasMany Relationship', function () {
         expect(firstPost.comments.count()).toEqual(2);
         expect(firstPost.comments.map(item => item.post_id).all()).toEqual([firstPost.id, firstPost.id]);
         expect(firstPost.comments.map(item => item.id).all()).toEqual((await Comment.where('post_id', firstPost.id).get()).map(item => item.id).all());
+    });
+    describe('.query()', function () {
+        it('should work with custom query', async function () {
+            const post = await lib_1.factory(Post).create();
+            const acceptedComments = await lib_1.factory(Comment)
+                .times(2)
+                .create({ status: 'accepted' });
+            const disabledComments = await lib_1.factory(Comment)
+                .times(2)
+                .create({ status: 'disabled' });
+            post.commentsRelation.associate(acceptedComments.all(), disabledComments.all());
+            await post.save();
+            await post.load('comments');
+            expect(post.comments.map(item => item.toJson())).toEqual(acceptedComments.map(item => item.toJson()));
+        });
     });
     describe('.associate()', function () {
         it('should work with new model', async function () {

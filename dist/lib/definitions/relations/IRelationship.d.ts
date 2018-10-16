@@ -10,6 +10,9 @@ declare namespace NajsEloquent.Relation {
         [name in string]: RelationDefinition;
     };
     type RelationshipFetchType = 'lazy' | 'eager';
+    interface IRelationshipQuery<T> {
+        (queryBuilder: QueryBuilder.IQueryBuilder<T>): any;
+    }
     interface IRelationship<T> {
         /**
          * Set sub-relation with will be loaded when current relation load.
@@ -17,6 +20,10 @@ declare namespace NajsEloquent.Relation {
          * @param relations
          */
         with(...relations: Array<string | string[]>): this;
+        /**
+         * Add custom query to relationship.
+         */
+        query(cb: IRelationshipQuery<T>): this;
         /**
          * Get defined name of the relation.
          */

@@ -36,7 +36,7 @@ export abstract class Relationship<T> implements IRelationship<T> {
   }
   protected targetKeyName: string
 
-  protected customQueryFn: IRelationshipQuery<T>
+  protected customQueryFn: IRelationshipQuery<T> | undefined
 
   constructor(rootModel: IModel, name: string) {
     this.rootModel = rootModel

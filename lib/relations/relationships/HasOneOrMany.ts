@@ -31,6 +31,13 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
   getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
     const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
     queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+    return this.applyCustomQuery(queryBuilder)
+  }
+
+  applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any> {
+    if (typeof this.customQueryFn === 'function') {
+      this.customQueryFn.call(queryBuilder, queryBuilder)
+    }
     return queryBuilder
   }
 

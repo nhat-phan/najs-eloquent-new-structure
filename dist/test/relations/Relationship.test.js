@@ -39,6 +39,28 @@ describe('Relation', function () {
             makeStub.restore();
         });
     });
+    describe('.with()', function () {
+        it('is chainable, flattens arguments then append to property "chains"', function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            expect(relation.with('a', 'b', ['c', 'd']) === relation).toBe(true);
+            expect(relation['chains']).toEqual(['a', 'b', 'c', 'd']);
+            expect(relation.with(['a', 'e'], 'b', 'f', ['c', 'd']) === relation).toBe(true);
+            expect(relation['chains']).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
+        });
+    });
+    describe('.query()', function () {
+        it('is chainable, simply assigns the callback to property "customQueryFn"', function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const cb = function () { };
+            expect(relation.query(cb) === relation).toBe(true);
+            expect(relation['customQueryFn'] === cb).toBe(true);
+            const anotherCb = function () { };
+            expect(relation.query(anotherCb) === relation).toBe(true);
+            expect(relation['customQueryFn'] === anotherCb).toBe(true);
+        });
+    });
     describe('.getName()', function () {
         it('simply returns the name property', function () {
             const rootModel = {};
@@ -90,16 +112,6 @@ describe('Relation', function () {
             const spy = Sinon.spy(relationFeature, 'getDataBucket');
             expect(relation.getDataBucket()).toEqual('anything');
             expect(spy.calledWith(rootModel)).toBe(true);
-        });
-    });
-    describe('.with()', function () {
-        it('is chainable, flattens arguments then append to property "chains"', function () {
-            const rootModel = {};
-            const relation = makeRelation(rootModel, 'test');
-            expect(relation.with('a', 'b', ['c', 'd']) === relation).toBe(true);
-            expect(relation['chains']).toEqual(['a', 'b', 'c', 'd']);
-            expect(relation.with(['a', 'e'], 'b', 'f', ['c', 'd']) === relation).toBe(true);
-            expect(relation['chains']).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
         });
     });
     describe('.isLoaded()', function () {

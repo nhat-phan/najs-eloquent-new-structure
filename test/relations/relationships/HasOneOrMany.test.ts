@@ -62,6 +62,57 @@ describe('HasOneOrMany', function() {
       expect(newQuerySpy.calledWith('name')).toBe(true)
       expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
     })
+
+    it('passes the queryBuilder to .applyCustomQuery() then returns the result', function() {
+      const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
+      const queryBuilder: any = {
+        handler: {
+          setRelationDataBucket() {}
+        }
+      }
+      const targetModel: any = {
+        newQuery() {
+          return queryBuilder
+        }
+      }
+      relation['targetModelInstance'] = targetModel
+
+      const dataBucket: any = {}
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns(dataBucket)
+
+      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
+      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
+
+      const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery')
+      applyCustomQueryStub.returns('anything')
+
+      expect(relation.getQueryBuilder('name')).toEqual('anything')
+      expect(newQuerySpy.calledWith('name')).toBe(true)
+      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
+      expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true)
+    })
+  })
+
+  describe('.applyCustomQuery()', function() {
+    it('returns the given queryBuilder if property "customQueryFn" is not a function', function() {
+      const queryBuilder: any = {}
+      const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
+      expect(relation.applyCustomQuery(queryBuilder) === queryBuilder).toBe(true)
+    })
+
+    it('calls "customQueryFn" if it is a function, then still returns the queryBuilder', function() {
+      const queryBuilder: any = {}
+      const fn: any = function() {}
+      const spy = Sinon.spy(fn)
+
+      const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
+      relation.query(spy)
+
+      expect(relation.applyCustomQuery(queryBuilder) === queryBuilder).toBe(true)
+      expect(spy.calledWith(queryBuilder)).toBe(true)
+      expect(spy.lastCall.thisValue === queryBuilder).toBe(true)
+    })
   })
 
   describe('.collectData()', function() {

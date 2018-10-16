@@ -14,6 +14,7 @@ export declare abstract class HasOneOrMany<T> extends Relationship<T> {
     abstract getType(): string;
     abstract getExecutor(): IRelationshipExecutor<T>;
     getQueryBuilder(name: string | undefined): IQueryBuilder<any>;
+    applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     collectData(): T | undefined | null;
     fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
     isInverseOf<K>(relationship: NajsEloquent.Relation.IRelationship<K>): boolean;

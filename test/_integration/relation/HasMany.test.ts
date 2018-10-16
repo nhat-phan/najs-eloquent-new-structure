@@ -19,7 +19,11 @@ class Post extends Model {
   }
 
   get commentsRelation() {
-    return this.defineRelation('comments').hasMany(Comment)
+    return this.defineRelation('comments')
+      .hasMany(Comment)
+      .query(qb => {
+        qb.where('status', 'accepted')
+      })
   }
 }
 Model.register(Post)
@@ -44,6 +48,7 @@ class Comment extends Model {
   post_id: string
   user_id: string
   content: string
+  status: string
 
   getClassName() {
     return 'Comment'
@@ -70,7 +75,7 @@ Factory.define(Post, (faker, attributes) => {
 })
 
 Factory.define(Comment, (faker, attributes) => {
-  return Object.assign({}, attributes, {
+  return Object.assign({ status: 'accepted' }, attributes, {
     content: faker.paragraph()
   })
 })
@@ -135,6 +140,25 @@ describe('HasMany Relationship', function() {
     expect(firstPost.comments!.map(item => item.id).all()).toEqual(
       (await Comment.where('post_id', firstPost.id).get()).map(item => item.id).all()
     )
+  })
+
+  describe('.query()', function() {
+    it('should work with custom query', async function() {
+      const post = await factory(Post).create()
+
+      const acceptedComments = await factory(Comment)
+        .times(2)
+        .create({ status: 'accepted' })
+      const disabledComments = await factory(Comment)
+        .times(2)
+        .create({ status: 'disabled' })
+
+      post.commentsRelation.associate(acceptedComments.all(), disabledComments.all())
+      await post.save()
+
+      await post.load('comments')
+      expect(post.comments!.map(item => item.toJson())).toEqual(acceptedComments.map(item => item.toJson()))
+    })
   })
 
   describe('.associate()', function() {

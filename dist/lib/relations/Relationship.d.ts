@@ -3,6 +3,7 @@
 import IModel = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IRelationship = NajsEloquent.Relation.IRelationship;
+import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IRelationData = NajsEloquent.Relation.IRelationData;
@@ -15,6 +16,7 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     protected targetDefinition: ModelDefinition;
     protected readonly targetModel: IModel;
     protected targetKeyName: string;
+    protected customQueryFn: IRelationshipQuery<T> | undefined;
     constructor(rootModel: IModel, name: string);
     abstract getClassName(): string;
     abstract getType(): string;
@@ -27,10 +29,11 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
      */
     abstract fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
     abstract isInverseOf<K>(relation: IRelationship<K>): boolean;
+    with(...relations: Array<string | string[]>): this;
+    query(cb: IRelationshipQuery<T>): this;
     getName(): string;
     getRelationData(): IRelationData<T>;
     getDataBucket(): IRelationDataBucket | undefined;
-    with(...relations: Array<string | string[]>): this;
     isLoaded(): boolean;
     getData(): T | undefined | null;
     markInverseRelationshipsToLoaded(result: any): any;
