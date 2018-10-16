@@ -85,10 +85,9 @@ describe('HasMany Relationship', function() {
     const user = new User()
 
     user.postsRelation.associate(
-      factory(Post, 3)
+      factory(Post)
         .times(3)
         .make()
-        .all()
     )
     await user.save()
 
@@ -116,18 +115,16 @@ describe('HasMany Relationship', function() {
     const post = await factory(Post).create({ user_id: user.id })
     user.postsRelation.associate(
       post,
-      factory(Post, 3)
+      factory(Post)
         .times(3)
         .make()
-        .all()
     )
     await user.save()
 
     post.commentsRelation.associate(
-      factory(Comment, 2)
+      factory(Comment)
         .times(2)
         .make()
-        .all()
     )
     await post.save()
 
@@ -166,10 +163,9 @@ describe('HasMany Relationship', function() {
       const user = new User()
 
       user.postsRelation.associate(
-        factory(Post, 3)
+        factory(Post)
           .times(3)
           .make()
-          .all()
       )
       await user.save()
 
@@ -184,10 +180,9 @@ describe('HasMany Relationship', function() {
       await user.save()
 
       user.postsRelation.associate(
-        factory(Post, 3)
+        factory(Post)
           .times(3)
           .make()
-          .all()
       )
       await user.save()
 
@@ -217,10 +212,9 @@ describe('HasMany Relationship', function() {
     it('should mark the inverse relation loaded automatically', async function() {
       const user = new User()
       user.postsRelation.associate(
-        factory(Post, 3)
+        factory(Post)
           .times(3)
           .make()
-          .all()
       )
       await user.save()
 

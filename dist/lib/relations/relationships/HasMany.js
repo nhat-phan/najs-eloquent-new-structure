@@ -11,6 +11,7 @@ const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const ManyRowsExecutor_1 = require("./executors/ManyRowsExecutor");
 const ModelEvent_1 = require("../../model/ModelEvent");
+const helpers_1 = require("../../util/helpers");
 class HasMany extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.HasMany;
@@ -26,7 +27,9 @@ class HasMany extends HasOneOrMany_1.HasOneOrMany {
     }
     associate(...models) {
         // root provides primary key for target, whenever the root get saved target should be updated as well
-        const associatedModels = lodash_1.flatten(models);
+        const associatedModels = lodash_1.flatten(models.map(item => {
+            return helpers_1.isCollection(item) ? item.all() : item;
+        }));
         const primaryKey = this.rootModel.getAttribute(this.rootKeyName);
         if (!primaryKey) {
             this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {

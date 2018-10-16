@@ -14,6 +14,7 @@ import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { ManyRowsExecutor } from './executors/ManyRowsExecutor'
 import { ModelEvent } from '../../model/ModelEvent'
+import { isCollection } from '../../util/helpers'
 
 export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasMany
@@ -34,9 +35,13 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
     return this.executor
   }
 
-  associate(...models: Array<T | T[]>): this {
+  associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
     // root provides primary key for target, whenever the root get saved target should be updated as well
-    const associatedModels = flatten(models)
+    const associatedModels: T[] = flatten(
+      models.map(item => {
+        return isCollection(item) ? (item as CollectJs.Collection<T>).all() : (item as T | T[])
+      })
+    )
 
     const primaryKey = this.rootModel.getAttribute(this.rootKeyName)
     if (!primaryKey) {

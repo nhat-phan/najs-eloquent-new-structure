@@ -1,1 +1,1 @@
-/// <reference path="../collect.js/index.d.ts"
+/// <reference path="../collect.js/index.d.ts" />

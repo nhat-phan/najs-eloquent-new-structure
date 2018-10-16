@@ -13,5 +13,5 @@ export declare class HasMany<T extends Model> extends HasOneOrMany<Collection<T>
     getClassName(): string;
     getType(): string;
     getExecutor(): ManyRowsExecutor<T>;
-    associate(...models: Array<T | T[]>): this;
+    associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
 }

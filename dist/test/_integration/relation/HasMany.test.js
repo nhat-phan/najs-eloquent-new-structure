@@ -55,10 +55,9 @@ lib_1.Factory.define(Comment, (faker, attributes) => {
 describe('HasMany Relationship', function () {
     it('should work as expected', async function () {
         const user = new User();
-        user.postsRelation.associate(lib_1.factory(Post, 3)
+        user.postsRelation.associate(lib_1.factory(Post)
             .times(3)
-            .make()
-            .all());
+            .make());
         await user.save();
         expect(user.posts).toBeUndefined();
         await user.load('posts');
@@ -79,15 +78,13 @@ describe('HasMany Relationship', function () {
     it('could be loaded via chain', async function () {
         const user = await lib_1.factory(User).create();
         const post = await lib_1.factory(Post).create({ user_id: user.id });
-        user.postsRelation.associate(post, lib_1.factory(Post, 3)
+        user.postsRelation.associate(post, lib_1.factory(Post)
             .times(3)
-            .make()
-            .all());
+            .make());
         await user.save();
-        post.commentsRelation.associate(lib_1.factory(Comment, 2)
+        post.commentsRelation.associate(lib_1.factory(Comment)
             .times(2)
-            .make()
-            .all());
+            .make());
         await post.save();
         const firstUser = await User.findOrFail(user.id);
         await firstUser.load('posts.comments');
@@ -114,10 +111,9 @@ describe('HasMany Relationship', function () {
     describe('.associate()', function () {
         it('should work with new model', async function () {
             const user = new User();
-            user.postsRelation.associate(lib_1.factory(Post, 3)
+            user.postsRelation.associate(lib_1.factory(Post)
                 .times(3)
-                .make()
-                .all());
+                .make());
             await user.save();
             const posts = await Post.where('user_id', user.id).get();
             for (const post of posts) {
@@ -127,10 +123,9 @@ describe('HasMany Relationship', function () {
         it('should work with existing model', async function () {
             const user = new User();
             await user.save();
-            user.postsRelation.associate(lib_1.factory(Post, 3)
+            user.postsRelation.associate(lib_1.factory(Post)
                 .times(3)
-                .make()
-                .all());
+                .make());
             await user.save();
             const posts = await Post.where('user_id', user.id).get();
             for (const post of posts) {
@@ -152,10 +147,9 @@ describe('HasMany Relationship', function () {
         });
         it('should mark the inverse relation loaded automatically', async function () {
             const user = new User();
-            user.postsRelation.associate(lib_1.factory(Post, 3)
+            user.postsRelation.associate(lib_1.factory(Post)
                 .times(3)
-                .make()
-                .all());
+                .make());
             await user.save();
             const result = await User.firstOrFail(user.id);
             result.load('posts');
