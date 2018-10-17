@@ -15,6 +15,7 @@ import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { ManyRowsExecutor } from './executors/ManyRowsExecutor'
 import { ModelEvent } from '../../model/ModelEvent'
 import { isCollection } from '../../util/helpers'
+// import { relationFeatureOf } from '../../util/accessors'
 
 export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasMany
@@ -35,13 +36,17 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
     return this.executor
   }
 
-  associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
-    // root provides primary key for target, whenever the root get saved target should be updated as well
-    const associatedModels: T[] = flatten(
+  flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[] {
+    return flatten(
       models.map(item => {
         return isCollection(item) ? (item as CollectJs.Collection<T>).all() : (item as T | T[])
       })
     )
+  }
+
+  associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
+    // root provides primary key for target, whenever the root get saved target should be updated as well
+    const associatedModels: T[] = this.flattenArguments.apply(this, arguments)
 
     const primaryKey = this.rootModel.getAttribute(this.rootKeyName)
     if (!primaryKey) {
@@ -61,5 +66,21 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
     })
     return this
   }
+
+  // dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
+  //   const dissociatedModels: T[] = this.flattenArguments.apply(this, arguments)
+
+  //   dissociatedModels.forEach(model => {
+  //     model.setAttribute(
+  //       this.targetKeyName,
+  //       relationFeatureOf(model).getEmptyValueForRelationshipForeignKey(model, this.targetKeyName)
+  //     )
+  //   })
+  //   this.rootModel.once(ModelEvent.Saved, async () => {
+  //     await Promise.all(dissociatedModels.map(model => model.save()))
+  //   })
+
+  //   return this
+  // }
 }
 register(HasMany, NajsEloquentClasses.Relation.Relationship.HasMany)

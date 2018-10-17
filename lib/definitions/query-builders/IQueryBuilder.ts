@@ -4,22 +4,18 @@
 /// <reference path="../query-grammars/IConditionQuery.ts" />
 
 namespace NajsEloquent.QueryBuilder {
-  export type OmittedResult<T, K> = Pick<T, Exclude<keyof T, (keyof QueryBuilder.IQueryBuilder<any>) | (keyof K)>>
-  export type OmittedQueryBuilderResult<T> = Pick<T, Exclude<keyof T, keyof QueryBuilder.IQueryBuilder<any>>>
+  // export type OmittedResult<T, K> = Pick<T, Exclude<keyof T, (keyof QueryBuilder.IQueryBuilder<any>) | (keyof K)>>
+  // export type OmittedQueryBuilderResult<T> = Pick<T, Exclude<keyof T, keyof QueryBuilder.IQueryBuilder<any>>>
 
-  export declare class IQueryBuilder<
-    T,
-    Handler extends IQueryBuilderHandler = IQueryBuilderHandler,
-    OmittedMethods = {}
-  > {
+  export declare class IQueryBuilder<T, Handler extends IQueryBuilderHandler = IQueryBuilderHandler> {
     protected handler: Handler
   }
 
-  export interface IQueryBuilder<T, Handler extends IQueryBuilderHandler = IQueryBuilderHandler, OmittedMethods = {}>
+  export interface IQueryBuilder<T, Handler extends IQueryBuilderHandler = IQueryBuilderHandler>
     extends QueryGrammar.IQuery,
       QueryGrammar.IConditionQuery,
       QueryGrammar.IExecuteQuery,
-      QueryGrammar.IAdvancedQuery<OmittedResult<T, OmittedMethods>> {}
+      QueryGrammar.IAdvancedQuery<T> {}
 
   export type QueryBuilderInternal = IQueryBuilder<any> & { handler: NajsEloquent.QueryBuilder.IQueryBuilderHandler }
 }

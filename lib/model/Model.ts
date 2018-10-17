@@ -2,7 +2,6 @@
 /// <reference path="../definitions/collect.js/index.d.ts" />
 
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
-import OmittedQueryBuilderResult = NajsEloquent.QueryBuilder.OmittedQueryBuilderResult
 import SubCondition = NajsEloquent.QueryGrammar.SubCondition
 import Range = NajsEloquent.QueryGrammar.Range
 
@@ -328,10 +327,7 @@ export class Model {
    *
    * @param {string} id
    */
-  static findById<T extends typeof Model>(
-    this: T,
-    id: any
-  ): Promise<OmittedQueryBuilderResult<InstanceType<T>> | null> {
+  static findById<T extends typeof Model>(this: T, id: any): Promise<InstanceType<T> | null> {
     const query = this.newQuery()
     return query.findById.apply(query, arguments)
   }
@@ -340,7 +336,7 @@ export class Model {
    * Find first record by id and throws NotFoundException if there is no record
    * @param {string} id
    */
-  static findOrFail<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>>> {
+  static findOrFail<T extends typeof Model>(this: T, id: any): Promise<InstanceType<T>> {
     const query = this.newQuery()
     return query.findOrFail.apply(query, arguments)
   }
@@ -349,7 +345,7 @@ export class Model {
    * Find first record by id and throws NotFoundException if there is no record
    * @param {string} id
    */
-  static firstOrFail<T extends typeof Model>(this: T, id: any): Promise<OmittedQueryBuilderResult<InstanceType<T>>> {
+  static firstOrFail<T extends typeof Model>(this: T, id: any): Promise<InstanceType<T>> {
     const query = this.newQuery()
     return query.firstOrFail.apply(query, arguments)
   }

@@ -133,6 +133,19 @@ describe('HasMany Relationship', function () {
             }
         });
     });
+    describe('.dissociate()', function () {
+        it.only('should work when the root model get saved', async function () {
+            const user = new User();
+            const posts = lib_1.factory(Post, 5).make();
+            user.postsRelation.associate(posts);
+            await user.save();
+            await user.load('posts');
+            expect(posts.pluck('id', 'id').all()).toEqual(user.posts.pluck('id', 'id').all());
+            // const postA = await Post.findOrFail(posts.get(1)!.id)
+            // const postB = await Post.findOrFail(posts.get(3)!.id)
+            // user.postsRelation.dissociate(postA, postB)
+        });
+    });
     describe('.isInverseOf()', function () {
         it('could be detect the inverse relationship', function () {
             const user = new User();

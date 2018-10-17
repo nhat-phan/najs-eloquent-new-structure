@@ -147,36 +147,34 @@ namespace NajsEloquent.Model {
     /**
      * Execute query and returns the first record.
      */
-    first(): Promise<QueryBuilder.OmittedQueryBuilderResult<this> | null>
+    first(): Promise<this | null>
     /**
      * Find first record by id
      */
-    first(id: any): Promise<QueryBuilder.OmittedQueryBuilderResult<this> | null>
+    first(id: any): Promise<this | null>
 
     /**
      * Execute query and returns the first record.
      */
-    find(): Promise<QueryBuilder.OmittedQueryBuilderResult<this> | null>
+    find(): Promise<this | null>
     /**
      * Find first record by id
      */
-    find(id: any): Promise<QueryBuilder.OmittedQueryBuilderResult<this> | null>
+    find(id: any): Promise<this | null>
 
     /**
      * Execute query and return the records as a Collection.
      */
-    get(): Promise<CollectJs.Collection<QueryBuilder.OmittedQueryBuilderResult<this>>>
+    get(): Promise<CollectJs.Collection<this>>
     /**
      * Select some fields and get the result as Collection
      */
-    get(
-      ...fields: Array<string | string[]>
-    ): Promise<CollectJs.Collection<QueryBuilder.OmittedQueryBuilderResult<this>>>
+    get(...fields: Array<string | string[]>): Promise<CollectJs.Collection<this>>
 
     /**
      * Execute query and return the records as a Collection.
      */
-    all(): Promise<CollectJs.Collection<QueryBuilder.OmittedQueryBuilderResult<this>>>
+    all(): Promise<CollectJs.Collection<this>>
 
     /**
      * Execute query and returns count of records.
@@ -196,18 +194,18 @@ namespace NajsEloquent.Model {
      * Find first record by id
      * @param {string} id
      */
-    findById(id: any): Promise<QueryBuilder.OmittedQueryBuilderResult<this> | null>
+    findById(id: any): Promise<this | null>
 
     /**
      * Find first record by id and throws NotFoundException if there is no record
      * @param {string} id
      */
-    findOrFail(id: any): Promise<QueryBuilder.OmittedQueryBuilderResult<this>>
+    findOrFail(id: any): Promise<this>
 
     /**
      * Find first record by id and throws NotFoundException if there is no record
      * @param {string} id
      */
-    firstOrFail(id: any): Promise<QueryBuilder.OmittedQueryBuilderResult<this>>
+    firstOrFail(id: any): Promise<this>
   }
 }
