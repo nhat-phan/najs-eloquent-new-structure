@@ -37,5 +37,15 @@ describe('Syntax/Factory', function () {
                 .make()
                 .doSomething();
         });
+        it('should detect the collection or singular model base on amount argument', function () {
+            lib_1.factory(User).make().first_name = 'test';
+            lib_1.factory(User, 2)
+                .make()
+                .map(item => item.toJson());
+            lib_1.factory(User, 'default').make().first_name = 'test';
+            lib_1.factory(User, 'default', 2)
+                .make()
+                .map(item => item.toJson());
+        });
     });
 });

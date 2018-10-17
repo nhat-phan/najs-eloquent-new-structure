@@ -1,3 +1,4 @@
+/// <reference path="FactoryBuilder.d.ts" />
 /// <reference path="../../../lib/definitions/collect.js/index.d.ts" />
 /// <reference path="../definitions/model/IModel.d.ts" />
 /// <reference path="../definitions/factory/IFactoryDefinition.d.ts" />
@@ -6,10 +7,10 @@ import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IFactoryDefinition = NajsEloquent.Factory.IFactoryDefinition;
 declare namespace Najs.Contracts.Eloquent {
     interface FactoryFunction {
-        <T extends Model>(className: ModelDefinition<T>): Najs.Contracts.Eloquent.FactoryBuilder<T>;
-        <T extends Model>(className: ModelDefinition<T>, name: string): Najs.Contracts.Eloquent.FactoryBuilder<T>;
-        <T extends Model>(className: ModelDefinition<T>, amount: number): Najs.Contracts.Eloquent.FactoryBuilder<T>;
-        <T extends Model>(className: ModelDefinition<T>, name: string, amount: number): Najs.Contracts.Eloquent.FactoryBuilder<T>;
+        <T extends Model>(className: ModelDefinition<T>): FactoryBuilder<T>;
+        <T extends Model>(className: ModelDefinition<T>, name: string): FactoryBuilder<T>;
+        <T extends Model>(className: ModelDefinition<T>, amount: number): FactoryBuilder<CollectJs.Collection<T>>;
+        <T extends Model>(className: ModelDefinition<T>, name: string, amount: number): FactoryBuilder<CollectJs.Collection<T>>;
     }
     interface FactoryManager {
         /**

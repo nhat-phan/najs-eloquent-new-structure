@@ -54,5 +54,19 @@ describe('Syntax/Factory', function() {
         .make()
         .doSomething()
     })
+
+    it('should detect the collection or singular model base on amount argument', function() {
+      factory(User).make().first_name = 'test'
+
+      factory(User, 2)
+        .make()
+        .map(item => item.toJson())
+
+      factory(User, 'default').make().first_name = 'test'
+
+      factory(User, 'default', 2)
+        .make()
+        .map(item => item.toJson())
+    })
   })
 })
