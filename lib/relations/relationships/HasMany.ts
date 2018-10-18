@@ -15,7 +15,7 @@ import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { ManyRowsExecutor } from './executors/ManyRowsExecutor'
 import { ModelEvent } from '../../model/ModelEvent'
 import { isCollection } from '../../util/helpers'
-// import { relationFeatureOf } from '../../util/accessors'
+import { relationFeatureOf } from '../../util/accessors'
 
 export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasMany
@@ -67,20 +67,20 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
     return this
   }
 
-  // dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
-  //   const dissociatedModels: T[] = this.flattenArguments.apply(this, arguments)
+  dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
+    const dissociatedModels: T[] = this.flattenArguments.apply(this, arguments)
 
-  //   dissociatedModels.forEach(model => {
-  //     model.setAttribute(
-  //       this.targetKeyName,
-  //       relationFeatureOf(model).getEmptyValueForRelationshipForeignKey(model, this.targetKeyName)
-  //     )
-  //   })
-  //   this.rootModel.once(ModelEvent.Saved, async () => {
-  //     await Promise.all(dissociatedModels.map(model => model.save()))
-  //   })
+    dissociatedModels.forEach(model => {
+      model.setAttribute(
+        this.targetKeyName,
+        relationFeatureOf(model).getEmptyValueForRelationshipForeignKey(model, this.targetKeyName)
+      )
+    })
+    this.rootModel.once(ModelEvent.Saved, async () => {
+      await Promise.all(dissociatedModels.map(model => model.save()))
+    })
 
-  //   return this
-  // }
+    return this
+  }
 }
 register(HasMany, NajsEloquentClasses.Relation.Relationship.HasMany)

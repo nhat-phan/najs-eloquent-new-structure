@@ -12,7 +12,7 @@ const constants_1 = require("../../constants");
 const ManyRowsExecutor_1 = require("./executors/ManyRowsExecutor");
 const ModelEvent_1 = require("../../model/ModelEvent");
 const helpers_1 = require("../../util/helpers");
-// import { relationFeatureOf } from '../../util/accessors'
+const accessors_1 = require("../../util/accessors");
 class HasMany extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.HasMany;
@@ -44,6 +44,16 @@ class HasMany extends HasOneOrMany_1.HasOneOrMany {
         associatedModels.forEach(model => model.setAttribute(this.targetKeyName, primaryKey));
         this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
             await Promise.all(associatedModels.map(model => model.save()));
+        });
+        return this;
+    }
+    dissociate(...models) {
+        const dissociatedModels = this.flattenArguments.apply(this, arguments);
+        dissociatedModels.forEach(model => {
+            model.setAttribute(this.targetKeyName, accessors_1.relationFeatureOf(model).getEmptyValueForRelationshipForeignKey(model, this.targetKeyName));
+        });
+        this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+            await Promise.all(dissociatedModels.map(model => model.save()));
         });
         return this;
     }

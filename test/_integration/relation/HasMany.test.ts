@@ -194,19 +194,30 @@ describe('HasMany Relationship', function() {
   })
 
   describe('.dissociate()', function() {
-    it.only('should work when the root model get saved', async function() {
+    it('should work when the root model get saved', async function() {
       const user = new User()
       const posts = factory(Post, 5).make()
       user.postsRelation.associate(posts)
       await user.save()
 
       await user.load('posts')
-      expect(posts.pluck('id', 'id').all()).toEqual(user.posts!.pluck('id', 'id').all())
+      expect(user.posts!.pluck('id', 'id').all()).toEqual(posts.pluck('id', 'id').all())
 
-      // const postA = await Post.findOrFail(posts.get(1)!.id)
-      // const postB = await Post.findOrFail(posts.get(3)!.id)
+      const postA = await Post.findOrFail(posts.get(1)!.id)
+      const postB = await Post.findOrFail(posts.get(3)!.id)
 
-      // user.postsRelation.dissociate(postA, postB)
+      user.postsRelation.dissociate(postA, postB)
+      expect(postA.user_id).toBeNull()
+      expect(postB.user_id).toBeNull()
+      await user.save()
+
+      const result = await User.findOrFail(user.id)
+      await result.load('posts')
+      expect(result.posts!.pluck('id', 'id').all()).toEqual({
+        [posts.get(0)!.id]: posts.get(0)!.id,
+        [posts.get(2)!.id]: posts.get(2)!.id,
+        [posts.get(4)!.id]: posts.get(4)!.id
+      })
     })
   })
 

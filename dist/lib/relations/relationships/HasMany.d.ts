@@ -15,4 +15,5 @@ export declare class HasMany<T extends Model> extends HasOneOrMany<Collection<T>
     getExecutor(): ManyRowsExecutor<T>;
     flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[];
     associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
+    dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
 }
