@@ -4,7 +4,6 @@ require("jest");
 const Sinon = require("sinon");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const QueryFeature_1 = require("../../lib/features/QueryFeature");
-const QueryPublicApi_1 = require("../../lib/features/mixin/QueryPublicApi");
 describe('QueryFeature', function () {
     const factory = {
         make() { }
@@ -15,8 +14,8 @@ describe('QueryFeature', function () {
         expect(queryFeature.getClassName()).toEqual('NajsEloquent.Feature.QueryFeature');
     });
     describe('.getPublicApi()', function () {
-        it('returns QueryPublicApi', function () {
-            expect(queryFeature.getPublicApi() === QueryPublicApi_1.QueryPublicApi).toBe(true);
+        it('returns undefined', function () {
+            expect(queryFeature.getPublicApi()).toBeUndefined();
         });
     });
     describe('.getFeatureName()', function () {

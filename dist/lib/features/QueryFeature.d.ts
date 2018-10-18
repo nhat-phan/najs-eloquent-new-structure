@@ -6,7 +6,7 @@ import { FeatureBase } from './FeatureBase';
 export declare class QueryFeature extends FeatureBase implements NajsEloquent.Feature.IQueryFeature {
     protected factory: NajsEloquent.QueryBuilder.IQueryBuilderFactory;
     constructor(factory: NajsEloquent.QueryBuilder.IQueryBuilderFactory);
-    getPublicApi(): object;
+    getPublicApi(): object | undefined;
     getFeatureName(): string;
     getClassName(): string;
     newQuery(model: NajsEloquent.Model.IModel): NajsEloquent.QueryBuilder.IQueryBuilder<any>;

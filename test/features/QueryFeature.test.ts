@@ -2,7 +2,6 @@ import 'jest'
 import * as Sinon from 'sinon'
 import { FeatureBase } from '../../lib/features/FeatureBase'
 import { QueryFeature } from '../../lib/features/QueryFeature'
-import { QueryPublicApi } from '../../lib/features/mixin/QueryPublicApi'
 
 describe('QueryFeature', function() {
   const factory: any = {
@@ -16,8 +15,8 @@ describe('QueryFeature', function() {
   })
 
   describe('.getPublicApi()', function() {
-    it('returns QueryPublicApi', function() {
-      expect(queryFeature.getPublicApi() === QueryPublicApi).toBe(true)
+    it('returns undefined', function() {
+      expect(queryFeature.getPublicApi()).toBeUndefined()
     })
   })
 

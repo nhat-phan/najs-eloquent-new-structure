@@ -7,7 +7,6 @@
 /// <reference path="./IModelTimestamps.ts" />
 /// <reference path="./IModelSoftDeletes.ts" />
 /// <reference path="./IModelRelation.ts" />
-/// <reference path="./IModelQuery.ts" />
 /// <reference path="../relations/IRelationDataBucket.ts" />
 /// <reference path="../query-builders/IQueryBuilder.ts" />
 var NajsEloquent;

@@ -6,7 +6,6 @@
 /// <reference path="IModelTimestamps.d.ts" />
 /// <reference path="IModelSoftDeletes.d.ts" />
 /// <reference path="IModelRelation.d.ts" />
-/// <reference path="IModelQuery.d.ts" />
 /// <reference path="../relations/IRelationDataBucket.d.ts" />
 /// <reference path="../query-builders/IQueryBuilder.d.ts" />
 declare namespace NajsEloquent.Model {
@@ -60,7 +59,7 @@ declare namespace NajsEloquent.Model {
          */
         protected internalData: IModelInternalData;
     }
-    interface IModel extends IModelRecord, IModelEvent, IModelFillable, IModelSerialization, IModelTimestamps, IModelSoftDeletes, IModelRelation, IModelQuery {
+    interface IModel extends IModelRecord, IModelEvent, IModelFillable, IModelSerialization, IModelTimestamps, IModelSoftDeletes, IModelRelation {
         /**
          * Primary key of the model
          */

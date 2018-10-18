@@ -26,7 +26,6 @@
 /// <reference path="definitions/model/IModel.d.ts" />
 /// <reference path="definitions/model/IModelEvent.d.ts" />
 /// <reference path="definitions/model/IModelFillable.d.ts" />
-/// <reference path="definitions/model/IModelQuery.d.ts" />
 /// <reference path="definitions/model/IModelRecord.d.ts" />
 /// <reference path="definitions/model/IModelRelation.d.ts" />
 /// <reference path="definitions/model/IModelSerialization.d.ts" />

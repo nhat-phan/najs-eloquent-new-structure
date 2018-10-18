@@ -6,7 +6,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
-const QueryPublicApi_1 = require("./mixin/QueryPublicApi");
 const constants_1 = require("../constants");
 class QueryFeature extends FeatureBase_1.FeatureBase {
     constructor(factory) {
@@ -14,7 +13,7 @@ class QueryFeature extends FeatureBase_1.FeatureBase {
         this.factory = factory;
     }
     getPublicApi() {
-        return QueryPublicApi_1.QueryPublicApi;
+        return undefined;
     }
     getFeatureName() {
         return 'Query';

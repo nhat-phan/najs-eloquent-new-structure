@@ -5,7 +5,6 @@
 
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
-import { QueryPublicApi } from './mixin/QueryPublicApi'
 import { NajsEloquent } from '../constants'
 
 export class QueryFeature extends FeatureBase implements NajsEloquent.Feature.IQueryFeature {
@@ -16,8 +15,8 @@ export class QueryFeature extends FeatureBase implements NajsEloquent.Feature.IQ
     this.factory = factory
   }
 
-  getPublicApi(): object {
-    return QueryPublicApi
+  getPublicApi(): object | undefined {
+    return undefined
   }
 
   getFeatureName(): string {

@@ -28,7 +28,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="definitions/model/IModel.ts" />
 /// <reference path="definitions/model/IModelEvent.ts" />
 /// <reference path="definitions/model/IModelFillable.ts" />
-/// <reference path="definitions/model/IModelQuery.ts" />
 /// <reference path="definitions/model/IModelRecord.ts" />
 /// <reference path="definitions/model/IModelRelation.ts" />
 /// <reference path="definitions/model/IModelSerialization.ts" />
