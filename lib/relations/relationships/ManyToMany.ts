@@ -5,16 +5,18 @@
 // import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 
+import { register, ClassRegistry, make } from 'najs-binding'
 import { Relationship } from '../Relationship'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { PivotModel } from './pivot/PivotModel'
+import { isModel } from '../../util/helpers'
 
 export class ManyToMany<T> extends Relationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.ManyToMany
 
   protected pivot: ModelDefinition
-  protected pivotModel: PivotModel
+  protected pivotModelInstance: Model
   protected pivotDefinition: typeof PivotModel
   protected pivotTargetKeyName: string
   protected pivotRootKeyName: string
@@ -46,6 +48,30 @@ export class ManyToMany<T> extends Relationship<T> {
     return NajsEloquentClasses.Relation.Relationship.ManyToMany
   }
 
+  protected get pivotModel(): Model {
+    if (!this.pivotModelInstance) {
+      this.pivotModelInstance = this.getPivotModel()
+    }
+    return this.pivotModelInstance
+  }
+
+  getPivotModel(): Model {
+    if (typeof this.pivot === 'string') {
+      if (ClassRegistry.has(this.pivot)) {
+        const instance = make<Model>(this.pivot)
+        if (isModel(instance)) {
+          return instance
+        }
+      }
+
+      // the pivot is not a model then we should create an pivot model
+      this.pivotDefinition = PivotModel.createPivotClass(this.pivot)
+      return Reflect.construct(this.pivotDefinition, [])
+    }
+
+    return Reflect.construct(this.pivot, [])
+  }
+
   collectData(): T | undefined | null {
     return undefined
   }
@@ -58,3 +84,4 @@ export class ManyToMany<T> extends Relationship<T> {
     return false
   }
 }
+register(ManyToMany, NajsEloquentClasses.Relation.Relationship.ManyToMany)

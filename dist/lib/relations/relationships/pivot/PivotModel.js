@@ -2,13 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const Model_1 = require("../../../model/Model");
+const PrototypeManager_1 = require("../../../util/PrototypeManager");
 class PivotModel extends Model_1.Model {
     /**
      * Make new Pivot Model type
      *
      * @param modelName
      */
-    static make(modelName, className) {
+    static createPivotClass(modelName, className) {
         if (typeof className === 'undefined') {
             className = `NajsEloquent.Pivot.${modelName}`;
         }
@@ -28,3 +29,4 @@ class PivotModel extends Model_1.Model {
     }
 }
 exports.PivotModel = PivotModel;
+PrototypeManager_1.PrototypeManager.stopFindingRelationsIn(PivotModel);

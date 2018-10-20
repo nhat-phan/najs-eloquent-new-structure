@@ -1,5 +1,6 @@
 import { register, ClassRegistry } from 'najs-binding'
 import { Model } from '../../../model/Model'
+import { PrototypeManager } from '../../../util/PrototypeManager'
 
 export class PivotModel extends Model {
   /**
@@ -7,7 +8,7 @@ export class PivotModel extends Model {
    *
    * @param modelName
    */
-  static make(modelName: string, className?: string): typeof PivotModel {
+  static createPivotClass(modelName: string, className?: string): typeof PivotModel {
     if (typeof className === 'undefined') {
       className = `NajsEloquent.Pivot.${modelName}`
     }
@@ -30,3 +31,4 @@ export class PivotModel extends Model {
     return ModelClass
   }
 }
+PrototypeManager.stopFindingRelationsIn(PivotModel)

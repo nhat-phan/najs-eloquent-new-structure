@@ -5,5 +5,5 @@ export declare class PivotModel extends Model {
      *
      * @param modelName
      */
-    static make(modelName: string, className?: string): typeof PivotModel;
+    static createPivotClass(modelName: string, className?: string): typeof PivotModel;
 }
