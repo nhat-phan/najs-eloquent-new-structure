@@ -2,13 +2,14 @@
 /// <reference path="../definitions/relations/IRelationship.d.ts" />
 /// <reference path="../definitions/relations/IRelationshipFactory.d.ts" />
 /// <reference path="../definitions/relations/IHasOneRelationship.d.ts" />
+/// <reference path="../definitions/relations/IManyToManyRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IRelationship = NajsEloquent.Relation.IRelationship;
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship;
 import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship;
 import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship;
-import './relationships/HasOne';
+import IManyToManyRelationship = NajsEloquent.Relation.IManyToManyRelationship;
 export declare class RelationshipFactory {
     protected rootModel: IModel;
     protected name: string;
@@ -23,4 +24,7 @@ export declare class RelationshipFactory {
     hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOneRelationship<T>;
     hasMany<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasManyRelationship<T>;
     belongsTo<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IBelongsToRelationship<T>;
+    findPivotTableName(a: IModel, b: IModel): string;
+    findPivotReferenceName(model: IModel): string;
+    belongsToMany<T extends IModel>(target: Definition<T>, pivot?: Definition<any>, pivotTargetKeyName?: string, pivotRootKeyName?: string, targetKeyName?: string, rootKeyName?: string): IManyToManyRelationship<T>;
 }

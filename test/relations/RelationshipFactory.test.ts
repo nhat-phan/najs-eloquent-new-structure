@@ -360,4 +360,327 @@ describe('RelationshipFactory', function() {
       makeStub.restore()
     })
   })
+
+  describe('.findPivotTableName()', function() {
+    it('formats the model name by .formatAttributeName() of each model, then sort and join with _, pluralizes the result', function() {
+      const dataset = [
+        {
+          a: { name: 'LongNamespace.Is.Okay.Name', formatted: 'NAME' },
+          b: { name: 'LongNamespace.Is.Okay.Book', formatted: 'book' },
+          result: 'book_NAMES'
+        },
+        {
+          a: { name: 'NajsEloquent.User', formatted: 'user' },
+          b: { name: 'Najs.Role', formatted: 'role' },
+          result: 'role_users'
+        },
+        {
+          a: { name: 'NajsEloquent.User', formatted: 'user' },
+          b: { name: 'Najs.User', formatted: 'user' },
+          result: 'user_users'
+        },
+        {
+          a: { name: 'NajsEloquent.Account', formatted: 'account' },
+          b: { name: 'Najs.Company', formatted: 'company' },
+          result: 'account_companies'
+        }
+      ]
+      for (const data of dataset) {
+        const a: any = {
+          formatAttributeName(name: string) {
+            return data.a.formatted
+          },
+          getModelName() {
+            return data.a.name
+          }
+        }
+
+        const b: any = {
+          formatAttributeName(name: string) {
+            return data.b.formatted
+          },
+          getModelName() {
+            return data.b.name
+          }
+        }
+
+        const rootModel: any = {}
+        const factory = new RelationshipFactory(rootModel, 'test')
+        expect(factory.findPivotTableName(a, b)).toEqual(data.result)
+        expect(factory.findPivotTableName(b, a)).toEqual(data.result)
+      }
+    })
+  })
+
+  describe('.findPivotReferenceName()', function() {
+    it('returns the modelName formatted by .formatAttributeName() with the _id in the end', function() {
+      const dataset = [
+        { name: 'User', result: 'User_id' },
+        { name: 'LongNameSpace.Company', result: 'Company_id' },
+        { name: 'LongNameSpace.Anything', result: 'Anything_id' }
+      ]
+      for (const data of dataset) {
+        const model: any = {
+          formatAttributeName(name: string) {
+            return 'formatted-' + name
+          },
+          getModelName() {
+            return data.name
+          }
+        }
+
+        const rootModel: any = {}
+        const factory = new RelationshipFactory(rootModel, 'test')
+        expect(factory.findPivotReferenceName(model)).toEqual('formatted-' + data.result)
+      }
+    })
+  })
+
+  describe('.belongsToMany()', function() {
+    it('creates pivot via .findPivotTableName() if pivot is not found', function() {
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+      const spy = Sinon.spy(factory, 'findPivotTableName')
+
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.belongsToMany('Target', undefined, 'pivot_target_id', 'pivot_root_id', 'id', 'id')
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+          'Target',
+          'Root_Targets',
+          'pivot_target_id',
+          'pivot_root_id',
+          'id',
+          'id'
+        ])
+      ).toBe(true)
+      expect(spy.calledWith(targetModel, rootModel)).toBe(true)
+      makeStub.restore()
+    })
+
+    it('creates pivotTargetKeyName via .findPivotReferenceName() if pivotTargetKeyName is not found', function() {
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+      const spy = Sinon.spy(factory, 'findPivotReferenceName')
+
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.belongsToMany('Target', 'pivot', undefined, 'pivot_root_id', 'id', 'id')
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+          'Target',
+          'pivot',
+          'Target_id',
+          'pivot_root_id',
+          'id',
+          'id'
+        ])
+      ).toBe(true)
+      expect(spy.calledWith(targetModel)).toBe(true)
+      makeStub.restore()
+    })
+
+    it('creates pivotRootKeyName via .findPivotReferenceName() if pivotRootKeyName is not found', function() {
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+      const spy = Sinon.spy(factory, 'findPivotReferenceName')
+
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.belongsToMany('Target', 'pivot', 'pivot_target_id', undefined, 'id', 'id')
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+          'Target',
+          'pivot',
+          'pivot_target_id',
+          'Root_id',
+          'id',
+          'id'
+        ])
+      ).toBe(true)
+      expect(spy.calledWith(rootModel)).toBe(true)
+      makeStub.restore()
+    })
+
+    it('creates targetKeyName via targetModel.getPrimaryKey() if targetKeyName is not found', function() {
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return name
+        },
+        getPrimaryKeyName() {
+          return 'anything'
+        }
+      }
+
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.belongsToMany('Target', 'pivot', 'pivot_target_id', 'pivot_root_id', undefined, 'id')
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+          'Target',
+          'pivot',
+          'pivot_target_id',
+          'pivot_root_id',
+          'anything',
+          'id'
+        ])
+      ).toBe(true)
+      makeStub.restore()
+    })
+
+    it('creates rootKeyName via rootModel.getPrimaryKey() if rootKeyName is not found', function() {
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        },
+        formatAttributeName(name: string) {
+          return name
+        },
+        getPrimaryKeyName() {
+          return 'anything'
+        }
+      }
+
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.belongsToMany('Target', 'pivot', 'pivot_target_id', 'pivot_root_id', 'id', undefined)
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+          'Target',
+          'pivot',
+          'pivot_target_id',
+          'pivot_root_id',
+          'id',
+          'anything'
+        ])
+      ).toBe(true)
+      makeStub.restore()
+    })
+
+    it('finally returns a ManyToMany relationship', function() {
+      const makeStub = Sinon.stub(NajsBinding, 'make')
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        },
+        formatAttributeName(name: string) {
+          return name
+        }
+      }
+
+      makeStub.returns(targetModel)
+
+      const factory = new RelationshipFactory(rootModel, 'test')
+
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.belongsToMany('Target', 'pivot', 'pivot_target_id', 'pivot_root_id', 'id', 'id')
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+          'Target',
+          'pivot',
+          'pivot_target_id',
+          'pivot_root_id',
+          'id',
+          'id'
+        ])
+      ).toBe(true)
+      makeStub.restore()
+    })
+  })
 })

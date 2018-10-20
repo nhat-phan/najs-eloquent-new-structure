@@ -6,6 +6,15 @@ const Relationship_1 = require("../Relationship");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 class ManyToMany extends Relationship_1.Relationship {
+    constructor(root, relationName, target, pivot, pivotTargetKeyName, pivotRootKeyName, targetKeyName, rootKeyName) {
+        super(root, relationName);
+        this.targetDefinition = target;
+        this.pivot = pivot;
+        this.pivotTargetKeyName = pivotTargetKeyName;
+        this.pivotRootKeyName = pivotRootKeyName;
+        this.targetKeyName = targetKeyName;
+        this.rootKeyName = rootKeyName;
+    }
     getType() {
         return RelationshipType_1.RelationshipType.ManyToMany;
     }
