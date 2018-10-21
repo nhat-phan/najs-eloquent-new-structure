@@ -3,6 +3,7 @@
 
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import IRelationship = NajsEloquent.Relation.IRelationship
 import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
@@ -70,6 +71,13 @@ export abstract class Relationship<T> implements IRelationship<T> {
     this.customQueryFn = cb
 
     return this
+  }
+
+  applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any> {
+    if (typeof this.customQueryFn === 'function') {
+      this.customQueryFn.call(queryBuilder, queryBuilder)
+    }
+    return queryBuilder
   }
 
   getName(): string {

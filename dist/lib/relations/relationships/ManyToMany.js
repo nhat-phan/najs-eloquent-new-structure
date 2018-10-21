@@ -2,12 +2,14 @@
 /// <reference path="../../definitions/model/IModel.ts" />
 /// <reference path="../../definitions/relations/IRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+// import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 const najs_binding_1 = require("najs-binding");
 const Relationship_1 = require("../Relationship");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const PivotModel_1 = require("./pivot/PivotModel");
 const helpers_1 = require("../../util/helpers");
+// import { make_collection } from '../../util/factory'
 class ManyToMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, pivot, pivotTargetKeyName, pivotRootKeyName, targetKeyName, rootKeyName) {
         super(root, relationName);
@@ -49,6 +51,34 @@ class ManyToMany extends Relationship_1.Relationship {
     collectData() {
         return undefined;
     }
+    // getPivotQueryBuilder(name: string | undefined): IQueryBuilder<any> {
+    //   const queryBuilder = this.pivotModel.newQuery(name as any) as QueryBuilderInternal
+    //   queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+    //   return queryBuilder
+    // }
+    // getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
+    //   const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
+    //   queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+    //   return this.applyCustomQuery(queryBuilder)
+    // }
+    // async fetchPivotData(type: RelationshipFetchType) {
+    //   const query = this.getPivotQueryBuilder(
+    //     `${this.getType()}Pivot:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`
+    //   )
+    //   if (type === 'lazy') {
+    //     query.where(this.pivotRootKeyName, this.rootModel.getAttribute(this.rootKeyName))
+    //   } else {
+    //     const dataBucket = this.getDataBucket()
+    //     if (!dataBucket) {
+    //       return make_collection([])
+    //     }
+    //     const dataBuffer = dataBucket.getDataOf(this.rootModel)
+    //     const reader = dataBuffer.getDataReader()
+    //     const ids = dataBuffer.map(item => reader.getAttribute(item, this.rootKeyName))
+    //     query.whereIn(this.pivotRootKeyName, ids)
+    //   }
+    //   return query.get()
+    // }
     async fetchData(type) {
         return undefined;
     }

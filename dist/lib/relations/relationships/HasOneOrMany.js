@@ -19,12 +19,6 @@ class HasOneOrMany extends Relationship_1.Relationship {
         queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
         return this.applyCustomQuery(queryBuilder);
     }
-    applyCustomQuery(queryBuilder) {
-        if (typeof this.customQueryFn === 'function') {
-            this.customQueryFn.call(queryBuilder, queryBuilder);
-        }
-        return queryBuilder;
-    }
     collectData() {
         const dataBucket = this.getDataBucket();
         if (!dataBucket) {

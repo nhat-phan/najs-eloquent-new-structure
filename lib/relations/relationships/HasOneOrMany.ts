@@ -34,13 +34,6 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
     return this.applyCustomQuery(queryBuilder)
   }
 
-  applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any> {
-    if (typeof this.customQueryFn === 'function') {
-      this.customQueryFn.call(queryBuilder, queryBuilder)
-    }
-    return queryBuilder
-  }
-
   collectData(): T | undefined | null {
     const dataBucket = this.getDataBucket()
     if (!dataBucket) {

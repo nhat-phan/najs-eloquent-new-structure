@@ -94,27 +94,6 @@ describe('HasOneOrMany', function() {
     })
   })
 
-  describe('.applyCustomQuery()', function() {
-    it('returns the given queryBuilder if property "customQueryFn" is not a function', function() {
-      const queryBuilder: any = {}
-      const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
-      expect(relation.applyCustomQuery(queryBuilder) === queryBuilder).toBe(true)
-    })
-
-    it('calls "customQueryFn" if it is a function, then still returns the queryBuilder', function() {
-      const queryBuilder: any = {}
-      const fn: any = function() {}
-      const spy = Sinon.spy(fn)
-
-      const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')
-      relation.query(spy)
-
-      expect(relation.applyCustomQuery(queryBuilder) === queryBuilder).toBe(true)
-      expect(spy.calledWith(queryBuilder)).toBe(true)
-      expect(spy.lastCall.thisValue === queryBuilder).toBe(true)
-    })
-  })
-
   describe('.collectData()', function() {
     it('returns undefined if there is no DataBucket', function() {
       const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id')

@@ -71,6 +71,29 @@ describe('Relation', function() {
     })
   })
 
+  describe('.applyCustomQuery()', function() {
+    it('returns the given queryBuilder if property "customQueryFn" is not a function', function() {
+      const rootModel: any = {}
+      const queryBuilder: any = {}
+      const relation = makeRelation(rootModel, 'test')
+      expect(relation.applyCustomQuery(queryBuilder) === queryBuilder).toBe(true)
+    })
+
+    it('calls "customQueryFn" if it is a function, then still returns the queryBuilder', function() {
+      const queryBuilder: any = {}
+      const fn: any = function() {}
+      const spy = Sinon.spy(fn)
+
+      const rootModel: any = {}
+      const relation = makeRelation(rootModel, 'test')
+      relation.query(spy)
+
+      expect(relation.applyCustomQuery(queryBuilder) === queryBuilder).toBe(true)
+      expect(spy.calledWith(queryBuilder)).toBe(true)
+      expect(spy.lastCall.thisValue === queryBuilder).toBe(true)
+    })
+  })
+
   describe('.getName()', function() {
     it('simply returns the name property', function() {
       const rootModel: any = {}

@@ -29,6 +29,12 @@ class Relationship {
         this.customQueryFn = cb;
         return this;
     }
+    applyCustomQuery(queryBuilder) {
+        if (typeof this.customQueryFn === 'function') {
+            this.customQueryFn.call(queryBuilder, queryBuilder);
+        }
+        return queryBuilder;
+    }
     getName() {
         return this.name;
     }

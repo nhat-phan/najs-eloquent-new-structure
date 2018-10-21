@@ -2,6 +2,7 @@
 /// <reference path="../definitions/relations/IRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import IRelationship = NajsEloquent.Relation.IRelationship;
 import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
@@ -31,6 +32,7 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     abstract isInverseOf<K>(relation: IRelationship<K>): boolean;
     with(...relations: Array<string | string[]>): this;
     query(cb: IRelationshipQuery<T>): this;
+    applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     getName(): string;
     getRelationData(): IRelationData<T>;
     getDataBucket(): IRelationDataBucket | undefined;
