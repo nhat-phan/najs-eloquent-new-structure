@@ -9,7 +9,7 @@ class PivotModel extends Model_1.Model {
      *
      * @param modelName
      */
-    static createPivotClass(modelName, className) {
+    static createPivotClass(modelName, options, className) {
         if (typeof className === 'undefined') {
             className = `NajsEloquent.Pivot.${modelName}`;
         }
@@ -17,6 +17,10 @@ class PivotModel extends Model_1.Model {
             return najs_binding_1.ClassRegistry.findOrFail(className).instanceConstructor;
         }
         class ModelClass extends PivotModel {
+            constructor() {
+                super(...arguments);
+                this.pivotOptions = options;
+            }
             getClassName() {
                 return className;
             }

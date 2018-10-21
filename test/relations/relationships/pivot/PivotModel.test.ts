@@ -14,12 +14,20 @@ describe('PivotModel', function() {
     it('creates an ModelClass which is extends from PivotModel', function() {
       const registerSpy = Sinon.spy(NajsBinding, 'register')
 
-      const classDefinition = PivotModel.createPivotClass('test')
+      const classDefinition = PivotModel.createPivotClass('test', { foreignKeys: ['a', 'b'] })
       expect(typeof classDefinition).toBe('function')
-      const instance = Reflect.construct(classDefinition, [])
+      const instance: PivotModel = Reflect.construct(classDefinition, [])
       expect(instance).toBeInstanceOf(classDefinition)
       expect(instance).toBeInstanceOf(PivotModel)
       expect(instance).toBeInstanceOf(Model)
+      expect(
+        instance
+          .getDriver()
+          .getSettingFeature()
+          .getSettingProperty(instance, 'pivotOptions', {})
+      ).toEqual({
+        foreignKeys: ['a', 'b']
+      })
 
       expect(ClassRegistry.has('NajsEloquent.Pivot.test')).toBe(true)
       expect(ClassRegistry.findOrFail('NajsEloquent.Pivot.test').instanceConstructor === classDefinition).toBe(true)
@@ -29,7 +37,7 @@ describe('PivotModel', function() {
 
     it('never recreates if the class already created', function() {
       const registerSpy = Sinon.spy(NajsBinding, 'register')
-      const classDefinition = PivotModel.createPivotClass('test')
+      const classDefinition = PivotModel.createPivotClass('test', { foreignKeys: ['a', 'b'] })
 
       expect(typeof classDefinition).toBe('function')
       expect(registerSpy.called).toBe(false)
@@ -38,7 +46,7 @@ describe('PivotModel', function() {
 
     it('can create with custom className', function() {
       const registerSpy = Sinon.spy(NajsBinding, 'register')
-      const classDefinition = PivotModel.createPivotClass('test', 'CustomClassName')
+      const classDefinition = PivotModel.createPivotClass('test', { foreignKeys: ['a', 'b'] }, 'CustomClassName')
 
       expect(typeof classDefinition).toBe('function')
       expect(registerSpy.calledWith(classDefinition, 'CustomClassName')).toBe(true)

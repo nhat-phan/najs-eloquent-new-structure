@@ -93,10 +93,14 @@ describe('ManyToMany', function() {
       stub.returns(A)
 
       const rootModel: any = {}
-      const relationship = new ManyToMany(rootModel, 'a', 'b', 'pivot', 'd', 'e', 'f', 'g')
+      const relationship = new ManyToMany(rootModel, 'a', 'b', 'pivot', 'root_id', 'target_id', 'f', 'g')
       expect(relationship.getPivotModel()).toBeInstanceOf(A)
       expect(relationship['pivotDefinition'] === A).toBe(true)
-      expect(stub.calledWith('pivot')).toBe(true)
+      expect(
+        stub.calledWith('pivot', {
+          foreignKeys: ['root_id', 'target_id']
+        })
+      ).toBe(true)
       stub.restore()
     })
 
@@ -109,10 +113,14 @@ describe('ManyToMany', function() {
       register(ClassInRegistry, 'class-in-registry')
 
       const rootModel: any = {}
-      const relationship = new ManyToMany(rootModel, 'a', 'b', 'class-in-registry', 'd', 'e', 'f', 'g')
+      const relationship = new ManyToMany(rootModel, 'a', 'b', 'class-in-registry', 'target_id', 'root_id', 'f', 'g')
       expect(relationship.getPivotModel()).toBeInstanceOf(A)
       expect(relationship['pivotDefinition'] === A).toBe(true)
-      expect(stub.calledWith('class-in-registry')).toBe(true)
+      expect(
+        stub.calledWith('class-in-registry', {
+          foreignKeys: ['root_id', 'target_id']
+        })
+      ).toBe(true)
       stub.restore()
     })
 

@@ -65,7 +65,9 @@ export class ManyToMany<T> extends Relationship<T> {
       }
 
       // the pivot is not a model then we should create an pivot model
-      this.pivotDefinition = PivotModel.createPivotClass(this.pivot)
+      this.pivotDefinition = PivotModel.createPivotClass(this.pivot, {
+        foreignKeys: [this.pivotRootKeyName, this.pivotTargetKeyName].sort() as [string, string]
+      })
       return Reflect.construct(this.pivotDefinition, [])
     }
 

@@ -39,7 +39,9 @@ class ManyToMany extends Relationship_1.Relationship {
                 }
             }
             // the pivot is not a model then we should create an pivot model
-            this.pivotDefinition = PivotModel_1.PivotModel.createPivotClass(this.pivot);
+            this.pivotDefinition = PivotModel_1.PivotModel.createPivotClass(this.pivot, {
+                foreignKeys: [this.pivotRootKeyName, this.pivotTargetKeyName].sort()
+            });
             return Reflect.construct(this.pivotDefinition, []);
         }
         return Reflect.construct(this.pivot, []);

@@ -77,10 +77,12 @@ describe('ManyToMany', function () {
             const stub = Sinon.stub(PivotModel_1.PivotModel, 'createPivotClass');
             stub.returns(A);
             const rootModel = {};
-            const relationship = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'pivot', 'd', 'e', 'f', 'g');
+            const relationship = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'pivot', 'root_id', 'target_id', 'f', 'g');
             expect(relationship.getPivotModel()).toBeInstanceOf(A);
             expect(relationship['pivotDefinition'] === A).toBe(true);
-            expect(stub.calledWith('pivot')).toBe(true);
+            expect(stub.calledWith('pivot', {
+                foreignKeys: ['root_id', 'target_id']
+            })).toBe(true);
             stub.restore();
         });
         it('calls PivotModel.createPivotClass() and assigns result to pivotDefinition, then use Reflect.construct() to create an instance if pivot in ClassRegistry but not Model instance', function () {
@@ -92,10 +94,12 @@ describe('ManyToMany', function () {
             }
             najs_binding_1.register(ClassInRegistry, 'class-in-registry');
             const rootModel = {};
-            const relationship = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'class-in-registry', 'd', 'e', 'f', 'g');
+            const relationship = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'class-in-registry', 'target_id', 'root_id', 'f', 'g');
             expect(relationship.getPivotModel()).toBeInstanceOf(A);
             expect(relationship['pivotDefinition'] === A).toBe(true);
-            expect(stub.calledWith('class-in-registry')).toBe(true);
+            expect(stub.calledWith('class-in-registry', {
+                foreignKeys: ['root_id', 'target_id']
+            })).toBe(true);
             stub.restore();
         });
         it('simply calls and returns Reflect.construct(this.pivot) if the pivot is a Constructor function', function () {
