@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Relationship_1 = require("../Relationship");
 const RelationshipType_1 = require("../RelationshipType");
 const DataConditionMatcher_1 = require("../../data/DataConditionMatcher");
+const RelationUtilities_1 = require("../RelationUtilities");
 class HasOneOrMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, targetKey, rootKey) {
         super(root, relationName);
@@ -42,9 +43,7 @@ class HasOneOrMany extends Relationship_1.Relationship {
             if (!dataBucket) {
                 return this.getExecutor().getEmptyValue();
             }
-            const dataBuffer = dataBucket.getDataOf(this.rootModel);
-            const reader = dataBuffer.getDataReader();
-            const ids = dataBuffer.map(item => reader.getAttribute(item, this.rootKeyName));
+            const ids = RelationUtilities_1.RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName);
             query.whereIn(this.targetKeyName, ids);
         }
         return this.getExecutor().executeQuery(query);

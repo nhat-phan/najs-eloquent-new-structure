@@ -13,6 +13,7 @@ import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 import { Relationship } from '../Relationship'
 import { RelationshipType } from '../RelationshipType'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
+import { RelationUtilities } from '../RelationUtilities'
 
 export abstract class HasOneOrMany<T> extends Relationship<T> {
   constructor(root: Model, relationName: string, target: ModelDefinition, targetKey: string, rootKey: string) {
@@ -61,9 +62,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
         return this.getExecutor().getEmptyValue()
       }
 
-      const dataBuffer = dataBucket.getDataOf(this.rootModel)
-      const reader = dataBuffer.getDataReader()
-      const ids = dataBuffer.map(item => reader.getAttribute(item, this.rootKeyName))
+      const ids = RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName)
       query.whereIn(this.targetKeyName, ids)
     }
 

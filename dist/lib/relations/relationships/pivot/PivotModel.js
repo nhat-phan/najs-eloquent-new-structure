@@ -16,10 +16,10 @@ class PivotModel extends Model_1.Model {
         if (najs_binding_1.ClassRegistry.has(className)) {
             return najs_binding_1.ClassRegistry.findOrFail(className).instanceConstructor;
         }
-        class ModelClass extends PivotModel {
+        class Pivot extends PivotModel {
             constructor() {
                 super(...arguments);
-                this.pivotOptions = options;
+                this.options = options;
             }
             getClassName() {
                 return className;
@@ -28,8 +28,8 @@ class PivotModel extends Model_1.Model {
                 return modelName;
             }
         }
-        najs_binding_1.register(ModelClass, className);
-        return ModelClass;
+        najs_binding_1.register(Pivot, className);
+        return Pivot;
     }
 }
 exports.PivotModel = PivotModel;

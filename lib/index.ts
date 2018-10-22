@@ -76,7 +76,7 @@ export { Builtin as NajsEloquent } from './builtin'
 export type HasOne<T extends Model> = T | undefined | null
 export type BelongsTo<T extends Model> = T | undefined | null
 export type HasMany<T extends Model> = CollectJs.Collection<T> | undefined
-export type BelongsToHasMany<T extends Model> = CollectJs.Collection<T> | undefined
+export type BelongsToMany<T extends Model> = CollectJs.Collection<T> | undefined
 
 export {
   DriverProvider,

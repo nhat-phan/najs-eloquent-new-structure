@@ -13,7 +13,7 @@ describe('PivotModel', function () {
     describe('static .createPivotClass()', function () {
         it('creates an ModelClass which is extends from PivotModel', function () {
             const registerSpy = Sinon.spy(NajsBinding, 'register');
-            const classDefinition = PivotModel_1.PivotModel.createPivotClass('test', { foreignKeys: ['a', 'b'] });
+            const classDefinition = PivotModel_1.PivotModel.createPivotClass('test', { name: 'test', foreignKeys: ['a', 'b'] });
             expect(typeof classDefinition).toBe('function');
             const instance = Reflect.construct(classDefinition, []);
             expect(instance).toBeInstanceOf(classDefinition);
@@ -22,7 +22,8 @@ describe('PivotModel', function () {
             expect(instance
                 .getDriver()
                 .getSettingFeature()
-                .getSettingProperty(instance, 'pivotOptions', {})).toEqual({
+                .getSettingProperty(instance, 'options', {})).toEqual({
+                name: 'test',
                 foreignKeys: ['a', 'b']
             });
             expect(najs_binding_1.ClassRegistry.has('NajsEloquent.Pivot.test')).toBe(true);
@@ -32,14 +33,14 @@ describe('PivotModel', function () {
         });
         it('never recreates if the class already created', function () {
             const registerSpy = Sinon.spy(NajsBinding, 'register');
-            const classDefinition = PivotModel_1.PivotModel.createPivotClass('test', { foreignKeys: ['a', 'b'] });
+            const classDefinition = PivotModel_1.PivotModel.createPivotClass('test', { name: 'test', foreignKeys: ['a', 'b'] });
             expect(typeof classDefinition).toBe('function');
             expect(registerSpy.called).toBe(false);
             registerSpy.restore();
         });
         it('can create with custom className', function () {
             const registerSpy = Sinon.spy(NajsBinding, 'register');
-            const classDefinition = PivotModel_1.PivotModel.createPivotClass('test', { foreignKeys: ['a', 'b'] }, 'CustomClassName');
+            const classDefinition = PivotModel_1.PivotModel.createPivotClass('test', { name: 'test', foreignKeys: ['a', 'b'] }, 'CustomClassName');
             expect(typeof classDefinition).toBe('function');
             expect(registerSpy.calledWith(classDefinition, 'CustomClassName')).toBe(true);
             registerSpy.restore();

@@ -19,8 +19,8 @@ export class PivotModel extends Model {
       return ClassRegistry.findOrFail(className).instanceConstructor! as typeof PivotModel
     }
 
-    class ModelClass extends PivotModel {
-      protected pivotOptions: IPivotOptions = options
+    class Pivot extends PivotModel {
+      protected options: IPivotOptions = options
 
       getClassName() {
         return className
@@ -30,9 +30,9 @@ export class PivotModel extends Model {
         return modelName
       }
     }
-    register(ModelClass, className)
+    register(Pivot, className)
 
-    return ModelClass
+    return Pivot
   }
 }
 PrototypeManager.stopFindingRelationsIn(PivotModel)

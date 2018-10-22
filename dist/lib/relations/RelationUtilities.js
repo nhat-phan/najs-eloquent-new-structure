@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RelationUtilities = {
     isLoadedInDataBucket(relationship, model, name) {
@@ -14,5 +15,10 @@ exports.RelationUtilities = {
             return;
         }
         bucket.getMetadataOf(model).loaded.push(name);
+    },
+    getAttributeListInDataBucket(dataBucket, model, attribute) {
+        const dataBuffer = dataBucket.getDataOf(model);
+        const reader = dataBuffer.getDataReader();
+        return dataBuffer.map(item => reader.getAttribute(item, attribute));
     }
 };
