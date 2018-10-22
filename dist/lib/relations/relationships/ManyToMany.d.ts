@@ -24,7 +24,7 @@ export declare class ManyToMany<T extends Model> extends Relationship<T> impleme
     fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
     isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
     newPivot(data?: object, isGuarded?: boolean): Model;
-    newPivotQuery(name?: string): IQueryBuilder<Model>;
+    newPivotQuery(name?: string, raw?: boolean): IQueryBuilder<Model>;
     attach(id: string): Promise<this>;
     attachByTargetId(targetId: string): Promise<any> | undefined;
 }

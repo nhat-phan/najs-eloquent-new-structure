@@ -62,7 +62,6 @@ class ManyToMany extends Relationship_1.Relationship {
     // }
     async fetchData(type) {
         // const pivotData = await this.fetchPivotData(type)
-        // console.log(pivotData.map(item => item.toObject()))
         // return pivotData as any
         return {};
     }
@@ -86,9 +85,16 @@ class ManyToMany extends Relationship_1.Relationship {
         }
         return Reflect.construct(this.pivot, Array.from(arguments));
     }
-    newPivotQuery(name) {
+    newPivotQuery(name, raw = false) {
         const queryBuilder = this.pivotModel.newQuery(name);
         queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
+        if (raw) {
+            return queryBuilder;
+        }
+        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
+        if (rootPrimaryKey) {
+            return queryBuilder.where(this.pivotRootKeyName, rootPrimaryKey);
+        }
         return queryBuilder;
     }
     // flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[] {
@@ -118,9 +124,9 @@ class ManyToMany extends Relationship_1.Relationship {
     attachByTargetId(targetId) {
         const pivot = this.newPivot();
         pivot.setAttribute(this.pivotTargetKeyName, targetId);
-        const primaryKey = this.rootModel.getAttribute(this.rootKeyName);
-        if (primaryKey) {
-            pivot.setAttribute(this.pivotRootKeyName, primaryKey);
+        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
+        if (rootPrimaryKey) {
+            pivot.setAttribute(this.pivotRootKeyName, rootPrimaryKey);
             return pivot.save();
         }
         this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {

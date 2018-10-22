@@ -140,7 +140,11 @@ describe('ManyToMany', function () {
                     return queryBuilder;
                 }
             };
-            const rootModel = {};
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                }
+            };
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
             relation['pivotModelInstance'] = pivotModel;
             const dataBucket = {};
@@ -149,6 +153,67 @@ describe('ManyToMany', function () {
             const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
             const newQuerySpy = Sinon.spy(pivotModel, 'newQuery');
             expect(relation.newPivotQuery('name') === queryBuilder).toBe(true);
+            expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
+        });
+        it('link to rootModel if root model has primaryKey', function () {
+            const queryBuilder = {
+                handler: {
+                    setRelationDataBucket() { }
+                },
+                where() {
+                    return this;
+                }
+            };
+            const pivotModel = {
+                newQuery() {
+                    return queryBuilder;
+                }
+            };
+            const whereSpy = Sinon.spy(queryBuilder, 'where');
+            const rootModel = {
+                getAttribute() {
+                    return 'value';
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'pivot_root_id', 'f', 'root-id');
+            relation['pivotModelInstance'] = pivotModel;
+            const dataBucket = {};
+            const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            getDataBucketStub.returns(dataBucket);
+            const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
+            const newQuerySpy = Sinon.spy(pivotModel, 'newQuery');
+            expect(relation.newPivotQuery('name') === queryBuilder).toBe(true);
+            expect(whereSpy.calledWith('pivot_root_id', 'value')).toBe(true);
+            expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
+        });
+        it('does not link to rootModel if the second params is true', function () {
+            const queryBuilder = {
+                handler: {
+                    setRelationDataBucket() { }
+                }
+            };
+            const pivotModel = {
+                newQuery() {
+                    return queryBuilder;
+                }
+            };
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                }
+            };
+            const getAttributeSpy = Sinon.spy(rootModel, 'getAttribute');
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            relation['pivotModelInstance'] = pivotModel;
+            const dataBucket = {};
+            const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            getDataBucketStub.returns(dataBucket);
+            const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
+            const newQuerySpy = Sinon.spy(pivotModel, 'newQuery');
+            expect(relation.newPivotQuery('name', true) === queryBuilder).toBe(true);
+            expect(getAttributeSpy.called).toBe(false);
             expect(newQuerySpy.calledWith('name')).toBe(true);
             expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
         });
@@ -252,6 +317,8 @@ describe('ManyToMany', function () {
         it('does nothing for now', function () {
             const rootModel = {};
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            // const stub = Sinon.stub(relation, 'fetchPivotData')
+            // stub.returns('anything')
             relation.fetchData('lazy');
         });
     });

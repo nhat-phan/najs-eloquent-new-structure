@@ -97,7 +97,6 @@ export class ManyToMany<T extends Model> extends Relationship<T> implements IMan
   async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
     // const pivotData = await this.fetchPivotData(type)
 
-    // console.log(pivotData.map(item => item.toObject()))
     // return pivotData as any
     return {} as any
   }
@@ -126,9 +125,17 @@ export class ManyToMany<T extends Model> extends Relationship<T> implements IMan
     return Reflect.construct(this.pivot, Array.from(arguments))
   }
 
-  newPivotQuery(name?: string): IQueryBuilder<Model> {
+  newPivotQuery(name?: string, raw: boolean = false): IQueryBuilder<Model> {
     const queryBuilder = this.pivotModel.newQuery(name as any) as QueryBuilderInternal
     queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+    if (raw) {
+      return queryBuilder
+    }
+
+    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
+    if (rootPrimaryKey) {
+      return queryBuilder.where(this.pivotRootKeyName, rootPrimaryKey)
+    }
     return queryBuilder
   }
 
@@ -165,9 +172,9 @@ export class ManyToMany<T extends Model> extends Relationship<T> implements IMan
     const pivot = this.newPivot()
     pivot.setAttribute(this.pivotTargetKeyName, targetId)
 
-    const primaryKey = this.rootModel.getAttribute(this.rootKeyName)
-    if (primaryKey) {
-      pivot.setAttribute(this.pivotRootKeyName, primaryKey)
+    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
+    if (rootPrimaryKey) {
+      pivot.setAttribute(this.pivotRootKeyName, rootPrimaryKey)
       return pivot.save()
     }
 

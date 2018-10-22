@@ -17,13 +17,21 @@ namespace NajsEloquent.Relation {
     newPivot(data: object, isGuarded: boolean): Model.IModel
 
     /**
-     * Create new Pivot query.
+     * Create new Pivot query linked to the model.
      */
     newPivotQuery(): QueryBuilder.IQueryBuilder<Model.IModel>
     /**
-     * Create new Pivot query with name.
+     * Create new Pivot query linked to the model with name.
      */
     newPivotQuery(name: string): QueryBuilder.IQueryBuilder<Model.IModel>
+    /**
+     * Create new raw or linked Pivot query with name.
+     *
+     * Note:
+     *   - raw query is an empty query
+     *   - linked query is a query already have condition linked to current model.
+     */
+    newPivotQuery(name: string, raw: boolean): QueryBuilder.IQueryBuilder<Model.IModel>
 
     /**
      * Attach an model to relation with model's id.
