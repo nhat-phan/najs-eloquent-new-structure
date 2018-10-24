@@ -1,3 +1,4 @@
+/// <reference path="../../definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.ts" />
 /// <reference path="../../definitions/relations/IRelationship.ts" />
 /// <reference path="../../definitions/relations/IManyToManyRelationship.ts" />
@@ -5,9 +6,10 @@
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
-import IManyToManyRelationship = NajsEloquent.Relation.IManyToManyRelationship
+import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
+import Collection = CollectJs.Collection
 
 // import { flatten } from 'lodash'
 import { register, ClassRegistry, make } from 'najs-binding'
@@ -21,7 +23,7 @@ import { ModelEvent } from '../../model/ModelEvent'
 import { RelationUtilities } from '../RelationUtilities'
 import { make_collection } from '../../util/factory'
 
-export class ManyToMany<T extends Model> extends Relationship<T> implements IManyToManyRelationship<T> {
+export class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.ManyToMany
 
   protected pivot: ModelDefinition
@@ -64,7 +66,7 @@ export class ManyToMany<T extends Model> extends Relationship<T> implements IMan
     return this.pivotModelInstance
   }
 
-  collectData(): T | undefined | null {
+  collectData(): Collection<T> | undefined | null {
     return undefined
   }
 
@@ -84,16 +86,23 @@ export class ManyToMany<T extends Model> extends Relationship<T> implements IMan
     return query.whereIn(this.pivotRootKeyName, ids).get()
   }
 
-  // getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
-  //   const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
-  //   queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
-  //   return this.applyCustomQuery(queryBuilder)
-  // }
+  getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
+    const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
+    queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+    return this.applyCustomQuery(queryBuilder)
+  }
 
-  async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
+  async fetchData(type: RelationshipFetchType): Promise<Collection<T> | undefined | null> {
     const pivotData = await this.fetchPivotData(type)
 
-    return pivotData as any
+    const queryName = `${this.getType()}:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`
+    const query = this.getQueryBuilder(queryName)
+    const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all()
+
+    // console.log(targetKeysInPivot)
+    // console.log(this.targetKeyName)
+    // console.log(this.targetModel)
+    return query.whereIn(this.targetKeyName, targetKeysInPivot).get()
   }
 
   isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean {

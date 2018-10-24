@@ -1,15 +1,17 @@
+/// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.d.ts" />
 /// <reference path="../../definitions/relations/IRelationship.d.ts" />
 /// <reference path="../../definitions/relations/IManyToManyRelationship.d.ts" />
 import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
-import IManyToManyRelationship = NajsEloquent.Relation.IManyToManyRelationship;
+import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship;
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
+import Collection = CollectJs.Collection;
 import { Relationship } from '../Relationship';
 import { RelationshipType } from '../RelationshipType';
 import { PivotModel } from './pivot/PivotModel';
-export declare class ManyToMany<T extends Model> extends Relationship<T> implements IManyToManyRelationship<T> {
+export declare class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
     static className: string;
     protected pivot: ModelDefinition;
     protected pivotModelInstance: Model;
@@ -20,9 +22,10 @@ export declare class ManyToMany<T extends Model> extends Relationship<T> impleme
     getType(): RelationshipType;
     getClassName(): string;
     protected readonly pivotModel: Model;
-    collectData(): T | undefined | null;
+    collectData(): Collection<T> | undefined | null;
     fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
-    fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
+    getQueryBuilder(name: string | undefined): IQueryBuilder<any>;
+    fetchData(type: RelationshipFetchType): Promise<Collection<T> | undefined | null>;
     isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
     newPivot(data?: object, isGuarded?: boolean): Model;
     newPivotQuery(name?: string, raw?: boolean): IQueryBuilder<Model>;

@@ -9,6 +9,8 @@ const ManyToMany_1 = require("../../../lib/relations/relationships/ManyToMany");
 const PivotModel_1 = require("./../../../lib/relations/relationships/pivot/PivotModel");
 const isPromise_1 = require("../../../lib/util/isPromise");
 const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
+const factory_1 = require("../../../lib/util/factory");
+const Record_1 = require("../../../lib/drivers/Record");
 describe('ManyToMany', function () {
     it('extends Relationship class and implements Autoload under name "NajsEloquent.Relation.Relationship.ManyToMany"', function () {
         const rootModel = {};
@@ -127,6 +129,57 @@ describe('ManyToMany', function () {
             expect(pivot).toBeInstanceOf(A);
             expect(pivot['data'] === data).toBe(true);
             expect(pivot['isGuarded']).toBe(false);
+        });
+    });
+    describe('.getQueryBuilder()', function () {
+        it('returns a queryBuilder from targetModel, which also contains the dataBucket of relation', function () {
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const queryBuilder = {
+                handler: {
+                    setRelationDataBucket() { }
+                }
+            };
+            const targetModel = {
+                newQuery() {
+                    return queryBuilder;
+                }
+            };
+            relation['targetModelInstance'] = targetModel;
+            const dataBucket = {};
+            const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            getDataBucketStub.returns(dataBucket);
+            const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
+            const newQuerySpy = Sinon.spy(targetModel, 'newQuery');
+            expect(relation.getQueryBuilder('name') === queryBuilder).toBe(true);
+            expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
+        });
+        it('passes the queryBuilder to .applyCustomQuery() then returns the result', function () {
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const queryBuilder = {
+                handler: {
+                    setRelationDataBucket() { }
+                }
+            };
+            const targetModel = {
+                newQuery() {
+                    return queryBuilder;
+                }
+            };
+            relation['targetModelInstance'] = targetModel;
+            const dataBucket = {};
+            const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            getDataBucketStub.returns(dataBucket);
+            const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
+            const newQuerySpy = Sinon.spy(targetModel, 'newQuery');
+            const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery');
+            applyCustomQueryStub.returns('anything');
+            expect(relation.getQueryBuilder('name')).toEqual('anything');
+            expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
+            expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true);
         });
     });
     describe('.newPivotQuery()', function () {
@@ -373,12 +426,38 @@ describe('ManyToMany', function () {
         });
     });
     describe('.fetchData()', function () {
-        it('does nothing for now', function () {
-            const rootModel = {};
-            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+        it('calls .fetchPivotData() to get pivot data, then use query from getQueryBuilder to find targets via .whereIn()', async function () {
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                }
+            };
+            const rootModel = {
+                getModelName() {
+                    return 'Root';
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'target', 'pivot', 'target_id', 'root_id', 'id', 'id');
             const stub = Sinon.stub(relation, 'fetchPivotData');
-            stub.returns('anything');
-            relation.fetchData('lazy');
+            const recordA = new Record_1.Record({ target_id: 1, root_id: 1 });
+            const recordB = new Record_1.Record({ target_id: 2, root_id: 1 });
+            stub.returns(factory_1.make_collection([recordA, recordB]));
+            const query = {
+                whereIn() {
+                    return this;
+                },
+                get() {
+                    return Promise.resolve('anything');
+                }
+            };
+            const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
+            getQueryBuilderStub.returns(query);
+            relation['targetModelInstance'] = targetModel;
+            const whereInSpy = Sinon.spy(query, 'whereIn');
+            const result = await relation.fetchData('lazy');
+            expect(result).toEqual('anything');
+            expect(getQueryBuilderStub.calledWith('ManyToMany:Target-Root')).toBe(true);
+            expect(whereInSpy.calledWith('id', [1, 2])).toBe(true);
         });
     });
     // TODO: implementation needed

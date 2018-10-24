@@ -7,6 +7,8 @@ import { ManyToMany } from '../../../lib/relations/relationships/ManyToMany'
 import { PivotModel } from './../../../lib/relations/relationships/pivot/PivotModel'
 import { isPromise } from '../../../lib/util/isPromise'
 import { RelationUtilities } from '../../../lib/relations/RelationUtilities'
+import { make_collection } from '../../../lib/util/factory'
+import { Record } from '../../../lib/drivers/Record'
 
 describe('ManyToMany', function() {
   it('extends Relationship class and implements Autoload under name "NajsEloquent.Relation.Relationship.ManyToMany"', function() {
@@ -150,6 +152,66 @@ describe('ManyToMany', function() {
       expect(pivot).toBeInstanceOf(A)
       expect(pivot['data'] === data).toBe(true)
       expect(pivot['isGuarded']).toBe(false)
+    })
+  })
+
+  describe('.getQueryBuilder()', function() {
+    it('returns a queryBuilder from targetModel, which also contains the dataBucket of relation', function() {
+      const rootModel: any = {}
+      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
+      const queryBuilder: any = {
+        handler: {
+          setRelationDataBucket() {}
+        }
+      }
+      const targetModel: any = {
+        newQuery() {
+          return queryBuilder
+        }
+      }
+      relation['targetModelInstance'] = targetModel
+
+      const dataBucket: any = {}
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns(dataBucket)
+
+      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
+      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
+
+      expect(relation.getQueryBuilder('name') === queryBuilder).toBe(true)
+      expect(newQuerySpy.calledWith('name')).toBe(true)
+      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
+    })
+
+    it('passes the queryBuilder to .applyCustomQuery() then returns the result', function() {
+      const rootModel: any = {}
+      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
+      const queryBuilder: any = {
+        handler: {
+          setRelationDataBucket() {}
+        }
+      }
+      const targetModel: any = {
+        newQuery() {
+          return queryBuilder
+        }
+      }
+      relation['targetModelInstance'] = targetModel
+
+      const dataBucket: any = {}
+      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      getDataBucketStub.returns(dataBucket)
+
+      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
+      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
+
+      const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery')
+      applyCustomQueryStub.returns('anything')
+
+      expect(relation.getQueryBuilder('name')).toEqual('anything')
+      expect(newQuerySpy.calledWith('name')).toBe(true)
+      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
+      expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true)
     })
   })
 
@@ -440,12 +502,43 @@ describe('ManyToMany', function() {
   })
 
   describe('.fetchData()', function() {
-    it('does nothing for now', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
+    it('calls .fetchPivotData() to get pivot data, then use query from getQueryBuilder to find targets via .whereIn()', async function() {
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        }
+      }
+      const rootModel: any = {
+        getModelName() {
+          return 'Root'
+        }
+      }
+      const relation = new ManyToMany(rootModel, 'name', 'target', 'pivot', 'target_id', 'root_id', 'id', 'id')
       const stub = Sinon.stub(relation, 'fetchPivotData')
-      stub.returns('anything')
-      relation.fetchData('lazy')
+
+      const recordA = new Record({ target_id: 1, root_id: 1 })
+      const recordB = new Record({ target_id: 2, root_id: 1 })
+      stub.returns(make_collection([recordA, recordB]))
+
+      const query = {
+        whereIn() {
+          return this
+        },
+        get() {
+          return Promise.resolve('anything')
+        }
+      }
+      const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder')
+      getQueryBuilderStub.returns(query)
+
+      relation['targetModelInstance'] = targetModel
+
+      const whereInSpy = Sinon.spy(query, 'whereIn')
+
+      const result = await relation.fetchData('lazy')
+      expect(result).toEqual('anything')
+      expect(getQueryBuilderStub.calledWith('ManyToMany:Target-Root')).toBe(true)
+      expect(whereInSpy.calledWith('id', [1, 2])).toBe(true)
     })
   })
 

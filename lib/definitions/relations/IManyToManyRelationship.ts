@@ -1,8 +1,9 @@
+/// <reference path="../collect.js/index.d.ts" />
 /// <reference path="../model/IModel.ts" />
 /// <reference path="../query-builders/IQueryBuilder.ts" />
 
 namespace NajsEloquent.Relation {
-  export interface IManyToManyRelationship<T> extends IRelationship<T> {
+  export interface IManyToManyRelationship<T> extends IRelationship<CollectJs.Collection<T>> {
     /**
      * Create new pivot model instance.
      */

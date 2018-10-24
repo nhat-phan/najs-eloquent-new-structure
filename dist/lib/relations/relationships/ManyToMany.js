@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="../../definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.ts" />
 /// <reference path="../../definitions/relations/IRelationship.ts" />
 /// <reference path="../../definitions/relations/IManyToManyRelationship.ts" />
@@ -52,14 +53,20 @@ class ManyToMany extends Relationship_1.Relationship {
         const ids = RelationUtilities_1.RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName);
         return query.whereIn(this.pivotRootKeyName, ids).get();
     }
-    // getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
-    //   const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
-    //   queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
-    //   return this.applyCustomQuery(queryBuilder)
-    // }
+    getQueryBuilder(name) {
+        const queryBuilder = this.targetModel.newQuery(name);
+        queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
+        return this.applyCustomQuery(queryBuilder);
+    }
     async fetchData(type) {
         const pivotData = await this.fetchPivotData(type);
-        return pivotData;
+        const queryName = `${this.getType()}:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`;
+        const query = this.getQueryBuilder(queryName);
+        const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all();
+        // console.log(targetKeysInPivot)
+        // console.log(this.targetKeyName)
+        // console.log(this.targetModel)
+        return query.whereIn(this.targetKeyName, targetKeysInPivot).get();
     }
     isInverseOf(relation) {
         return false;

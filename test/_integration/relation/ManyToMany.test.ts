@@ -69,5 +69,16 @@ describe('ManyToManyRelationship', function() {
       [roleA.id]: user.id,
       [roleB.id]: user.id
     })
+
+    // const result = await User.findOrFail(user.id)
+    // console.log(result.roles)
+    // console.log(result['internalData'])
+    // await result.load('roles')
+    // console.log(result['internalData'])
+    // console.log(result.roles)
+
+    // console.log(user.roles)
+    // await user.load('roles')
+    // console.log(user.roles)
   })
 })
