@@ -21,6 +21,7 @@ export declare class ManyToMany<T extends Model> extends Relationship<T> impleme
     getClassName(): string;
     protected readonly pivotModel: Model;
     collectData(): T | undefined | null;
+    fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
     fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
     isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
     newPivot(data?: object, isGuarded?: boolean): Model;

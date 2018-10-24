@@ -12,8 +12,8 @@ const PivotModel_1 = require("./pivot/PivotModel");
 const helpers_1 = require("../../util/helpers");
 // import { isModel, isCollection } from '../../util/helpers'
 const ModelEvent_1 = require("../../model/ModelEvent");
-// import { RelationUtilities } from '../RelationUtilities'
-// import { make_collection } from '../../util/factory'
+const RelationUtilities_1 = require("../RelationUtilities");
+const factory_1 = require("../../util/factory");
 class ManyToMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, pivot, pivotTargetKeyName, pivotRootKeyName, targetKeyName, rootKeyName) {
         super(root, relationName);
@@ -39,31 +39,27 @@ class ManyToMany extends Relationship_1.Relationship {
     collectData() {
         return undefined;
     }
-    // async fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>> {
-    //   const query = this.newPivotQuery(
-    //     `${this.getType()}Pivot:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`
-    //   )
-    //   if (type === 'lazy') {
-    //     query.where(this.pivotRootKeyName, this.rootModel.getAttribute(this.rootKeyName))
-    //   } else {
-    //     const dataBucket = this.getDataBucket()
-    //     if (!dataBucket) {
-    //       return make_collection<Model>([])
-    //     }
-    //     const ids = RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName)
-    //     query.whereIn(this.pivotRootKeyName, ids)
-    //   }
-    //   return query.get()
-    // }
+    async fetchPivotData(type) {
+        const name = `${this.getType()}Pivot:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`;
+        if (type === 'lazy') {
+            return this.newPivotQuery(name).get();
+        }
+        const dataBucket = this.getDataBucket();
+        if (!dataBucket) {
+            return factory_1.make_collection([]);
+        }
+        const query = this.newPivotQuery(name, true);
+        const ids = RelationUtilities_1.RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName);
+        return query.whereIn(this.pivotRootKeyName, ids).get();
+    }
     // getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
     //   const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
     //   queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
     //   return this.applyCustomQuery(queryBuilder)
     // }
     async fetchData(type) {
-        // const pivotData = await this.fetchPivotData(type)
-        // return pivotData as any
-        return {};
+        const pivotData = await this.fetchPivotData(type);
+        return pivotData;
     }
     isInverseOf(relation) {
         return false;

@@ -8,6 +8,7 @@ const Relationship_1 = require("../../../lib/relations/Relationship");
 const ManyToMany_1 = require("../../../lib/relations/relationships/ManyToMany");
 const PivotModel_1 = require("./../../../lib/relations/relationships/pivot/PivotModel");
 const isPromise_1 = require("../../../lib/util/isPromise");
+const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 describe('ManyToMany', function () {
     it('extends Relationship class and implements Autoload under name "NajsEloquent.Relation.Relationship.ManyToMany"', function () {
         const rootModel = {};
@@ -277,6 +278,117 @@ describe('ManyToMany', function () {
             expect(saveSpy.called).toBe(true);
         });
     });
+    // TODO: implementation needed
+    describe('.collectData()', function () {
+        it('does nothing for now', function () {
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            relation.collectData();
+        });
+    });
+    describe('.fetchPivotData()', function () {
+        it('simply calls and return .newPivotQuery() with get when the type is "lazy"', async function () {
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                }
+            };
+            const rootModel = {
+                getModelName() {
+                    return 'Root';
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'target', 'root', 'd', 'e', 'f', 'g');
+            relation['targetModelInstance'] = targetModel;
+            const query = {
+                get() {
+                    return Promise.resolve('anything');
+                }
+            };
+            const newPivotQueryStub = Sinon.stub(relation, 'newPivotQuery');
+            newPivotQueryStub.returns(query);
+            const result = await relation.fetchPivotData('lazy');
+            expect(result).toEqual('anything');
+            expect(newPivotQueryStub.calledWith('ManyToManyPivot:Target-Root')).toBe(true);
+        });
+        it('returns an empty collection if type is "eager", but there is not dataBucket', async function () {
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                }
+            };
+            const rootModel = {
+                getModelName() {
+                    return 'Root';
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'target', 'root', 'd', 'e', 'f', 'g');
+            relation['targetModelInstance'] = targetModel;
+            const query = {
+                get() {
+                    return Promise.resolve('anything');
+                }
+            };
+            const newPivotQueryStub = Sinon.stub(relation, 'newPivotQuery');
+            newPivotQueryStub.returns(query);
+            const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            dataBucketStub.returns(undefined);
+            const result = await relation.fetchPivotData('eager');
+            expect(Helpers.isCollection(result)).toBe(true);
+            expect(result.all()).toEqual([]);
+        });
+        it('calls .newPivotQuery() with raw = true, then use RelationUtilities.getAttributeListInDataBucket() to get a list of id for querying with .whereIn()', async function () {
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                }
+            };
+            const rootModel = {
+                getModelName() {
+                    return 'Root';
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'target', 'root', 'd', 'pivot_root_id', 'f', 'root-key');
+            relation['targetModelInstance'] = targetModel;
+            const query = {
+                whereIn() {
+                    return this;
+                },
+                get() {
+                    return Promise.resolve('anything');
+                }
+            };
+            const newPivotQueryStub = Sinon.stub(relation, 'newPivotQuery');
+            newPivotQueryStub.returns(query);
+            const dataBucket = {};
+            const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            dataBucketStub.returns(dataBucket);
+            const getAttributeListInDataBucketStub = Sinon.stub(RelationUtilities_1.RelationUtilities, 'getAttributeListInDataBucket');
+            getAttributeListInDataBucketStub.returns([1, 2]);
+            const whereInSpy = Sinon.spy(query, 'whereIn');
+            const result = await relation.fetchPivotData('eager');
+            expect(whereInSpy.calledWith('pivot_root_id', [1, 2]));
+            expect(getAttributeListInDataBucketStub.calledWith(dataBucket, rootModel, 'root-key')).toBe(true);
+            expect(result).toEqual('anything');
+        });
+    });
+    describe('.fetchData()', function () {
+        it('does nothing for now', function () {
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const stub = Sinon.stub(relation, 'fetchPivotData');
+            stub.returns('anything');
+            relation.fetchData('lazy');
+        });
+    });
+    // TODO: implementation needed
+    describe('.isInverseOf()', function () {
+        it('does nothing for now', function () {
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            relation.isInverseOf({});
+        });
+    });
     // TODO: implementation another cases
     describe('.attach()', function () {
         it('calls .attachByTargetId() and returns this in case the result is undefined', async function () {
@@ -302,32 +414,6 @@ describe('ManyToMany', function () {
             expect((await relation.attach('id')) === relation).toBe(true);
             expect(attachByTargetIdStub.calledWith('id')).toBe(true);
             expect(promiseHandler.called).toBe(true);
-        });
-    });
-    // TODO: implementation needed
-    describe('.collectData()', function () {
-        it('does nothing for now', function () {
-            const rootModel = {};
-            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
-            relation.collectData();
-        });
-    });
-    // TODO: implementation needed
-    describe('.fetchData()', function () {
-        it('does nothing for now', function () {
-            const rootModel = {};
-            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
-            // const stub = Sinon.stub(relation, 'fetchPivotData')
-            // stub.returns('anything')
-            relation.fetchData('lazy');
-        });
-    });
-    // TODO: implementation needed
-    describe('.isInverseOf()', function () {
-        it('does nothing for now', function () {
-            const rootModel = {};
-            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
-            relation.isInverseOf({});
         });
     });
 });
