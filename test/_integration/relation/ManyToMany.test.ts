@@ -2,8 +2,13 @@ import 'jest'
 import { Model, BelongsToMany, Factory, factory } from '../../../lib'
 import { register } from 'najs-binding'
 
+interface IUserRolePivot {
+  user_id: string
+  role_id: string
+}
+
 class Role extends Model {
-  users: BelongsToMany<User>
+  users: BelongsToMany<User, IUserRolePivot>
 
   getClassName() {
     return 'Role'
@@ -16,7 +21,7 @@ class Role extends Model {
 register(Role)
 
 class User extends Model {
-  roles: BelongsToMany<Role>
+  roles: BelongsToMany<Role, IUserRolePivot>
 
   getClassName() {
     return 'User'
@@ -78,8 +83,13 @@ describe('ManyToManyRelationship', function() {
       [roleB.id]: roleB.id
     })
 
-    // console.log(user.roles)
-    // await user.load('roles')
-    // console.log(user.roles)
+    const hash = {}
+    for (const role of result.roles!) {
+      hash[role.pivot.role_id] = role.pivot.user_id
+    }
+    expect(hash).toEqual({
+      [roleA.id]: user.id,
+      [roleB.id]: user.id
+    })
   })
 })

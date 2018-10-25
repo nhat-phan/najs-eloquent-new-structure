@@ -464,18 +464,28 @@ describe('ManyToMany', function() {
         getDataOf() {
           return dataBuffer
         },
-        makeCollection(model: any, data: any) {
-          return data
+        makeModel(model: any, data: any) {
+          return { model: model.getModelName(), data: data }
         }
       }
 
-      const targetModel: any = {}
+      const pivotModel: any = {
+        getModelName() {
+          return 'Pivot'
+        }
+      }
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        }
+      }
       const rootModel: any = {
         getAttribute() {
           return 2
         }
       }
       const relation = new ManyToMany(rootModel, 'name', 'Target', 'pivot', 'target_id', 'root_id', 'id', 'id')
+      relation['pivotModelInstance'] = pivotModel
       relation['targetModelInstance'] = targetModel
 
       const dataBucketStub = Sinon.stub(relation, 'getDataBucket')
@@ -487,7 +497,18 @@ describe('ManyToMany', function() {
         y: { id: '4', root_id: 2, target_id: 'y' }
       })
 
-      expect(relation.collectData()).toEqual([{ id: 'x' }, { id: 'y' }])
+      expect(relation.collectData()!.all()).toEqual([
+        {
+          data: { id: 'x' },
+          model: 'Target',
+          pivot: { data: { id: '2', root_id: 2, target_id: 'x' }, model: 'Pivot' }
+        },
+        {
+          data: { id: 'y' },
+          model: 'Target',
+          pivot: { data: { id: '4', root_id: 2, target_id: 'y' }, model: 'Pivot' }
+        }
+      ])
     })
   })
 

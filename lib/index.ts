@@ -52,12 +52,18 @@
 /// <reference path="definitions/query-grammars/IExecuteQuery.ts" />
 /// <reference path="definitions/query-grammars/IQuery.ts" />
 
+/// <reference path="definitions/relations/IBelongsToRelationship.ts" />
 /// <reference path="definitions/relations/IHasOneRelationship.ts" />
-/// <reference path="definitions/relations/IRelationship.ts" />
+/// <reference path="definitions/relations/IHasManyRelationship.ts" />
+/// <reference path="definitions/relations/IManyToManyRelationship.ts" />
+/// <reference path="definitions/relations/IModelWithPivot.ts" />
+/// <reference path="definitions/relations/IPivotOptions.ts" />
+/// <reference path="definitions/relations/IRelationData.ts" />
 /// <reference path="definitions/relations/IRelationData.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.ts" />
+/// <reference path="definitions/relations/IRelationship.ts" />
 /// <reference path="definitions/relations/IRelationshipFactory.ts" />
-/// <reference path="definitions/model/IModel.ts" />
+import IModelWithPivot = NajsEloquent.Relation.IModelWithPivot
 
 import { MemoryDataSourceProvider } from './facades/global/MemoryDataSourceProviderFacade'
 import { MemoryDataSource } from './drivers/memory/MemoryDataSource'
@@ -76,7 +82,7 @@ export { Builtin as NajsEloquent } from './builtin'
 export type HasOne<T extends Model> = T | undefined | null
 export type BelongsTo<T extends Model> = T | undefined | null
 export type HasMany<T extends Model> = CollectJs.Collection<T> | undefined
-export type BelongsToMany<T extends Model> = CollectJs.Collection<T> | undefined
+export type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IModelWithPivot<R>> | undefined
 
 export {
   DriverProvider,

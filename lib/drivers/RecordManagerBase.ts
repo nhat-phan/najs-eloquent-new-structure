@@ -115,6 +115,7 @@ export abstract class RecordManagerBase<T> implements NajsEloquent.Feature.IReco
       ['schema', 'options'],
       ['timestamps'],
       ['softDeletes'],
+      ['pivot'],
       Object.getOwnPropertyNames(prototype),
       ...bases.map(base => Object.getOwnPropertyNames(base))
     )

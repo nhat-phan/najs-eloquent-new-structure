@@ -85,8 +85,9 @@ export class ManyToMany<T extends Model> extends Relationship<Collection<T>> imp
       })
       .exec()
 
-    return raw.reduce((memo, item) => {
-      const targetPrimaryKey = reader.getAttribute(item, this.pivotTargetKeyName) as any
+    const pivotTargetKeyName = this.pivotTargetKeyName
+    return raw.reduce(function(memo, item) {
+      const targetPrimaryKey = reader.getAttribute(item, pivotTargetKeyName) as any
       memo[targetPrimaryKey.toString()] = item
       return memo
     }, {})
@@ -101,10 +102,18 @@ export class ManyToMany<T extends Model> extends Relationship<Collection<T>> imp
     const pivotData = this.collectPivotData(dataBucket)
 
     const dataBuffer = dataBucket.getDataOf(this.targetModel)
+    const reader = dataBuffer.getDataReader()
     const collector = dataBuffer.getCollector().filterBy({
-      $and: [new DataConditionMatcher(this.targetKeyName, 'in', Object.keys(pivotData), dataBuffer.getDataReader())]
+      $and: [new DataConditionMatcher(this.targetKeyName, 'in', Object.keys(pivotData), reader)]
     })
-    return dataBucket.makeCollection(this.targetModel, collector.exec()) as any
+    const pivotModel = this.pivotModel
+
+    return make_collection(collector.exec(), item => {
+      const instance = dataBucket.makeModel(this.targetModel, item)
+      const targetPrimaryKey = (reader.getAttribute(item, this.targetKeyName) as any).toString()
+      instance['pivot'] = dataBucket.makeModel(pivotModel, pivotData[targetPrimaryKey])
+      return instance
+    }) as any
   }
 
   async fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>> {

@@ -187,6 +187,7 @@ describe('RecordManagerBase', function () {
                     'options',
                     'timestamps',
                     'softDeletes',
+                    'pivot',
                     // functions, attributes, getters, setters from prototype
                     'getSomething',
                     'a',

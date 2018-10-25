@@ -53,8 +53,9 @@ class ManyToMany extends Relationship_1.Relationship {
             $and: [new DataConditionMatcher_1.DataConditionMatcher(this.pivotRootKeyName, '=', rootPrimaryKey, reader)]
         })
             .exec();
-        return raw.reduce((memo, item) => {
-            const targetPrimaryKey = reader.getAttribute(item, this.pivotTargetKeyName);
+        const pivotTargetKeyName = this.pivotTargetKeyName;
+        return raw.reduce(function (memo, item) {
+            const targetPrimaryKey = reader.getAttribute(item, pivotTargetKeyName);
             memo[targetPrimaryKey.toString()] = item;
             return memo;
         }, {});
@@ -66,10 +67,17 @@ class ManyToMany extends Relationship_1.Relationship {
         }
         const pivotData = this.collectPivotData(dataBucket);
         const dataBuffer = dataBucket.getDataOf(this.targetModel);
+        const reader = dataBuffer.getDataReader();
         const collector = dataBuffer.getCollector().filterBy({
-            $and: [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, 'in', Object.keys(pivotData), dataBuffer.getDataReader())]
+            $and: [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, 'in', Object.keys(pivotData), reader)]
         });
-        return dataBucket.makeCollection(this.targetModel, collector.exec());
+        const pivotModel = this.pivotModel;
+        return factory_1.make_collection(collector.exec(), item => {
+            const instance = dataBucket.makeModel(this.targetModel, item);
+            const targetPrimaryKey = reader.getAttribute(item, this.targetKeyName).toString();
+            instance['pivot'] = dataBucket.makeModel(pivotModel, pivotData[targetPrimaryKey]);
+            return instance;
+        });
     }
     async fetchPivotData(type) {
         const name = `${this.getType()}Pivot:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`;

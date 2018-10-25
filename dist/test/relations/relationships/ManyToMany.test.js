@@ -395,17 +395,27 @@ describe('ManyToMany', function () {
                 getDataOf() {
                     return dataBuffer;
                 },
-                makeCollection(model, data) {
-                    return data;
+                makeModel(model, data) {
+                    return { model: model.getModelName(), data: data };
                 }
             };
-            const targetModel = {};
+            const pivotModel = {
+                getModelName() {
+                    return 'Pivot';
+                }
+            };
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                }
+            };
             const rootModel = {
                 getAttribute() {
                     return 2;
                 }
             };
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'Target', 'pivot', 'target_id', 'root_id', 'id', 'id');
+            relation['pivotModelInstance'] = pivotModel;
             relation['targetModelInstance'] = targetModel;
             const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
             dataBucketStub.returns(dataBucket);
@@ -414,7 +424,18 @@ describe('ManyToMany', function () {
                 x: { id: '2', root_id: 2, target_id: 'x' },
                 y: { id: '4', root_id: 2, target_id: 'y' }
             });
-            expect(relation.collectData()).toEqual([{ id: 'x' }, { id: 'y' }]);
+            expect(relation.collectData().all()).toEqual([
+                {
+                    data: { id: 'x' },
+                    model: 'Target',
+                    pivot: { data: { id: '2', root_id: 2, target_id: 'x' }, model: 'Pivot' }
+                },
+                {
+                    data: { id: 'y' },
+                    model: 'Target',
+                    pivot: { data: { id: '4', root_id: 2, target_id: 'y' }, model: 'Pivot' }
+                }
+            ]);
         });
     });
     describe('.fetchPivotData()', function () {

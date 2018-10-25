@@ -56,8 +56,13 @@ describe('ManyToManyRelationship', function () {
             [roleA.id]: roleA.id,
             [roleB.id]: roleB.id
         });
-        // console.log(user.roles)
-        // await user.load('roles')
-        // console.log(user.roles)
+        const hash = {};
+        for (const role of result.roles) {
+            hash[role.pivot.role_id] = role.pivot.user_id;
+        }
+        expect(hash).toEqual({
+            [roleA.id]: user.id,
+            [roleB.id]: user.id
+        });
     });
 });

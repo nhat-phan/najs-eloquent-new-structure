@@ -43,11 +43,17 @@
 /// <reference path="definitions/query-grammars/IConditionQuery.d.ts" />
 /// <reference path="definitions/query-grammars/IExecuteQuery.d.ts" />
 /// <reference path="definitions/query-grammars/IQuery.d.ts" />
+/// <reference path="definitions/relations/IBelongsToRelationship.d.ts" />
 /// <reference path="definitions/relations/IHasOneRelationship.d.ts" />
-/// <reference path="definitions/relations/IRelationship.d.ts" />
+/// <reference path="definitions/relations/IHasManyRelationship.d.ts" />
+/// <reference path="definitions/relations/IManyToManyRelationship.d.ts" />
+/// <reference path="definitions/relations/IModelWithPivot.d.ts" />
+/// <reference path="definitions/relations/IPivotOptions.d.ts" />
 /// <reference path="definitions/relations/IRelationData.d.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.d.ts" />
+/// <reference path="definitions/relations/IRelationship.d.ts" />
 /// <reference path="definitions/relations/IRelationshipFactory.d.ts" />
+import IModelWithPivot = NajsEloquent.Relation.IModelWithPivot;
 import { Model } from './model/Model';
 export { Model, Model as Eloquent };
 export { PivotModel } from './relations/relationships/pivot/PivotModel';
@@ -55,7 +61,7 @@ export { Builtin as NajsEloquent } from './builtin';
 export declare type HasOne<T extends Model> = T | undefined | null;
 export declare type BelongsTo<T extends Model> = T | undefined | null;
 export declare type HasMany<T extends Model> = CollectJs.Collection<T> | undefined;
-export declare type BelongsToMany<T extends Model> = CollectJs.Collection<T> | undefined;
+export declare type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IModelWithPivot<R>> | undefined;
 export { DriverProvider, DriverProvider as ModelDriverProvider, DriverProvider as EloquentDriverProvider, DriverProviderFacade, DriverProviderFacade as ModelDriverProviderFacade, DriverProviderFacade as EloquentDriverProviderFacade } from './facades/global/DriverProviderFacade';
 export { factory, Factory, FactoryFacade } from './facades/global/FactoryFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';
