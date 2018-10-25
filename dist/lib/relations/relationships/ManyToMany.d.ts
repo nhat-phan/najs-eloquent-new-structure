@@ -1,10 +1,13 @@
 /// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.d.ts" />
+/// <reference path="../../definitions/data/IDataReader.d.ts" />
 /// <reference path="../../definitions/relations/IRelationship.d.ts" />
+/// <reference path="../../definitions/relations/IRelationDataBucket.d.ts" />
 /// <reference path="../../definitions/relations/IManyToManyRelationship.d.ts" />
 import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
+import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship;
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import Collection = CollectJs.Collection;
@@ -22,6 +25,7 @@ export declare class ManyToMany<T extends Model> extends Relationship<Collection
     getType(): RelationshipType;
     getClassName(): string;
     protected readonly pivotModel: Model;
+    collectPivotData(dataBucket: IRelationDataBucket): object;
     collectData(): Collection<T> | undefined | null;
     fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
     getQueryBuilder(name: string | undefined): IQueryBuilder<any>;

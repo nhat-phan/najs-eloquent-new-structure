@@ -1,11 +1,14 @@
 /// <reference path="../../definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.ts" />
+/// <reference path="../../definitions/data/IDataReader.ts" />
 /// <reference path="../../definitions/relations/IRelationship.ts" />
+/// <reference path="../../definitions/relations/IRelationDataBucket.ts" />
 /// <reference path="../../definitions/relations/IManyToManyRelationship.ts" />
 
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
+import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
@@ -22,6 +25,7 @@ import { isModel } from '../../util/helpers'
 import { ModelEvent } from '../../model/ModelEvent'
 import { RelationUtilities } from '../RelationUtilities'
 import { make_collection } from '../../util/factory'
+import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 
 export class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.ManyToMany
@@ -66,8 +70,41 @@ export class ManyToMany<T extends Model> extends Relationship<Collection<T>> imp
     return this.pivotModelInstance
   }
 
+  collectPivotData(dataBucket: IRelationDataBucket): object {
+    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
+    if (!rootPrimaryKey) {
+      return {}
+    }
+
+    const dataBuffer = dataBucket.getDataOf(this.pivotModel)
+    const reader = dataBuffer.getDataReader()
+    const raw = dataBuffer
+      .getCollector()
+      .filterBy({
+        $and: [new DataConditionMatcher(this.pivotRootKeyName, '=', rootPrimaryKey, reader)]
+      })
+      .exec()
+
+    return raw.reduce((memo, item) => {
+      const targetPrimaryKey = reader.getAttribute(item, this.pivotTargetKeyName) as any
+      memo[targetPrimaryKey.toString()] = item
+      return memo
+    }, {})
+  }
+
   collectData(): Collection<T> | undefined | null {
-    return undefined
+    const dataBucket = this.getDataBucket()
+    if (!dataBucket) {
+      return make_collection<T>([])
+    }
+
+    const pivotData = this.collectPivotData(dataBucket)
+
+    const dataBuffer = dataBucket.getDataOf(this.targetModel)
+    const collector = dataBuffer.getCollector().filterBy({
+      $and: [new DataConditionMatcher(this.targetKeyName, 'in', Object.keys(pivotData), dataBuffer.getDataReader())]
+    })
+    return dataBucket.makeCollection(this.targetModel, collector.exec()) as any
   }
 
   async fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>> {
@@ -99,9 +136,6 @@ export class ManyToMany<T extends Model> extends Relationship<Collection<T>> imp
     const query = this.getQueryBuilder(queryName)
     const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all()
 
-    // console.log(targetKeysInPivot)
-    // console.log(this.targetKeyName)
-    // console.log(this.targetModel)
     return query.whereIn(this.targetKeyName, targetKeysInPivot).get()
   }
 
@@ -143,14 +177,6 @@ export class ManyToMany<T extends Model> extends Relationship<Collection<T>> imp
     return queryBuilder
   }
 
-  // flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[] {
-  //   return flatten(
-  //     models.map(item => {
-  //       return isCollection(item) ? (item as CollectJs.Collection<T>).all() : (item as T | T[])
-  //     })
-  //   )
-  // }
-
   async attach(id: string): Promise<this> {
     const result = this.attachByTargetId(id)
     if (typeof result === 'undefined') {
@@ -161,6 +187,13 @@ export class ManyToMany<T extends Model> extends Relationship<Collection<T>> imp
     return this
   }
 
+  // flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[] {
+  //   return flatten(
+  //     models.map(item => {
+  //       return isCollection(item) ? (item as CollectJs.Collection<T>).all() : (item as T | T[])
+  //     })
+  //   )
+  // }
   // attach(...models: Array<T | T[] | CollectJs.Collection<T>>) {
   //   const attachedModels = this.flattenArguments.apply(this, arguments)
 

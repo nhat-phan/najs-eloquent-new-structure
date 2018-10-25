@@ -11,6 +11,15 @@ const isPromise_1 = require("../../../lib/util/isPromise");
 const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 const factory_1 = require("../../../lib/util/factory");
 const Record_1 = require("../../../lib/drivers/Record");
+const DataBuffer_1 = require("../../../lib/data/DataBuffer");
+const reader = {
+    getAttribute(data, field) {
+        return data[field];
+    },
+    pick(data, fields) {
+        return data;
+    }
+};
 describe('ManyToMany', function () {
     it('extends Relationship class and implements Autoload under name "NajsEloquent.Relation.Relationship.ManyToMany"', function () {
         const rootModel = {};
@@ -331,12 +340,81 @@ describe('ManyToMany', function () {
             expect(saveSpy.called).toBe(true);
         });
     });
-    // TODO: implementation needed
+    describe('.collectPivotData()', function () {
+        it('returns an empty object if there is no root primary key', function () {
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'Target', 'pivot', 'root_id', 'target_id', 'id', 'id');
+            const dataBucket = {};
+            expect(relation.collectPivotData(dataBucket)).toEqual({});
+        });
+        it('collects pivotModel in dataBucket which has "pivotRootKeyName" match with current rootPrimaryKey', function () {
+            const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);
+            dataBuffer.add({ id: '1', root_id: 1, target_id: 'x' });
+            dataBuffer.add({ id: '2', root_id: 2, target_id: 'x' });
+            dataBuffer.add({ id: '3', root_id: 1, target_id: 'y' });
+            dataBuffer.add({ id: '4', root_id: 2, target_id: 'y' });
+            const dataBucket = {
+                getDataOf() {
+                    return dataBuffer;
+                }
+            };
+            const pivotModel = {};
+            const rootModel = {
+                getAttribute() {
+                    return 2;
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'Target', 'pivot', 'target_id', 'root_id', 'id', 'id');
+            relation['pivotModelInstance'] = pivotModel;
+            expect(relation.collectPivotData(dataBucket)).toEqual({
+                x: { id: '2', root_id: 2, target_id: 'x' },
+                y: { id: '4', root_id: 2, target_id: 'y' }
+            });
+        });
+    });
     describe('.collectData()', function () {
-        it('does nothing for now', function () {
+        it('returns an empty collection if there is no dataBucket', function () {
             const rootModel = {};
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
-            relation.collectData();
+            const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            dataBucketStub.returns(undefined);
+            const result = relation.collectData();
+            expect(Helpers.isCollection(result)).toBe(true);
+            expect(result.all()).toEqual([]);
+        });
+        it('calls .collectPivotData() first, then collect data of targetModel with "in" operator', function () {
+            const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);
+            dataBuffer.add({ id: 'x' });
+            dataBuffer.add({ id: 'y' });
+            dataBuffer.add({ id: 'z' });
+            const dataBucket = {
+                getDataOf() {
+                    return dataBuffer;
+                },
+                makeCollection(model, data) {
+                    return data;
+                }
+            };
+            const targetModel = {};
+            const rootModel = {
+                getAttribute() {
+                    return 2;
+                }
+            };
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'name', 'Target', 'pivot', 'target_id', 'root_id', 'id', 'id');
+            relation['targetModelInstance'] = targetModel;
+            const dataBucketStub = Sinon.stub(relation, 'getDataBucket');
+            dataBucketStub.returns(dataBucket);
+            const collectPivotDataStub = Sinon.stub(relation, 'collectPivotData');
+            collectPivotDataStub.returns({
+                x: { id: '2', root_id: 2, target_id: 'x' },
+                y: { id: '4', root_id: 2, target_id: 'y' }
+            });
+            expect(relation.collectData()).toEqual([{ id: 'x' }, { id: 'y' }]);
         });
     });
     describe('.fetchPivotData()', function () {
