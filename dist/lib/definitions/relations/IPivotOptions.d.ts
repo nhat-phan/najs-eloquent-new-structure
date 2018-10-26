@@ -1,7 +1,8 @@
 declare namespace NajsEloquent.Relation {
+    type PivotForeignKey = string;
     interface IPivotOptions {
-        name: string;
-        foreignKeys: [string, string];
+        foreignKeys: [PivotForeignKey, PivotForeignKey];
+        name?: string;
         fields?: Array<string>;
     }
 }

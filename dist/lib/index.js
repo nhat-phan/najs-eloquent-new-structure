@@ -17,7 +17,7 @@ const MemoryDriver_1 = require("./drivers/memory/MemoryDriver");
 MemoryDataSourceProviderFacade_1.MemoryDataSourceProvider.register(MemoryDataSource_1.MemoryDataSource, 'memory', true);
 DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory');
 var PivotModel_1 = require("./relations/relationships/pivot/PivotModel");
-exports.PivotModel = PivotModel_1.PivotModel;
+exports.Pivot = PivotModel_1.PivotModel;
 var builtin_1 = require("./builtin");
 exports.NajsEloquent = builtin_1.Builtin;
 var DriverProviderFacade_2 = require("./facades/global/DriverProviderFacade");

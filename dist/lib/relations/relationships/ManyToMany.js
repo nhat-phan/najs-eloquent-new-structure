@@ -8,37 +8,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // import { flatten } from 'lodash'
 const najs_binding_1 = require("najs-binding");
-const Relationship_1 = require("../Relationship");
+const ManyToManyBase_1 = require("./ManyToManyBase");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
-const PivotModel_1 = require("./pivot/PivotModel");
-const helpers_1 = require("../../util/helpers");
 // import { isModel, isCollection } from '../../util/helpers'
 const ModelEvent_1 = require("../../model/ModelEvent");
 const RelationUtilities_1 = require("../RelationUtilities");
 const factory_1 = require("../../util/factory");
 const DataConditionMatcher_1 = require("../../data/DataConditionMatcher");
-class ManyToMany extends Relationship_1.Relationship {
-    constructor(root, relationName, target, pivot, pivotTargetKeyName, pivotRootKeyName, targetKeyName, rootKeyName) {
-        super(root, relationName);
-        this.targetDefinition = target;
-        this.pivot = pivot;
-        this.pivotTargetKeyName = pivotTargetKeyName;
-        this.pivotRootKeyName = pivotRootKeyName;
-        this.targetKeyName = targetKeyName;
-        this.rootKeyName = rootKeyName;
-    }
+class ManyToMany extends ManyToManyBase_1.ManyToManyBase {
     getType() {
         return RelationshipType_1.RelationshipType.ManyToMany;
     }
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.ManyToMany;
-    }
-    get pivotModel() {
-        if (!this.pivotModelInstance) {
-            this.pivotModelInstance = this.newPivot();
-        }
-        return this.pivotModelInstance;
     }
     collectPivotData(dataBucket) {
         const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
@@ -92,49 +75,12 @@ class ManyToMany extends Relationship_1.Relationship {
         const ids = RelationUtilities_1.RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName);
         return query.whereIn(this.pivotRootKeyName, ids).get();
     }
-    getQueryBuilder(name) {
-        const queryBuilder = this.targetModel.newQuery(name);
-        queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
-        return this.applyCustomQuery(queryBuilder);
-    }
     async fetchData(type) {
         const pivotData = await this.fetchPivotData(type);
         const queryName = `${this.getType()}:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`;
         const query = this.getQueryBuilder(queryName);
         const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all();
         return query.whereIn(this.targetKeyName, targetKeysInPivot).get();
-    }
-    isInverseOf(relation) {
-        return false;
-    }
-    newPivot(data, isGuarded) {
-        if (typeof this.pivot === 'string') {
-            if (najs_binding_1.ClassRegistry.has(this.pivot)) {
-                const instance = najs_binding_1.make(this.pivot);
-                if (helpers_1.isModel(instance)) {
-                    return instance;
-                }
-            }
-            // the pivot is not a model then we should create an pivot model
-            this.pivotDefinition = PivotModel_1.PivotModel.createPivotClass(this.pivot, {
-                name: this.pivot,
-                foreignKeys: [this.pivotRootKeyName, this.pivotTargetKeyName].sort()
-            });
-            return Reflect.construct(this.pivotDefinition, Array.from(arguments));
-        }
-        return Reflect.construct(this.pivot, Array.from(arguments));
-    }
-    newPivotQuery(name, raw = false) {
-        const queryBuilder = this.pivotModel.newQuery(name);
-        queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
-        if (raw) {
-            return queryBuilder;
-        }
-        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
-        if (rootPrimaryKey) {
-            return queryBuilder.where(this.pivotRootKeyName, rootPrimaryKey);
-        }
-        return queryBuilder;
     }
     async attach(id) {
         const result = this.attachByTargetId(id);

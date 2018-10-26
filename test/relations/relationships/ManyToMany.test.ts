@@ -1,10 +1,8 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { register } from 'najs-binding'
 import * as Helpers from '../../../lib/util/helpers'
-import { Relationship } from '../../../lib/relations/Relationship'
+import { ManyToManyBase } from '../../../lib/relations/relationships/ManyToManyBase'
 import { ManyToMany } from '../../../lib/relations/relationships/ManyToMany'
-import { PivotModel } from './../../../lib/relations/relationships/pivot/PivotModel'
 import { isPromise } from '../../../lib/util/isPromise'
 import { RelationUtilities } from '../../../lib/relations/RelationUtilities'
 import { make_collection } from '../../../lib/util/factory'
@@ -22,10 +20,10 @@ const reader = {
 }
 
 describe('ManyToMany', function() {
-  it('extends Relationship class and implements Autoload under name "NajsEloquent.Relation.Relationship.ManyToMany"', function() {
+  it('extends ManyToManyBase class and implements Autoload under name "NajsEloquent.Relation.Relationship.ManyToMany"', function() {
     const rootModel: any = {}
     const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-    expect(relation).toBeInstanceOf(Relationship)
+    expect(relation).toBeInstanceOf(ManyToManyBase)
     expect(relation.getClassName()).toEqual('NajsEloquent.Relation.Relationship.ManyToMany')
   })
 
@@ -56,280 +54,6 @@ describe('ManyToMany', function() {
       const rootModel: any = {}
       const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
       expect(relation.getType()).toEqual('ManyToMany')
-    })
-  })
-
-  describe('get pivotModel()', function() {
-    it('returns an property "pivotModelInstance" if there is a created instance', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      const pivot: any = {}
-      relation['pivotModelInstance'] = pivot
-      expect(relation['pivotModel'] === pivot).toBe(true)
-    })
-
-    it('calls .newPivot() then set the result to property "pivotModelInstance" if there is no created instance', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      const newPivotStub = Sinon.stub(relation, 'newPivot')
-      newPivotStub.returns('anything')
-      expect(newPivotStub.called).toBe(false)
-      expect(relation['pivotModelInstance']).toBeUndefined()
-      expect(relation['pivotModel']).toEqual('anything')
-      expect(newPivotStub.called).toBe(true)
-    })
-  })
-
-  describe('.newPivot()', function() {
-    it('checks class in ClassRegistry, then use make() to makes and returns an instance if it is a Model', function() {
-      class A {}
-      const stub = Sinon.stub(PivotModel, 'createPivotClass')
-      stub.returns(A)
-
-      class ClassInRegistry {}
-      register(ClassInRegistry, 'class-in-registry')
-
-      const isModelStub = Sinon.stub(Helpers, 'isModel')
-      isModelStub.returns(true)
-
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'class-in-registry', 'd', 'e', 'f', 'g')
-
-      expect(relation.newPivot()).toBeInstanceOf(ClassInRegistry)
-      expect(isModelStub.lastCall.args[0]).toBeInstanceOf(ClassInRegistry)
-      expect(stub.called).toBe(false)
-      stub.restore()
-      isModelStub.restore()
-    })
-
-    it('calls PivotModel.createPivotClass() and assigns result to pivotDefinition, then use Reflect.construct() to create an instance if pivot not in ClassRegistry', function() {
-      class A {}
-      const stub = Sinon.stub(PivotModel, 'createPivotClass')
-      stub.returns(A)
-
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'pivot', 'root_id', 'target_id', 'f', 'g')
-      expect(relation.newPivot()).toBeInstanceOf(A)
-      expect(relation['pivotDefinition'] === A).toBe(true)
-      expect(
-        stub.calledWith('pivot', {
-          name: 'pivot',
-          foreignKeys: ['root_id', 'target_id']
-        })
-      ).toBe(true)
-      stub.restore()
-    })
-
-    it('calls PivotModel.createPivotClass() and assigns result to pivotDefinition, then use Reflect.construct() to create an instance if pivot in ClassRegistry but not Model instance', function() {
-      class A {}
-      const stub = Sinon.stub(PivotModel, 'createPivotClass')
-      stub.returns(A)
-
-      class ClassInRegistry {}
-      register(ClassInRegistry, 'class-in-registry')
-
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'class-in-registry', 'target_id', 'root_id', 'f', 'g')
-      expect(relation.newPivot()).toBeInstanceOf(A)
-      expect(relation['pivotDefinition'] === A).toBe(true)
-      expect(
-        stub.calledWith('class-in-registry', {
-          name: 'class-in-registry',
-          foreignKeys: ['root_id', 'target_id']
-        })
-      ).toBe(true)
-      stub.restore()
-    })
-
-    it('simply calls and returns Reflect.construct(this.pivot) if the pivot is a Constructor function', function() {
-      class A {}
-
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', A as any, 'd', 'e', 'f', 'g')
-
-      expect(relation.newPivot()).toBeInstanceOf(A)
-    })
-
-    it('can be created with data and isGuarded params', function() {
-      class A {
-        constructor(public data: object, public isGuarded: boolean) {}
-      }
-
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', A as any, 'd', 'e', 'f', 'g')
-
-      const data = {}
-      const pivot = relation.newPivot(data, false)
-      expect(pivot).toBeInstanceOf(A)
-      expect(pivot['data'] === data).toBe(true)
-      expect(pivot['isGuarded']).toBe(false)
-    })
-  })
-
-  describe('.getQueryBuilder()', function() {
-    it('returns a queryBuilder from targetModel, which also contains the dataBucket of relation', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        }
-      }
-      const targetModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-      relation['targetModelInstance'] = targetModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
-
-      expect(relation.getQueryBuilder('name') === queryBuilder).toBe(true)
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
-    })
-
-    it('passes the queryBuilder to .applyCustomQuery() then returns the result', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        }
-      }
-      const targetModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-      relation['targetModelInstance'] = targetModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
-
-      const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery')
-      applyCustomQueryStub.returns('anything')
-
-      expect(relation.getQueryBuilder('name')).toEqual('anything')
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
-      expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true)
-    })
-  })
-
-  describe('.newPivotQuery()', function() {
-    it('returns a new query of pivot by calls .pivotModel.newQuery(), it also set the relationDataBucket to queryBuilder', function() {
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        }
-      }
-      const pivotModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-
-      const rootModel: any = {
-        getAttribute() {
-          return undefined
-        }
-      }
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      relation['pivotModelInstance'] = pivotModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(pivotModel, 'newQuery')
-
-      expect(relation.newPivotQuery('name') === queryBuilder).toBe(true)
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
-    })
-
-    it('link to rootModel if root model has primaryKey', function() {
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        },
-        where() {
-          return this
-        }
-      }
-      const pivotModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-
-      const whereSpy = Sinon.spy(queryBuilder, 'where')
-
-      const rootModel: any = {
-        getAttribute() {
-          return 'value'
-        }
-      }
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'pivot_root_id', 'f', 'root-id')
-      relation['pivotModelInstance'] = pivotModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(pivotModel, 'newQuery')
-
-      expect(relation.newPivotQuery('name') === queryBuilder).toBe(true)
-      expect(whereSpy.calledWith('pivot_root_id', 'value')).toBe(true)
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
-    })
-
-    it('does not link to rootModel if the second params is true', function() {
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        }
-      }
-      const pivotModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-
-      const rootModel: any = {
-        getAttribute() {
-          return undefined
-        }
-      }
-      const getAttributeSpy = Sinon.spy(rootModel, 'getAttribute')
-
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      relation['pivotModelInstance'] = pivotModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(pivotModel, 'newQuery')
-
-      expect(relation.newPivotQuery('name', true) === queryBuilder).toBe(true)
-      expect(getAttributeSpy.called).toBe(false)
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
     })
   })
 
@@ -650,15 +374,6 @@ describe('ManyToMany', function() {
       expect(result).toEqual('anything')
       expect(getQueryBuilderStub.calledWith('ManyToMany:Target-Root')).toBe(true)
       expect(whereInSpy.calledWith('id', [1, 2])).toBe(true)
-    })
-  })
-
-  // TODO: implementation needed
-  describe('.isInverseOf()', function() {
-    it('does nothing for now', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      relation.isInverseOf({} as any)
     })
   })
 
