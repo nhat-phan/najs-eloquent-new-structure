@@ -113,37 +113,46 @@ export class ManyToMany<T extends Model> extends ManyToManyBase<T> implements IM
     return query.whereIn(this.targetKeyName, targetKeysInPivot).get()
   }
 
-  async attach(id: string): Promise<this> {
-    const result = this.attachByTargetId(id)
-    if (typeof result === 'undefined') {
+  async attach(arg1: string | string[] | object, arg2?: object): Promise<this> {
+    const input = this.parseAttachArguments(arg1, arg2)
+    const promises: Promise<any>[] = []
+    for (const id in input) {
+      const result = this.attachModel(id, input[id])
+      if (typeof result === 'undefined') {
+        continue
+      }
+      promises.push(result)
+    }
+
+    if (promises.length === 0) {
       return this
     }
 
-    await result
+    await Promise.all(promises)
     return this
   }
 
-  // flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[] {
-  //   return flatten(
-  //     models.map(item => {
-  //       return isCollection(item) ? (item as CollectJs.Collection<T>).all() : (item as T | T[])
-  //     })
-  //   )
-  // }
-  // attach(...models: Array<T | T[] | CollectJs.Collection<T>>) {
-  //   const attachedModels = this.flattenArguments.apply(this, arguments)
+  parseAttachArguments(arg1: string | string[] | object, arg2?: object): object {
+    if (typeof arg1 === 'string') {
+      return { [arg1]: arg2 }
+    }
 
-  //   attachedModels.forEach(function(model: T) {
-  //     if (model.isNew()) {
-  //       // model.once(ModelEvent.Saved, async function() {
-  //       // })
-  //     }
-  //   })
-  // }
+    if (Array.isArray(arg1)) {
+      return arg1.reduce(function(memo, item) {
+        memo[item] = arg2
+        return memo
+      }, {})
+    }
 
-  attachByTargetId(targetId: string): Promise<any> | undefined {
+    return arg1
+  }
+
+  attachModel(targetId: string, data?: object): Promise<any> | undefined {
     const pivot = this.newPivot()
     pivot.setAttribute(this.pivotTargetKeyName, targetId)
+    if (typeof data !== 'undefined') {
+      pivot.fill(data)
+    }
 
     const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
     if (rootPrimaryKey) {

@@ -50,16 +50,14 @@ class ManyToManyBase extends Relationship_1.Relationship {
                 }
             }
             // the pivot is not a model then we should create an pivot model
-            const options = this.getPivotOptions(this.pivot);
-            this.pivotDefinition = PivotModel_1.PivotModel.createPivotClass(this.pivot, options);
-            this.pivotDefinition['options'] = options;
+            this.setPivotDefinition(PivotModel_1.PivotModel.createPivotClass(this.pivot, this.getPivotOptions(this.pivot)));
             return Reflect.construct(this.pivotDefinition, Array.from(arguments));
         }
         this.setPivotDefinition(this.pivot);
         return Reflect.construct(this.pivot, Array.from(arguments));
     }
     newPivotQuery(name, raw = false) {
-        const queryBuilder = this.pivotModel.newQuery(name);
+        const queryBuilder = this.applyPivotCustomQuery(this.pivotModel.newQuery(name));
         queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
         if (raw) {
             return queryBuilder;
@@ -67,6 +65,12 @@ class ManyToManyBase extends Relationship_1.Relationship {
         const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
         if (rootPrimaryKey) {
             return queryBuilder.where(this.pivotRootKeyName, rootPrimaryKey);
+        }
+        return queryBuilder;
+    }
+    applyPivotCustomQuery(queryBuilder) {
+        if (typeof this.pivotCustomQueryFn === 'function') {
+            this.pivotCustomQueryFn.call(queryBuilder, queryBuilder);
         }
         return queryBuilder;
     }
@@ -80,6 +84,10 @@ class ManyToManyBase extends Relationship_1.Relationship {
         }
         return this;
     }
+    queryPivot(cb) {
+        this.pivotCustomQueryFn = cb;
+        return this;
+    }
     getPivotOptions(name) {
         if (name && !this.pivotOptions.name) {
             this.pivotOptions.name = name;
@@ -87,8 +95,17 @@ class ManyToManyBase extends Relationship_1.Relationship {
         return this.pivotOptions;
     }
     setPivotDefinition(definition) {
+        const options = this.getPivotOptions();
         this.pivotDefinition = definition;
-        this.pivotDefinition['options'] = this.getPivotOptions();
+        this.pivotDefinition['options'] = options;
+        if (typeof options.fields !== 'undefined') {
+            if (typeof this.pivotDefinition['fillable'] === 'undefined') {
+                this.pivotDefinition['fillable'] = [].concat(options.foreignKeys, options.fields);
+            }
+            else {
+                this.pivotDefinition['fillable'] = functions_1.array_unique([].concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields));
+            }
+        }
     }
 }
 ManyToManyBase.className = constants_1.NajsEloquent.Relation.Relationship.ManyToMany;

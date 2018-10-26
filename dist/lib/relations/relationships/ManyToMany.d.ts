@@ -26,6 +26,7 @@ export declare class ManyToMany<T extends Model> extends ManyToManyBase<T> imple
     collectData(): Collection<T> | undefined | null;
     fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
     fetchData(type: RelationshipFetchType): Promise<Collection<T> | undefined | null>;
-    attach(id: string): Promise<this>;
-    attachByTargetId(targetId: string): Promise<any> | undefined;
+    attach(arg1: string | string[] | object, arg2?: object): Promise<this>;
+    parseAttachArguments(arg1: string | string[] | object, arg2?: object): object;
+    attachModel(targetId: string, data?: object): Promise<any> | undefined;
 }

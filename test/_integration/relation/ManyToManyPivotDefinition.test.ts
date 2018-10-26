@@ -9,6 +9,46 @@ class Role extends Model {
 Model.register(Role)
 
 describe('ManyToMany Pivot definitions Test', function() {
+  it('should work no custom pivot', function() {
+    class UserOneRole extends Model {
+      getClassName() {
+        return 'UserOneRole'
+      }
+    }
+    Model.register(UserOneRole)
+
+    class UserZero extends Model {
+      roles: BelongsToMany<Role>
+
+      getClassName() {
+        return 'UserZero'
+      }
+
+      get rolesRelation() {
+        return this.defineRelation('roles')
+          .belongsToMany(Role)
+          .withPivot('status')
+      }
+    }
+    Model.register(UserZero)
+
+    const user = new UserZero()
+    const pivot = user.rolesRelation.newPivot()
+    expect(
+      pivot
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(pivot, 'options', {})
+    ).toEqual({ foreignKeys: ['role_id', 'user_zero_id'], fields: ['status'], name: 'role_user_zeros' })
+
+    expect(
+      pivot
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(pivot, 'fillable', {})
+    ).toEqual(['role_id', 'user_zero_id', 'status'])
+  })
+
   it('should work with defined Model but passed as string', function() {
     class UserOneRole extends Model {
       getClassName() {
@@ -40,6 +80,13 @@ describe('ManyToMany Pivot definitions Test', function() {
         .getSettingFeature()
         .getSettingProperty(pivot, 'options', {})
     ).toEqual({ foreignKeys: ['role_id', 'user_one_id'], fields: ['status'] })
+
+    expect(
+      pivot
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(pivot, 'fillable', {})
+    ).toEqual(['role_id', 'user_one_id', 'status'])
   })
 
   it('should work with defined Model', function() {
@@ -73,6 +120,13 @@ describe('ManyToMany Pivot definitions Test', function() {
         .getSettingFeature()
         .getSettingProperty(pivot, 'options', {})
     ).toEqual({ foreignKeys: ['role_id', 'user_two_id'], fields: ['status'] })
+
+    expect(
+      pivot
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(pivot, 'fillable', {})
+    ).toEqual(['role_id', 'user_two_id', 'status'])
   })
 
   it('should work with non-existing Model but passed as string', function() {
@@ -99,6 +153,13 @@ describe('ManyToMany Pivot definitions Test', function() {
         .getSettingFeature()
         .getSettingProperty(pivot, 'options', {})
     ).toEqual({ foreignKeys: ['role_id', 'user_three_id'], fields: ['status'], name: 'user_roles' })
+
+    expect(
+      pivot
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(pivot, 'fillable', {})
+    ).toEqual(['role_id', 'user_three_id', 'status'])
   })
 
   it('should work with non-existing Model but passed as string and redefined', function() {
@@ -125,5 +186,12 @@ describe('ManyToMany Pivot definitions Test', function() {
         .getSettingFeature()
         .getSettingProperty(pivot, 'options', {})
     ).toEqual({ foreignKeys: ['role_id', 'user_four_id'], fields: ['status', 'new'], name: 'user_roles' })
+
+    expect(
+      pivot
+        .getDriver()
+        .getSettingFeature()
+        .getSettingProperty(pivot, 'fillable', {})
+    ).toEqual(['role_id', 'user_three_id', 'status', 'user_four_id', 'new'])
   })
 })

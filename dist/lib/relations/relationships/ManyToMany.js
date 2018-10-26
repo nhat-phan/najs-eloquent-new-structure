@@ -82,33 +82,40 @@ class ManyToMany extends ManyToManyBase_1.ManyToManyBase {
         const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all();
         return query.whereIn(this.targetKeyName, targetKeysInPivot).get();
     }
-    async attach(id) {
-        const result = this.attachByTargetId(id);
-        if (typeof result === 'undefined') {
+    async attach(arg1, arg2) {
+        const input = this.parseAttachArguments(arg1, arg2);
+        const promises = [];
+        for (const id in input) {
+            const result = this.attachModel(id, input[id]);
+            if (typeof result === 'undefined') {
+                continue;
+            }
+            promises.push(result);
+        }
+        if (promises.length === 0) {
             return this;
         }
-        await result;
+        await Promise.all(promises);
         return this;
     }
-    // flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[] {
-    //   return flatten(
-    //     models.map(item => {
-    //       return isCollection(item) ? (item as CollectJs.Collection<T>).all() : (item as T | T[])
-    //     })
-    //   )
-    // }
-    // attach(...models: Array<T | T[] | CollectJs.Collection<T>>) {
-    //   const attachedModels = this.flattenArguments.apply(this, arguments)
-    //   attachedModels.forEach(function(model: T) {
-    //     if (model.isNew()) {
-    //       // model.once(ModelEvent.Saved, async function() {
-    //       // })
-    //     }
-    //   })
-    // }
-    attachByTargetId(targetId) {
+    parseAttachArguments(arg1, arg2) {
+        if (typeof arg1 === 'string') {
+            return { [arg1]: arg2 };
+        }
+        if (Array.isArray(arg1)) {
+            return arg1.reduce(function (memo, item) {
+                memo[item] = arg2;
+                return memo;
+            }, {});
+        }
+        return arg1;
+    }
+    attachModel(targetId, data) {
         const pivot = this.newPivot();
         pivot.setAttribute(this.pivotTargetKeyName, targetId);
+        if (typeof data !== 'undefined') {
+            pivot.fill(data);
+        }
         const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
         if (rootPrimaryKey) {
             pivot.setAttribute(this.pivotRootKeyName, rootPrimaryKey);

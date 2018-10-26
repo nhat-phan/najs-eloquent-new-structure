@@ -198,6 +198,7 @@ describe('ManyToMany', function () {
                 }
             };
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const applyPivotCustomQuerySpy = Sinon.spy(relation, 'applyPivotCustomQuery');
             relation['pivotModelInstance'] = pivotModel;
             const dataBucket = {};
             const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
@@ -206,6 +207,7 @@ describe('ManyToMany', function () {
             const newQuerySpy = Sinon.spy(pivotModel, 'newQuery');
             expect(relation.newPivotQuery('name') === queryBuilder).toBe(true);
             expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(applyPivotCustomQuerySpy.calledWith(queryBuilder)).toBe(true);
             expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
         });
         it('link to rootModel if root model has primaryKey', function () {
@@ -229,6 +231,7 @@ describe('ManyToMany', function () {
                 }
             };
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'pivot_root_id', 'f', 'root-id');
+            const applyPivotCustomQuerySpy = Sinon.spy(relation, 'applyPivotCustomQuery');
             relation['pivotModelInstance'] = pivotModel;
             const dataBucket = {};
             const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
@@ -238,6 +241,7 @@ describe('ManyToMany', function () {
             expect(relation.newPivotQuery('name') === queryBuilder).toBe(true);
             expect(whereSpy.calledWith('pivot_root_id', 'value')).toBe(true);
             expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(applyPivotCustomQuerySpy.calledWith(queryBuilder)).toBe(true);
             expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
         });
         it('does not link to rootModel if the second params is true', function () {
@@ -258,6 +262,7 @@ describe('ManyToMany', function () {
             };
             const getAttributeSpy = Sinon.spy(rootModel, 'getAttribute');
             const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const applyPivotCustomQuerySpy = Sinon.spy(relation, 'applyPivotCustomQuery');
             relation['pivotModelInstance'] = pivotModel;
             const dataBucket = {};
             const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
@@ -267,6 +272,7 @@ describe('ManyToMany', function () {
             expect(relation.newPivotQuery('name', true) === queryBuilder).toBe(true);
             expect(getAttributeSpy.called).toBe(false);
             expect(newQuerySpy.calledWith('name')).toBe(true);
+            expect(applyPivotCustomQuerySpy.calledWith(queryBuilder)).toBe(true);
             expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
         });
     });
@@ -286,6 +292,37 @@ describe('ManyToMany', function () {
             expect(relation.getPivotOptions().fields).toEqual(['a', 'b', 'c']);
             relation.withPivot('x', ['b'], 'y');
             expect(relation.getPivotOptions().fields).toEqual(['a', 'b', 'c', 'x', 'y']);
+        });
+    });
+    describe('.queryPivot()', function () {
+        it('is chainable, simply assigns the callback to property "pivotCustomQueryFn"', function () {
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const cb = function () { };
+            expect(relation.queryPivot(cb) === relation).toBe(true);
+            expect(relation['pivotCustomQueryFn'] === cb).toBe(true);
+            const anotherCb = function () { };
+            expect(relation.queryPivot(anotherCb) === relation).toBe(true);
+            expect(relation['pivotCustomQueryFn'] === anotherCb).toBe(true);
+        });
+    });
+    describe('.applyPivotCustomQuery()', function () {
+        it('returns the given queryBuilder if property "customQueryFn" is not a function', function () {
+            const rootModel = {};
+            const queryBuilder = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation.applyPivotCustomQuery(queryBuilder) === queryBuilder).toBe(true);
+        });
+        it('calls "customQueryFn" if it is a function, then still returns the queryBuilder', function () {
+            const queryBuilder = {};
+            const fn = function () { };
+            const spy = Sinon.spy(fn);
+            const rootModel = {};
+            const relation = new ManyToMany_1.ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            relation.queryPivot(spy);
+            expect(relation.applyPivotCustomQuery(queryBuilder) === queryBuilder).toBe(true);
+            expect(spy.calledWith(queryBuilder)).toBe(true);
+            expect(spy.lastCall.thisValue === queryBuilder).toBe(true);
         });
     });
 });

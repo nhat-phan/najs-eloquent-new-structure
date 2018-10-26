@@ -7,6 +7,7 @@
 import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
+import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery;
 import IPivotOptions = NajsEloquent.Relation.IPivotOptions;
 import IManyToManyDefinition = NajsEloquent.Relation.IManyToManyDefinition;
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
@@ -21,6 +22,7 @@ export declare abstract class ManyToManyBase<T extends Model> extends Relationsh
     protected pivotTargetKeyName: string;
     protected pivotRootKeyName: string;
     protected pivotOptions: IPivotOptions;
+    protected pivotCustomQueryFn: IRelationshipQuery<T> | undefined;
     constructor(root: Model, relationName: string, target: ModelDefinition, pivot: ModelDefinition, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string);
     abstract getType(): string;
     abstract getClassName(): string;
@@ -31,7 +33,9 @@ export declare abstract class ManyToManyBase<T extends Model> extends Relationsh
     getQueryBuilder(name: string | undefined): IQueryBuilder<any>;
     newPivot(data?: object, isGuarded?: boolean): Model;
     newPivotQuery(name?: string, raw?: boolean): IQueryBuilder<Model>;
+    applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     withPivot(...fields: Array<string | string[]>): this;
+    queryPivot(cb: IRelationshipQuery<T>): this;
     getPivotOptions(name?: string): IPivotOptions;
-    private setPivotDefinition;
+    setPivotDefinition(definition: typeof PivotModel): void;
 }

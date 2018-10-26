@@ -37,5 +37,9 @@ declare namespace NajsEloquent.Relation {
          * @param {string|string[]} fields
          */
         withPivot(...fields: Array<string | string[]>): this;
+        /**
+         * Add custom query to relationship.
+         */
+        queryPivot(cb: IRelationshipQuery<T>): this;
     }
 }

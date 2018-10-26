@@ -8,6 +8,7 @@
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
+import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery
 import IPivotOptions = NajsEloquent.Relation.IPivotOptions
 import IManyToManyDefinition = NajsEloquent.Relation.IManyToManyDefinition
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
@@ -32,6 +33,8 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
   protected pivotTargetKeyName: string
   protected pivotRootKeyName: string
   protected pivotOptions: IPivotOptions
+
+  protected pivotCustomQueryFn: IRelationshipQuery<T> | undefined
 
   constructor(
     root: Model,
@@ -91,9 +94,7 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
       }
 
       // the pivot is not a model then we should create an pivot model
-      const options = this.getPivotOptions(this.pivot)
-      this.pivotDefinition = PivotModel.createPivotClass(this.pivot, options)
-      this.pivotDefinition['options'] = options
+      this.setPivotDefinition(PivotModel.createPivotClass(this.pivot, this.getPivotOptions(this.pivot)))
       return Reflect.construct(this.pivotDefinition, Array.from(arguments))
     }
 
@@ -102,8 +103,9 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
   }
 
   newPivotQuery(name?: string, raw: boolean = false): IQueryBuilder<Model> {
-    const queryBuilder = this.pivotModel.newQuery(name as any) as QueryBuilderInternal
+    const queryBuilder = this.applyPivotCustomQuery(this.pivotModel.newQuery(name as any)) as QueryBuilderInternal
     queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+
     if (raw) {
       return queryBuilder
     }
@@ -111,6 +113,13 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
     const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
     if (rootPrimaryKey) {
       return queryBuilder.where(this.pivotRootKeyName, rootPrimaryKey)
+    }
+    return queryBuilder
+  }
+
+  applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any> {
+    if (typeof this.pivotCustomQueryFn === 'function') {
+      this.pivotCustomQueryFn.call(queryBuilder, queryBuilder)
     }
     return queryBuilder
   }
@@ -126,6 +135,12 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
     return this
   }
 
+  queryPivot(cb: IRelationshipQuery<T>): this {
+    this.pivotCustomQueryFn = cb
+
+    return this
+  }
+
   getPivotOptions(name?: string): IPivotOptions {
     if (name && !this.pivotOptions.name) {
       this.pivotOptions.name = name
@@ -133,8 +148,18 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
     return this.pivotOptions
   }
 
-  private setPivotDefinition(definition: typeof PivotModel): void {
+  setPivotDefinition(definition: typeof PivotModel): void {
+    const options = this.getPivotOptions()
     this.pivotDefinition = definition
-    this.pivotDefinition['options'] = this.getPivotOptions()
+    this.pivotDefinition['options'] = options
+    if (typeof options.fields !== 'undefined') {
+      if (typeof this.pivotDefinition['fillable'] === 'undefined') {
+        this.pivotDefinition['fillable'] = ([] as string[]).concat(options.foreignKeys, options.fields)
+      } else {
+        this.pivotDefinition['fillable'] = array_unique(
+          ([] as string[]).concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields)
+        )
+      }
+    }
   }
 }
