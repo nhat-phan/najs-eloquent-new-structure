@@ -8,7 +8,9 @@ class Role extends lib_1.Model {
         return 'Role';
     }
     get usersRelation() {
-        return this.defineRelation('users').belongsToMany(User, 'user_roles');
+        return this.defineRelation('users')
+            .belongsToMany(User, 'user_roles')
+            .withPivot('active');
     }
 }
 najs_binding_1.register(Role);
@@ -17,7 +19,9 @@ class User extends lib_1.Model {
         return 'User';
     }
     get rolesRelation() {
-        return this.defineRelation('roles').belongsToMany(Role, 'user_roles');
+        return this.defineRelation('roles')
+            .belongsToMany(Role, 'user_roles')
+            .withPivot('active');
     }
 }
 najs_binding_1.register(User);
@@ -37,8 +41,8 @@ describe('ManyToManyRelationship', function () {
         const user = lib_1.factory(User).make();
         const roleA = await lib_1.factory(Role).create({ name: 'a' });
         const roleB = await lib_1.factory(Role).create({ name: 'b' });
-        await user.rolesRelation.attach(roleA.id);
-        await user.rolesRelation.attach(roleB.id);
+        await user.rolesRelation.attach(roleA.id, { active: true });
+        await user.rolesRelation.attach(roleB.id, { active: false });
         await user.save();
         const pivotData = await user.rolesRelation
             .newPivotQuery()

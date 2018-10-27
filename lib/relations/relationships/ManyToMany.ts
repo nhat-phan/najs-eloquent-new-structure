@@ -107,7 +107,7 @@ export class ManyToMany<T extends Model> extends ManyToManyBase<T> implements IM
     const pivotData = await this.fetchPivotData(type)
 
     const queryName = `${this.getType()}:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`
-    const query = this.getQueryBuilder(queryName)
+    const query = this.newQuery(queryName)
     const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all()
 
     return query.whereIn(this.targetKeyName, targetKeysInPivot).get()

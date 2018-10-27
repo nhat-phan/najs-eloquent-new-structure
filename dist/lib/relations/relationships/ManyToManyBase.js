@@ -35,11 +35,6 @@ class ManyToManyBase extends Relationship_1.Relationship {
         }
         return this.pivotModelInstance;
     }
-    getQueryBuilder(name) {
-        const queryBuilder = this.targetModel.newQuery(name);
-        queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
-        return this.applyCustomQuery(queryBuilder);
-    }
     newPivot(data, isGuarded) {
         if (typeof this.pivot === 'string') {
             if (najs_binding_1.ClassRegistry.has(this.pivot)) {

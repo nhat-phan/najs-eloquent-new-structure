@@ -77,12 +77,6 @@ export abstract class ManyToManyBase<T extends Model> extends Relationship<Colle
     return this.pivotModelInstance
   }
 
-  getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
-    const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
-    queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
-    return this.applyCustomQuery(queryBuilder)
-  }
-
   newPivot(data?: object, isGuarded?: boolean): Model {
     if (typeof this.pivot === 'string') {
       if (ClassRegistry.has(this.pivot)) {

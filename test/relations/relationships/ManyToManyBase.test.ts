@@ -65,66 +65,6 @@ describe('ManyToMany', function() {
     })
   })
 
-  describe('.getQueryBuilder()', function() {
-    it('returns a queryBuilder from targetModel, which also contains the dataBucket of relation', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        }
-      }
-      const targetModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-      relation['targetModelInstance'] = targetModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
-
-      expect(relation.getQueryBuilder('name') === queryBuilder).toBe(true)
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
-    })
-
-    it('passes the queryBuilder to .applyCustomQuery() then returns the result', function() {
-      const rootModel: any = {}
-      const relation = new ManyToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
-      const queryBuilder: any = {
-        handler: {
-          setRelationDataBucket() {}
-        }
-      }
-      const targetModel: any = {
-        newQuery() {
-          return queryBuilder
-        }
-      }
-      relation['targetModelInstance'] = targetModel
-
-      const dataBucket: any = {}
-      const getDataBucketStub = Sinon.stub(relation, 'getDataBucket')
-      getDataBucketStub.returns(dataBucket)
-
-      const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket')
-      const newQuerySpy = Sinon.spy(targetModel, 'newQuery')
-
-      const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery')
-      applyCustomQueryStub.returns('anything')
-
-      expect(relation.getQueryBuilder('name')).toEqual('anything')
-      expect(newQuerySpy.calledWith('name')).toBe(true)
-      expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true)
-      expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true)
-    })
-  })
-
   describe('.newPivot()', function() {
     it('checks class in ClassRegistry, then use make() to makes and returns an instance if it is a Model', function() {
       class A {}

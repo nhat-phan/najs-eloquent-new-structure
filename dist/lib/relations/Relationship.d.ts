@@ -32,6 +32,7 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     abstract isInverseOf<K>(relation: IRelationship<K>): boolean;
     with(...relations: Array<string | string[]>): this;
     query(cb: IRelationshipQuery<T>): this;
+    newQuery(name: string | undefined): IQueryBuilder<any>;
     applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     getName(): string;
     getRelationData(): IRelationData<T>;

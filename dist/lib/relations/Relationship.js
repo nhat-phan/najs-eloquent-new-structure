@@ -29,6 +29,11 @@ class Relationship {
         this.customQueryFn = cb;
         return this;
     }
+    newQuery(name) {
+        const queryBuilder = this.targetModel.newQuery(name);
+        queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
+        return this.applyCustomQuery(queryBuilder);
+    }
     applyCustomQuery(queryBuilder) {
         if (typeof this.customQueryFn === 'function') {
             this.customQueryFn.call(queryBuilder, queryBuilder);

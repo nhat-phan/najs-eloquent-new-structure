@@ -78,7 +78,7 @@ class ManyToMany extends ManyToManyBase_1.ManyToManyBase {
     async fetchData(type) {
         const pivotData = await this.fetchPivotData(type);
         const queryName = `${this.getType()}:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`;
-        const query = this.getQueryBuilder(queryName);
+        const query = this.newQuery(queryName);
         const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all();
         return query.whereIn(this.targetKeyName, targetKeysInPivot).get();
     }

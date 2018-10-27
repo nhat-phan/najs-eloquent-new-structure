@@ -7,8 +7,6 @@ import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 import IRelationshipExecutor = NajsEloquent.Relation.IRelationshipExecutor
-import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
-import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 
 import { Relationship } from '../Relationship'
 import { RelationshipType } from '../RelationshipType'
@@ -29,12 +27,6 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
 
   abstract getExecutor(): IRelationshipExecutor<T>
 
-  getQueryBuilder(name: string | undefined): IQueryBuilder<any> {
-    const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
-    queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
-    return this.applyCustomQuery(queryBuilder)
-  }
-
   collectData(): T | undefined | null {
     const dataBucket = this.getDataBucket()
     if (!dataBucket) {
@@ -52,7 +44,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
   }
 
   async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
-    const query = this.getQueryBuilder(`${this.getType()}:${this.targetModel.getModelName()}`)
+    const query = this.newQuery(`${this.getType()}:${this.targetModel.getModelName()}`)
 
     if (type === 'lazy') {
       query.where(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))

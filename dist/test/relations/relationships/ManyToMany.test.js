@@ -229,7 +229,7 @@ describe('ManyToMany', function () {
         });
     });
     describe('.fetchData()', function () {
-        it('calls .fetchPivotData() to get pivot data, then use query from getQueryBuilder to find targets via .whereIn()', async function () {
+        it('calls .fetchPivotData() to get pivot data, then use query from .newQuery() to find targets via .whereIn()', async function () {
             const targetModel = {
                 getModelName() {
                     return 'Target';
@@ -253,13 +253,13 @@ describe('ManyToMany', function () {
                     return Promise.resolve('anything');
                 }
             };
-            const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
-            getQueryBuilderStub.returns(query);
+            const newQueryStub = Sinon.stub(relation, 'newQuery');
+            newQueryStub.returns(query);
             relation['targetModelInstance'] = targetModel;
             const whereInSpy = Sinon.spy(query, 'whereIn');
             const result = await relation.fetchData('lazy');
             expect(result).toEqual('anything');
-            expect(getQueryBuilderStub.calledWith('ManyToMany:Target-Root')).toBe(true);
+            expect(newQueryStub.calledWith('ManyToMany:Target-Root')).toBe(true);
             expect(whereInSpy.calledWith('id', [1, 2])).toBe(true);
         });
     });

@@ -15,11 +15,6 @@ class HasOneOrMany extends Relationship_1.Relationship {
         this.targetDefinition = target;
         this.targetKeyName = targetKey;
     }
-    getQueryBuilder(name) {
-        const queryBuilder = this.targetModel.newQuery(name);
-        queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
-        return this.applyCustomQuery(queryBuilder);
-    }
     collectData() {
         const dataBucket = this.getDataBucket();
         if (!dataBucket) {
@@ -34,7 +29,7 @@ class HasOneOrMany extends Relationship_1.Relationship {
         return this.getExecutor().executeCollector(collector);
     }
     async fetchData(type) {
-        const query = this.getQueryBuilder(`${this.getType()}:${this.targetModel.getModelName()}`);
+        const query = this.newQuery(`${this.getType()}:${this.targetModel.getModelName()}`);
         if (type === 'lazy') {
             query.where(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName));
         }

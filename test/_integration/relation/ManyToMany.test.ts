@@ -15,7 +15,9 @@ class Role extends Model {
   }
 
   get usersRelation() {
-    return this.defineRelation('users').belongsToMany(User, 'user_roles')
+    return this.defineRelation('users')
+      .belongsToMany(User, 'user_roles')
+      .withPivot('active')
   }
 }
 register(Role)
@@ -28,7 +30,9 @@ class User extends Model {
   }
 
   get rolesRelation() {
-    return this.defineRelation('roles').belongsToMany(Role, 'user_roles')
+    return this.defineRelation('roles')
+      .belongsToMany(Role, 'user_roles')
+      .withPivot('active')
   }
 }
 register(User)
@@ -60,8 +64,8 @@ describe('ManyToManyRelationship', function() {
     const roleA = await factory(Role).create({ name: 'a' })
     const roleB = await factory(Role).create({ name: 'b' })
 
-    await user.rolesRelation.attach(roleA.id)
-    await user.rolesRelation.attach(roleB.id)
+    await user.rolesRelation.attach(roleA.id, { active: true })
+    await user.rolesRelation.attach(roleB.id, { active: false })
     await user.save()
 
     const pivotData = await user.rolesRelation

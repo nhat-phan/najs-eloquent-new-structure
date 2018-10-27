@@ -30,7 +30,6 @@ export declare abstract class ManyToManyBase<T extends Model> extends Relationsh
     abstract fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
     isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
     protected readonly pivotModel: Model;
-    getQueryBuilder(name: string | undefined): IQueryBuilder<any>;
     newPivot(data?: object, isGuarded?: boolean): Model;
     newPivotQuery(name?: string, raw?: boolean): IQueryBuilder<Model>;
     applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;

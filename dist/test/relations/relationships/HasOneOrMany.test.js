@@ -33,55 +33,6 @@ describe('HasOneOrMany', function () {
             expect(relation['targetDefinition']).toEqual('Target');
         });
     });
-    describe('.getQueryBuilder()', function () {
-        it('returns a queryBuilder from targetModel, which also contains the dataBucket of relation', function () {
-            const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
-            const queryBuilder = {
-                handler: {
-                    setRelationDataBucket() { }
-                }
-            };
-            const targetModel = {
-                newQuery() {
-                    return queryBuilder;
-                }
-            };
-            relation['targetModelInstance'] = targetModel;
-            const dataBucket = {};
-            const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
-            getDataBucketStub.returns(dataBucket);
-            const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
-            const newQuerySpy = Sinon.spy(targetModel, 'newQuery');
-            expect(relation.getQueryBuilder('name') === queryBuilder).toBe(true);
-            expect(newQuerySpy.calledWith('name')).toBe(true);
-            expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
-        });
-        it('passes the queryBuilder to .applyCustomQuery() then returns the result', function () {
-            const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
-            const queryBuilder = {
-                handler: {
-                    setRelationDataBucket() { }
-                }
-            };
-            const targetModel = {
-                newQuery() {
-                    return queryBuilder;
-                }
-            };
-            relation['targetModelInstance'] = targetModel;
-            const dataBucket = {};
-            const getDataBucketStub = Sinon.stub(relation, 'getDataBucket');
-            getDataBucketStub.returns(dataBucket);
-            const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
-            const newQuerySpy = Sinon.spy(targetModel, 'newQuery');
-            const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery');
-            applyCustomQueryStub.returns('anything');
-            expect(relation.getQueryBuilder('name')).toEqual('anything');
-            expect(newQuerySpy.calledWith('name')).toBe(true);
-            expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
-            expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true);
-        });
-    });
     describe('.collectData()', function () {
         it('returns undefined if there is no DataBucket', function () {
             const relation = makeRelation({}, 'test', 'Target', 'target_id', 'id');
@@ -139,7 +90,7 @@ describe('HasOneOrMany', function () {
         });
     });
     describe('.fetchData()', function () {
-        it('gets query from .getQueryBuilder() then pass .where() then calls and returns .getExecutor().executeQuery() for lazy load', async function () {
+        it('gets query from .newQuery() then pass .where() then calls and returns .getExecutor().executeQuery() for lazy load', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -158,8 +109,8 @@ describe('HasOneOrMany', function () {
                 }
             };
             relation['targetModelInstance'] = targetModel;
-            const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
-            getQueryBuilderStub.returns(query);
+            const newQueryStub = Sinon.stub(relation, 'newQuery');
+            newQueryStub.returns(query);
             const executor = {
                 executeQuery() { }
             };
@@ -170,12 +121,12 @@ describe('HasOneOrMany', function () {
             const whereSpy = Sinon.spy(query, 'where');
             const whereInSpy = Sinon.spy(query, 'whereIn');
             expect(await relation.fetchData('lazy')).toEqual('anything');
-            expect(getQueryBuilderStub.calledWith('HasOne:Target')).toBe(true);
+            expect(newQueryStub.calledWith('HasOne:Target')).toBe(true);
             expect(executeQueryStub.calledWith(query)).toBe(true);
             expect(whereSpy.calledWith('target_id', 'id-value')).toBe(true);
             expect(whereInSpy.called).toBe(false);
         });
-        it('gets query from .getQueryBuilder() then calls and returns .getExecutor().getEmptyValue() for eager load if there is no dataBucket', async function () {
+        it('gets query from .newQuery() then calls and returns .getExecutor().getEmptyValue() for eager load if there is no dataBucket', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -194,8 +145,8 @@ describe('HasOneOrMany', function () {
                 }
             };
             relation['targetModelInstance'] = targetModel;
-            const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
-            getQueryBuilderStub.returns(query);
+            const newQueryStub = Sinon.stub(relation, 'newQuery');
+            newQueryStub.returns(query);
             const executor = {
                 executeQuery() { },
                 getEmptyValue() { }
@@ -209,12 +160,12 @@ describe('HasOneOrMany', function () {
             const whereSpy = Sinon.spy(query, 'where');
             const whereInSpy = Sinon.spy(query, 'whereIn');
             expect(await relation.fetchData('eager')).toEqual('empty');
-            expect(getQueryBuilderStub.calledWith('HasOne:Target')).toBe(true);
+            expect(newQueryStub.calledWith('HasOne:Target')).toBe(true);
             expect(executeQueryStub.calledWith(query)).toBe(false);
             expect(whereSpy.called).toBe(false);
             expect(whereInSpy.called).toBe(false);
         });
-        it('gets query from .getQueryBuilder() then pass .whereIn() then calls and returns .getExecutor().executeQuery() for eager load', async function () {
+        it('gets query from .newQuery() then pass .whereIn() then calls and returns .getExecutor().executeQuery() for eager load', async function () {
             const query = {
                 where() { },
                 whereIn() { }
@@ -243,8 +194,8 @@ describe('HasOneOrMany', function () {
                 }
             };
             relation['targetModelInstance'] = targetModel;
-            const getQueryBuilderStub = Sinon.stub(relation, 'getQueryBuilder');
-            getQueryBuilderStub.returns(query);
+            const newQueryStub = Sinon.stub(relation, 'newQuery');
+            newQueryStub.returns(query);
             const executor = {
                 executeQuery() { },
                 getEmptyValue() { }
@@ -256,7 +207,7 @@ describe('HasOneOrMany', function () {
             const whereSpy = Sinon.spy(query, 'where');
             const whereInSpy = Sinon.spy(query, 'whereIn');
             expect(await relation.fetchData('eager')).toEqual('anything');
-            expect(getQueryBuilderStub.calledWith('HasOne:Target')).toBe(true);
+            expect(newQueryStub.calledWith('HasOne:Target')).toBe(true);
             expect(executeQueryStub.calledWith(query)).toBe(true);
             expect(whereSpy.called).toBe(false);
             expect(whereInSpy.calledWith('target_id', ['a', 'b', 'c'])).toBe(true);

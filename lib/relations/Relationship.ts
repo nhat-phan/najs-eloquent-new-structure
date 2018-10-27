@@ -4,6 +4,7 @@
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
+import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 import IRelationship = NajsEloquent.Relation.IRelationship
 import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
@@ -71,6 +72,12 @@ export abstract class Relationship<T> implements IRelationship<T> {
     this.customQueryFn = cb
 
     return this
+  }
+
+  newQuery(name: string | undefined): IQueryBuilder<any> {
+    const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
+    queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
+    return this.applyCustomQuery(queryBuilder)
   }
 
   applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any> {
