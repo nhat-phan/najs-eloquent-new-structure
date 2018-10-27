@@ -29,7 +29,7 @@ class HasOneOrMany extends Relationship_1.Relationship {
         return this.getExecutor().executeCollector(collector);
     }
     async fetchData(type) {
-        const query = this.newQuery(`${this.getType()}:${this.targetModel.getModelName()}`);
+        const query = this.createTargetQuery(`${this.getType()}:${this.targetModel.getModelName()}`);
         if (type === 'lazy') {
             query.where(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName));
         }

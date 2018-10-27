@@ -2,7 +2,7 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationshipFactory.ts" />
 /// <reference path="../definitions/relations/IHasOneRelationship.ts" />
-/// <reference path="../definitions/relations/IManyToManyRelationship.ts" />
+/// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
@@ -10,13 +10,13 @@ import IRelationship = NajsEloquent.Relation.IRelationship
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
 import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship
 import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship
-import IManyToManyRelationship = NajsEloquent.Relation.IManyToManyRelationship
+import IBelongsToManyRelationship = NajsEloquent.Relation.IBelongsToManyRelationship
 
 import * as pluralize from 'pluralize'
 import { HasOne } from './relationships/HasOne'
 import { BelongsTo } from './relationships/BelongsTo'
 import { HasMany } from './relationships/HasMany'
-import { ManyToMany } from './relationships/ManyToMany'
+import { BelongsToMany } from './relationships/BelongsToMany'
 import { make } from 'najs-binding'
 import { parse_string_with_dot_notation } from '../util/functions'
 
@@ -122,7 +122,7 @@ export class RelationshipFactory {
     pivotRootKeyName?: string,
     targetKeyName?: string,
     rootKeyName?: string
-  ): IManyToManyRelationship<T> {
+  ): IBelongsToManyRelationship<T> {
     const targetModel = make<IModel>(target)
     if (!pivot) {
       pivot = this.findPivotTableName(targetModel, this.rootModel)
@@ -144,7 +144,7 @@ export class RelationshipFactory {
       rootKeyName = this.rootModel.getPrimaryKeyName()
     }
 
-    return this.make<ManyToMany<T>>(ManyToMany.className, [
+    return this.make<BelongsToMany<T>>(BelongsToMany.className, [
       target,
       pivot,
       pivotTargetKeyName,

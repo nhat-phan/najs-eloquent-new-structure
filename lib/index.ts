@@ -55,7 +55,7 @@
 /// <reference path="definitions/relations/IBelongsToRelationship.ts" />
 /// <reference path="definitions/relations/IHasOneRelationship.ts" />
 /// <reference path="definitions/relations/IHasManyRelationship.ts" />
-/// <reference path="definitions/relations/IManyToManyRelationship.ts" />
+/// <reference path="definitions/relations/IBelongsToManyRelationship.ts" />
 /// <reference path="definitions/relations/IModelWithPivot.ts" />
 /// <reference path="definitions/relations/IPivotOptions.ts" />
 /// <reference path="definitions/relations/IRelationData.ts" />
@@ -68,12 +68,15 @@ import IModelWithPivot = NajsEloquent.Relation.IModelWithPivot
 import { MemoryDataSourceProvider } from './facades/global/MemoryDataSourceProviderFacade'
 import { MemoryDataSource } from './drivers/memory/MemoryDataSource'
 import { Model } from './model/Model'
+import { Relationship } from './relations/Relationship'
 
 import { DriverProvider } from './facades/global/DriverProviderFacade'
 import { MemoryDriver } from './drivers/memory/MemoryDriver'
 
 MemoryDataSourceProvider.register(MemoryDataSource, 'memory', true)
 DriverProvider.register(MemoryDriver, 'memory')
+
+export const Relation: NajsEloquent.Relation.IRelationshipStatic = Relationship
 
 export { Model, Model as Eloquent }
 export { PivotModel as Pivot } from './relations/relationships/pivot/PivotModel'

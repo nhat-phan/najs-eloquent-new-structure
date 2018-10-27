@@ -29,7 +29,7 @@ class Relationship {
         this.customQueryFn = cb;
         return this;
     }
-    newQuery(name) {
+    createTargetQuery(name) {
         const queryBuilder = this.targetModel.newQuery(name);
         queryBuilder.handler.setRelationDataBucket(this.getDataBucket());
         return this.applyCustomQuery(queryBuilder);
@@ -134,5 +134,40 @@ class Relationship {
         }
         return await this.eagerLoad();
     }
+    static morphMap(arg1, arg2) {
+        if (typeof arg1 === 'object') {
+            this.morphMapData = Object.assign({}, this.morphMapData, arg1);
+        }
+        if (typeof arg1 === 'string' && typeof arg2 === 'string') {
+            this.morphMapData[arg1] = arg2;
+        }
+        if (typeof arg1 === 'string' && typeof arg2 === 'function') {
+            this.morphMapData[arg1] = najs_binding_1.getClassName(arg2);
+        }
+        return this;
+    }
+    static getMorphMap() {
+        return this.morphMapData;
+    }
+    static findModelName(type) {
+        return typeof this.morphMapData[type] === 'undefined' ? type : this.morphMapData[type];
+    }
+    static findMorphType(model) {
+        let modelName = helpers_1.isModel(model) ? model.getModelName() : '';
+        if (typeof model === 'string') {
+            modelName = model;
+        }
+        if (typeof model === 'function') {
+            modelName = najs_binding_1.getClassName(model);
+        }
+        for (const type in this.morphMapData) {
+            if (this.morphMapData[type] === modelName) {
+                return type;
+            }
+        }
+        return modelName;
+    }
 }
+// Static API -----------------------------------
+Relationship.morphMapData = {};
 exports.Relationship = Relationship;

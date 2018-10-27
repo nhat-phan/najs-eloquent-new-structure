@@ -3,7 +3,7 @@
 /// <reference path="../query-builders/IQueryBuilder.ts" />
 
 namespace NajsEloquent.Relation {
-  export interface IManyToManyDefinition<T> extends IRelationship<CollectJs.Collection<T>> {
+  export interface IManyToMany<T> extends IRelationship<CollectJs.Collection<T>> {
     /**
      * Create new pivot model instance.
      */

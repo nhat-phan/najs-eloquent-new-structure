@@ -32,7 +32,7 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     abstract isInverseOf<K>(relation: IRelationship<K>): boolean;
     with(...relations: Array<string | string[]>): this;
     query(cb: IRelationshipQuery<T>): this;
-    newQuery(name: string | undefined): IQueryBuilder<any>;
+    createTargetQuery(name: string | undefined): IQueryBuilder<any>;
     applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     getName(): string;
     getRelationData(): IRelationData<T>;
@@ -46,4 +46,11 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     loadData(type: 'lazy' | 'eager'): Promise<any>;
     loadChains(result: any): Promise<any>;
     load(): Promise<T | undefined | null>;
+    private static morphMapData;
+    static morphMap(arg1: string | object, arg2?: string | ModelDefinition): typeof Relationship;
+    static getMorphMap(): {
+        [type in string]: string;
+    };
+    static findModelName(type: string): string;
+    static findMorphType(model: string | Model | ModelDefinition): string;
 }

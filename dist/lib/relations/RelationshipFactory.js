@@ -3,13 +3,13 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationshipFactory.ts" />
 /// <reference path="../definitions/relations/IHasOneRelationship.ts" />
-/// <reference path="../definitions/relations/IManyToManyRelationship.ts" />
+/// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const pluralize = require("pluralize");
 const HasOne_1 = require("./relationships/HasOne");
 const BelongsTo_1 = require("./relationships/BelongsTo");
 const HasMany_1 = require("./relationships/HasMany");
-const ManyToMany_1 = require("./relationships/ManyToMany");
+const BelongsToMany_1 = require("./relationships/BelongsToMany");
 const najs_binding_1 = require("najs-binding");
 const functions_1 = require("../util/functions");
 class RelationshipFactory {
@@ -86,7 +86,7 @@ class RelationshipFactory {
         if (!rootKeyName) {
             rootKeyName = this.rootModel.getPrimaryKeyName();
         }
-        return this.make(ManyToMany_1.ManyToMany.className, [
+        return this.make(BelongsToMany_1.BelongsToMany.className, [
             target,
             pivot,
             pivotTargetKeyName,

@@ -10,6 +10,7 @@ const DriverProviderFacade_1 = require("../../lib/facades/global/DriverProviderF
 const HasOne_1 = require("../../lib/relations/relationships/HasOne");
 const RelationUtilities_1 = require("../../lib/relations/RelationUtilities");
 const RelationNotFoundInNewInstanceError_1 = require("../../lib/errors/RelationNotFoundInNewInstanceError");
+const Relationship_1 = require("../../lib/relations/Relationship");
 DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'memory', true);
 describe('Relation', function () {
     function makeRelation(model, name) {
@@ -61,7 +62,7 @@ describe('Relation', function () {
             expect(relation['customQueryFn'] === anotherCb).toBe(true);
         });
     });
-    describe('.newQuery()', function () {
+    describe('.createTargetQuery()', function () {
         it('returns a queryBuilder from targetModel, which also contains the dataBucket of relation', function () {
             const rootModel = {};
             const relation = makeRelation(rootModel, 'test');
@@ -81,7 +82,7 @@ describe('Relation', function () {
             getDataBucketStub.returns(dataBucket);
             const setRelationDataBucketSpy = Sinon.spy(queryBuilder.handler, 'setRelationDataBucket');
             const newQuerySpy = Sinon.spy(targetModel, 'newQuery');
-            expect(relation.newQuery('name') === queryBuilder).toBe(true);
+            expect(relation.createTargetQuery('name') === queryBuilder).toBe(true);
             expect(newQuerySpy.calledWith('name')).toBe(true);
             expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
         });
@@ -106,7 +107,7 @@ describe('Relation', function () {
             const newQuerySpy = Sinon.spy(targetModel, 'newQuery');
             const applyCustomQueryStub = Sinon.stub(relation, 'applyCustomQuery');
             applyCustomQueryStub.returns('anything');
-            expect(relation.newQuery('name')).toEqual('anything');
+            expect(relation.createTargetQuery('name')).toEqual('anything');
             expect(newQuerySpy.calledWith('name')).toBe(true);
             expect(setRelationDataBucketSpy.calledWith(dataBucket)).toBe(true);
             expect(applyCustomQueryStub.calledWith(queryBuilder)).toBe(true);
@@ -721,6 +722,99 @@ describe('Relation', function () {
                 return;
             }
             expect('should not reach this line').toEqual('hm');
+        });
+    });
+    describe('Morph Static Functions', function () {
+        describe('.morphMap()', function () {
+            it('set the type and model name to "morphMapData" if there are 2 strings given in argument', function () {
+                expect(Relationship_1.Relationship.morphMap('type-1', 'model-1') === Relationship_1.Relationship).toBe(true);
+                expect(Relationship_1.Relationship.morphMap('type-2', 'model-2') === Relationship_1.Relationship).toBe(true);
+                expect(Relationship_1.Relationship.morphMap('type-1', 'model-1') === Relationship_1.Relationship).toBe(true);
+                expect(Relationship_1.Relationship.getMorphMap()).toEqual({ 'type-1': 'model-1', 'type-2': 'model-2' });
+            });
+            it('set the type and model name to "morphMapData" with className of model if the definition is a function', function () {
+                class Test {
+                    getClassName() {
+                        return 'Namespace.Test';
+                    }
+                }
+                expect(Relationship_1.Relationship.morphMap('type', Test) === Relationship_1.Relationship).toBe(true);
+                expect(Relationship_1.Relationship.getMorphMap()).toEqual({
+                    'type-1': 'model-1',
+                    'type-2': 'model-2',
+                    type: 'Namespace.Test'
+                });
+            });
+            it('merges the given object to "morphMapData" if arg1 is an object', function () {
+                expect(Relationship_1.Relationship.morphMap({ a: 'Class.A', type: 'Class.Override' }) === Relationship_1.Relationship).toBe(true);
+                expect(Relationship_1.Relationship.getMorphMap()).toEqual({
+                    'type-1': 'model-1',
+                    'type-2': 'model-2',
+                    a: 'Class.A',
+                    type: 'Class.Override'
+                });
+            });
+        });
+        describe('.getMorphMap()', function () {
+            it('simply returns "morphMapData"', function () {
+                const data = {};
+                Relationship_1.Relationship['morphMapData'] = data;
+                expect(Relationship_1.Relationship.getMorphMap() === data).toBe(true);
+            });
+        });
+        describe('.findModelName()', function () {
+            it('simply returns a given type of there is no data in "morphMapData", otherwise returns the mapped class name', function () {
+                Relationship_1.Relationship.morphMap({
+                    a: 'Class.A',
+                    b: 'Class.B',
+                    c: 'Class.C'
+                });
+                expect(Relationship_1.Relationship.findModelName('a')).toEqual('Class.A');
+                expect(Relationship_1.Relationship.findModelName('b')).toEqual('Class.B');
+                expect(Relationship_1.Relationship.findModelName('c')).toEqual('Class.C');
+                expect(Relationship_1.Relationship.findModelName('not-found')).toEqual('not-found');
+            });
+        });
+        describe('.findMorphType()', function () {
+            it('finds the modelName in "morphMapData" then returns type if found, otherwise returns modelName, case 1: string', function () {
+                expect(Relationship_1.Relationship.findMorphType('Class.A')).toEqual('a');
+                expect(Relationship_1.Relationship.findMorphType('not-found')).toEqual('not-found');
+            });
+            it('finds the modelName in "morphMapData" then returns type if found, otherwise returns modelName, case 2: function', function () {
+                class B {
+                    getClassName() {
+                        return 'Class.B';
+                    }
+                }
+                expect(Relationship_1.Relationship.findMorphType(B)).toEqual('b');
+                class NotFound {
+                    getClassName() {
+                        return 'Class.NotFound';
+                    }
+                    getModelName() {
+                        return 'ModelName';
+                    }
+                }
+                expect(Relationship_1.Relationship.findMorphType(NotFound)).toEqual('Class.NotFound');
+            });
+            it('finds the modelName in "morphMapData" then returns type if found, otherwise returns modelName, case 3: model instance', function () {
+                // instance of Model case
+                const model = {
+                    getModelName() {
+                        return 'Class.C';
+                    }
+                };
+                const notFoundModel = {
+                    getModelName() {
+                        return 'ModelName';
+                    }
+                };
+                const isModelStub = Sinon.stub(Helper, 'isModel');
+                isModelStub.returns(true);
+                expect(Relationship_1.Relationship.findMorphType(model)).toEqual('c');
+                expect(Relationship_1.Relationship.findMorphType(notFoundModel)).toEqual('ModelName');
+                isModelStub.restore();
+            });
         });
     });
 });

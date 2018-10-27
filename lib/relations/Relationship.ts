@@ -11,7 +11,7 @@ import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationData = NajsEloquent.Relation.IRelationData
 
-import { make } from 'najs-binding'
+import { make, getClassName } from 'najs-binding'
 import { flatten } from 'lodash'
 import { relationFeatureOf } from '../util/accessors'
 import { RelationUtilities as Utils } from './RelationUtilities'
@@ -74,7 +74,7 @@ export abstract class Relationship<T> implements IRelationship<T> {
     return this
   }
 
-  newQuery(name: string | undefined): IQueryBuilder<any> {
+  createTargetQuery(name: string | undefined): IQueryBuilder<any> {
     const queryBuilder = this.targetModel.newQuery(name as any) as QueryBuilderInternal
     queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
     return this.applyCustomQuery(queryBuilder)
@@ -204,5 +204,50 @@ export abstract class Relationship<T> implements IRelationship<T> {
     }
 
     return await this.eagerLoad()
+  }
+
+  // Static API -----------------------------------
+  private static morphMapData: { [key in string]: string } = {}
+
+  public static morphMap(arg1: string | object, arg2?: string | ModelDefinition): typeof Relationship {
+    if (typeof arg1 === 'object') {
+      this.morphMapData = Object.assign({}, this.morphMapData, arg1)
+    }
+
+    if (typeof arg1 === 'string' && typeof arg2 === 'string') {
+      this.morphMapData[arg1] = arg2
+    }
+
+    if (typeof arg1 === 'string' && typeof arg2 === 'function') {
+      this.morphMapData[arg1] = getClassName(arg2)
+    }
+
+    return this
+  }
+
+  public static getMorphMap(): { [type in string]: string } {
+    return this.morphMapData
+  }
+
+  public static findModelName(type: string): string {
+    return typeof this.morphMapData[type] === 'undefined' ? type : this.morphMapData[type]
+  }
+
+  public static findMorphType(model: string | Model | ModelDefinition): string {
+    let modelName = isModel(model) ? (model as Model).getModelName() : ''
+    if (typeof model === 'string') {
+      modelName = model
+    }
+
+    if (typeof model === 'function') {
+      modelName = getClassName(model)
+    }
+
+    for (const type in this.morphMapData) {
+      if (this.morphMapData[type] === modelName) {
+        return type
+      }
+    }
+    return modelName
   }
 }

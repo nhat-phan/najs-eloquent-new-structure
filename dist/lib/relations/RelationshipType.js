@@ -5,5 +5,5 @@ var RelationshipType;
     RelationshipType["HasOne"] = "HasOne";
     RelationshipType["HasMany"] = "HasMany";
     RelationshipType["BelongsTo"] = "BelongsTo";
-    RelationshipType["ManyToMany"] = "ManyToMany";
+    RelationshipType["BelongsToMany"] = "BelongsToMany";
 })(RelationshipType = exports.RelationshipType || (exports.RelationshipType = {}));

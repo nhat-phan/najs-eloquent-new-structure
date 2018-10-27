@@ -465,7 +465,7 @@ describe('RelationshipFactory', function() {
       const thisMakeStub = Sinon.stub(factory, 'make')
       factory.belongsToMany('Target', undefined, 'pivot_target_id', 'pivot_root_id', 'id', 'id')
       expect(
-        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsToMany', [
           'Target',
           'Root_Targets',
           'pivot_target_id',
@@ -506,7 +506,7 @@ describe('RelationshipFactory', function() {
       const thisMakeStub = Sinon.stub(factory, 'make')
       factory.belongsToMany('Target', 'pivot', undefined, 'pivot_root_id', 'id', 'id')
       expect(
-        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsToMany', [
           'Target',
           'pivot',
           'Target_id',
@@ -547,7 +547,7 @@ describe('RelationshipFactory', function() {
       const thisMakeStub = Sinon.stub(factory, 'make')
       factory.belongsToMany('Target', 'pivot', 'pivot_target_id', undefined, 'id', 'id')
       expect(
-        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsToMany', [
           'Target',
           'pivot',
           'pivot_target_id',
@@ -590,7 +590,7 @@ describe('RelationshipFactory', function() {
       const thisMakeStub = Sinon.stub(factory, 'make')
       factory.belongsToMany('Target', 'pivot', 'pivot_target_id', 'pivot_root_id', undefined, 'id')
       expect(
-        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsToMany', [
           'Target',
           'pivot',
           'pivot_target_id',
@@ -632,7 +632,7 @@ describe('RelationshipFactory', function() {
       const thisMakeStub = Sinon.stub(factory, 'make')
       factory.belongsToMany('Target', 'pivot', 'pivot_target_id', 'pivot_root_id', 'id', undefined)
       expect(
-        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsToMany', [
           'Target',
           'pivot',
           'pivot_target_id',
@@ -644,7 +644,7 @@ describe('RelationshipFactory', function() {
       makeStub.restore()
     })
 
-    it('finally returns a ManyToMany relationship', function() {
+    it('finally returns a BelongsToMany relationship', function() {
       const makeStub = Sinon.stub(NajsBinding, 'make')
       const targetModel: any = {
         getModelName() {
@@ -671,7 +671,7 @@ describe('RelationshipFactory', function() {
       const thisMakeStub = Sinon.stub(factory, 'make')
       factory.belongsToMany('Target', 'pivot', 'pivot_target_id', 'pivot_root_id', 'id', 'id')
       expect(
-        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.ManyToMany', [
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.BelongsToMany', [
           'Target',
           'pivot',
           'pivot_target_id',

@@ -44,7 +44,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
   }
 
   async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
-    const query = this.newQuery(`${this.getType()}:${this.targetModel.getModelName()}`)
+    const query = this.createTargetQuery(`${this.getType()}:${this.targetModel.getModelName()}`)
 
     if (type === 'lazy') {
       query.where(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))

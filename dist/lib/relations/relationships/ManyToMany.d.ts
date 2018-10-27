@@ -3,30 +3,37 @@
 /// <reference path="../../definitions/data/IDataReader.d.ts" />
 /// <reference path="../../definitions/relations/IRelationship.d.ts" />
 /// <reference path="../../definitions/relations/IRelationDataBucket.d.ts" />
-/// <reference path="../../definitions/relations/IManyToManyRelationship.d.ts" />
+/// <reference path="../../definitions/relations/IBelongsToManyRelationship.d.ts" />
 import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
-import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
-import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship;
+import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery;
+import IPivotOptions = NajsEloquent.Relation.IPivotOptions;
+import IManyToMany = NajsEloquent.Relation.IManyToMany;
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import Collection = CollectJs.Collection;
-import { ManyToManyBase } from './ManyToManyBase';
-import { RelationshipType } from '../RelationshipType';
+import { Relationship } from '../Relationship';
 import { PivotModel } from './pivot/PivotModel';
-export declare class ManyToMany<T extends Model> extends ManyToManyBase<T> implements IManyToMany<T> {
-    static className: string;
+export declare abstract class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
     protected pivot: ModelDefinition;
     protected pivotModelInstance: Model;
     protected pivotDefinition: typeof PivotModel;
     protected pivotTargetKeyName: string;
     protected pivotRootKeyName: string;
-    getType(): RelationshipType;
-    getClassName(): string;
-    collectPivotData(dataBucket: IRelationDataBucket): object;
-    collectData(): Collection<T> | undefined | null;
-    fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
-    fetchData(type: RelationshipFetchType): Promise<Collection<T> | undefined | null>;
-    attach(arg1: string | string[] | object, arg2?: object): Promise<this>;
-    parseAttachArguments(arg1: string | string[] | object, arg2?: object): object;
-    attachModel(targetId: string, data?: object): Promise<any> | undefined;
+    protected pivotOptions: IPivotOptions;
+    protected pivotCustomQueryFn: IRelationshipQuery<T> | undefined;
+    constructor(root: Model, relationName: string, target: ModelDefinition, pivot: ModelDefinition, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string);
+    abstract getType(): string;
+    abstract getClassName(): string;
+    abstract collectData(): Collection<T> | undefined | null;
+    abstract fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
+    isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
+    protected readonly pivotModel: Model;
+    newPivot(data?: object, isGuarded?: boolean): Model;
+    newPivotQuery(name?: string, raw?: boolean): IQueryBuilder<Model>;
+    applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
+    withPivot(...fields: Array<string | string[]>): this;
+    queryPivot(cb: IRelationshipQuery<T>): this;
+    getPivotOptions(name?: string): IPivotOptions;
+    setPivotDefinition(definition: typeof PivotModel): void;
 }

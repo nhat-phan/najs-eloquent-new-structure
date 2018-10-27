@@ -58,7 +58,7 @@ Factory.define(Role, function(faker, attributes) {
   )
 })
 
-describe('ManyToManyRelationship', function() {
+describe('BelongsToManyRelationship', function() {
   it('should work', async function() {
     const user = factory(User).make()
     const roleA = await factory(Role).create({ name: 'a' })

@@ -46,7 +46,7 @@
 /// <reference path="definitions/relations/IBelongsToRelationship.d.ts" />
 /// <reference path="definitions/relations/IHasOneRelationship.d.ts" />
 /// <reference path="definitions/relations/IHasManyRelationship.d.ts" />
-/// <reference path="definitions/relations/IManyToManyRelationship.d.ts" />
+/// <reference path="definitions/relations/IBelongsToManyRelationship.d.ts" />
 /// <reference path="definitions/relations/IModelWithPivot.d.ts" />
 /// <reference path="definitions/relations/IPivotOptions.d.ts" />
 /// <reference path="definitions/relations/IRelationData.d.ts" />
@@ -55,6 +55,7 @@
 /// <reference path="definitions/relations/IRelationshipFactory.d.ts" />
 import IModelWithPivot = NajsEloquent.Relation.IModelWithPivot;
 import { Model } from './model/Model';
+export declare const Relation: NajsEloquent.Relation.IRelationshipStatic;
 export { Model, Model as Eloquent };
 export { PivotModel as Pivot } from './relations/relationships/pivot/PivotModel';
 export { Builtin as NajsEloquent } from './builtin';

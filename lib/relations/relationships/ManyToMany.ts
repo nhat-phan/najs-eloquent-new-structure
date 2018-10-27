@@ -3,168 +3,153 @@
 /// <reference path="../../definitions/data/IDataReader.ts" />
 /// <reference path="../../definitions/relations/IRelationship.ts" />
 /// <reference path="../../definitions/relations/IRelationDataBucket.ts" />
-/// <reference path="../../definitions/relations/IManyToManyRelationship.ts" />
+/// <reference path="../../definitions/relations/IBelongsToManyRelationship.ts" />
 
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
-import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
-import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship
+import IRelationshipQuery = NajsEloquent.Relation.IRelationshipQuery
+import IPivotOptions = NajsEloquent.Relation.IPivotOptions
+import IManyToMany = NajsEloquent.Relation.IManyToMany
+import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
+import QueryBuilderInternal = NajsEloquent.QueryBuilder.QueryBuilderInternal
 import Collection = CollectJs.Collection
 
-// import { flatten } from 'lodash'
-import { register } from 'najs-binding'
-import { ManyToManyBase } from './ManyToManyBase'
-import { RelationshipType } from '../RelationshipType'
-import { NajsEloquent as NajsEloquentClasses } from '../../constants'
+import { flatten } from 'lodash'
+import { ClassRegistry, make } from 'najs-binding'
+import { Relationship } from '../Relationship'
 import { PivotModel } from './pivot/PivotModel'
-// import { isModel, isCollection } from '../../util/helpers'
-import { ModelEvent } from '../../model/ModelEvent'
-import { RelationUtilities } from '../RelationUtilities'
-import { make_collection } from '../../util/factory'
-import { DataConditionMatcher } from '../../data/DataConditionMatcher'
+import { isModel } from '../../util/helpers'
+import { array_unique } from '../../util/functions'
 
-export class ManyToMany<T extends Model> extends ManyToManyBase<T> implements IManyToMany<T> {
-  static className: string = NajsEloquentClasses.Relation.Relationship.ManyToMany
-
+export abstract class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
   protected pivot: ModelDefinition
   protected pivotModelInstance: Model
   protected pivotDefinition: typeof PivotModel
   protected pivotTargetKeyName: string
   protected pivotRootKeyName: string
+  protected pivotOptions: IPivotOptions
 
-  getType() {
-    return RelationshipType.ManyToMany
-  }
+  protected pivotCustomQueryFn: IRelationshipQuery<T> | undefined
 
-  getClassName() {
-    return NajsEloquentClasses.Relation.Relationship.ManyToMany
-  }
-
-  collectPivotData(dataBucket: IRelationDataBucket): object {
-    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
-    if (!rootPrimaryKey) {
-      return {}
+  constructor(
+    root: Model,
+    relationName: string,
+    target: ModelDefinition,
+    pivot: ModelDefinition,
+    pivotTargetKeyName: string,
+    pivotRootKeyName: string,
+    targetKeyName: string,
+    rootKeyName: string
+  ) {
+    super(root, relationName)
+    this.targetDefinition = target
+    this.pivot = pivot
+    this.pivotTargetKeyName = pivotTargetKeyName
+    this.pivotRootKeyName = pivotRootKeyName
+    this.targetKeyName = targetKeyName
+    this.rootKeyName = rootKeyName
+    this.pivotOptions = {
+      foreignKeys: [this.pivotRootKeyName, this.pivotTargetKeyName].sort() as [string, string]
     }
-
-    const dataBuffer = dataBucket.getDataOf(this.pivotModel)
-    const reader = dataBuffer.getDataReader()
-    const raw = dataBuffer
-      .getCollector()
-      .filterBy({
-        $and: [new DataConditionMatcher(this.pivotRootKeyName, '=', rootPrimaryKey, reader)]
-      })
-      .exec()
-
-    const pivotTargetKeyName = this.pivotTargetKeyName
-    return raw.reduce(function(memo, item) {
-      const targetPrimaryKey = reader.getAttribute(item, pivotTargetKeyName) as any
-      memo[targetPrimaryKey.toString()] = item
-      return memo
-    }, {})
   }
 
-  collectData(): Collection<T> | undefined | null {
-    const dataBucket = this.getDataBucket()
-    if (!dataBucket) {
-      return make_collection<T>([])
+  abstract getType(): string
+
+  abstract getClassName(): string
+
+  abstract collectData(): Collection<T> | undefined | null
+
+  abstract fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>
+
+  isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean {
+    return false
+  }
+
+  protected get pivotModel(): Model {
+    if (!this.pivotModelInstance) {
+      this.pivotModelInstance = this.newPivot()
     }
-
-    const pivotData = this.collectPivotData(dataBucket)
-
-    const dataBuffer = dataBucket.getDataOf(this.targetModel)
-    const reader = dataBuffer.getDataReader()
-    const collector = dataBuffer.getCollector().filterBy({
-      $and: [new DataConditionMatcher(this.targetKeyName, 'in', Object.keys(pivotData), reader)]
-    })
-    const pivotModel = this.pivotModel
-
-    return make_collection(collector.exec(), item => {
-      const instance = dataBucket.makeModel(this.targetModel, item)
-      const targetPrimaryKey = (reader.getAttribute(item, this.targetKeyName) as any).toString()
-      instance['pivot'] = dataBucket.makeModel(pivotModel, pivotData[targetPrimaryKey])
-      return instance
-    }) as any
+    return this.pivotModelInstance
   }
 
-  async fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>> {
-    const name = `${this.getType()}Pivot:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`
-    if (type === 'lazy') {
-      return this.newPivotQuery(name).get()
-    }
-
-    const dataBucket = this.getDataBucket()
-    if (!dataBucket) {
-      return make_collection<Model>([])
-    }
-
-    const query = this.newPivotQuery(name, true)
-    const ids = RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName)
-    return query.whereIn(this.pivotRootKeyName, ids).get()
-  }
-
-  async fetchData(type: RelationshipFetchType): Promise<Collection<T> | undefined | null> {
-    const pivotData = await this.fetchPivotData(type)
-
-    const queryName = `${this.getType()}:${this.targetModel.getModelName()}-${this.rootModel.getModelName()}`
-    const query = this.newQuery(queryName)
-    const targetKeysInPivot = pivotData.map(item => item.getAttribute(this.pivotTargetKeyName)).all()
-
-    return query.whereIn(this.targetKeyName, targetKeysInPivot).get()
-  }
-
-  async attach(arg1: string | string[] | object, arg2?: object): Promise<this> {
-    const input = this.parseAttachArguments(arg1, arg2)
-    const promises: Promise<any>[] = []
-    for (const id in input) {
-      const result = this.attachModel(id, input[id])
-      if (typeof result === 'undefined') {
-        continue
+  newPivot(data?: object, isGuarded?: boolean): Model {
+    if (typeof this.pivot === 'string') {
+      if (ClassRegistry.has(this.pivot)) {
+        const instance = make<Model>(this.pivot)
+        if (isModel(instance)) {
+          this.setPivotDefinition(ClassRegistry.findOrFail(this.pivot).instanceConstructor as any)
+          return instance
+        }
       }
-      promises.push(result)
+
+      // the pivot is not a model then we should create an pivot model
+      this.setPivotDefinition(PivotModel.createPivotClass(this.pivot, this.getPivotOptions(this.pivot)))
+      return Reflect.construct(this.pivotDefinition, Array.from(arguments))
     }
 
-    if (promises.length === 0) {
-      return this
-    }
-
-    await Promise.all(promises)
-    return this
+    this.setPivotDefinition(this.pivot as any)
+    return Reflect.construct(this.pivot, Array.from(arguments))
   }
 
-  parseAttachArguments(arg1: string | string[] | object, arg2?: object): object {
-    if (typeof arg1 === 'string') {
-      return { [arg1]: arg2 }
-    }
+  newPivotQuery(name?: string, raw: boolean = false): IQueryBuilder<Model> {
+    const queryBuilder = this.applyPivotCustomQuery(this.pivotModel.newQuery(name as any)) as QueryBuilderInternal
+    queryBuilder.handler.setRelationDataBucket(this.getDataBucket())
 
-    if (Array.isArray(arg1)) {
-      return arg1.reduce(function(memo, item) {
-        memo[item] = arg2
-        return memo
-      }, {})
-    }
-
-    return arg1
-  }
-
-  attachModel(targetId: string, data?: object): Promise<any> | undefined {
-    const pivot = this.newPivot()
-    pivot.setAttribute(this.pivotTargetKeyName, targetId)
-    if (typeof data !== 'undefined') {
-      pivot.fill(data)
+    if (raw) {
+      return queryBuilder
     }
 
     const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
     if (rootPrimaryKey) {
-      pivot.setAttribute(this.pivotRootKeyName, rootPrimaryKey)
-      return pivot.save()
+      return queryBuilder.where(this.pivotRootKeyName, rootPrimaryKey)
+    }
+    return queryBuilder
+  }
+
+  applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any> {
+    if (typeof this.pivotCustomQueryFn === 'function') {
+      this.pivotCustomQueryFn.call(queryBuilder, queryBuilder)
+    }
+    return queryBuilder
+  }
+
+  withPivot(...fields: Array<string | string[]>): this {
+    const input = flatten(fields)
+    if (typeof this.pivotOptions.fields === 'undefined') {
+      this.pivotOptions.fields = input
+    } else {
+      this.pivotOptions.fields = array_unique(this.pivotOptions.fields.concat(input))
     }
 
-    this.rootModel.once(ModelEvent.Saved, async () => {
-      pivot.setAttribute(this.pivotRootKeyName, this.rootModel.getAttribute(this.rootKeyName))
-      await pivot.save()
-    })
-    return undefined
+    return this
+  }
+
+  queryPivot(cb: IRelationshipQuery<T>): this {
+    this.pivotCustomQueryFn = cb
+
+    return this
+  }
+
+  getPivotOptions(name?: string): IPivotOptions {
+    if (name && !this.pivotOptions.name) {
+      this.pivotOptions.name = name
+    }
+    return this.pivotOptions
+  }
+
+  setPivotDefinition(definition: typeof PivotModel): void {
+    const options = this.getPivotOptions()
+    this.pivotDefinition = definition
+    this.pivotDefinition['options'] = options
+    if (typeof options.fields !== 'undefined') {
+      if (typeof this.pivotDefinition['fillable'] === 'undefined') {
+        this.pivotDefinition['fillable'] = ([] as string[]).concat(options.foreignKeys, options.fields)
+      } else {
+        this.pivotDefinition['fillable'] = array_unique(
+          ([] as string[]).concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields)
+        )
+      }
+    }
   }
 }
-register(ManyToMany, NajsEloquentClasses.Relation.Relationship.ManyToMany)

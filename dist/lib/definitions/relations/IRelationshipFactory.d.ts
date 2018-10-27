@@ -2,13 +2,13 @@
 /// <reference path="IHasOneRelationship.d.ts" />
 /// <reference path="IBelongsToRelationship.d.ts" />
 /// <reference path="IHasManyRelationship.d.ts" />
-/// <reference path="IManyToManyRelationship.d.ts" />
+/// <reference path="IBelongsToManyRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import Definition = NajsEloquent.Model.ModelDefinition;
 import IHasOne = NajsEloquent.Relation.IHasOneRelationship;
 import IHasMany = NajsEloquent.Relation.IHasManyRelationship;
 import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship;
-import IManyToMany = NajsEloquent.Relation.IManyToManyRelationship;
+import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship;
 declare namespace NajsEloquent.Relation {
     interface IRelationshipFactory {
         /**
@@ -79,14 +79,14 @@ declare namespace NajsEloquent.Relation {
          *
          * @param {string|ModelDefinition} target
          */
-        belongsToMany<T extends IModel>(target: Definition<T>): IManyToMany<T>;
+        belongsToMany<T extends IModel>(target: Definition<T>): IBelongsToMany<T>;
         /**
          * Define many to many relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string|ModelDefinition} pivot
          */
-        belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>): IManyToMany<T>;
+        belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>): IBelongsToMany<T>;
         /**
          * Define many to many relationship
          *
@@ -95,7 +95,7 @@ declare namespace NajsEloquent.Relation {
          * @param {string} pivotTargetKeyName
          * @param {string} pivotRootKeyName
          */
-        belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>, pivotTargetKeyName: string, pivotRootKeyName: string): IManyToMany<T>;
+        belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>, pivotTargetKeyName: string, pivotRootKeyName: string): IBelongsToMany<T>;
         /**
          * Define many to many relationship
          *
@@ -106,6 +106,6 @@ declare namespace NajsEloquent.Relation {
          * @param {string} targetKeyName
          * @param {string} rootKeyName
          */
-        belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string): IManyToMany<T>;
+        belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string): IBelongsToMany<T>;
     }
 }

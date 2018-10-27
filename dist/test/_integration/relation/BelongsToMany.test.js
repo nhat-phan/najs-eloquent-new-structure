@@ -36,7 +36,7 @@ lib_1.Factory.define(Role, function (faker, attributes) {
         name: faker.word()
     }, attributes);
 });
-describe('ManyToManyRelationship', function () {
+describe('BelongsToManyRelationship', function () {
     it('should work', async function () {
         const user = lib_1.factory(User).make();
         const roleA = await lib_1.factory(Role).create({ name: 'a' });

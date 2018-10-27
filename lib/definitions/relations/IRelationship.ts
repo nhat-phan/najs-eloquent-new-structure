@@ -76,4 +76,42 @@ namespace NajsEloquent.Relation {
      */
     isInverseOf<K = any>(relation: IRelationship<K>): boolean
   }
+
+  export interface IRelationshipStatic {
+    /**
+     * Map a morph type to model.
+     *
+     * @param {string} type name of morph which is stored in database.
+     * @param {string} model name of model which mapped to.
+     */
+    morphMap(type: string, model: Model.ModelDefinition): this
+
+    /**
+     * Append data to current morph data
+     *
+     * @param {object} data
+     */
+    morphMap(data: { [type in string]: string }): this
+
+    /**
+     * Get morph map data
+     */
+    getMorphMap(): { [type in string]: string }
+
+    /**
+     * Find model name by given morph type
+     *
+     * @param {string} morphType
+     */
+    findModelName(morphType: string): string
+
+    /**
+     * Find saved morph type by the model definition
+     */
+    findMorphType(model: Model.ModelDefinition): string
+    /**
+     * Find saved morph type by the model instance
+     */
+    findMorphType(model: Model.IModel): string
+  }
 }

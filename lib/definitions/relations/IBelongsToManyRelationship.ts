@@ -1,7 +1,7 @@
-/// <reference path="./IManyToManyDefinition.ts" />
+/// <reference path="./IManyToMany.ts" />
 
 namespace NajsEloquent.Relation {
-  export interface IManyToManyRelationship<T> extends IManyToManyDefinition<T> {
+  export interface IBelongsToManyRelationship<T> extends IManyToMany<T> {
     /**
      * Attach an model to relation with model's id.
      *
