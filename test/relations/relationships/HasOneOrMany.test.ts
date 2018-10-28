@@ -54,7 +54,7 @@ describe('HasOneOrMany', function() {
       expect(spy.called).toBe(false)
     })
 
-    it('creates collector which created for DataBuffer of Target then calls and returns .getExecutor().executorCollector()', function() {
+    it('creates collector which created for DataBuffer of Target then calls and returns .getExecutor().setCollector().executeCollector()', function() {
       const rootModel = {
         getAttribute(name: any) {
           return name + '-value'
@@ -79,6 +79,9 @@ describe('HasOneOrMany', function() {
       const getDataOfSpy = Sinon.spy(dataBucket, 'getDataOf')
 
       const executor = {
+        setCollector() {
+          return this
+        },
         executeCollector() {}
       }
       const getExecutorStub = Sinon.stub(relation, 'getExecutor')
@@ -87,27 +90,28 @@ describe('HasOneOrMany', function() {
       const executeCollectorStub = Sinon.stub(executor, 'executeCollector')
       executeCollectorStub.returns('anything')
 
+      const setCollectorSpy = Sinon.spy(executor, 'setCollector')
+
       expect(relation.collectData()).toEqual('anything')
       expect(getDataOfSpy.calledWith(targetModel))
 
-      const collector = executeCollectorStub.lastCall.args[0]
+      const collector = setCollectorSpy.lastCall.args[0]
+      const collectorFilters = setCollectorSpy.lastCall.args[1]
+      expect(collectorFilters).toEqual([
+        {
+          field: 'target_id',
+          operator: '=',
+          value: 'id-value',
+          reader: reader
+        }
+      ])
       expect(collector).toBeInstanceOf(DataCollector)
       expect(collector['dataBuffer'] === dataBuffer).toBe(true)
-      expect(collector['conditions']).toEqual({
-        $and: [
-          {
-            field: 'target_id',
-            operator: '=',
-            value: 'id-value',
-            reader: reader
-          }
-        ]
-      })
     })
   })
 
   describe('.fetchData()', function() {
-    it('gets query from .createTargetQuery() then pass .where() then calls and returns .getExecutor().executeQuery() for lazy load', async function() {
+    it('gets query from .createTargetQuery() then pass .where() then calls and returns .getExecutor().setQuery().executeQuery() for lazy load', async function() {
       const query = {
         where() {},
         whereIn() {}
@@ -135,11 +139,15 @@ describe('HasOneOrMany', function() {
       createTargetQueryStub.returns(query)
 
       const executor = {
+        setQuery() {
+          return this
+        },
         executeQuery() {}
       }
       const getExecutorStub = Sinon.stub(relation, 'getExecutor')
       getExecutorStub.returns(executor)
 
+      const setQuerySpy = Sinon.spy(executor, 'setQuery')
       const executeQueryStub = Sinon.stub(executor, 'executeQuery')
       executeQueryStub.returns('anything')
 
@@ -148,7 +156,8 @@ describe('HasOneOrMany', function() {
 
       expect(await relation.fetchData('lazy')).toEqual('anything')
       expect(createTargetQueryStub.calledWith('HasOne:Target')).toBe(true)
-      expect(executeQueryStub.calledWith(query)).toBe(true)
+      expect(setQuerySpy.calledWith(query)).toBe(true)
+      expect(executeQueryStub.calledWith()).toBe(true)
       expect(whereSpy.calledWith('target_id', 'id-value')).toBe(true)
       expect(whereInSpy.called).toBe(false)
     })
@@ -241,12 +250,16 @@ describe('HasOneOrMany', function() {
       createTargetQueryStub.returns(query)
 
       const executor = {
+        setQuery() {
+          return this
+        },
         executeQuery() {},
         getEmptyValue() {}
       }
       const getExecutorStub = Sinon.stub(relation, 'getExecutor')
       getExecutorStub.returns(executor)
 
+      const setQuerySpy = Sinon.spy(executor, 'setQuery')
       const executeQueryStub = Sinon.stub(executor, 'executeQuery')
       executeQueryStub.returns('anything')
 
@@ -255,7 +268,8 @@ describe('HasOneOrMany', function() {
 
       expect(await relation.fetchData('eager')).toEqual('anything')
       expect(createTargetQueryStub.calledWith('HasOne:Target')).toBe(true)
-      expect(executeQueryStub.calledWith(query)).toBe(true)
+      expect(setQuerySpy.calledWith(query)).toBe(true)
+      expect(executeQueryStub.calledWith()).toBe(true)
       expect(whereSpy.called).toBe(false)
       expect(whereInSpy.calledWith('target_id', ['a', 'b', 'c'])).toBe(true)
     })

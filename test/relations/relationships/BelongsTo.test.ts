@@ -4,7 +4,7 @@ import { BelongsTo } from '../../../lib/relations/relationships/BelongsTo'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
 import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
-import { OneRowExecutor } from '../../../lib/relations/relationships/executors/OneRowExecutor'
+import { HasOneExecutor } from '../../../lib/relations/relationships/executors/HasOneExecutor'
 
 describe('BelongsTo', function() {
   it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.BelongsTo"', function() {
@@ -24,14 +24,14 @@ describe('BelongsTo', function() {
   })
 
   describe('.getExecutor()', function() {
-    it('returns an cached instance of ManyRowsExecutor in property "executor"', function() {
+    it('returns an cached instance of HasOneExecutor in property "executor"', function() {
       const rootModel: any = {}
       const belongsTo = new BelongsTo(rootModel, 'test', 'Target', 'target_id', 'id')
       belongsTo['targetModelInstance'] = {} as any
       const getDataBucketStub = Sinon.stub(belongsTo, 'getDataBucket')
       getDataBucketStub.returns({})
 
-      expect(belongsTo.getExecutor()).toBeInstanceOf(OneRowExecutor)
+      expect(belongsTo.getExecutor()).toBeInstanceOf(HasOneExecutor)
       expect(belongsTo.getExecutor() === belongsTo['executor']).toBe(true)
     })
   })

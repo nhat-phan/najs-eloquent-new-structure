@@ -4,12 +4,12 @@
 import Model = NajsEloquent.Model.IModel;
 import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship;
 import { HasOneOrMany } from './HasOneOrMany';
-import { OneRowExecutor } from './executors/OneRowExecutor';
+import { HasOneExecutor } from './executors/HasOneExecutor';
 export declare class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneRelationship<T> {
     static className: string;
-    protected executor: OneRowExecutor<T>;
+    protected executor: HasOneExecutor<T>;
     getClassName(): string;
     getType(): string;
-    getExecutor(): OneRowExecutor<T>;
+    getExecutor(): HasOneExecutor<T>;
     associate(model: T): void;
 }

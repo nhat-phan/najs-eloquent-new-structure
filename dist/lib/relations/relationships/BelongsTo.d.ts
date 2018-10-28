@@ -4,12 +4,12 @@
 import Model = NajsEloquent.Model.IModel;
 import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship;
 import { HasOneOrMany } from './HasOneOrMany';
-import { OneRowExecutor } from './executors/OneRowExecutor';
+import { HasOneExecutor } from './executors/HasOneExecutor';
 export declare class BelongsTo<T extends Model> extends HasOneOrMany<T> implements IBelongsToRelationship<T> {
     static className: string;
-    protected executor: OneRowExecutor<T>;
+    protected executor: HasOneExecutor<T>;
     getClassName(): string;
     getType(): string;
-    getExecutor(): OneRowExecutor<T>;
+    getExecutor(): HasOneExecutor<T>;
     dissociate(): void;
 }

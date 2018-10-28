@@ -6,12 +6,12 @@
 import Model = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType
-import IRelationshipExecutor = NajsEloquent.Relation.IRelationshipExecutor
 
 import { Relationship } from '../Relationship'
 import { RelationshipType } from '../RelationshipType'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 import { RelationUtilities } from '../RelationUtilities'
+import { HasOneOrManyExecutor } from './executors/HasOneOrManyExecutor'
 
 export abstract class HasOneOrMany<T> extends Relationship<T> {
   constructor(root: Model, relationName: string, target: ModelDefinition, targetKey: string, rootKey: string) {
@@ -25,7 +25,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
 
   abstract getType(): string
 
-  abstract getExecutor(): IRelationshipExecutor<T>
+  abstract getExecutor(): HasOneOrManyExecutor<T>
 
   collectData(): T | undefined | null {
     const dataBucket = this.getDataBucket()
@@ -37,10 +37,9 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
     const collector = dataBuffer.getCollector()
     const rootKey = this.rootModel.getAttribute(this.rootKeyName)
 
-    collector.filterBy({
-      $and: [new DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())]
-    })
-    return this.getExecutor().executeCollector(collector)
+    return this.getExecutor()
+      .setCollector(collector, [new DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())])
+      .executeCollector()
   }
 
   async fetchData(type: RelationshipFetchType): Promise<T | undefined | null> {
@@ -58,7 +57,9 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
       query.whereIn(this.targetKeyName, ids)
     }
 
-    return this.getExecutor().executeQuery(query)
+    return this.getExecutor()
+      .setQuery(query)
+      .executeQuery()
   }
 
   isInverseOf<K>(relationship: NajsEloquent.Relation.IRelationship<K>): boolean {

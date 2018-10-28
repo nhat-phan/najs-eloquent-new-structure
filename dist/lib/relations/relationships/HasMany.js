@@ -9,7 +9,7 @@ const najs_binding_1 = require("najs-binding");
 const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
-const ManyRowsExecutor_1 = require("./executors/ManyRowsExecutor");
+const HasManyExecutor_1 = require("./executors/HasManyExecutor");
 const ModelEvent_1 = require("../../model/ModelEvent");
 const helpers_1 = require("../../util/helpers");
 const accessors_1 = require("../../util/accessors");
@@ -22,7 +22,7 @@ class HasMany extends HasOneOrMany_1.HasOneOrMany {
     }
     getExecutor() {
         if (!this.executor) {
-            this.executor = new ManyRowsExecutor_1.ManyRowsExecutor(this.getDataBucket(), this.targetModel);
+            this.executor = new HasManyExecutor_1.HasManyExecutor(this.getDataBucket(), this.targetModel);
         }
         return this.executor;
     }

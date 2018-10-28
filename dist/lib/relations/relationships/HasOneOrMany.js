@@ -23,10 +23,9 @@ class HasOneOrMany extends Relationship_1.Relationship {
         const dataBuffer = dataBucket.getDataOf(this.targetModel);
         const collector = dataBuffer.getCollector();
         const rootKey = this.rootModel.getAttribute(this.rootKeyName);
-        collector.filterBy({
-            $and: [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())]
-        });
-        return this.getExecutor().executeCollector(collector);
+        return this.getExecutor()
+            .setCollector(collector, [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())])
+            .executeCollector();
     }
     async fetchData(type) {
         const query = this.createTargetQuery(`${this.getType()}:${this.targetModel.getModelName()}`);
@@ -41,7 +40,9 @@ class HasOneOrMany extends Relationship_1.Relationship {
             const ids = RelationUtilities_1.RelationUtilities.getAttributeListInDataBucket(dataBucket, this.rootModel, this.rootKeyName);
             query.whereIn(this.targetKeyName, ids);
         }
-        return this.getExecutor().executeQuery(query);
+        return this.getExecutor()
+            .setQuery(query)
+            .executeQuery();
     }
     isInverseOf(relationship) {
         if (!(relationship instanceof HasOneOrMany)) {

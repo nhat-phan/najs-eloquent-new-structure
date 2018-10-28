@@ -1,22 +1,21 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { ManyRowsExecutor } from '../../../../lib/relations/relationships/executors/ManyRowsExecutor'
+import { HasOneOrManyExecutor } from '../../../../lib/relations/relationships/executors/HasOneOrManyExecutor'
+import { HasManyExecutor } from '../../../../lib/relations/relationships/executors/HasManyExecutor'
 import { isCollection } from '../../../../lib/util/helpers'
 
-describe('ManyRowsExecutor', function() {
-  describe('constructor()', function() {
-    it('takes dataBucket and targetModel and assigns to the properties "dataBucket", "targetModel" respectively', function() {
-      const dataBucket: any = {}
-      const targetModel: any = {}
-      const executor = new ManyRowsExecutor(dataBucket, targetModel)
-      expect(executor['dataBucket'] === dataBucket).toBe(true)
-      expect(executor['targetModel'] === targetModel).toBe(true)
-    })
+describe('HasManyExecutor', function() {
+  it('extends HasOneOrManyExecutor', function() {
+    const dataBucket: any = {}
+    const targetModel: any = {}
+    const executor = new HasManyExecutor(dataBucket, targetModel)
+    expect(executor).toBeInstanceOf(HasOneOrManyExecutor)
   })
 
   describe('.executeCollector()', function() {
     it('calls collector.exec(), then create a Collection by DataBucket.makeCollection() with the result', function() {
       const collector: any = {
+        filterBy() {},
         exec() {}
       }
       const execStub = Sinon.stub(collector, 'exec')
@@ -32,11 +31,11 @@ describe('ManyRowsExecutor', function() {
         }
       }
       const targetModel: any = {}
-      const executor = new ManyRowsExecutor(dataBucket, targetModel)
+      const executor = new HasManyExecutor(dataBucket, targetModel)
 
       const spy = Sinon.spy(dataBucket, 'makeCollection')
 
-      expect((executor.executeCollector(collector) as any) === result).toBe(true)
+      expect((executor.setCollector(collector, []).executeCollector() as any) === result).toBe(true)
       expect(execStub.calledWith()).toBe(true)
       expect(spy.calledWith(targetModel, [itemOne, itemTwo])).toBe(true)
     })
@@ -46,13 +45,13 @@ describe('ManyRowsExecutor', function() {
     it('simply calls and returns query.get()', async function() {
       const dataBucket: any = {}
       const targetModel: any = {}
-      const executor = new ManyRowsExecutor(dataBucket, targetModel)
+      const executor = new HasManyExecutor(dataBucket, targetModel)
       const query: any = {
         async get() {
           return 'anything'
         }
       }
-      expect(await executor.executeQuery(query)).toBe('anything')
+      expect(await executor.setQuery(query).executeQuery()).toBe('anything')
     })
   })
 
@@ -60,7 +59,7 @@ describe('ManyRowsExecutor', function() {
     it('returns empty collection', function() {
       const dataBucket: any = {}
       const targetModel: any = {}
-      const executor = new ManyRowsExecutor(dataBucket, targetModel)
+      const executor = new HasManyExecutor(dataBucket, targetModel)
       expect(isCollection(executor.getEmptyValue())).toBe(true)
     })
   })

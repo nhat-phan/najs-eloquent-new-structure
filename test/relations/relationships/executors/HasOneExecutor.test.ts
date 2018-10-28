@@ -1,21 +1,20 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import { OneRowExecutor } from '../../../../lib/relations/relationships/executors/OneRowExecutor'
+import { HasOneExecutor } from '../../../../lib/relations/relationships/executors/HasOneExecutor'
+import { HasOneOrManyExecutor } from '../../../../lib/relations/relationships/executors/HasOneOrManyExecutor'
 
-describe('OneRowExecutor', function() {
-  describe('constructor()', function() {
-    it('takes dataBucket and targetModel and assigns to the properties "dataBucket", "targetModel" respectively', function() {
-      const dataBucket: any = {}
-      const targetModel: any = {}
-      const executor = new OneRowExecutor(dataBucket, targetModel)
-      expect(executor['dataBucket'] === dataBucket).toBe(true)
-      expect(executor['targetModel'] === targetModel).toBe(true)
-    })
+describe('HasOneExecutor', function() {
+  it('extends HasOneOrManyExecutor', function() {
+    const dataBucket: any = {}
+    const targetModel: any = {}
+    const executor = new HasOneExecutor(dataBucket, targetModel)
+    expect(executor).toBeInstanceOf(HasOneOrManyExecutor)
   })
 
   describe('.executeCollector()', function() {
     it('calls collector.limit(1) then exec() and returns undefined if there is no result', function() {
       const collector: any = {
+        filterBy() {},
         limit() {},
         exec() {}
       }
@@ -25,14 +24,15 @@ describe('OneRowExecutor', function() {
       execStub.returns([])
       const dataBucket: any = {}
       const targetModel: any = {}
-      const executor = new OneRowExecutor(dataBucket, targetModel)
-      expect(executor.executeCollector(collector)).toBeUndefined()
+      const executor = new HasOneExecutor(dataBucket, targetModel)
+      expect(executor.setCollector(collector, []).executeCollector()).toBeUndefined()
       expect(limitSpy.calledWith(1)).toBe(true)
       expect(execStub.calledWith()).toBe(true)
     })
 
     it('calls collector.limit(1) then exec(), then create a Model by DataBucket.makeModel() with the first item of result', function() {
       const collector: any = {
+        filterBy() {},
         limit() {},
         exec() {}
       }
@@ -49,11 +49,11 @@ describe('OneRowExecutor', function() {
         }
       }
       const targetModel: any = {}
-      const executor = new OneRowExecutor(dataBucket, targetModel)
+      const executor = new HasOneExecutor(dataBucket, targetModel)
 
       const spy = Sinon.spy(dataBucket, 'makeModel')
 
-      expect(executor.executeCollector(collector) === itemOne).toBe(true)
+      expect(executor.setCollector(collector, []).executeCollector() === itemOne).toBe(true)
       expect(limitSpy.calledWith(1)).toBe(true)
       expect(execStub.calledWith()).toBe(true)
       expect(spy.calledWith(targetModel, itemOne)).toBe(true)
@@ -64,13 +64,13 @@ describe('OneRowExecutor', function() {
     it('simply calls and returns query.get()', async function() {
       const dataBucket: any = {}
       const targetModel: any = {}
-      const executor = new OneRowExecutor(dataBucket, targetModel)
+      const executor = new HasOneExecutor(dataBucket, targetModel)
       const query: any = {
         async first() {
           return 'anything'
         }
       }
-      expect(await executor.executeQuery(query)).toBe('anything')
+      expect(await executor.setQuery(query).executeQuery()).toBe('anything')
     })
   })
 
@@ -78,7 +78,7 @@ describe('OneRowExecutor', function() {
     it('returns undefined', function() {
       const dataBucket: any = {}
       const targetModel: any = {}
-      const executor = new OneRowExecutor(dataBucket, targetModel)
+      const executor = new HasOneExecutor(dataBucket, targetModel)
       expect(executor.getEmptyValue()).toBeUndefined()
     })
   })

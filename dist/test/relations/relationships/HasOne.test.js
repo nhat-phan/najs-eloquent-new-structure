@@ -6,7 +6,7 @@ const HasOne_1 = require("../../../lib/relations/relationships/HasOne");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
-const OneRowExecutor_1 = require("../../../lib/relations/relationships/executors/OneRowExecutor");
+const HasOneExecutor_1 = require("../../../lib/relations/relationships/executors/HasOneExecutor");
 describe('HasOne', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.HasOne"', function () {
         const rootModel = {};
@@ -23,13 +23,13 @@ describe('HasOne', function () {
         });
     });
     describe('.getExecutor()', function () {
-        it('returns an cached instance of ManyRowsExecutor in property "executor"', function () {
+        it('returns an cached instance of HasOneExecutor in property "executor"', function () {
             const rootModel = {};
             const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
             hasOne['targetModelInstance'] = {};
             const getDataBucketStub = Sinon.stub(hasOne, 'getDataBucket');
             getDataBucketStub.returns({});
-            expect(hasOne.getExecutor()).toBeInstanceOf(OneRowExecutor_1.OneRowExecutor);
+            expect(hasOne.getExecutor()).toBeInstanceOf(HasOneExecutor_1.HasOneExecutor);
             expect(hasOne.getExecutor() === hasOne['executor']).toBe(true);
         });
     });

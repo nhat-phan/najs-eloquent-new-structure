@@ -4,7 +4,7 @@ import { HasMany } from '../../../lib/relations/relationships/HasMany'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
 import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
-import { ManyRowsExecutor } from '../../../lib/relations/relationships/executors/ManyRowsExecutor'
+import { HasManyExecutor } from '../../../lib/relations/relationships/executors/HasManyExecutor'
 import { make_collection } from '../../../lib/util/factory'
 
 describe('HasOne', function() {
@@ -25,14 +25,14 @@ describe('HasOne', function() {
   })
 
   describe('.getExecutor()', function() {
-    it('returns an cached instance of ManyRowsExecutor in property "executor"', function() {
+    it('returns an cached instance of HasManyExecutor in property "executor"', function() {
       const rootModel: any = {}
       const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
       hasMany['targetModelInstance'] = {} as any
       const getDataBucketStub = Sinon.stub(hasMany, 'getDataBucket')
       getDataBucketStub.returns({})
 
-      expect(hasMany.getExecutor()).toBeInstanceOf(ManyRowsExecutor)
+      expect(hasMany.getExecutor()).toBeInstanceOf(HasManyExecutor)
       expect(hasMany.getExecutor() === hasMany['executor']).toBe(true)
     })
   })

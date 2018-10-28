@@ -6,7 +6,7 @@ const HasMany_1 = require("../../../lib/relations/relationships/HasMany");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
-const ManyRowsExecutor_1 = require("../../../lib/relations/relationships/executors/ManyRowsExecutor");
+const HasManyExecutor_1 = require("../../../lib/relations/relationships/executors/HasManyExecutor");
 const factory_1 = require("../../../lib/util/factory");
 describe('HasOne', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.HasMany"', function () {
@@ -24,13 +24,13 @@ describe('HasOne', function () {
         });
     });
     describe('.getExecutor()', function () {
-        it('returns an cached instance of ManyRowsExecutor in property "executor"', function () {
+        it('returns an cached instance of HasManyExecutor in property "executor"', function () {
             const rootModel = {};
             const hasMany = new HasMany_1.HasMany(rootModel, 'test', 'Target', 'target_id', 'id');
             hasMany['targetModelInstance'] = {};
             const getDataBucketStub = Sinon.stub(hasMany, 'getDataBucket');
             getDataBucketStub.returns({});
-            expect(hasMany.getExecutor()).toBeInstanceOf(ManyRowsExecutor_1.ManyRowsExecutor);
+            expect(hasMany.getExecutor()).toBeInstanceOf(HasManyExecutor_1.HasManyExecutor);
             expect(hasMany.getExecutor() === hasMany['executor']).toBe(true);
         });
     });

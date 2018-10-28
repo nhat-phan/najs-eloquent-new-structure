@@ -10,11 +10,11 @@ import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { ModelEvent } from '../../model/ModelEvent'
-import { OneRowExecutor } from './executors/OneRowExecutor'
+import { HasOneExecutor } from './executors/HasOneExecutor'
 
 export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasOne
-  protected executor: OneRowExecutor<T>
+  protected executor: HasOneExecutor<T>
 
   getClassName(): string {
     return NajsEloquentClasses.Relation.Relationship.HasOne
@@ -24,9 +24,9 @@ export class HasOne<T extends Model> extends HasOneOrMany<T> implements IHasOneR
     return RelationshipType.HasOne
   }
 
-  getExecutor(): OneRowExecutor<T> {
+  getExecutor(): HasOneExecutor<T> {
     if (!this.executor) {
-      this.executor = new OneRowExecutor(this.getDataBucket()!, this.targetModel)
+      this.executor = new HasOneExecutor(this.getDataBucket()!, this.targetModel)
     }
     return this.executor
   }

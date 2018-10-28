@@ -8,7 +8,7 @@ const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const accessors_1 = require("../../util/accessors");
-const OneRowExecutor_1 = require("./executors/OneRowExecutor");
+const HasOneExecutor_1 = require("./executors/HasOneExecutor");
 class BelongsTo extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
         return constants_1.NajsEloquent.Relation.Relationship.BelongsTo;
@@ -18,7 +18,7 @@ class BelongsTo extends HasOneOrMany_1.HasOneOrMany {
     }
     getExecutor() {
         if (!this.executor) {
-            this.executor = new OneRowExecutor_1.OneRowExecutor(this.getDataBucket(), this.targetModel);
+            this.executor = new HasOneExecutor_1.HasOneExecutor(this.getDataBucket(), this.targetModel);
         }
         return this.executor;
     }

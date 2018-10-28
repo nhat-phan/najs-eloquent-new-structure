@@ -6,13 +6,13 @@ import Model = NajsEloquent.Model.IModel;
 import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship;
 import Collection = CollectJs.Collection;
 import { HasOneOrMany } from './HasOneOrMany';
-import { ManyRowsExecutor } from './executors/ManyRowsExecutor';
+import { HasManyExecutor } from './executors/HasManyExecutor';
 export declare class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
     static className: string;
-    protected executor: ManyRowsExecutor<T>;
+    protected executor: HasManyExecutor<T>;
     getClassName(): string;
     getType(): string;
-    getExecutor(): ManyRowsExecutor<T>;
+    getExecutor(): HasManyExecutor<T>;
     flattenArguments(...models: Array<T | T[] | CollectJs.Collection<T>>): T[];
     associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
     dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;

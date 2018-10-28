@@ -12,14 +12,14 @@ import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
-import { ManyRowsExecutor } from './executors/ManyRowsExecutor'
+import { HasManyExecutor } from './executors/HasManyExecutor'
 import { ModelEvent } from '../../model/ModelEvent'
 import { isCollection } from '../../util/helpers'
 import { relationFeatureOf } from '../../util/accessors'
 
 export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.HasMany
-  protected executor: ManyRowsExecutor<T>
+  protected executor: HasManyExecutor<T>
 
   getClassName(): string {
     return NajsEloquentClasses.Relation.Relationship.HasMany
@@ -29,9 +29,9 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
     return RelationshipType.HasMany
   }
 
-  getExecutor(): ManyRowsExecutor<T> {
+  getExecutor(): HasManyExecutor<T> {
     if (!this.executor) {
-      this.executor = new ManyRowsExecutor(this.getDataBucket()!, this.targetModel)
+      this.executor = new HasManyExecutor(this.getDataBucket()!, this.targetModel)
     }
     return this.executor
   }

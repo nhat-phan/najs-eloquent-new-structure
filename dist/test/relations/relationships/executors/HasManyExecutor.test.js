@@ -2,21 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const ManyRowsExecutor_1 = require("../../../../lib/relations/relationships/executors/ManyRowsExecutor");
+const HasOneOrManyExecutor_1 = require("../../../../lib/relations/relationships/executors/HasOneOrManyExecutor");
+const HasManyExecutor_1 = require("../../../../lib/relations/relationships/executors/HasManyExecutor");
 const helpers_1 = require("../../../../lib/util/helpers");
-describe('ManyRowsExecutor', function () {
-    describe('constructor()', function () {
-        it('takes dataBucket and targetModel and assigns to the properties "dataBucket", "targetModel" respectively', function () {
-            const dataBucket = {};
-            const targetModel = {};
-            const executor = new ManyRowsExecutor_1.ManyRowsExecutor(dataBucket, targetModel);
-            expect(executor['dataBucket'] === dataBucket).toBe(true);
-            expect(executor['targetModel'] === targetModel).toBe(true);
-        });
+describe('HasManyExecutor', function () {
+    it('extends HasOneOrManyExecutor', function () {
+        const dataBucket = {};
+        const targetModel = {};
+        const executor = new HasManyExecutor_1.HasManyExecutor(dataBucket, targetModel);
+        expect(executor).toBeInstanceOf(HasOneOrManyExecutor_1.HasOneOrManyExecutor);
     });
     describe('.executeCollector()', function () {
         it('calls collector.exec(), then create a Collection by DataBucket.makeCollection() with the result', function () {
             const collector = {
+                filterBy() { },
                 exec() { }
             };
             const execStub = Sinon.stub(collector, 'exec');
@@ -30,9 +29,9 @@ describe('ManyRowsExecutor', function () {
                 }
             };
             const targetModel = {};
-            const executor = new ManyRowsExecutor_1.ManyRowsExecutor(dataBucket, targetModel);
+            const executor = new HasManyExecutor_1.HasManyExecutor(dataBucket, targetModel);
             const spy = Sinon.spy(dataBucket, 'makeCollection');
-            expect(executor.executeCollector(collector) === result).toBe(true);
+            expect(executor.setCollector(collector, []).executeCollector() === result).toBe(true);
             expect(execStub.calledWith()).toBe(true);
             expect(spy.calledWith(targetModel, [itemOne, itemTwo])).toBe(true);
         });
@@ -41,20 +40,20 @@ describe('ManyRowsExecutor', function () {
         it('simply calls and returns query.get()', async function () {
             const dataBucket = {};
             const targetModel = {};
-            const executor = new ManyRowsExecutor_1.ManyRowsExecutor(dataBucket, targetModel);
+            const executor = new HasManyExecutor_1.HasManyExecutor(dataBucket, targetModel);
             const query = {
                 async get() {
                     return 'anything';
                 }
             };
-            expect(await executor.executeQuery(query)).toBe('anything');
+            expect(await executor.setQuery(query).executeQuery()).toBe('anything');
         });
     });
     describe('.getEmptyValue()', function () {
         it('returns empty collection', function () {
             const dataBucket = {};
             const targetModel = {};
-            const executor = new ManyRowsExecutor_1.ManyRowsExecutor(dataBucket, targetModel);
+            const executor = new HasManyExecutor_1.HasManyExecutor(dataBucket, targetModel);
             expect(helpers_1.isCollection(executor.getEmptyValue())).toBe(true);
         });
     });
