@@ -9,7 +9,7 @@ class HasOneOrManyExecutor {
         this.dataBucket = dataBucket;
         this.targetModel = targetModel;
     }
-    setCollector(collector, conditions) {
+    setCollector(collector, conditions, reader) {
         this.collector = collector;
         this.collector.filterBy({ $and: conditions });
         return this;

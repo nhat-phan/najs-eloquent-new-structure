@@ -7,15 +7,11 @@ import IDataReader = NajsEloquent.Data.IDataReader;
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher;
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
-export declare abstract class HasOneOrManyExecutor<T> {
-    protected dataBucket: IRelationDataBucket;
-    protected targetModel: IModel;
-    protected collector: IDataCollector<any>;
-    protected query: IQueryBuilder<any>;
-    constructor(dataBucket: IRelationDataBucket, targetModel: IModel);
+import { HasOneExecutor } from './HasOneExecutor';
+export declare class MorphOneExecutor<T> extends HasOneExecutor<T> {
+    protected targetMorphType: string;
+    protected targetMorphTypeName: string;
+    constructor(dataBucket: IRelationDataBucket, targetModel: IModel, targetMorphTypeName: string);
     setCollector(collector: IDataCollector<any>, conditions: IConditionMatcher<any>[], reader: IDataReader<any>): this;
     setQuery(query: IQueryBuilder<any>): this;
-    abstract executeCollector(): T | undefined | null;
-    abstract getEmptyValue(): T | undefined;
-    abstract executeQuery(): Promise<T | undefined | null>;
 }

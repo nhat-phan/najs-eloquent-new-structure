@@ -4,6 +4,7 @@
 /// <reference path="../../../definitions/query-builders/IQueryBuilder.ts" />
 
 import IDataCollector = NajsEloquent.Data.IDataCollector
+import IDataReader = NajsEloquent.Data.IDataReader
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
@@ -19,7 +20,7 @@ export abstract class HasOneOrManyExecutor<T> {
     this.targetModel = targetModel
   }
 
-  setCollector(collector: IDataCollector<any>, conditions: IConditionMatcher<any>[]): this {
+  setCollector(collector: IDataCollector<any>, conditions: IConditionMatcher<any>[], reader: IDataReader<any>): this {
     this.collector = collector
     this.collector.filterBy({ $and: conditions })
 

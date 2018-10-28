@@ -80,6 +80,7 @@ describe('HasOneOrMany', function () {
             expect(getDataOfSpy.calledWith(targetModel));
             const collector = setCollectorSpy.lastCall.args[0];
             const collectorFilters = setCollectorSpy.lastCall.args[1];
+            expect(setCollectorSpy.lastCall.args[2] === reader).toBe(true);
             expect(collectorFilters).toEqual([
                 {
                     field: 'target_id',

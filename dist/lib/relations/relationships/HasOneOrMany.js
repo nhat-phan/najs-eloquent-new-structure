@@ -23,8 +23,9 @@ class HasOneOrMany extends Relationship_1.Relationship {
         const dataBuffer = dataBucket.getDataOf(this.targetModel);
         const collector = dataBuffer.getCollector();
         const rootKey = this.rootModel.getAttribute(this.rootKeyName);
+        const reader = dataBuffer.getDataReader();
         return this.getExecutor()
-            .setCollector(collector, [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, '=', rootKey, dataBuffer.getDataReader())])
+            .setCollector(collector, [new DataConditionMatcher_1.DataConditionMatcher(this.targetKeyName, '=', rootKey, reader)], reader)
             .executeCollector();
     }
     async fetchData(type) {

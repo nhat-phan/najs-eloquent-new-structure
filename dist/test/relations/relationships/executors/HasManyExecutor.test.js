@@ -31,7 +31,7 @@ describe('HasManyExecutor', function () {
             const targetModel = {};
             const executor = new HasManyExecutor_1.HasManyExecutor(dataBucket, targetModel);
             const spy = Sinon.spy(dataBucket, 'makeCollection');
-            expect(executor.setCollector(collector, []).executeCollector() === result).toBe(true);
+            expect(executor.setCollector(collector, [], {}).executeCollector() === result).toBe(true);
             expect(execStub.calledWith()).toBe(true);
             expect(spy.calledWith(targetModel, [itemOne, itemTwo])).toBe(true);
         });

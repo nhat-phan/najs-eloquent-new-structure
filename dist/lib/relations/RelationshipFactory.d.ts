@@ -6,11 +6,12 @@
 import IModel = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IRelationship = NajsEloquent.Relation.IRelationship;
-import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship;
-import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship;
-import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship;
-import IBelongsToManyRelationship = NajsEloquent.Relation.IBelongsToManyRelationship;
-export declare class RelationshipFactory {
+import IRelationshipFactory = NajsEloquent.Relation.IRelationshipFactory;
+import IHasOne = NajsEloquent.Relation.IHasOneRelationship;
+import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship;
+import IHasMany = NajsEloquent.Relation.IHasManyRelationship;
+import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship;
+export declare class RelationshipFactory implements IRelationshipFactory {
     protected rootModel: IModel;
     protected name: string;
     protected relationship: IRelationship<any>;
@@ -21,10 +22,10 @@ export declare class RelationshipFactory {
         targetKeyName: string;
         rootKeyName: string;
     };
-    hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOneRelationship<T>;
-    hasMany<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasManyRelationship<T>;
-    belongsTo<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IBelongsToRelationship<T>;
+    hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOne<T>;
+    hasMany<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasMany<T>;
+    belongsTo<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IBelongsTo<T>;
     findPivotTableName(a: IModel, b: IModel): string;
     findPivotReferenceName(model: IModel): string;
-    belongsToMany<T extends IModel>(target: Definition<T>, pivot?: Definition<any>, pivotTargetKeyName?: string, pivotRootKeyName?: string, targetKeyName?: string, rootKeyName?: string): IBelongsToManyRelationship<T>;
+    belongsToMany<T extends IModel>(target: Definition<T>, pivot?: Definition<any>, pivotTargetKeyName?: string, pivotRootKeyName?: string, targetKeyName?: string, rootKeyName?: string): IBelongsToMany<T>;
 }

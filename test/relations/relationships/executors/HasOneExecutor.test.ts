@@ -25,7 +25,7 @@ describe('HasOneExecutor', function() {
       const dataBucket: any = {}
       const targetModel: any = {}
       const executor = new HasOneExecutor(dataBucket, targetModel)
-      expect(executor.setCollector(collector, []).executeCollector()).toBeUndefined()
+      expect(executor.setCollector(collector, [], {} as any).executeCollector()).toBeUndefined()
       expect(limitSpy.calledWith(1)).toBe(true)
       expect(execStub.calledWith()).toBe(true)
     })
@@ -53,7 +53,7 @@ describe('HasOneExecutor', function() {
 
       const spy = Sinon.spy(dataBucket, 'makeModel')
 
-      expect(executor.setCollector(collector, []).executeCollector() === itemOne).toBe(true)
+      expect(executor.setCollector(collector, [], {} as any).executeCollector() === itemOne).toBe(true)
       expect(limitSpy.calledWith(1)).toBe(true)
       expect(execStub.calledWith()).toBe(true)
       expect(spy.calledWith(targetModel, itemOne)).toBe(true)

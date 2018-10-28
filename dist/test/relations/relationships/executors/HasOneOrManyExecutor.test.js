@@ -26,7 +26,7 @@ describe('HasOneOrManyExecutor', function () {
             const executor = make_executor(dataBucket, targetModel);
             const filterBySpy = Sinon.spy(collector, 'filterBy');
             const conditions = ['a', 'b', 'c', 'd'];
-            expect(executor.setCollector(collector, conditions) === executor).toBe(true);
+            expect(executor.setCollector(collector, conditions, {}) === executor).toBe(true);
             expect(executor['collector'] === collector).toBe(true);
             expect(filterBySpy.calledWith({ $and: conditions })).toBe(true);
         });

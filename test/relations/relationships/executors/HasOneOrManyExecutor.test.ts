@@ -28,7 +28,7 @@ describe('HasOneOrManyExecutor', function() {
 
       const filterBySpy = Sinon.spy(collector, 'filterBy')
       const conditions: any = ['a', 'b', 'c', 'd']
-      expect(executor.setCollector(collector, conditions) === executor).toBe(true)
+      expect(executor.setCollector(collector, conditions, {} as any) === executor).toBe(true)
       expect(executor['collector'] === collector).toBe(true)
       expect(filterBySpy.calledWith({ $and: conditions })).toBe(true)
     })

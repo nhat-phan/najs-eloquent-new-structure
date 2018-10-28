@@ -7,10 +7,11 @@
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
 import IRelationship = NajsEloquent.Relation.IRelationship
-import IHasOneRelationship = NajsEloquent.Relation.IHasOneRelationship
-import IBelongsToRelationship = NajsEloquent.Relation.IBelongsToRelationship
-import IHasManyRelationship = NajsEloquent.Relation.IHasManyRelationship
-import IBelongsToManyRelationship = NajsEloquent.Relation.IBelongsToManyRelationship
+import IRelationshipFactory = NajsEloquent.Relation.IRelationshipFactory
+import IHasOne = NajsEloquent.Relation.IHasOneRelationship
+import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship
+import IHasMany = NajsEloquent.Relation.IHasManyRelationship
+import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship
 
 import * as pluralize from 'pluralize'
 import { HasOne } from './relationships/HasOne'
@@ -20,7 +21,7 @@ import { BelongsToMany } from './relationships/BelongsToMany'
 import { make } from 'najs-binding'
 import { parse_string_with_dot_notation } from '../util/functions'
 
-export class RelationshipFactory {
+export class RelationshipFactory implements IRelationshipFactory {
   protected rootModel: IModel
   protected name: string
   protected relationship: IRelationship<any>
@@ -56,31 +57,19 @@ export class RelationshipFactory {
     return { targetKeyName, rootKeyName }
   }
 
-  hasOne<T extends IModel>(
-    target: ModelDefinition<any>,
-    targetKey?: string,
-    localKey?: string
-  ): IHasOneRelationship<T> {
+  hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOne<T> {
     const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey)
 
     return this.make<HasOne<T>>(HasOne.className, [target, keys.targetKeyName, keys.rootKeyName])
   }
 
-  hasMany<T extends IModel>(
-    target: ModelDefinition<any>,
-    targetKey?: string,
-    localKey?: string
-  ): IHasManyRelationship<T> {
+  hasMany<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasMany<T> {
     const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey)
 
     return this.make<HasMany<T>>(HasMany.className, [target, keys.targetKeyName, keys.rootKeyName])
   }
 
-  belongsTo<T extends IModel>(
-    target: ModelDefinition<any>,
-    targetKey?: string,
-    localKey?: string
-  ): IBelongsToRelationship<T> {
+  belongsTo<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IBelongsTo<T> {
     const targetModel = make<IModel>(target)
     const targetKeyName = typeof targetKey === 'undefined' ? targetModel.getPrimaryKeyName() : targetKey
     const rootKeyName =
@@ -122,7 +111,7 @@ export class RelationshipFactory {
     pivotRootKeyName?: string,
     targetKeyName?: string,
     rootKeyName?: string
-  ): IBelongsToManyRelationship<T> {
+  ): IBelongsToMany<T> {
     const targetModel = make<IModel>(target)
     if (!pivot) {
       pivot = this.findPivotTableName(targetModel, this.rootModel)

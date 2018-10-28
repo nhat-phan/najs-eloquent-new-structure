@@ -2,5 +2,8 @@ export declare enum RelationshipType {
     HasOne = "HasOne",
     HasMany = "HasMany",
     BelongsTo = "BelongsTo",
-    BelongsToMany = "BelongsToMany"
+    BelongsToMany = "BelongsToMany",
+    MorphOne = "MorphOne",
+    MorphMany = "MorphMany",
+    MorphTo = "MorphTo"
 }
