@@ -3,4 +3,5 @@
 /// <reference path="./IBelongsToRelationship.ts" />
 /// <reference path="./IHasManyRelationship.ts" />
 /// <reference path="./IBelongsToManyRelationship.ts" />
+/// <reference path="./IMorphOneRelationship.ts" />
 var IModel = NajsEloquent.Model.IModel;

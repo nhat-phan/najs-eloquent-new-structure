@@ -54,7 +54,8 @@
       "chainable",
       "bson",
       "upserted",
-      "varchar"
+      "varchar",
+      "imageable"
     ],
     "search.exclude": {
       "**/.git": true,

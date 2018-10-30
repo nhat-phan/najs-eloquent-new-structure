@@ -4,14 +4,16 @@
 /// <reference path="../definitions/relations/IRelationshipFactory.ts" />
 /// <reference path="../definitions/relations/IHasOneRelationship.ts" />
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
+/// <reference path="../definitions/relations/IMorphOneRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const pluralize = require("pluralize");
+const najs_binding_1 = require("najs-binding");
+const functions_1 = require("../util/functions");
 const HasOne_1 = require("./relationships/HasOne");
 const BelongsTo_1 = require("./relationships/BelongsTo");
 const HasMany_1 = require("./relationships/HasMany");
 const BelongsToMany_1 = require("./relationships/BelongsToMany");
-const najs_binding_1 = require("najs-binding");
-const functions_1 = require("../util/functions");
+const MorphOne_1 = require("./relationships/MorphOne");
 class RelationshipFactory {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
@@ -94,6 +96,18 @@ class RelationshipFactory {
             targetKeyName,
             rootKeyName
         ]);
+    }
+    morphOne(target, targetType, targetKey, localKey) {
+        const targetModel = najs_binding_1.make(target);
+        const prefix = targetType;
+        if (typeof targetKey === 'undefined') {
+            targetType = targetModel.formatAttributeName(prefix + '_type');
+            targetKey = targetModel.formatAttributeName(prefix + '_id');
+        }
+        if (typeof localKey === 'undefined') {
+            localKey = this.rootModel.getPrimaryKeyName();
+        }
+        return this.make(MorphOne_1.MorphOne.className, [target, targetType, targetKey, localKey]);
     }
 }
 exports.RelationshipFactory = RelationshipFactory;

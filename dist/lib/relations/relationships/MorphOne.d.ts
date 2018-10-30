@@ -7,6 +7,7 @@ import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import { HasOneOrMany } from './HasOneOrMany';
 import { MorphOneExecutor } from './executors/MorphOneExecutor';
 export declare class MorphOne<T> extends HasOneOrMany<T> {
+    static className: string;
     protected targetMorphTypeName: string;
     protected executor: MorphOneExecutor<T>;
     constructor(root: Model, relationName: string, target: ModelDefinition, targetType: string, targetKey: string, rootKey: string);

@@ -13,6 +13,7 @@ import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { MorphOneExecutor } from './executors/MorphOneExecutor'
 
 export class MorphOne<T> extends HasOneOrMany<T> {
+  static className: string = NajsEloquentClasses.Relation.Relationship.MorphOne
   protected targetMorphTypeName: string
   protected executor: MorphOneExecutor<T>
 
@@ -38,9 +39,14 @@ export class MorphOne<T> extends HasOneOrMany<T> {
 
   getExecutor(): MorphOneExecutor<T> {
     if (!this.executor) {
-      this.executor = new MorphOneExecutor(this.getDataBucket()!, this.targetModel, this.targetMorphTypeName)
+      this.executor = new MorphOneExecutor(
+        this.getDataBucket()!,
+        this.targetModel,
+        this.targetMorphTypeName,
+        HasOneOrMany.findMorphType(this.rootModel)
+      )
     }
     return this.executor
   }
 }
-register(MorphOne)
+register(MorphOne, NajsEloquentClasses.Relation.Relationship.MorphOne)

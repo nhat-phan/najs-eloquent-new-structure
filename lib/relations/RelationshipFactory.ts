@@ -3,6 +3,7 @@
 /// <reference path="../definitions/relations/IRelationshipFactory.ts" />
 /// <reference path="../definitions/relations/IHasOneRelationship.ts" />
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
+/// <reference path="../definitions/relations/IMorphOneRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
@@ -12,14 +13,16 @@ import IHasOne = NajsEloquent.Relation.IHasOneRelationship
 import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship
 import IHasMany = NajsEloquent.Relation.IHasManyRelationship
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship
+import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship
 
 import * as pluralize from 'pluralize'
+import { make } from 'najs-binding'
+import { parse_string_with_dot_notation } from '../util/functions'
 import { HasOne } from './relationships/HasOne'
 import { BelongsTo } from './relationships/BelongsTo'
 import { HasMany } from './relationships/HasMany'
 import { BelongsToMany } from './relationships/BelongsToMany'
-import { make } from 'najs-binding'
-import { parse_string_with_dot_notation } from '../util/functions'
+import { MorphOne } from './relationships/MorphOne'
 
 export class RelationshipFactory implements IRelationshipFactory {
   protected rootModel: IModel
@@ -141,5 +144,26 @@ export class RelationshipFactory implements IRelationshipFactory {
       targetKeyName,
       rootKeyName
     ])
+  }
+
+  morphOne<T extends IModel>(
+    target: Definition<T>,
+    targetType: string,
+    targetKey?: string,
+    localKey?: string
+  ): IMorphOne<T> {
+    const targetModel = make<IModel>(target)
+
+    const prefix = targetType
+    if (typeof targetKey === 'undefined') {
+      targetType = targetModel.formatAttributeName(prefix + '_type')
+      targetKey = targetModel.formatAttributeName(prefix + '_id')
+    }
+
+    if (typeof localKey === 'undefined') {
+      localKey = this.rootModel.getPrimaryKeyName()
+    }
+
+    return this.make<MorphOne<T>>(MorphOne.className, [target, targetType, targetKey, localKey])
   }
 }

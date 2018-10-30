@@ -3,12 +3,14 @@
 /// <reference path="IBelongsToRelationship.d.ts" />
 /// <reference path="IHasManyRelationship.d.ts" />
 /// <reference path="IBelongsToManyRelationship.d.ts" />
+/// <reference path="IMorphOneRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import Definition = NajsEloquent.Model.ModelDefinition;
 import IHasOne = NajsEloquent.Relation.IHasOneRelationship;
 import IHasMany = NajsEloquent.Relation.IHasManyRelationship;
 import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship;
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship;
+import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship;
 declare namespace NajsEloquent.Relation {
     interface IRelationshipFactory {
         /**
@@ -107,5 +109,27 @@ declare namespace NajsEloquent.Relation {
          * @param {string} rootKeyName
          */
         belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string): IBelongsToMany<T>;
+        /**
+         * Has one relationship
+         *
+         * @param {string|ModelDefinition} target
+         * @param {string} field
+         */
+        morphOne<T extends IModel>(target: Definition<T>, name: string): IMorphOne<T>;
+        /**
+         * Has one relationship
+         *
+         * @param {string|ModelDefinition} target
+         * @param {string} targetKey
+         */
+        morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string): IMorphOne<T>;
+        /**
+         * Has one relationship
+         *
+         * @param {string|ModelDefinition} target
+         * @param {string} targetKey
+         * @param {string} localKey
+         */
+        morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string, localKey: string): IMorphOne<T>;
     }
 }

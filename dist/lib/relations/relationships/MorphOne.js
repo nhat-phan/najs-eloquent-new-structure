@@ -22,10 +22,11 @@ class MorphOne extends HasOneOrMany_1.HasOneOrMany {
     }
     getExecutor() {
         if (!this.executor) {
-            this.executor = new MorphOneExecutor_1.MorphOneExecutor(this.getDataBucket(), this.targetModel, this.targetMorphTypeName);
+            this.executor = new MorphOneExecutor_1.MorphOneExecutor(this.getDataBucket(), this.targetModel, this.targetMorphTypeName, HasOneOrMany_1.HasOneOrMany.findMorphType(this.rootModel));
         }
         return this.executor;
     }
 }
+MorphOne.className = constants_1.NajsEloquent.Relation.Relationship.MorphOne;
 exports.MorphOne = MorphOne;
-najs_binding_1.register(MorphOne);
+najs_binding_1.register(MorphOne, constants_1.NajsEloquent.Relation.Relationship.MorphOne);
