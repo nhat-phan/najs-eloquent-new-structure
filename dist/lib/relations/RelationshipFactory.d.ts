@@ -4,6 +4,7 @@
 /// <reference path="../definitions/relations/IHasOneRelationship.d.ts" />
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.d.ts" />
 /// <reference path="../definitions/relations/IMorphOneRelationship.d.ts" />
+/// <reference path="../definitions/relations/IMorphManyRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IRelationship = NajsEloquent.Relation.IRelationship;
@@ -13,6 +14,7 @@ import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship;
 import IHasMany = NajsEloquent.Relation.IHasManyRelationship;
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship;
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship;
+import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship;
 export declare class RelationshipFactory implements IRelationshipFactory {
     protected rootModel: IModel;
     protected name: string;
@@ -30,5 +32,11 @@ export declare class RelationshipFactory implements IRelationshipFactory {
     findPivotTableName(a: IModel, b: IModel): string;
     findPivotReferenceName(model: IModel): string;
     belongsToMany<T extends IModel>(target: Definition<T>, pivot?: Definition<any>, pivotTargetKeyName?: string, pivotRootKeyName?: string, targetKeyName?: string, rootKeyName?: string): IBelongsToMany<T>;
+    protected findMorphOneOrMorphManyKeys(target: Definition<any>, targetType: string, targetKey?: string, localKey?: string): {
+        targetType: string;
+        targetKey: string;
+        localKey: string;
+    };
     morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey?: string, localKey?: string): IMorphOne<T>;
+    morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey?: string, localKey?: string): IMorphMany<T>;
 }

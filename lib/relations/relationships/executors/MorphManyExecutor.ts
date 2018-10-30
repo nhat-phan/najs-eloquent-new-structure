@@ -11,26 +11,25 @@ import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 
 import { DataConditionMatcher } from '../../../data/DataConditionMatcher'
 import { HasManyExecutor } from './HasManyExecutor'
-import { Relationship } from '../../Relationship'
 
 export class MorphManyExecutor<T> extends HasManyExecutor<T> {
-  protected targetMorphType: string
+  protected morphTypeValue: string
   protected targetMorphTypeName: string
 
-  constructor(dataBucket: IRelationDataBucket, targetModel: IModel, targetMorphTypeName: string) {
+  constructor(dataBucket: IRelationDataBucket, targetModel: IModel, targetMorphTypeName: string, typeValue: string) {
     super(dataBucket, targetModel)
-    this.targetMorphType = Relationship.findMorphType(this.targetModel)
+    this.morphTypeValue = typeValue
     this.targetMorphTypeName = targetMorphTypeName
   }
 
   setCollector(collector: IDataCollector<any>, conditions: IConditionMatcher<any>[], reader: IDataReader<any>): this {
-    conditions.unshift(new DataConditionMatcher(this.targetMorphTypeName, '=', this.targetMorphType, reader))
+    conditions.unshift(new DataConditionMatcher(this.targetMorphTypeName, '=', this.morphTypeValue, reader))
 
     return super.setCollector(collector, conditions, reader)
   }
 
   setQuery(query: IQueryBuilder<any>): this {
-    query.where(this.targetMorphTypeName, '=', this.targetMorphType)
+    query.where(this.targetMorphTypeName, this.morphTypeValue)
 
     return super.setQuery(query)
   }

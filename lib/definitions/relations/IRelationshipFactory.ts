@@ -4,6 +4,7 @@
 /// <reference path="./IHasManyRelationship.ts" />
 /// <reference path="./IBelongsToManyRelationship.ts" />
 /// <reference path="./IMorphOneRelationship.ts" />
+/// <reference path="./IMorphManyRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import Definition = NajsEloquent.Model.ModelDefinition
@@ -12,6 +13,7 @@ import IHasMany = NajsEloquent.Relation.IHasManyRelationship
 import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship
+import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship
 
 namespace NajsEloquent.Relation {
   export interface IRelationshipFactory {
@@ -165,5 +167,35 @@ namespace NajsEloquent.Relation {
       targetKey: string,
       localKey: string
     ): IMorphOne<T>
+
+    /**
+     * Has one relationship
+     *
+     * @param {string|ModelDefinition} target
+     * @param {string} field
+     */
+    morphMany<T extends IModel>(target: Definition<T>, name: string): IMorphMany<T>
+
+    /**
+     * Has one relationship
+     *
+     * @param {string|ModelDefinition} target
+     * @param {string} targetKey
+     */
+    morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string): IMorphMany<T>
+
+    /**
+     * Has one relationship
+     *
+     * @param {string|ModelDefinition} target
+     * @param {string} targetKey
+     * @param {string} localKey
+     */
+    morphMany<T extends IModel>(
+      target: Definition<T>,
+      targetType: string,
+      targetKey: string,
+      localKey: string
+    ): IMorphMany<T>
   }
 }

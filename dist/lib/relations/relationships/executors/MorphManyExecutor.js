@@ -6,19 +6,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const DataConditionMatcher_1 = require("../../../data/DataConditionMatcher");
 const HasManyExecutor_1 = require("./HasManyExecutor");
-const Relationship_1 = require("../../Relationship");
 class MorphManyExecutor extends HasManyExecutor_1.HasManyExecutor {
-    constructor(dataBucket, targetModel, targetMorphTypeName) {
+    constructor(dataBucket, targetModel, targetMorphTypeName, typeValue) {
         super(dataBucket, targetModel);
-        this.targetMorphType = Relationship_1.Relationship.findMorphType(this.targetModel);
+        this.morphTypeValue = typeValue;
         this.targetMorphTypeName = targetMorphTypeName;
     }
     setCollector(collector, conditions, reader) {
-        conditions.unshift(new DataConditionMatcher_1.DataConditionMatcher(this.targetMorphTypeName, '=', this.targetMorphType, reader));
+        conditions.unshift(new DataConditionMatcher_1.DataConditionMatcher(this.targetMorphTypeName, '=', this.morphTypeValue, reader));
         return super.setCollector(collector, conditions, reader);
     }
     setQuery(query) {
-        query.where(this.targetMorphTypeName, '=', this.targetMorphType);
+        query.where(this.targetMorphTypeName, this.morphTypeValue);
         return super.setQuery(query);
     }
 }

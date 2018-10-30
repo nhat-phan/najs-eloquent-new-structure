@@ -83,10 +83,13 @@ export { PivotModel as Pivot } from './relations/relationships/pivot/PivotModel'
 export { Builtin as NajsEloquent } from './builtin'
 
 export type HasOne<T extends Model> = T | undefined | null
-export type BelongsTo<T extends Model> = T | undefined | null
 export type HasMany<T extends Model> = CollectJs.Collection<T> | undefined
+export type BelongsTo<T extends Model> = T | undefined | null
+
 export type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IModelWithPivot<R>> | undefined
+
 export type MorphOne<T extends Model> = T | undefined | null
+export type MorphMany<T extends Model> = CollectJs.Collection<T> | undefined
 
 export {
   DriverProvider,

@@ -646,4 +646,87 @@ describe('RelationshipFactory', function () {
             makeStub.restore();
         });
     });
+    describe('.morphMany()', function () {
+        it('creates MorphOne instance with name_type & name_id formatted by targetModel if there are 2 params', function () {
+            const makeStub = Sinon.stub(NajsBinding, 'make');
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                },
+                formatAttributeName(name) {
+                    return 'formatted_' + name;
+                }
+            };
+            makeStub.returns(targetModel);
+            const rootModel = {
+                getPrimaryKeyName() {
+                    return 'id';
+                }
+            };
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
+            const thisMakeStub = Sinon.stub(factory, 'make');
+            factory.morphMany('Target', 'field');
+            expect(thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.MorphMany', [
+                'Target',
+                'formatted_field_type',
+                'formatted_field_id',
+                'id'
+            ])).toBe(true);
+            makeStub.restore();
+        });
+        it('creates MorphOne instance with given name_type & name_id if there are 3 params', function () {
+            const makeStub = Sinon.stub(NajsBinding, 'make');
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                },
+                formatAttributeName(name) {
+                    return 'formatted_' + name;
+                }
+            };
+            makeStub.returns(targetModel);
+            const rootModel = {
+                getPrimaryKeyName() {
+                    return 'id';
+                }
+            };
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
+            const thisMakeStub = Sinon.stub(factory, 'make');
+            factory.morphMany('Target', 'field_type', 'field_id');
+            expect(thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.MorphMany', [
+                'Target',
+                'field_type',
+                'field_id',
+                'id'
+            ])).toBe(true);
+            makeStub.restore();
+        });
+        it('creates MorphOne instance with given name_type & name_id and root id if there are 4 params', function () {
+            const makeStub = Sinon.stub(NajsBinding, 'make');
+            const targetModel = {
+                getModelName() {
+                    return 'Target';
+                },
+                formatAttributeName(name) {
+                    return 'formatted_' + name;
+                }
+            };
+            makeStub.returns(targetModel);
+            const rootModel = {
+                getPrimaryKeyName() {
+                    return 'id';
+                }
+            };
+            const factory = new RelationshipFactory_1.RelationshipFactory(rootModel, 'test');
+            const thisMakeStub = Sinon.stub(factory, 'make');
+            factory.morphMany('Target', 'field_type', 'field_id', 'root');
+            expect(thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.MorphMany', [
+                'Target',
+                'field_type',
+                'field_id',
+                'root'
+            ])).toBe(true);
+            makeStub.restore();
+        });
+    });
 });

@@ -59,6 +59,7 @@ export declare const NajsEloquent: {
             HasMany: string;
             BelongsToMany: string;
             MorphOne: string;
+            MorphMany: string;
         };
         RelationDataBucket: string;
     };

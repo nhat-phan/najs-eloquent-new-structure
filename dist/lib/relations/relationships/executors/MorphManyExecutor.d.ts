@@ -9,9 +9,9 @@ import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder;
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket;
 import { HasManyExecutor } from './HasManyExecutor';
 export declare class MorphManyExecutor<T> extends HasManyExecutor<T> {
-    protected targetMorphType: string;
+    protected morphTypeValue: string;
     protected targetMorphTypeName: string;
-    constructor(dataBucket: IRelationDataBucket, targetModel: IModel, targetMorphTypeName: string);
+    constructor(dataBucket: IRelationDataBucket, targetModel: IModel, targetMorphTypeName: string, typeValue: string);
     setCollector(collector: IDataCollector<any>, conditions: IConditionMatcher<any>[], reader: IDataReader<any>): this;
     setQuery(query: IQueryBuilder<any>): this;
 }

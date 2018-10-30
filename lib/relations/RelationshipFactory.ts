@@ -4,6 +4,7 @@
 /// <reference path="../definitions/relations/IHasOneRelationship.ts" />
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
 /// <reference path="../definitions/relations/IMorphOneRelationship.ts" />
+/// <reference path="../definitions/relations/IMorphManyRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
@@ -14,6 +15,7 @@ import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship
 import IHasMany = NajsEloquent.Relation.IHasManyRelationship
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship
+import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship
 
 import * as pluralize from 'pluralize'
 import { make } from 'najs-binding'
@@ -23,6 +25,7 @@ import { BelongsTo } from './relationships/BelongsTo'
 import { HasMany } from './relationships/HasMany'
 import { BelongsToMany } from './relationships/BelongsToMany'
 import { MorphOne } from './relationships/MorphOne'
+import { MorphMany } from './relationships/MorphMany'
 
 export class RelationshipFactory implements IRelationshipFactory {
   protected rootModel: IModel
@@ -146,12 +149,12 @@ export class RelationshipFactory implements IRelationshipFactory {
     ])
   }
 
-  morphOne<T extends IModel>(
-    target: Definition<T>,
+  protected findMorphOneOrMorphManyKeys(
+    target: Definition<any>,
     targetType: string,
     targetKey?: string,
     localKey?: string
-  ): IMorphOne<T> {
+  ) {
     const targetModel = make<IModel>(target)
 
     const prefix = targetType
@@ -164,6 +167,26 @@ export class RelationshipFactory implements IRelationshipFactory {
       localKey = this.rootModel.getPrimaryKeyName()
     }
 
-    return this.make<MorphOne<T>>(MorphOne.className, [target, targetType, targetKey, localKey])
+    return { targetType, targetKey, localKey }
+  }
+
+  morphOne<T extends IModel>(
+    target: Definition<T>,
+    targetType: string,
+    targetKey?: string,
+    localKey?: string
+  ): IMorphOne<T> {
+    const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey)
+    return this.make<MorphOne<T>>(MorphOne.className, [target, keys.targetType, keys.targetKey, keys.localKey])
+  }
+
+  morphMany<T extends IModel>(
+    target: Definition<T>,
+    targetType: string,
+    targetKey?: string,
+    localKey?: string
+  ): IMorphMany<T> {
+    const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey)
+    return this.make<MorphMany<T>>(MorphMany.className, [target, keys.targetType, keys.targetKey, keys.localKey])
   }
 }

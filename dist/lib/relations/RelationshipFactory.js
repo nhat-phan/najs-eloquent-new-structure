@@ -5,6 +5,7 @@
 /// <reference path="../definitions/relations/IHasOneRelationship.ts" />
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
 /// <reference path="../definitions/relations/IMorphOneRelationship.ts" />
+/// <reference path="../definitions/relations/IMorphManyRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const pluralize = require("pluralize");
 const najs_binding_1 = require("najs-binding");
@@ -14,6 +15,7 @@ const BelongsTo_1 = require("./relationships/BelongsTo");
 const HasMany_1 = require("./relationships/HasMany");
 const BelongsToMany_1 = require("./relationships/BelongsToMany");
 const MorphOne_1 = require("./relationships/MorphOne");
+const MorphMany_1 = require("./relationships/MorphMany");
 class RelationshipFactory {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
@@ -97,7 +99,7 @@ class RelationshipFactory {
             rootKeyName
         ]);
     }
-    morphOne(target, targetType, targetKey, localKey) {
+    findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey) {
         const targetModel = najs_binding_1.make(target);
         const prefix = targetType;
         if (typeof targetKey === 'undefined') {
@@ -107,7 +109,15 @@ class RelationshipFactory {
         if (typeof localKey === 'undefined') {
             localKey = this.rootModel.getPrimaryKeyName();
         }
-        return this.make(MorphOne_1.MorphOne.className, [target, targetType, targetKey, localKey]);
+        return { targetType, targetKey, localKey };
+    }
+    morphOne(target, targetType, targetKey, localKey) {
+        const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey);
+        return this.make(MorphOne_1.MorphOne.className, [target, keys.targetType, keys.targetKey, keys.localKey]);
+    }
+    morphMany(target, targetType, targetKey, localKey) {
+        const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey);
+        return this.make(MorphMany_1.MorphMany.className, [target, keys.targetType, keys.targetKey, keys.localKey]);
     }
 }
 exports.RelationshipFactory = RelationshipFactory;

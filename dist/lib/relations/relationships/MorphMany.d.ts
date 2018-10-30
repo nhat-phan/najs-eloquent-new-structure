@@ -1,19 +1,21 @@
+/// <reference path="../../../../lib/definitions/collect.js/index.d.ts" />
 /// <reference path="../../definitions/model/IModel.d.ts" />
 /// <reference path="../../definitions/relations/IRelationship.d.ts" />
+/// <reference path="../../definitions/relations/IMorphManyRelationship.d.ts" />
 /// <reference path="../../definitions/data/IDataCollector.d.ts" />
 /// <reference path="../../definitions/query-builders/IQueryBuilder.d.ts" />
-/// <reference path="../../definitions/relations/IMorphOneRelationship.d.ts" />
 import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
-import IMorphOneRelationship = NajsEloquent.Relation.IMorphOneRelationship;
+import IMorphManyRelationship = NajsEloquent.Relation.IMorphManyRelationship;
+import Collection = CollectJs.Collection;
 import { HasOneOrMany } from './HasOneOrMany';
-import { MorphOneExecutor } from './executors/MorphOneExecutor';
-export declare class MorphOne<T> extends HasOneOrMany<T> implements IMorphOneRelationship<T> {
+import { MorphManyExecutor } from './executors/MorphManyExecutor';
+export declare class MorphMany<T> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
     static className: string;
     protected targetMorphTypeName: string;
-    protected executor: MorphOneExecutor<T>;
+    protected executor: MorphManyExecutor<T>;
     constructor(root: Model, relationName: string, target: ModelDefinition, targetType: string, targetKey: string, rootKey: string);
     getClassName(): string;
     getType(): string;
-    getExecutor(): MorphOneExecutor<T>;
+    getExecutor(): MorphManyExecutor<T>;
 }
