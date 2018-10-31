@@ -879,4 +879,64 @@ describe('RelationshipFactory', function() {
       makeStub.restore()
     })
   })
+
+  describe('.morphTo()', function() {
+    it('creates MorphTo with generated rootType & rootKey base of name of relation if there is no params', function() {
+      const rootModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return 'formatted_' + name
+        }
+      }
+
+      const factory = new RelationshipFactory(rootModel, 'name')
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.morphTo()
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.MorphTo', [
+          'formatted_name_type',
+          'formatted_name_id',
+          {}
+        ])
+      ).toBe(true)
+    })
+
+    it('creates MorphTo with custom rootType and rootKey if there are 2 params', function() {
+      const rootModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return 'formatted_' + name
+        }
+      }
+
+      const factory = new RelationshipFactory(rootModel, 'name')
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.morphTo('morph_type', 'morph_id')
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.MorphTo', ['morph_type', 'morph_id', {}])
+      ).toBe(true)
+    })
+
+    it('creates MorphTo with custom rootType and rootKey and targetKeyMap if there are 3 params', function() {
+      const rootModel: any = {
+        getModelName() {
+          return 'Target'
+        },
+        formatAttributeName(name: string) {
+          return 'formatted_' + name
+        }
+      }
+
+      const factory = new RelationshipFactory(rootModel, 'name')
+      const thisMakeStub = Sinon.stub(factory, 'make')
+      factory.morphTo('morph_type', 'morph_id', { a: 'test' })
+      expect(
+        thisMakeStub.calledWith('NajsEloquent.Relation.Relationship.MorphTo', ['morph_type', 'morph_id', { a: 'test' }])
+      ).toBe(true)
+    })
+  })
 })

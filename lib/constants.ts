@@ -61,7 +61,8 @@ export const NajsEloquent = {
       HasMany: 'NajsEloquent.Relation.Relationship.HasMany',
       BelongsToMany: 'NajsEloquent.Relation.Relationship.BelongsToMany',
       MorphOne: 'NajsEloquent.Relation.Relationship.MorphOne',
-      MorphMany: 'NajsEloquent.Relation.Relationship.MorphMany'
+      MorphMany: 'NajsEloquent.Relation.Relationship.MorphMany',
+      MorphTo: 'NajsEloquent.Relation.Relationship.MorphTo'
     },
     RelationDataBucket: 'NajsEloquent.Relation.RelationDataBucket'
   }

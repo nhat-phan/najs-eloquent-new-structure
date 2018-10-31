@@ -10,6 +10,9 @@ class Image extends lib_1.Model {
     getClassName() {
         return 'Image';
     }
+    get imageableRelation() {
+        return this.defineRelation('imageable').morphTo();
+    }
 }
 lib_1.Model.register(Image);
 class User extends lib_1.Model {
@@ -61,5 +64,16 @@ describe('MorphMany', function () {
         expect(result.images).toBeUndefined();
         await result.load('images');
         expect(user.images.map(item => item.toJson()).all()).toEqual([userImage1.toJson(), userImage2.toJson()]);
+        expect(userImage1.imageable).toBeUndefined();
+        await userImage1.load('imageable');
+        expect(userImage1.imageable.id).toEqual(user.id);
+        expect(postImage.imageable).toBeUndefined();
+        await postImage.load('imageable');
+        expect(postImage.imageable.id).toEqual(post.id);
+        const images = await Image.get();
+        await images.first().load('imageable');
+        for (const image of images) {
+            expect(image.imageable).toBeInstanceOf(lib_1.Model);
+        }
     });
 });

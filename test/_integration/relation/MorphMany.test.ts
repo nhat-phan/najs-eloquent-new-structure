@@ -1,7 +1,8 @@
 import 'jest'
-import { Model, MorphMany } from '../../../lib'
+import { Model, MorphMany, MorphTo } from '../../../lib'
 
 class Image extends Model {
+  imageable: MorphTo<Model>
   imageable_type: string
   imageable_id: string
   url: string
@@ -10,6 +11,10 @@ class Image extends Model {
 
   getClassName() {
     return 'Image'
+  }
+
+  get imageableRelation() {
+    return this.defineRelation('imageable').morphTo()
   }
 }
 Model.register(Image)
@@ -78,5 +83,19 @@ describe('MorphMany', function() {
     expect(result.images).toBeUndefined()
     await result.load('images')
     expect(user.images!.map(item => item.toJson()).all()).toEqual([userImage1.toJson(), userImage2.toJson()])
+
+    expect(userImage1.imageable).toBeUndefined()
+    await userImage1.load('imageable')
+    expect(userImage1.imageable!.id).toEqual(user.id)
+
+    expect(postImage.imageable).toBeUndefined()
+    await postImage.load('imageable')
+    expect(postImage.imageable!.id).toEqual(post.id)
+
+    const images = await Image.get()
+    await images.first().load('imageable')
+    for (const image of images) {
+      expect(image.imageable).toBeInstanceOf(Model)
+    }
   })
 })

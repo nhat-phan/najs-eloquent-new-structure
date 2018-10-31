@@ -90,6 +90,7 @@ export type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IM
 
 export type MorphOne<T extends Model> = T | undefined | null
 export type MorphMany<T extends Model> = CollectJs.Collection<T> | undefined
+export type MorphTo<T extends Model> = T | undefined | null
 
 export {
   DriverProvider,

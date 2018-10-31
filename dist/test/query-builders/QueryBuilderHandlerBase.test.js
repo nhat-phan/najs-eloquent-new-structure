@@ -294,6 +294,7 @@ describe('QueryBuilderHandlerBase', function () {
             };
             const query = makeInstance(model);
             expect(query.getRelationDataBucket() === dataBucket).toBe(true);
+            expect(query['dataBucket'] === dataBucket).toBe(true);
         });
         it('make new dataBucket if exists', function () {
             const dataBucket = {};
@@ -316,6 +317,7 @@ describe('QueryBuilderHandlerBase', function () {
             };
             const query = makeInstance(model);
             expect(query.getRelationDataBucket() === dataBucket).toBe(true);
+            expect(query['dataBucket'] === dataBucket).toBe(true);
         });
     });
     describe('.createInstance()', function () {

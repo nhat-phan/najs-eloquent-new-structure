@@ -5,6 +5,7 @@
 /// <reference path="IBelongsToManyRelationship.d.ts" />
 /// <reference path="IMorphOneRelationship.d.ts" />
 /// <reference path="IMorphManyRelationship.d.ts" />
+/// <reference path="IMorphToRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import Definition = NajsEloquent.Model.ModelDefinition;
 import IHasOne = NajsEloquent.Relation.IHasOneRelationship;
@@ -13,6 +14,7 @@ import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship;
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship;
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship;
 import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship;
+import IMorphTo = NajsEloquent.Relation.IMorphToRelationship;
 declare namespace NajsEloquent.Relation {
     interface IRelationshipFactory {
         /**
@@ -112,21 +114,21 @@ declare namespace NajsEloquent.Relation {
          */
         belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string): IBelongsToMany<T>;
         /**
-         * Has one relationship
+         * Morph one relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string} field
          */
         morphOne<T extends IModel>(target: Definition<T>, name: string): IMorphOne<T>;
         /**
-         * Has one relationship
+         * Morph one relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string} targetKey
          */
         morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string): IMorphOne<T>;
         /**
-         * Has one relationship
+         * Morph one relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string} targetKey
@@ -134,26 +136,40 @@ declare namespace NajsEloquent.Relation {
          */
         morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string, localKey: string): IMorphOne<T>;
         /**
-         * Has one relationship
+         * Morph many relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string} field
          */
         morphMany<T extends IModel>(target: Definition<T>, name: string): IMorphMany<T>;
         /**
-         * Has one relationship
+         * Morph many relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string} targetKey
          */
         morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string): IMorphMany<T>;
         /**
-         * Has one relationship
+         * Morph many relationship
          *
          * @param {string|ModelDefinition} target
          * @param {string} targetKey
          * @param {string} localKey
          */
         morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string, localKey: string): IMorphMany<T>;
+        /**
+         * Create morph to relationship
+         */
+        morphTo<T extends IModel>(): IMorphTo<T>;
+        /**
+         * Create morph to relationship
+         */
+        morphTo<T extends IModel>(rootType: string, rootKey: string): IMorphTo<T>;
+        /**
+         * Create morph to relationship
+         */
+        morphTo<T extends IModel>(rootType: string, rootKey: string, targetKeyMap: {
+            [name in string]: string;
+        }): IMorphTo<T>;
     }
 }

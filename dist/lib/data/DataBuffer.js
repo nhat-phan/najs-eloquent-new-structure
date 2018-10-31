@@ -35,6 +35,9 @@ class DataBuffer {
     map(cb) {
         return Array.from(this.buffer.values()).map(cb);
     }
+    reduce(cb, initialValue) {
+        return Array.from(this.buffer.values()).reduce(cb, initialValue);
+    }
     keys() {
         return Array.from(this.buffer.keys());
     }

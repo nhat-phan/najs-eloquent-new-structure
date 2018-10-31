@@ -5,6 +5,7 @@
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.d.ts" />
 /// <reference path="../definitions/relations/IMorphOneRelationship.d.ts" />
 /// <reference path="../definitions/relations/IMorphManyRelationship.d.ts" />
+/// <reference path="../definitions/relations/IMorphToRelationship.d.ts" />
 import IModel = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IRelationship = NajsEloquent.Relation.IRelationship;
@@ -15,6 +16,7 @@ import IHasMany = NajsEloquent.Relation.IHasManyRelationship;
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship;
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship;
 import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship;
+import IMorphTo = NajsEloquent.Relation.IMorphToRelationship;
 export declare class RelationshipFactory implements IRelationshipFactory {
     protected rootModel: IModel;
     protected name: string;
@@ -39,4 +41,7 @@ export declare class RelationshipFactory implements IRelationshipFactory {
     };
     morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey?: string, localKey?: string): IMorphOne<T>;
     morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey?: string, localKey?: string): IMorphMany<T>;
+    morphTo<T extends IModel>(rootType?: string, rootKey?: string, targetKeyMap?: {
+        [name in string]: string;
+    }): IMorphTo<T>;
 }

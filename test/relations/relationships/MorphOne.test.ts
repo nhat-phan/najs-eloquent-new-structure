@@ -7,7 +7,7 @@ import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
 import { MorphOneExecutor } from '../../../lib/relations/relationships/executors/MorphOneExecutor'
 
-describe('HasOne', function() {
+describe('MorphOne', function() {
   it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.MorphOne"', function() {
     const rootModel: any = {}
     const morphOne = new MorphOne(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id')

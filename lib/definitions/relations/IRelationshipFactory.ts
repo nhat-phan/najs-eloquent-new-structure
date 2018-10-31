@@ -5,6 +5,7 @@
 /// <reference path="./IBelongsToManyRelationship.ts" />
 /// <reference path="./IMorphOneRelationship.ts" />
 /// <reference path="./IMorphManyRelationship.ts" />
+/// <reference path="./IMorphToRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import Definition = NajsEloquent.Model.ModelDefinition
@@ -14,6 +15,7 @@ import IBelongsTo = NajsEloquent.Relation.IBelongsToRelationship
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship
 import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship
+import IMorphTo = NajsEloquent.Relation.IMorphToRelationship
 
 namespace NajsEloquent.Relation {
   export interface IRelationshipFactory {
@@ -23,7 +25,6 @@ namespace NajsEloquent.Relation {
      * @param {string|ModelDefinition} target
      */
     hasOne<T extends IModel>(target: Definition<T>): IHasOne<T>
-
     /**
      * Has one relationship
      *
@@ -31,7 +32,6 @@ namespace NajsEloquent.Relation {
      * @param {string} targetKey
      */
     hasOne<T extends IModel>(target: Definition<T>, targetKey: string): IHasOne<T>
-
     /**
      * Has one relationship
      *
@@ -47,7 +47,6 @@ namespace NajsEloquent.Relation {
      * @param {string|ModelDefinition} target
      */
     hasMany<T extends IModel>(target: Definition<T>): IHasMany<T>
-
     /**
      * Has many relationship
      *
@@ -55,7 +54,6 @@ namespace NajsEloquent.Relation {
      * @param {string} targetKey
      */
     hasMany<T extends IModel>(target: Definition<T>, targetKey: string): IHasMany<T>
-
     /**
      * Has many relationship
      *
@@ -71,7 +69,6 @@ namespace NajsEloquent.Relation {
      * @param {string|ModelDefinition} target
      */
     belongsTo<T extends IModel>(target: Definition<T>): IBelongsTo<T>
-
     /**
      * Has one inverse relationship
      *
@@ -79,7 +76,6 @@ namespace NajsEloquent.Relation {
      * @param {string} targetKey
      */
     belongsTo<T extends IModel>(target: Definition<T>, targetKey: string): IBelongsTo<T>
-
     /**
      * Has one inverse relationship
      *
@@ -95,7 +91,6 @@ namespace NajsEloquent.Relation {
      * @param {string|ModelDefinition} target
      */
     belongsToMany<T extends IModel>(target: Definition<T>): IBelongsToMany<T>
-
     /**
      * Define many to many relationship
      *
@@ -103,7 +98,6 @@ namespace NajsEloquent.Relation {
      * @param {string|ModelDefinition} pivot
      */
     belongsToMany<T extends IModel>(target: Definition<T>, pivot: Definition<any>): IBelongsToMany<T>
-
     /**
      * Define many to many relationship
      *
@@ -118,7 +112,6 @@ namespace NajsEloquent.Relation {
       pivotTargetKeyName: string,
       pivotRootKeyName: string
     ): IBelongsToMany<T>
-
     /**
      * Define many to many relationship
      *
@@ -139,23 +132,21 @@ namespace NajsEloquent.Relation {
     ): IBelongsToMany<T>
 
     /**
-     * Has one relationship
+     * Morph one relationship
      *
      * @param {string|ModelDefinition} target
      * @param {string} field
      */
     morphOne<T extends IModel>(target: Definition<T>, name: string): IMorphOne<T>
-
     /**
-     * Has one relationship
+     * Morph one relationship
      *
      * @param {string|ModelDefinition} target
      * @param {string} targetKey
      */
     morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string): IMorphOne<T>
-
     /**
-     * Has one relationship
+     * Morph one relationship
      *
      * @param {string|ModelDefinition} target
      * @param {string} targetKey
@@ -169,7 +160,7 @@ namespace NajsEloquent.Relation {
     ): IMorphOne<T>
 
     /**
-     * Has one relationship
+     * Morph many relationship
      *
      * @param {string|ModelDefinition} target
      * @param {string} field
@@ -177,7 +168,7 @@ namespace NajsEloquent.Relation {
     morphMany<T extends IModel>(target: Definition<T>, name: string): IMorphMany<T>
 
     /**
-     * Has one relationship
+     * Morph many relationship
      *
      * @param {string|ModelDefinition} target
      * @param {string} targetKey
@@ -185,7 +176,7 @@ namespace NajsEloquent.Relation {
     morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey: string): IMorphMany<T>
 
     /**
-     * Has one relationship
+     * Morph many relationship
      *
      * @param {string|ModelDefinition} target
      * @param {string} targetKey
@@ -197,5 +188,22 @@ namespace NajsEloquent.Relation {
       targetKey: string,
       localKey: string
     ): IMorphMany<T>
+
+    /**
+     * Create morph to relationship
+     */
+    morphTo<T extends IModel>(): IMorphTo<T>
+    /**
+     * Create morph to relationship
+     */
+    morphTo<T extends IModel>(rootType: string, rootKey: string): IMorphTo<T>
+    /**
+     * Create morph to relationship
+     */
+    morphTo<T extends IModel>(
+      rootType: string,
+      rootKey: string,
+      targetKeyMap: { [name in string]: string }
+    ): IMorphTo<T>
   }
 }

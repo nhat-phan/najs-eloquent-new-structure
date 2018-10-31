@@ -65,6 +65,7 @@ export declare type BelongsTo<T extends Model> = T | undefined | null;
 export declare type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IModelWithPivot<R>> | undefined;
 export declare type MorphOne<T extends Model> = T | undefined | null;
 export declare type MorphMany<T extends Model> = CollectJs.Collection<T> | undefined;
+export declare type MorphTo<T extends Model> = T | undefined | null;
 export { DriverProvider, DriverProvider as ModelDriverProvider, DriverProvider as EloquentDriverProvider, DriverProviderFacade, DriverProviderFacade as ModelDriverProviderFacade, DriverProviderFacade as EloquentDriverProviderFacade } from './facades/global/DriverProviderFacade';
 export { factory, Factory, FactoryFacade } from './facades/global/FactoryFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';

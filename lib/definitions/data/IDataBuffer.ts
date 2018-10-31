@@ -43,6 +43,13 @@ namespace NajsEloquent.Data {
     map<V>(cb: (item: T) => V): V[]
 
     /**
+     * Reduce items.
+     *
+     * @param {Function} cb
+     */
+    reduce<V>(cb: ((memo: V, item: T) => V), initialValue: V): V
+
+    /**
      * Get keys of buffered data.
      *
      * @param {Function} cb

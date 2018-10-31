@@ -5,6 +5,7 @@
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
 /// <reference path="../definitions/relations/IMorphOneRelationship.ts" />
 /// <reference path="../definitions/relations/IMorphManyRelationship.ts" />
+/// <reference path="../definitions/relations/IMorphToRelationship.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import ModelDefinition = NajsEloquent.Model.ModelDefinition
@@ -16,6 +17,7 @@ import IHasMany = NajsEloquent.Relation.IHasManyRelationship
 import IBelongsToMany = NajsEloquent.Relation.IBelongsToManyRelationship
 import IMorphOne = NajsEloquent.Relation.IMorphOneRelationship
 import IMorphMany = NajsEloquent.Relation.IMorphManyRelationship
+import IMorphTo = NajsEloquent.Relation.IMorphToRelationship
 
 import * as pluralize from 'pluralize'
 import { make } from 'najs-binding'
@@ -26,6 +28,7 @@ import { HasMany } from './relationships/HasMany'
 import { BelongsToMany } from './relationships/BelongsToMany'
 import { MorphOne } from './relationships/MorphOne'
 import { MorphMany } from './relationships/MorphMany'
+import { MorphTo } from './relationships/MorphTo'
 
 export class RelationshipFactory implements IRelationshipFactory {
   protected rootModel: IModel
@@ -188,5 +191,21 @@ export class RelationshipFactory implements IRelationshipFactory {
   ): IMorphMany<T> {
     const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey)
     return this.make<MorphMany<T>>(MorphMany.className, [target, keys.targetType, keys.targetKey, keys.localKey])
+  }
+
+  morphTo<T extends IModel>(
+    rootType?: string,
+    rootKey?: string,
+    targetKeyMap?: { [name in string]: string }
+  ): IMorphTo<T> {
+    if (typeof rootType === 'undefined' && typeof rootKey === 'undefined') {
+      rootType = this.rootModel.formatAttributeName(this.name + '_type')
+      rootKey = this.rootModel.formatAttributeName(this.name + '_id')
+    }
+
+    if (typeof targetKeyMap === 'undefined') {
+      targetKeyMap = {}
+    }
+    return this.make<MorphTo<T>>(MorphTo.className, [rootType, rootKey, targetKeyMap])
   }
 }

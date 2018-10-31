@@ -13,6 +13,7 @@ export declare class DataBuffer<T extends object> implements NajsEloquent.Data.I
     find(cb: (item: T) => boolean): T | undefined;
     filter(cb: (item: T) => boolean): T[];
     map<V>(cb: (item: T) => V): V[];
+    reduce<V>(cb: ((memo: V, item: T) => V), initialValue: V): V;
     keys<V>(): V[];
     [Symbol.iterator](): IterableIterator<T>;
     getCollector(): NajsEloquent.Data.IDataCollector<T>;

@@ -334,6 +334,7 @@ describe('QueryBuilderHandlerBase', function() {
 
       const query = makeInstance(model)
       expect(query.getRelationDataBucket() === dataBucket).toBe(true)
+      expect(query['dataBucket'] === dataBucket).toBe(true)
     })
 
     it('make new dataBucket if exists', function() {
@@ -358,6 +359,7 @@ describe('QueryBuilderHandlerBase', function() {
 
       const query = makeInstance(model)
       expect(query.getRelationDataBucket() === dataBucket).toBe(true)
+      expect(query['dataBucket'] === dataBucket).toBe(true)
     })
   })
 

@@ -7,7 +7,7 @@ import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
 import { MorphManyExecutor } from '../../../lib/relations/relationships/executors/MorphManyExecutor'
 
-describe('HasMany', function() {
+describe('MorphMany', function() {
   it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.MorphMany"', function() {
     const rootModel: any = {}
     const morphMany = new MorphMany(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id')

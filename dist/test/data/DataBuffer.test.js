@@ -111,6 +111,25 @@ describe('DataBuffer', function () {
             expect(result).toEqual(['a', 'b', 'c', 'd']);
         });
     });
+    describe('.reduce()', function () {
+        it('converts buffer.values() to array then apply Array.reduce() with callback', function () {
+            const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);
+            const a = { id: 1, name: 'a' };
+            const b = { id: 2, name: 'b' };
+            const c = { id: 3, name: 'c' };
+            const d = { id: 4, name: 'd' };
+            dataBuffer
+                .add(a)
+                .add(b)
+                .add(c)
+                .add(d);
+            const result = dataBuffer.reduce((memo, item) => {
+                memo += item['id'];
+                return memo;
+            }, 0);
+            expect(result).toEqual(10);
+        });
+    });
     describe('.keys()', function () {
         it('converts buffer.keys() to array', function () {
             const dataBuffer = new DataBuffer_1.DataBuffer('id', reader);

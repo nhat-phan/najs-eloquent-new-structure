@@ -8,7 +8,7 @@ const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMan
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
 const MorphManyExecutor_1 = require("../../../lib/relations/relationships/executors/MorphManyExecutor");
-describe('HasMany', function () {
+describe('MorphMany', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.MorphMany"', function () {
         const rootModel = {};
         const morphMany = new MorphMany_1.MorphMany(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id');

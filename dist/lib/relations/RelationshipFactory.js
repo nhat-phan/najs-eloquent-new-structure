@@ -6,6 +6,7 @@
 /// <reference path="../definitions/relations/IBelongsToManyRelationship.ts" />
 /// <reference path="../definitions/relations/IMorphOneRelationship.ts" />
 /// <reference path="../definitions/relations/IMorphManyRelationship.ts" />
+/// <reference path="../definitions/relations/IMorphToRelationship.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const pluralize = require("pluralize");
 const najs_binding_1 = require("najs-binding");
@@ -16,6 +17,7 @@ const HasMany_1 = require("./relationships/HasMany");
 const BelongsToMany_1 = require("./relationships/BelongsToMany");
 const MorphOne_1 = require("./relationships/MorphOne");
 const MorphMany_1 = require("./relationships/MorphMany");
+const MorphTo_1 = require("./relationships/MorphTo");
 class RelationshipFactory {
     constructor(rootModel, name) {
         this.rootModel = rootModel;
@@ -118,6 +120,16 @@ class RelationshipFactory {
     morphMany(target, targetType, targetKey, localKey) {
         const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey);
         return this.make(MorphMany_1.MorphMany.className, [target, keys.targetType, keys.targetKey, keys.localKey]);
+    }
+    morphTo(rootType, rootKey, targetKeyMap) {
+        if (typeof rootType === 'undefined' && typeof rootKey === 'undefined') {
+            rootType = this.rootModel.formatAttributeName(this.name + '_type');
+            rootKey = this.rootModel.formatAttributeName(this.name + '_id');
+        }
+        if (typeof targetKeyMap === 'undefined') {
+            targetKeyMap = {};
+        }
+        return this.make(MorphTo_1.MorphTo.className, [rootType, rootKey, targetKeyMap]);
     }
 }
 exports.RelationshipFactory = RelationshipFactory;

@@ -50,6 +50,10 @@ export class DataBuffer<T extends object> implements NajsEloquent.Data.IDataBuff
     return Array.from(this.buffer.values()).map(cb)
   }
 
+  reduce<V>(cb: ((memo: V, item: T) => V), initialValue: V): V {
+    return Array.from(this.buffer.values()).reduce(cb, initialValue)
+  }
+
   keys<V>(): V[] {
     return Array.from(this.buffer.keys())
   }

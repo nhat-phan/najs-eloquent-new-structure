@@ -84,11 +84,11 @@ class QueryBuilderHandlerBase {
         this.dataBucket = relationDataBucket;
     }
     getRelationDataBucket() {
-        if (typeof this.dataBucket !== 'undefined') {
-            return this.dataBucket;
+        if (typeof this.dataBucket === 'undefined') {
+            const relationFeature = this.model.getDriver().getRelationFeature();
+            this.dataBucket = relationFeature.getDataBucket(this.model) || relationFeature.makeDataBucket(this.model);
         }
-        const relationFeature = this.model.getDriver().getRelationFeature();
-        return relationFeature.getDataBucket(this.model) || relationFeature.makeDataBucket(this.model);
+        return this.dataBucket;
     }
     createInstance(result) {
         const bucket = this.getRelationDataBucket();
