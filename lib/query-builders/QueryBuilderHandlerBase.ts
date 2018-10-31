@@ -17,6 +17,7 @@ import IBasicQuery = NajsEloquent.QueryGrammar.IBasicQuery
 import IConditionQuery = NajsEloquent.QueryGrammar.IConditionQuery
 import IQueryBuilderHandler = NajsEloquent.QueryBuilder.IQueryBuilderHandler
 import { make_collection } from '../util/factory'
+import { array_unique } from '../util/functions'
 
 export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
   protected model: IModel
@@ -26,6 +27,7 @@ export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
   protected used: boolean
   protected dataBucket: IRelationDataBucket | undefined
   protected softDeleteState: 'should-add' | 'should-not-add' | 'added'
+  protected eagerRelations: string[] | undefined
 
   constructor(model: IModel, executorFactory: IExecutorFactory) {
     this.model = model
@@ -135,5 +137,22 @@ export abstract class QueryBuilderHandlerBase implements IQueryBuilderHandler {
     const model = bucket.makeModel(this.model, result)
     bucket.add(model)
     return model
+  }
+
+  async loadEagerRelations(model: IModel) {
+    if (typeof this.eagerRelations !== 'undefined') {
+      await model.load(this.eagerRelations)
+    }
+  }
+
+  setEagerRelations(relations: string[]) {
+    if (typeof this.eagerRelations === 'undefined') {
+      this.eagerRelations = array_unique(relations)
+    }
+    this.eagerRelations = array_unique(([] as string[]).concat(this.eagerRelations, relations))
+  }
+
+  getEagerRelations(): string[] | undefined {
+    return this.eagerRelations
   }
 }

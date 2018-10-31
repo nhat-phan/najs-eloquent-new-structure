@@ -192,4 +192,10 @@ export declare class Model {
      * @param {string} id
      */
     static firstOrFail<T extends typeof Model>(this: T, id: any): Promise<InstanceType<T>>;
+    /**
+     * Load given relations name when the query get executed.
+     *
+     * @param {string|string[]} relations
+     */
+    static with<T extends typeof Model>(this: T, ...relations: Array<string | string[]>): IQueryBuilder<InstanceType<T>>;
 }

@@ -109,7 +109,8 @@ describe('Model', function() {
       'pluck',
       'findById',
       'findOrFail',
-      'firstOrFail'
+      'firstOrFail',
+      'with'
     ]
     for (const method of methods) {
       describe(`.${method}()`, function() {

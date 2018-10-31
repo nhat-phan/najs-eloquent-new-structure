@@ -4,6 +4,7 @@ import { Query } from '../../lib/query-builders/mixin/Query'
 import { ConditionQuery } from '../../lib/query-builders/mixin/ConditionQuery'
 import { ExecuteQuery } from '../../lib/query-builders/mixin/ExecuteQuery'
 import { AdvancedQuery } from '../../lib/query-builders/mixin/AdvancedQuery'
+import { RelationQuery } from '../../lib/query-builders/mixin/RelationQuery'
 
 describe('QueryBuilder', function() {
   describe('constructor()', function() {
@@ -46,6 +47,15 @@ describe('QueryBuilder', function() {
       const prototype = QueryBuilder.prototype
       for (const name in AdvancedQuery) {
         expect(prototype[name] === AdvancedQuery[name]).toBe(true)
+      }
+    })
+  })
+
+  describe('mixin:RelationQuery', function() {
+    it('applies mixin RelationQuery to its prototype', function() {
+      const prototype = QueryBuilder.prototype
+      for (const name in RelationQuery) {
+        expect(prototype[name] === RelationQuery[name]).toBe(true)
       }
     })
   })

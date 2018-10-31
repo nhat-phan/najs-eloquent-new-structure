@@ -10,6 +10,7 @@
 /// <reference path="../definitions/query-grammars/IQuery.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const factory_1 = require("../util/factory");
+const functions_1 = require("../util/functions");
 class QueryBuilderHandlerBase {
     constructor(model, executorFactory) {
         this.model = model;
@@ -95,6 +96,20 @@ class QueryBuilderHandlerBase {
         const model = bucket.makeModel(this.model, result);
         bucket.add(model);
         return model;
+    }
+    async loadEagerRelations(model) {
+        if (typeof this.eagerRelations !== 'undefined') {
+            await model.load(this.eagerRelations);
+        }
+    }
+    setEagerRelations(relations) {
+        if (typeof this.eagerRelations === 'undefined') {
+            this.eagerRelations = functions_1.array_unique(relations);
+        }
+        this.eagerRelations = functions_1.array_unique([].concat(this.eagerRelations, relations));
+    }
+    getEagerRelations() {
+        return this.eagerRelations;
     }
 }
 exports.QueryBuilderHandlerBase = QueryBuilderHandlerBase;

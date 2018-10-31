@@ -23,6 +23,7 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     protected used: boolean;
     protected dataBucket: IRelationDataBucket | undefined;
     protected softDeleteState: 'should-add' | 'should-not-add' | 'added';
+    protected eagerRelations: string[] | undefined;
     constructor(model: IModel, executorFactory: IExecutorFactory);
     abstract getBasicQuery(): IBasicQuery;
     abstract getConditionQuery(): IConditionQuery;
@@ -47,4 +48,7 @@ export declare abstract class QueryBuilderHandlerBase implements IQueryBuilderHa
     setRelationDataBucket(relationDataBucket: IRelationDataBucket | undefined): void;
     getRelationDataBucket(): IRelationDataBucket;
     createInstance(result: object): IModel;
+    loadEagerRelations(model: IModel): Promise<void>;
+    setEagerRelations(relations: string[]): void;
+    getEagerRelations(): string[] | undefined;
 }

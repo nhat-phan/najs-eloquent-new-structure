@@ -349,6 +349,17 @@ export class Model {
     const query = this.newQuery()
     return query.firstOrFail.apply(query, arguments)
   }
+
+  /**
+   * Load given relations name when the query get executed.
+   *
+   * @param {string|string[]} relations
+   */
+  static with<T extends typeof Model>(this: T, ...relations: Array<string | string[]>): IQueryBuilder<InstanceType<T>>
+  static with() {
+    const query = this.newQuery()
+    return query.with.apply(query, arguments)
+  }
 }
 
 PrototypeManager.stopFindingRelationsIn(Model.prototype)

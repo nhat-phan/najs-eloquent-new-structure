@@ -7,6 +7,7 @@ import { Query } from './mixin/Query'
 import { ConditionQuery } from './mixin/ConditionQuery'
 import { ExecuteQuery } from './mixin/ExecuteQuery'
 import { AdvancedQuery } from './mixin/AdvancedQuery'
+import { RelationQuery } from './mixin/RelationQuery'
 import { QueryBuilderHandlerBase } from './QueryBuilderHandlerBase'
 
 export interface QueryBuilder<T, H extends QueryBuilderHandlerBase = QueryBuilderHandlerBase>
@@ -18,4 +19,4 @@ export class QueryBuilder<T, H extends QueryBuilderHandlerBase = QueryBuilderHan
     this.handler = handler
   }
 }
-Object.assign(QueryBuilder.prototype, Query, ConditionQuery, ExecuteQuery, AdvancedQuery)
+Object.assign(QueryBuilder.prototype, Query, ConditionQuery, ExecuteQuery, AdvancedQuery, RelationQuery)

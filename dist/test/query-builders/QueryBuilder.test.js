@@ -6,6 +6,7 @@ const Query_1 = require("../../lib/query-builders/mixin/Query");
 const ConditionQuery_1 = require("../../lib/query-builders/mixin/ConditionQuery");
 const ExecuteQuery_1 = require("../../lib/query-builders/mixin/ExecuteQuery");
 const AdvancedQuery_1 = require("../../lib/query-builders/mixin/AdvancedQuery");
+const RelationQuery_1 = require("../../lib/query-builders/mixin/RelationQuery");
 describe('QueryBuilder', function () {
     describe('constructor()', function () {
         it('sets handler in params to handler property', function () {
@@ -43,6 +44,14 @@ describe('QueryBuilder', function () {
             const prototype = QueryBuilder_1.QueryBuilder.prototype;
             for (const name in AdvancedQuery_1.AdvancedQuery) {
                 expect(prototype[name] === AdvancedQuery_1.AdvancedQuery[name]).toBe(true);
+            }
+        });
+    });
+    describe('mixin:RelationQuery', function () {
+        it('applies mixin RelationQuery to its prototype', function () {
+            const prototype = QueryBuilder_1.QueryBuilder.prototype;
+            for (const name in RelationQuery_1.RelationQuery) {
+                expect(prototype[name] === RelationQuery_1.RelationQuery[name]).toBe(true);
             }
         });
     });

@@ -180,6 +180,10 @@ class Model {
         const query = this.newQuery();
         return query.firstOrFail.apply(query, arguments);
     }
+    static with() {
+        const query = this.newQuery();
+        return query.with.apply(query, arguments);
+    }
 }
 // static start query methods ----------------------------------------------------------------------------------------
 Model.Event = ModelEvent_1.ModelEvent;

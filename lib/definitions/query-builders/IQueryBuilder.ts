@@ -1,6 +1,7 @@
 /// <reference path="IQueryBuilderHandler.ts" />
 /// <reference path="../model/IModel.ts" />
 /// <reference path="../query-grammars/IQuery.ts" />
+/// <reference path="../query-grammars/IRelationQuery.ts" />
 /// <reference path="../query-grammars/IConditionQuery.ts" />
 
 namespace NajsEloquent.QueryBuilder {
@@ -15,7 +16,8 @@ namespace NajsEloquent.QueryBuilder {
     extends QueryGrammar.IQuery,
       QueryGrammar.IConditionQuery,
       QueryGrammar.IExecuteQuery,
-      QueryGrammar.IAdvancedQuery<T> {}
+      QueryGrammar.IAdvancedQuery<T>,
+      QueryGrammar.IRelationQuery {}
 
   export type QueryBuilderInternal = IQueryBuilder<any> & { handler: NajsEloquent.QueryBuilder.IQueryBuilderHandler }
 }

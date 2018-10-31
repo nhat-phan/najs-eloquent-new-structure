@@ -74,14 +74,11 @@ describe('MorphMany', function() {
     })
     await postImage.save()
 
-    const result = await User.findOrFail(user.id)
+    const result = await User.with('images').findOrFail(user.id)
+    expect(result.images!.map(item => item.toJson()).all()).toEqual([userImage1.toJson(), userImage2.toJson()])
 
     expect(user.images).toBeUndefined()
     await user.load('images')
-    expect(user.images!.map(item => item.toJson()).all()).toEqual([userImage1.toJson(), userImage2.toJson()])
-
-    expect(result.images).toBeUndefined()
-    await result.load('images')
     expect(user.images!.map(item => item.toJson()).all()).toEqual([userImage1.toJson(), userImage2.toJson()])
 
     expect(userImage1.imageable).toBeUndefined()
@@ -92,8 +89,7 @@ describe('MorphMany', function() {
     await postImage.load('imageable')
     expect(postImage.imageable!.id).toEqual(post.id)
 
-    const images = await Image.get()
-    await images.first().load('imageable')
+    const images = await Image.with('imageable').get()
     for (const image of images) {
       expect(image.imageable).toBeInstanceOf(Model)
     }

@@ -36,7 +36,7 @@ describe('AdvancedQuery', function() {
       expect(createInstanceSpy.called).toBe(false)
     })
 
-    it('calls this.handler.createInstance() if result is not falsy', async function() {
+    it('calls this.handler.createInstance() then this.handler.loadEagerRelations() if result is not falsy', async function() {
       const queryExecutor = {
         first() {
           return 'first-result'
@@ -52,12 +52,14 @@ describe('AdvancedQuery', function() {
           },
           createInstance() {
             return 'instance'
-          }
+          },
+          loadEagerRelations() {}
         },
         where() {}
       }
       const whereSpy = Sinon.spy(builder, 'where')
       const createInstanceSpy = Sinon.spy(builder.handler, 'createInstance')
+      const loadEagerRelationsSpy = Sinon.spy(builder.handler, 'loadEagerRelations')
       const firstStub = Sinon.stub(queryExecutor, 'first')
       firstStub.returns(Promise.resolve('any'))
 
@@ -65,6 +67,7 @@ describe('AdvancedQuery', function() {
       expect(whereSpy.called).toBe(false)
       expect(firstStub.calledWith()).toBe(true)
       expect(createInstanceSpy.calledWith('any')).toBe(true)
+      expect(loadEagerRelationsSpy.calledWith('instance')).toBe(true)
     })
 
     it('calls .where() and passes id if param exist', async function() {
@@ -83,12 +86,14 @@ describe('AdvancedQuery', function() {
           },
           createInstance() {
             return 'instance'
-          }
+          },
+          loadEagerRelations() {}
         },
         where() {}
       }
       const whereSpy = Sinon.spy(builder, 'where')
       const createInstanceSpy = Sinon.spy(builder.handler, 'createInstance')
+      const loadEagerRelationsSpy = Sinon.spy(builder.handler, 'loadEagerRelations')
       const firstStub = Sinon.stub(queryExecutor, 'first')
       firstStub.returns(Promise.resolve('any'))
 
@@ -96,6 +101,7 @@ describe('AdvancedQuery', function() {
       expect(whereSpy.calledWith('primary-key', 'test')).toBe(true)
       expect(firstStub.calledWith()).toBe(true)
       expect(createInstanceSpy.calledWith('any')).toBe(true)
+      expect(loadEagerRelationsSpy.calledWith('instance')).toBe(true)
     })
   })
 
@@ -111,10 +117,15 @@ describe('AdvancedQuery', function() {
   })
 
   describe('.get()', function() {
-    it('calls handler.getQueryExecutor().get() to get results and calls handler.createCollection()', async function() {
+    it('calls handler.getQueryExecutor().get() to get results and calls handler.createCollection() to create collection', async function() {
       const queryExecutor = {
         get() {
           return 'get-result'
+        }
+      }
+      const collection: any = {
+        count() {
+          return 0
         }
       }
       const builder = {
@@ -126,7 +137,7 @@ describe('AdvancedQuery', function() {
             return queryExecutor
           },
           createCollection() {
-            return 'collection'
+            return collection
           }
         },
         select() {}
@@ -136,10 +147,52 @@ describe('AdvancedQuery', function() {
       const getStub = Sinon.stub(queryExecutor, 'get')
       getStub.returns(Promise.resolve('any'))
 
-      expect(await AdvancedQuery.get.call(builder)).toEqual('collection')
+      expect((await AdvancedQuery.get.call(builder)) === collection).toBe(true)
       expect(selectSpy.called).toBe(false)
       expect(getStub.calledWith()).toBe(true)
       expect(createCollectionSpy.calledWith('any')).toBe(true)
+    })
+
+    it('calls this.handler.loadEagerRelations() with the first item in case the collection is not empty', async function() {
+      const queryExecutor = {
+        get() {
+          return 'get-result'
+        }
+      }
+      const collection: any = {
+        count() {
+          return 1
+        },
+        first() {
+          return 'first item'
+        }
+      }
+      const builder = {
+        handler: {
+          getPrimaryKeyName() {
+            return 'primary-key'
+          },
+          getQueryExecutor() {
+            return queryExecutor
+          },
+          createCollection() {
+            return collection
+          },
+          loadEagerRelations() {}
+        },
+        select() {}
+      }
+      const selectSpy = Sinon.spy(builder, 'select')
+      const loadEagerRelationsSpy = Sinon.spy(builder.handler, 'loadEagerRelations')
+      const createCollectionSpy = Sinon.spy(builder.handler, 'createCollection')
+      const getStub = Sinon.stub(queryExecutor, 'get')
+      getStub.returns(Promise.resolve('any'))
+
+      expect((await AdvancedQuery.get.call(builder)) === collection).toBe(true)
+      expect(selectSpy.called).toBe(false)
+      expect(getStub.calledWith()).toBe(true)
+      expect(createCollectionSpy.calledWith('any')).toBe(true)
+      expect(loadEagerRelationsSpy.calledWith('first item')).toBe(true)
     })
 
     it('calls this.select() if params is not empty', async function() {
@@ -148,6 +201,11 @@ describe('AdvancedQuery', function() {
           return 'get-result'
         }
       }
+      const collection: any = {
+        count() {
+          return 0
+        }
+      }
       const builder = {
         handler: {
           getPrimaryKeyName() {
@@ -157,7 +215,7 @@ describe('AdvancedQuery', function() {
             return queryExecutor
           },
           createCollection() {
-            return 'collection'
+            return collection
           }
         },
         select() {}
@@ -167,7 +225,7 @@ describe('AdvancedQuery', function() {
       const getStub = Sinon.stub(queryExecutor, 'get')
       getStub.returns(Promise.resolve('any'))
 
-      expect(await AdvancedQuery.get.call(builder, '1', '2', '3')).toEqual('collection')
+      expect((await AdvancedQuery.get.call(builder, '1', '2', '3')) === collection).toBe(true)
       expect(selectSpy.calledWith('1', '2', '3')).toBe(true)
       expect(getStub.calledWith()).toBe(true)
       expect(createCollectionSpy.calledWith('any')).toBe(true)

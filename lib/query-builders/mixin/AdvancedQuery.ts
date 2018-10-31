@@ -10,7 +10,13 @@ export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
       this.where(this.handler.getPrimaryKeyName(), id)
     }
     const result = await this.handler.getQueryExecutor().first()
-    return result ? this.handler.createInstance(result) : result
+
+    if (result) {
+      const model = this.handler.createInstance(result)
+      await this.handler.loadEagerRelations(model)
+      return model
+    }
+    return result
   },
 
   async find(this: QueryBuilder, id?: any) {
@@ -21,7 +27,12 @@ export const AdvancedQuery: NajsEloquent.QueryGrammar.IAdvancedQuery<any> = {
     if (arguments.length !== 0) {
       this.select(...fields)
     }
-    return this.handler.createCollection(await this.handler.getQueryExecutor().get())
+
+    const collection = this.handler.createCollection(await this.handler.getQueryExecutor().get())
+    if (collection.count() > 0) {
+      await this.handler.loadEagerRelations(collection.first())
+    }
+    return collection
   },
 
   async all(this: QueryBuilder): Promise<CollectJs.Collection<any>> {

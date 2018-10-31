@@ -28,5 +28,8 @@ declare namespace NajsEloquent.QueryBuilder {
         getRelationDataBucket(): Relation.IRelationDataBucket;
         createCollection(result: object[]): CollectJs.Collection<Model.IModel>;
         createInstance(result: object): Model.IModel;
+        setEagerRelations(relations: string[]): void;
+        getEagerRelations(): string[] | undefined;
+        loadEagerRelations(model: Model.IModel): Promise<any>;
     }
 }

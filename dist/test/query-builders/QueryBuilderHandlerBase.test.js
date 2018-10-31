@@ -341,4 +341,52 @@ describe('QueryBuilderHandlerBase', function () {
             expect(addSpy.calledWith(instance)).toBe(true);
         });
     });
+    describe('.loadEagerRelations()', function () {
+        it('does nothing if the "eagerRelations" not found', function () {
+            const model = {
+                load() { }
+            };
+            const loadSpy = Sinon.spy(model, 'load');
+            const query = makeInstance(model);
+            query.loadEagerRelations(model);
+            expect(loadSpy.called).toBe(false);
+        });
+        it('calls given model.load() if the "eagerRelations" has values', async function () {
+            const model = {
+                async load() {
+                    return true;
+                }
+            };
+            const loadSpy = Sinon.spy(model, 'load');
+            const query = makeInstance(model);
+            query.setEagerRelations(['a', 'a', 'b', 'b', 'c']);
+            await query.loadEagerRelations(model);
+            expect(loadSpy.calledWith(['a', 'b', 'c'])).toBe(true);
+        });
+    });
+    describe('.setEagerRelations()', function () {
+        it('simply uniques and assigns the given value to "eagerRelations" if "eagerRelations" is not found', function () {
+            const model = {};
+            const query = makeInstance(model);
+            query.setEagerRelations(['a', 'a', 'b', 'b', 'c']);
+            expect(query.getEagerRelations()).toEqual(['a', 'b', 'c']);
+        });
+        it('merges given value if "eagerRelations" already exists', function () {
+            const model = {};
+            const query = makeInstance(model);
+            query.setEagerRelations(['a', 'a', 'b', 'b', 'c']);
+            expect(query.getEagerRelations()).toEqual(['a', 'b', 'c']);
+            query.setEagerRelations(['a', 'a', 'd', 'd', 'e']);
+            expect(query.getEagerRelations()).toEqual(['a', 'b', 'c', 'd', 'e']);
+        });
+    });
+    describe('.getEagerRelations()', function () {
+        it('simply return the property "eagerRelations"', function () {
+            const model = {};
+            const query = makeInstance(model);
+            const eagerRelations = [];
+            query['eagerRelations'] = eagerRelations;
+            expect(query.getEagerRelations() === eagerRelations).toBe(true);
+        });
+    });
 });
