@@ -494,7 +494,7 @@ describe('Relation', function () {
                         }
                     };
                 },
-                getRelationshipByName(name) {
+                getRelation(name) {
                     return data[name];
                 }
             };

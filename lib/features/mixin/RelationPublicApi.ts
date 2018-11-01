@@ -7,8 +7,17 @@ import IRelationshipFactory = NajsEloquent.Relation.IRelationshipFactory
 import { flatten } from 'lodash'
 
 export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
-  getRelationshipByName<T = any>(this: Model, name: string): IRelationship<T> {
+  getRelation<T = any>(this: Model, name: string): IRelationship<T> {
     return this.driver.getRelationFeature().findByName(this, name)
+  },
+
+  getRelations<T = any>(this: Model, ...args: Array<string | string[]>): IRelationship<T>[] {
+    const relationNames: string[] = flatten(arguments)
+    return relationNames.map(name => this.getRelation(name))
+  },
+
+  getLoadedRelations<T = any>(this: Model): IRelationship<T>[] {
+    return this.driver.getRelationFeature().getLoadedRelations(this)
   },
 
   defineRelation(this: Model, name: string): IRelationshipFactory {
@@ -22,7 +31,7 @@ export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
     const relationNames: string[] = flatten(arguments)
     return Promise.all(
       relationNames.map(name => {
-        return this.getRelationshipByName(name).load()
+        return this.getRelation(name).load()
       })
     )
   },
@@ -32,6 +41,6 @@ export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
   },
 
   getLoaded(this: Model): string[] {
-    return this.driver.getRelationFeature().getLoadedRelations(this)
+    return this.getLoadedRelations().map(item => item.getName())
   }
 }

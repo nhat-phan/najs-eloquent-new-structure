@@ -572,7 +572,7 @@ describe('Relation', function() {
             }
           }
         },
-        getRelationshipByName(name: string) {
+        getRelation(name: string) {
           return data[name]
         }
       }

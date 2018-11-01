@@ -87,8 +87,9 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     getLoadedRelations(model) {
         const definitions = this.getDefinitions(model);
         return Object.keys(definitions).reduce((memo, name) => {
+            const relation = this.findByName(model, name);
             if (this.findByName(model, name).isLoaded()) {
-                memo.push(name);
+                memo.push(relation);
             }
             return memo;
         }, []);
@@ -99,7 +100,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         if (!propertyDescriptor) {
             Object.defineProperty(prototype, accessor, {
                 get: function () {
-                    return this.getRelationshipByName(accessor).getData();
+                    return this.getRelation(accessor).getData();
                 }
             });
         }

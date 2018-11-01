@@ -142,7 +142,7 @@ export abstract class Relationship<T> implements IRelationship<T> {
 
     const definitions = relationFeatureOf(model).getDefinitions(model)
     for (const name in definitions) {
-      const relation = model.getRelationshipByName(name)
+      const relation = model.getRelation(name)
       if (this.isInverseOf(relation)) {
         result.push(relation)
       }

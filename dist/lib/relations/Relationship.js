@@ -83,7 +83,7 @@ class Relationship {
         const result = [];
         const definitions = accessors_1.relationFeatureOf(model).getDefinitions(model);
         for (const name in definitions) {
-            const relation = model.getRelationshipByName(name);
+            const relation = model.getRelation(name);
             if (this.isInverseOf(relation)) {
                 result.push(relation);
             }

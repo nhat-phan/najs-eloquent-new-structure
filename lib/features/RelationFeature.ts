@@ -116,16 +116,17 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     return this.findByName(model, relation).isLoaded()
   }
 
-  getLoadedRelations(model: IModel): string[] {
+  getLoadedRelations(model: IModel): IRelation<any>[] {
     const definitions = this.getDefinitions(model)
     return Object.keys(definitions).reduce(
       (memo, name) => {
+        const relation = this.findByName(model, name)
         if (this.findByName(model, name).isLoaded()) {
-          memo.push(name)
+          memo.push(relation)
         }
         return memo
       },
-      [] as string[]
+      [] as IRelation<any>[]
     )
   }
 
@@ -135,7 +136,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     if (!propertyDescriptor) {
       Object.defineProperty(prototype, accessor, {
         get: function(this: IModel) {
-          return this.getRelationshipByName(accessor as any).getData()
+          return this.getRelation(accessor as any).getData()
         }
       })
     }

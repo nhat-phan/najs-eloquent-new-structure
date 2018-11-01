@@ -100,7 +100,7 @@ namespace NajsEloquent.Feature {
      *
      * @param {Model} model
      */
-    getLoadedRelations(model: Model.IModel): string[]
+    getLoadedRelations(model: Model.IModel): Relation.IRelationship<any>[]
 
     /**
      * Define an relation accessor for given model.

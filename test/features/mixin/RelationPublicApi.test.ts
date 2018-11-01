@@ -29,12 +29,39 @@ describe('RelationPublicApi', function() {
     }
   }
 
-  describe('.getRelationshipByName()', function() {
+  describe('.getRelation()', function() {
     it('calls and returns RelationFeature.findByName()', function() {
       const stub = Sinon.stub(relationFeature, 'findByName')
       stub.returns('anything')
 
-      expect(RelationPublicApi.getRelationshipByName.call(model)).toEqual('anything')
+      expect(RelationPublicApi.getRelation.call(model)).toEqual('anything')
+      expect(stub.calledWith(model)).toBe(true)
+      stub.restore()
+    })
+  })
+
+  describe('.getRelations()', function() {
+    it('flattens arguments then maps to .getRelation()', function() {
+      const model = {
+        getRelation() {}
+      }
+      const stub = Sinon.stub(model, 'getRelation')
+      stub.returns('anything')
+
+      expect(RelationPublicApi.getRelations.call(model, 'a', ['b'], 'c')).toEqual(['anything', 'anything', 'anything'])
+      expect(stub.firstCall.calledWith('a')).toBe(true)
+      expect(stub.secondCall.calledWith('b')).toBe(true)
+      expect(stub.thirdCall.calledWith('c')).toBe(true)
+      stub.restore()
+    })
+  })
+
+  describe('.getLoadedRelations()', function() {
+    it('calls and returns RelationFeature.getLoadedRelations()', function() {
+      const stub = Sinon.stub(relationFeature, 'getLoadedRelations')
+      stub.returns('anything')
+
+      expect(RelationPublicApi.getLoadedRelations.call(model)).toEqual('anything')
       expect(stub.calledWith(model)).toBe(true)
       stub.restore()
     })
@@ -57,7 +84,7 @@ describe('RelationPublicApi', function() {
   })
 
   describe('.load()', function() {
-    it('flattens arguments then runs and returns .getRelationshipByName().load() via Promise.all()', async function() {
+    it('flattens arguments then runs and returns .getRelation().load() via Promise.all()', async function() {
       const relations = {
         a: {
           async load() {
@@ -87,7 +114,7 @@ describe('RelationPublicApi', function() {
           }
         }
       }
-      const stub = Sinon.stub(RelationPublicApi, 'getRelationshipByName')
+      const stub = Sinon.stub(RelationPublicApi, 'getRelation')
       stub.callsFake(function(name: string) {
         return relations[name]
       })
@@ -109,13 +136,28 @@ describe('RelationPublicApi', function() {
   })
 
   describe('.getLoaded()', function() {
-    it('calls and returns RelationFeature.getLoadedRelations()', function() {
-      const stub = Sinon.stub(relationFeature, 'getLoadedRelations')
-      stub.returns('anything')
+    it('calls .getLoadedRelations() and maps each item with item.getName()', function() {
+      const model = {
+        getLoadedRelations() {
+          return [
+            {
+              getName() {
+                return 'a'
+              }
+            },
+            {
+              getName() {
+                return 'b'
+              }
+            }
+          ]
+        }
+      }
+      const spy = Sinon.spy(model, 'getLoadedRelations')
 
-      expect(RelationPublicApi.getLoaded.call(model)).toEqual('anything')
-      expect(stub.calledWith(model)).toBe(true)
-      stub.restore()
+      expect(RelationPublicApi.getLoaded.call(model)).toEqual(['a', 'b'])
+      expect(spy.calledWith()).toBe(true)
+      spy.restore()
     })
   })
 })

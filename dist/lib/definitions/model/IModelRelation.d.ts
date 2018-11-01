@@ -3,18 +3,30 @@
 declare namespace NajsEloquent.Model {
     interface IModelRelation {
         /**
-         * Get relationship by given name.
+         * Get relation by given name.
          * @param {string} name
          */
-        getRelationshipByName<T = any>(name: string): Relation.IRelationship<T>;
+        getRelation<T = any>(name: string): Relation.IRelationship<T>;
         /**
-         * Define a relationship property by name
+         * Get relations by given names.
+         * @param this
+         * @param args
+         */
+        getRelations<T = any>(this: Model, ...args: Array<string | string[]>): Relation.IRelationship<T>[];
+        /**
+         * Get loaded relations.
+         * @param this
+         * @param args
+         */
+        getLoadedRelations<T = any>(this: Model): Relation.IRelationship<T>[];
+        /**
+         * Define a relation property by name
          *
          * @param {string} name
          */
         defineRelation(name: keyof this): Relation.IRelationshipFactory;
         /**
-         * Load the relationship
+         * Load the relation
          */
         load<T>(...args: Array<keyof this | string | string[]>): Promise<T>;
         /**

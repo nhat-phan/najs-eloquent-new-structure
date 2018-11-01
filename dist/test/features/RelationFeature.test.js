@@ -300,7 +300,7 @@ describe('RelationFeature', function () {
                     relationDefinitions: definitions
                 }
             };
-            expect(feature.getLoadedRelations(model)).toEqual(['a', 'c']);
+            expect(feature.getLoadedRelations(model)).toEqual([loadedRelation, loadedRelation]);
             expect(stub.calledWith('test'));
             stub.restore();
         });
@@ -316,9 +316,9 @@ describe('RelationFeature', function () {
             feature.defineAccessor(model, 'test');
             expect(model.test).toEqual('anything');
         });
-        it('defines an accessor which call this.getRelationshipByName(accessor).getData() in model prototype', function () {
+        it('defines an accessor which call this.getRelation(accessor).getData() in model prototype', function () {
             class B {
-                getRelationshipByName(name) {
+                getRelation(name) {
                     return {
                         getData() {
                             return name + '-data';
