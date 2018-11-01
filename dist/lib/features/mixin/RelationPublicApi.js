@@ -18,5 +18,11 @@ exports.RelationPublicApi = {
         return Promise.all(relationNames.map(name => {
             return this.getRelationshipByName(name).load();
         }));
+    },
+    isLoaded(relation) {
+        return this.driver.getRelationFeature().isLoadedRelation(this, relation);
+    },
+    getLoaded() {
+        return this.driver.getRelationFeature().getLoadedRelations(this);
     }
 };

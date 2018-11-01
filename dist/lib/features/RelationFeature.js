@@ -81,6 +81,18 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         }
         return internalModel.internalData.relations[name];
     }
+    isLoadedRelation(model, relation) {
+        return this.findByName(model, relation).isLoaded();
+    }
+    getLoadedRelations(model) {
+        const definitions = this.getDefinitions(model);
+        return Object.keys(definitions).reduce((memo, name) => {
+            if (this.findByName(model, name).isLoaded()) {
+                memo.push(name);
+            }
+            return memo;
+        }, []);
+    }
     defineAccessor(model, accessor) {
         const prototype = Object.getPrototypeOf(model);
         const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, accessor);

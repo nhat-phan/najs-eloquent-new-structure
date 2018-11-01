@@ -76,6 +76,18 @@ declare namespace NajsEloquent.Feature {
          */
         findDataByName<T>(model: Model.IModel, name: string): Relation.IRelationData<T>;
         /**
+         * Determine that the given relation is loaded or not.
+         *
+         * @param {Model} model
+         */
+        isLoadedRelation(model: Model.IModel, relation: string): boolean;
+        /**
+         * Get loaded relations of given model.
+         *
+         * @param {Model} model
+         */
+        getLoadedRelations(model: Model.IModel): string[];
+        /**
          * Define an relation accessor for given model.
          *
          * @param {Model} model

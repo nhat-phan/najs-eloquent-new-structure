@@ -6,6 +6,7 @@ const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
 const SerializationPublicApi_1 = require("./mixin/SerializationPublicApi");
 const constants_1 = require("../constants");
+// import { isModel, isCollection } from '../util/helpers'
 class SerializationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return SerializationPublicApi_1.SerializationPublicApi;
@@ -37,8 +38,23 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     toObject(model) {
         return this.useRecordManagerOf(model).toObject(model);
     }
-    toJson(model) {
+    toJson(model, includeRelationsData = true) {
         const data = this.toObject(model), visible = this.getVisible(model), hidden = this.getHidden(model);
+        // if (includeRelationsData) {
+        //   const loaded = this.useRelationFeatureOf(model).getLoadedRelations(model)
+        //   for (const name of loaded) {
+        //     const relationData = this.useRelationFeatureOf(model)
+        //       .findDataByName(model, name)
+        //       .getData()
+        //     if (isModel(relationData)) {
+        //       data[name] = (relationData as Model).toJson()
+        //       continue
+        //     }
+        //     if (isCollection(relationData)) {
+        //       data[name] = (relationData as any).map((item: any) => item.toJson()).all()
+        //     }
+        //   }
+        // }
         const settingFeature = this.useSettingFeatureOf(model);
         return Object.getOwnPropertyNames(data).reduce((memo, name) => {
             if (settingFeature.isKeyInWhiteList(model, name, visible, hidden)) {

@@ -10,6 +10,14 @@ describe('RelationPublicApi', function() {
 
     findDataByName() {
       return 'findDataByName-result'
+    },
+
+    isLoadedRelation() {
+      return 'isLoadedRelation-result'
+    },
+
+    getLoadedRelations() {
+      return 'getLoadedRelations-result'
     }
   }
 
@@ -86,6 +94,28 @@ describe('RelationPublicApi', function() {
 
       expect(await RelationPublicApi.load(['b'], 'a')).toEqual(['b', 'a'])
       expect(await RelationPublicApi.load(['c'], ['a', 'b'])).toEqual(['c', 'a', 'b'])
+    })
+  })
+
+  describe('.isLoaded()', function() {
+    it('calls and returns RelationFeature.isLoadedRelation()', function() {
+      const stub = Sinon.stub(relationFeature, 'isLoadedRelation')
+      stub.returns('anything')
+
+      expect(RelationPublicApi.isLoaded.call(model, 'test')).toEqual('anything')
+      expect(stub.calledWith(model, 'test')).toBe(true)
+      stub.restore()
+    })
+  })
+
+  describe('.getLoaded()', function() {
+    it('calls and returns RelationFeature.getLoadedRelations()', function() {
+      const stub = Sinon.stub(relationFeature, 'getLoadedRelations')
+      stub.returns('anything')
+
+      expect(RelationPublicApi.getLoaded.call(model)).toEqual('anything')
+      expect(stub.calledWith(model)).toBe(true)
+      stub.restore()
     })
   })
 })

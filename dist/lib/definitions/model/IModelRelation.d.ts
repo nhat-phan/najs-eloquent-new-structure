@@ -17,5 +17,16 @@ declare namespace NajsEloquent.Model {
          * Load the relationship
          */
         load<T>(...args: Array<keyof this | string | string[]>): Promise<T>;
+        /**
+         * Determine that the relation is loaded or not. Please note that it only determine direct relation and can not
+         * determine nested relations like: "direct-relation.relation-of-direct-relation"
+         *
+         * @param {string} relation
+         */
+        isLoaded(relation: string): boolean;
+        /**
+         * Get loaded relations.
+         */
+        getLoaded(): string[];
     }
 }

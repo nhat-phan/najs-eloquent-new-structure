@@ -25,5 +25,13 @@ export const RelationPublicApi: NajsEloquent.Model.IModelRelation = {
         return this.getRelationshipByName(name).load()
       })
     )
+  },
+
+  isLoaded(this: Model, relation: string): boolean {
+    return this.driver.getRelationFeature().isLoadedRelation(this, relation)
+  },
+
+  getLoaded(this: Model): string[] {
+    return this.driver.getRelationFeature().getLoadedRelations(this)
   }
 }

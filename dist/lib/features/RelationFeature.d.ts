@@ -24,5 +24,7 @@ export declare class RelationFeature extends FeatureBase implements NajsEloquent
     buildDefinitions(model: IModel, prototype: object, bases: object[]): RelationDefinitions;
     findByName<T = {}>(model: IModel, name: string): IRelation<T>;
     findDataByName<T>(model: IModel, name: string): IRelationData<T>;
+    isLoadedRelation(model: IModel, relation: string): boolean;
+    getLoadedRelations(model: IModel): string[];
     defineAccessor(model: IModel, accessor: string): void;
 }

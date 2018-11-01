@@ -112,6 +112,23 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     return internalModel.internalData.relations[name]
   }
 
+  isLoadedRelation(model: IModel, relation: string): boolean {
+    return this.findByName(model, relation).isLoaded()
+  }
+
+  getLoadedRelations(model: IModel): string[] {
+    const definitions = this.getDefinitions(model)
+    return Object.keys(definitions).reduce(
+      (memo, name) => {
+        if (this.findByName(model, name).isLoaded()) {
+          memo.push(name)
+        }
+        return memo
+      },
+      [] as string[]
+    )
+  }
+
   defineAccessor(model: IModel, accessor: string): void {
     const prototype = Object.getPrototypeOf(model)
     const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, accessor)

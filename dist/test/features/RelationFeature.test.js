@@ -256,6 +256,55 @@ describe('RelationFeature', function () {
             defineAccessorSpy.restore();
         });
     });
+    describe('.isLoadedRelation()', function () {
+        it('calls and returns this.findByName().isLoaded()', function () {
+            const relation = {
+                isLoaded() {
+                    return 'anything';
+                }
+            };
+            const stub = Sinon.stub(feature, 'findByName');
+            stub.returns(relation);
+            const model = {};
+            expect(feature.isLoadedRelation(model, 'test')).toEqual('anything');
+            expect(stub.calledWith(model, 'test')).toBe(true);
+            stub.restore();
+        });
+    });
+    describe('.getLoadedRelations()', function () {
+        it('get the definition via .getDefinitions(), then loops and returns the loaded relations only', function () {
+            const definitions = {
+                a: {},
+                b: {},
+                c: {}
+            };
+            const loadedRelation = {
+                isLoaded() {
+                    return true;
+                }
+            };
+            const unloadedRelation = {
+                isLoaded() {
+                    return false;
+                }
+            };
+            const stub = Sinon.stub(feature, 'findByName');
+            stub.callsFake(function (model, name) {
+                if (name === 'a' || name === 'c') {
+                    return loadedRelation;
+                }
+                return unloadedRelation;
+            });
+            const model = {
+                sharedMetadata: {
+                    relationDefinitions: definitions
+                }
+            };
+            expect(feature.getLoadedRelations(model)).toEqual(['a', 'c']);
+            expect(stub.calledWith('test'));
+            stub.restore();
+        });
+    });
     describe('.defineAccessor()', function () {
         it('does nothing if the accessor already defined in prototype', function () {
             class A {
