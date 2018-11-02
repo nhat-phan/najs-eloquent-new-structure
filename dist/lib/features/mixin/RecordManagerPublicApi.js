@@ -8,6 +8,9 @@ exports.RecordManagerPublicApi = {
     getRecord() {
         return this.driver.getRecordManager().getRecord(this);
     },
+    getAttributes() {
+        return this.driver.getRecordManager().toObject(this);
+    },
     formatAttributeName(name) {
         return this.driver.getRecordManager().formatAttributeName(this, name);
     },

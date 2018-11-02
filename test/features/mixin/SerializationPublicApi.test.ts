@@ -22,11 +22,11 @@ describe('SerializationPublicApi', function() {
     isHidden() {
       return 'isHidden-result'
     },
+    attributesToObject() {
+      return 'attributesToObject-result'
+    },
     toObject() {
       return 'toObject-result'
-    },
-    toJSON() {
-      return 'toJSON-result'
     },
     toJson() {
       return 'toJson-result'
@@ -115,6 +115,31 @@ describe('SerializationPublicApi', function() {
     })
   })
 
+  describe('.attributesToObject()', function() {
+    it('calls and returns SerializationFeature.attributesToObject()', function() {
+      const stub = Sinon.stub(serializationFeature, 'attributesToObject')
+      stub.returns('anything')
+
+      expect(SerializationPublicApi.attributesToObject.call(model)).toEqual('anything')
+      expect(stub.calledWith(model)).toBe(true)
+      stub.restore()
+    })
+  })
+
+  describe('.attributesToArray()', function() {
+    it('is an alias of .attributesToObject()', function() {
+      const model = {
+        attributesToObject() {}
+      }
+      const stub = Sinon.stub(model, 'attributesToObject')
+      stub.returns('anything')
+
+      expect(SerializationPublicApi.attributesToArray.call(model)).toEqual('anything')
+      expect(stub.calledWith()).toBe(true)
+      stub.restore()
+    })
+  })
+
   describe('.toObject()', function() {
     it('calls and returns SerializationFeature.toObject()', function() {
       const stub = Sinon.stub(serializationFeature, 'toObject')
@@ -126,24 +151,13 @@ describe('SerializationPublicApi', function() {
     })
   })
 
-  describe('.toJSON()', function() {
-    it('calls and returns SerializationFeature.toJson()', function() {
-      const stub = Sinon.stub(serializationFeature, 'toJson')
-      stub.returns('anything')
-
-      expect(SerializationPublicApi.toJSON.call(model)).toEqual('anything')
-      expect(stub.calledWith(model)).toBe(true)
-      stub.restore()
-    })
-  })
-
   describe('.toJson()', function() {
     it('calls and returns SerializationFeature.toJson()', function() {
       const stub = Sinon.stub(serializationFeature, 'toJson')
       stub.returns('anything')
 
-      expect(SerializationPublicApi.toJson.call(model)).toEqual('anything')
-      expect(stub.calledWith(model)).toBe(true)
+      expect(SerializationPublicApi.toJson.call(model, 1, 2)).toEqual('anything')
+      expect(stub.calledWith(model, 1, 2)).toBe(true)
       stub.restore()
     })
   })

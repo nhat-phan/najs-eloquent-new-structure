@@ -51,9 +51,9 @@ describe('MorphOne', function () {
         const result = await User.findOrFail(user.id);
         expect(user.image).toBeUndefined();
         await user.load('image');
-        expect(user.image.toJson()).toEqual(userImage.toJson());
+        expect(user.image.attributesToObject()).toEqual(userImage.attributesToObject());
         expect(result.image).toBeUndefined();
         await result.load('image');
-        expect(result.image.toJson()).toEqual(userImage.toJson());
+        expect(result.image.attributesToObject()).toEqual(userImage.attributesToObject());
     });
 });

@@ -21,13 +21,16 @@ exports.SerializationPublicApi = {
     isHidden() {
         return this.driver.getSerializationFeature().isHidden(this, arguments);
     },
+    attributesToObject() {
+        return this.driver.getSerializationFeature().attributesToObject(this);
+    },
+    attributesToArray() {
+        return this.attributesToObject();
+    },
     toObject() {
         return this.driver.getSerializationFeature().toObject(this);
     },
-    toJSON() {
-        return this.driver.getSerializationFeature().toJson(this);
-    },
-    toJson() {
-        return this.driver.getSerializationFeature().toJson(this);
+    toJson(replacer, space) {
+        return this.driver.getSerializationFeature().toJson(this, replacer, space);
     }
 };

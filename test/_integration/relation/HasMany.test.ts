@@ -98,7 +98,7 @@ describe('HasMany Relationship', function() {
     }
 
     // const posts = await Post.where('user_id', user.id).get()
-    // console.log(posts.map(item => item.toJson()))
+    // console.log(posts.map(item => item.attributesToObject()))
 
     // const userResult = await User.findOrFail(user.id)
     // QueryLog.disable()
@@ -155,7 +155,9 @@ describe('HasMany Relationship', function() {
       await post.save()
 
       await post.load('comments')
-      expect(post.comments!.map(item => item.toJson())).toEqual(acceptedComments.map(item => item.toJson()))
+      expect(post.comments!.map(item => item.attributesToObject())).toEqual(
+        acceptedComments.map(item => item.attributesToObject())
+      )
     })
   })
 
@@ -251,7 +253,7 @@ describe('HasMany Relationship', function() {
       result.load('posts')
       for (const post of result.posts!) {
         expect(post.userRelation.isLoaded()).toBe(true)
-        expect(post.user!.toJson()).toEqual(user.toJson())
+        expect(post.user!.attributesToObject()).toEqual(user.attributesToObject())
       }
     })
   })

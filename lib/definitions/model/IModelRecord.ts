@@ -25,6 +25,11 @@ namespace NajsEloquent.Model {
     getRecord(): T
 
     /**
+     * Convert native record to an plain object, visible and hidden are not applied.
+     */
+    getAttributes(): object
+
+    /**
      * Format given attribute name
      *
      * @param {string} name

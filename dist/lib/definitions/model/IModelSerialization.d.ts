@@ -43,16 +43,21 @@ declare namespace NajsEloquent.Model {
          */
         isHidden(...keys: Array<string | string[]>): boolean;
         /**
+         * Convert the model instance to a plain object, visible and hidden are applied.
+         */
+        attributesToObject<T extends object = object>(): T;
+        /**
+         * Just an alias of .attributesToObject(), convert the model instance to a plain object,
+         * visible and hidden are applied.
+         */
+        attributesToArray<T extends object = object>(): T;
+        /**
          * Convert the model instance to a plain object, visible and hidden are not applied.
          */
         toObject<T extends object = object>(): T;
         /**
-         * Convert the model instance to JSON object.
+         * Convert the model instance to JSON string.
          */
-        toJSON<T extends object = object>(): T;
-        /**
-         * Convert the model instance to JSON object.
-         */
-        toJson<T extends object = object>(): T;
+        toJson(replacer?: (key: string, value: any) => any, space?: string | number): string;
     }
 }

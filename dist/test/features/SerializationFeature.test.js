@@ -177,26 +177,30 @@ describe('SerializationFeature', function () {
             getGuardedStub.restore();
         });
     });
-    describe('.toObject()', function () {
-        it('calls and returns RecordManager.toObject()', function () {
-            const result = {};
+    describe('.attributesToObject()', function () {
+        it('calls and returns .applyVisibleAndHiddenFor() with data from RecordManager.toObject()', function () {
+            const data = {};
             const model = {
                 getDriver() {
                     return {
                         getRecordManager() {
                             return {
                                 toObject() {
-                                    return result;
+                                    return data;
                                 }
                             };
                         }
                     };
                 }
             };
-            expect(serializationFeature.toObject(model) === result).toBe(true);
+            const stub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            stub.returns('anything');
+            expect(serializationFeature.attributesToObject(model)).toEqual('anything');
+            expect(stub.calledWith(model, data)).toBe(true);
+            stub.restore();
         });
     });
-    describe('.toJson()', function () {
+    describe('.applyVisibleAndHiddenFor()', function () {
         const dataset = [
             {
                 data: { a: 1, b: 2, c: 3, d: 4 },
@@ -224,8 +228,7 @@ describe('SerializationFeature', function () {
             }
         ];
         for (const item of dataset) {
-            it('gets data from .toObject(), and filter data if the attribute name matches SettingFeature.isKeyInWhiteList()', function () {
-                const data = item.data;
+            it('filters data if the attribute name matches SettingFeature.isKeyInWhiteList()', function () {
                 const model = {
                     getDriver() {
                         return {
@@ -234,9 +237,6 @@ describe('SerializationFeature', function () {
                             },
                             getRecordManager() {
                                 return {
-                                    toObject() {
-                                        return data;
-                                    },
                                     getKnownAttributes() {
                                         return [];
                                     }
@@ -251,10 +251,43 @@ describe('SerializationFeature', function () {
                 const getHiddenResult = item.hidden;
                 const getHiddenStub = Sinon.stub(serializationFeature, 'getHidden');
                 getHiddenStub.returns(getHiddenResult);
-                expect(serializationFeature.toJson(model)).toEqual(item.result);
+                expect(serializationFeature.applyVisibleAndHiddenFor(model, item.data)).toEqual(item.result);
                 getVisibleStub.restore();
                 getHiddenStub.restore();
             });
         }
+    });
+    describe('.toObject()', function () {
+        it('calls and returns RecordManager.toObject()', function () {
+            const result = {};
+            const model = {
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                toObject() {
+                                    return result;
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            expect(serializationFeature.toObject(model) === result).toBe(true);
+        });
+    });
+    describe('.toJson()', function () {
+        it('simply calls JSON.stringify() with data provided from .toObject()', function () {
+            const stub = Sinon.stub(JSON, 'stringify');
+            stub.returns('anything');
+            const toObjectStub = Sinon.stub(serializationFeature, 'toObject');
+            toObjectStub.returns('object');
+            const model = {};
+            expect(serializationFeature.toJson(model, 'replacer', 'space')).toEqual('anything');
+            expect(toObjectStub.calledWith(model)).toBe(true);
+            expect(stub.calledWith('object', 'replacer', 'space')).toBe(true);
+            toObjectStub.restore();
+            stub.restore();
+        });
     });
 });

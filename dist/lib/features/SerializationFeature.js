@@ -35,11 +35,18 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     isHidden(model, keys) {
         return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model));
     }
-    toObject(model) {
-        return this.useRecordManagerOf(model).toObject(model);
+    attributesToObject(model) {
+        return this.applyVisibleAndHiddenFor(model, this.useRecordManagerOf(model).toObject(model));
     }
-    toJson(model, includeRelationsData = true) {
-        const data = this.toObject(model), visible = this.getVisible(model), hidden = this.getHidden(model);
+    applyVisibleAndHiddenFor(model, data) {
+        const visible = this.getVisible(model), hidden = this.getHidden(model);
+        const settingFeature = this.useSettingFeatureOf(model);
+        return Object.getOwnPropertyNames(data).reduce((memo, name) => {
+            if (settingFeature.isKeyInWhiteList(model, name, visible, hidden)) {
+                memo[name] = data[name];
+            }
+            return memo;
+        }, {});
         // if (includeRelationsData) {
         //   const loaded = this.useRelationFeatureOf(model).getLoadedRelations(model)
         //   for (const name of loaded) {
@@ -55,13 +62,12 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
         //     }
         //   }
         // }
-        const settingFeature = this.useSettingFeatureOf(model);
-        return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-            if (settingFeature.isKeyInWhiteList(model, name, visible, hidden)) {
-                memo[name] = data[name];
-            }
-            return memo;
-        }, {});
+    }
+    toObject(model) {
+        return this.useRecordManagerOf(model).toObject(model);
+    }
+    toJson(model, replacer, space) {
+        return JSON.stringify(this.toObject(model), replacer, space);
     }
 }
 exports.SerializationFeature = SerializationFeature;

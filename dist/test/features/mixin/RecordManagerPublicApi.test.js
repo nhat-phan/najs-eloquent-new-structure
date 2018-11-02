@@ -43,6 +43,9 @@ describe('RecordManagerPublicApi', function () {
         },
         isNew() {
             return 'isNew-result';
+        },
+        toObject() {
+            return 'toObject-result';
         }
     };
     const model = {
@@ -66,6 +69,15 @@ describe('RecordManagerPublicApi', function () {
             const stub = Sinon.stub(recordManager, 'getRecord');
             stub.returns('anything');
             expect(RecordManagerPublicApi_1.RecordManagerPublicApi.getRecord.call(model)).toEqual('anything');
+            expect(stub.calledWith(model)).toBe(true);
+            stub.restore();
+        });
+    });
+    describe('.getAttributes()', function () {
+        it('calls and returns RecordManager.toObject()', function () {
+            const stub = Sinon.stub(recordManager, 'toObject');
+            stub.returns('anything');
+            expect(RecordManagerPublicApi_1.RecordManagerPublicApi.getAttributes.call(model)).toEqual('anything');
             expect(stub.calledWith(model)).toBe(true);
             stub.restore();
         });

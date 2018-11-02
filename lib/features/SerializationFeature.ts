@@ -46,14 +46,21 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model))
   }
 
-  toObject(model: Model): object {
-    return this.useRecordManagerOf(model).toObject(model)
+  attributesToObject(model: Model): object {
+    return this.applyVisibleAndHiddenFor(model, this.useRecordManagerOf(model).toObject(model))
   }
 
-  toJson(model: Model, includeRelationsData: boolean = true): object {
-    const data = this.toObject(model),
-      visible = this.getVisible(model),
+  applyVisibleAndHiddenFor(model: Model, data: object) {
+    const visible = this.getVisible(model),
       hidden = this.getHidden(model)
+
+    const settingFeature = this.useSettingFeatureOf(model)
+    return Object.getOwnPropertyNames(data).reduce((memo, name) => {
+      if (settingFeature.isKeyInWhiteList(model, name, visible, hidden)) {
+        memo[name] = data[name]
+      }
+      return memo
+    }, {})
 
     // if (includeRelationsData) {
     //   const loaded = this.useRelationFeatureOf(model).getLoadedRelations(model)
@@ -72,14 +79,15 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     //     }
     //   }
     // }
+  }
 
-    const settingFeature = this.useSettingFeatureOf(model)
-    return Object.getOwnPropertyNames(data).reduce((memo, name) => {
-      if (settingFeature.isKeyInWhiteList(model, name, visible, hidden)) {
-        memo[name] = data[name]
-      }
-      return memo
-    }, {})
+  toObject(model: Model): object {
+    // TODO: remove this logic
+    return this.useRecordManagerOf(model).toObject(model)
+  }
+
+  toJson(model: Model, replacer?: (key: string, value: any) => any, space?: string | number): string {
+    return JSON.stringify(this.toObject(model), replacer, space)
   }
 }
 register(SerializationFeature, 'NajsEloquent.Feature.SerializationFeature')

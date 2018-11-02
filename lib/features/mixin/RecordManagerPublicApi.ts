@@ -12,6 +12,10 @@ export const RecordManagerPublicApi: NajsEloquent.Model.IModelRecord<any> = {
     return this.driver.getRecordManager().getRecord(this)
   },
 
+  getAttributes(this: Model): object {
+    return this.driver.getRecordManager().toObject(this)
+  },
+
   formatAttributeName(this: Model, name: string): string {
     return this.driver.getRecordManager().formatAttributeName(this, name)
   },

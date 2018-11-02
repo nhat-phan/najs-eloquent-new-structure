@@ -42,13 +42,18 @@ namespace NajsEloquent.Feature {
     isHidden(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
 
     /**
+     * Convert the model instance to a plain object, visible and hidden are applied.
+     */
+    attributesToObject(model: Model.IModel): object
+
+    /**
      * Convert the model instance to a plain object, visible and hidden are not applied.
      */
     toObject(model: Model.IModel): object
 
     /**
-     * Convert the model instance to JSON object.
+     * Convert the model instance to JSON string, visible and hidden are applied.
      */
-    toJson(model: Model.IModel): object
+    toJson(model: Model.IModel, replacer?: (key: string, value: any) => any, space?: string | number): string
   }
 }

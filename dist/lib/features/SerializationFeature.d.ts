@@ -12,6 +12,8 @@ export declare class SerializationFeature extends FeatureBase implements NajsElo
     markHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void;
     isVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean;
     isHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean;
+    attributesToObject(model: Model): object;
+    applyVisibleAndHiddenFor(model: Model, data: object): {};
     toObject(model: Model): object;
-    toJson(model: Model, includeRelationsData?: boolean): object;
+    toJson(model: Model, replacer?: (key: string, value: any) => any, space?: string | number): string;
 }

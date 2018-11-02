@@ -60,13 +60,13 @@ describe('Syntax/Factory', function() {
 
       factory(User, 2)
         .make()
-        .map(item => item.toJson())
+        .map(item => item.attributesToObject())
 
       factory(User, 'default').make().first_name = 'test'
 
       factory(User, 'default', 2)
         .make()
-        .map(item => item.toJson())
+        .map(item => item.attributesToObject())
     })
   })
 })

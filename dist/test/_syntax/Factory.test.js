@@ -41,11 +41,11 @@ describe('Syntax/Factory', function () {
             lib_1.factory(User).make().first_name = 'test';
             lib_1.factory(User, 2)
                 .make()
-                .map(item => item.toJson());
+                .map(item => item.attributesToObject());
             lib_1.factory(User, 'default').make().first_name = 'test';
             lib_1.factory(User, 'default', 2)
                 .make()
-                .map(item => item.toJson());
+                .map(item => item.attributesToObject());
         });
     });
 });
