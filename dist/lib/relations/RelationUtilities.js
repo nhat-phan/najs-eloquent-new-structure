@@ -1,7 +1,19 @@
 "use strict";
+/// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RelationUtilities = {
+    bundleRelations(relations) {
+        return Object.values(relations.reduce(function (memo, relation) {
+            if (typeof memo[relation.getName()] === 'undefined') {
+                memo[relation.getName()] = relation;
+            }
+            else {
+                memo[relation.getName()].with(relation.getChains());
+            }
+            return memo;
+        }, {}));
+    },
     isLoadedInDataBucket(relationship, model, name) {
         const bucket = relationship.getDataBucket();
         if (!bucket) {

@@ -50,6 +50,30 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     return this.applyVisibleAndHiddenFor(model, this.useRecordManagerOf(model).toObject(model))
   }
 
+  // relationsToObject(model: Model, names: string[], formatName: boolean): object {
+  //   const relations = model.getRelations(names)
+  //   const recordManager = this.useRecordManagerOf(model)
+  //   const relationFeature = this.useRelationFeatureOf(model)
+  //   return relations.reduce((memo, relation) => {
+  //     const name = formatName ? recordManager.formatAttributeName(model, relation.getName()) : relation.getName()
+
+  //     const value = relation.getData()
+  //     if (isModel(value)) {
+  //     }
+
+  //     memo[name] = relationFeature.getEmptyValueForRelationshipForeignKey(model, relation.getName())
+  //     return memo
+  //   }, {})
+  //   // for (const relation of relations) {
+  //   //   // relation.
+  //   // }
+
+  //   // const x: any = {}
+  //   // x.relationsToObject(['contracts', ''])
+
+  //   return {}
+  // }
+
   applyVisibleAndHiddenFor(model: Model, data: object) {
     const visible = this.getVisible(model),
       hidden = this.getHidden(model)

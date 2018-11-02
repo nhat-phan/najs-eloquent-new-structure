@@ -7,6 +7,7 @@ const RelationFeature_1 = require("../../lib/features/RelationFeature");
 const RelationDataBucket_1 = require("../../lib/relations/RelationDataBucket");
 const RelationPublicApi_1 = require("../../lib/features/mixin/RelationPublicApi");
 const RelationData_1 = require("../../lib/relations/RelationData");
+const RelationUtilities_1 = require("../../lib/relations/RelationUtilities");
 const RelationshipFactory_1 = require("../../lib/relations/RelationshipFactory");
 const RelationNotDefinedError_1 = require("../../lib/errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../../lib/relations/RelationDefinitionFinder");
@@ -272,7 +273,7 @@ describe('RelationFeature', function () {
         });
     });
     describe('.getLoadedRelations()', function () {
-        it('get the definition via .getDefinitions(), then loops and returns the loaded relations only', function () {
+        it('get the definition via .getDefinitions(), then loops and returns the loaded relations only and calls RelationUtilities.bundleRelations() to group the relations', function () {
             const definitions = {
                 a: {},
                 b: {},
@@ -300,8 +301,12 @@ describe('RelationFeature', function () {
                     relationDefinitions: definitions
                 }
             };
-            expect(feature.getLoadedRelations(model)).toEqual([loadedRelation, loadedRelation]);
+            const bundleRelationsStub = Sinon.stub(RelationUtilities_1.RelationUtilities, 'bundleRelations');
+            bundleRelationsStub.returns('anything');
+            expect(feature.getLoadedRelations(model)).toEqual('anything');
+            expect(bundleRelationsStub.calledWith([loadedRelation, loadedRelation])).toBe(true);
             expect(stub.calledWith('test'));
+            bundleRelationsStub.restore();
             stub.restore();
         });
     });

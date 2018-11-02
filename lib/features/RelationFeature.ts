@@ -20,6 +20,7 @@ import { RelationNotDefinedError } from '../errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../relations/RelationDefinitionFinder'
 import { RecordDataReader } from '../drivers/RecordDataReader'
 import { parse_string_with_dot_notation } from '../util/functions'
+import { RelationUtilities } from '../relations/RelationUtilities'
 
 export class RelationFeature extends FeatureBase implements NajsEloquent.Feature.IRelationFeature {
   getPublicApi(): object {
@@ -118,7 +119,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
 
   getLoadedRelations(model: IModel): IRelation<any>[] {
     const definitions = this.getDefinitions(model)
-    return Object.keys(definitions).reduce(
+    const loaded = Object.keys(definitions).reduce(
       (memo, name) => {
         const relation = this.findByName(model, name)
         if (this.findByName(model, name).isLoaded()) {
@@ -128,6 +129,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
       },
       [] as IRelation<any>[]
     )
+    return RelationUtilities.bundleRelations(loaded)
   }
 
   defineAccessor(model: IModel, accessor: string): void {

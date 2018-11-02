@@ -91,6 +91,10 @@ export abstract class Relationship<T> implements IRelationship<T> {
     return this.name
   }
 
+  getChains(): string[] {
+    return this.chains
+  }
+
   getRelationData(): IRelationData<T> {
     return relationFeatureOf(this.rootModel).findDataByName<T>(this.rootModel, this.name)
   }

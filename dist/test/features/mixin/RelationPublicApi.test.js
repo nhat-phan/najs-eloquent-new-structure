@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
 const RelationPublicApi_1 = require("../../../lib/features/mixin/RelationPublicApi");
+const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 describe('RelationPublicApi', function () {
     const relationFeature = {
         findByName() {
@@ -35,17 +36,21 @@ describe('RelationPublicApi', function () {
         });
     });
     describe('.getRelations()', function () {
-        it('flattens arguments then maps to .getRelation()', function () {
+        it('flattens arguments then maps to .getRelation(), and finally calls RelationUtilities.bundleRelations()', function () {
             const model = {
                 getRelation() { }
             };
             const stub = Sinon.stub(model, 'getRelation');
             stub.returns('anything');
-            expect(RelationPublicApi_1.RelationPublicApi.getRelations.call(model, 'a', ['b'], 'c')).toEqual(['anything', 'anything', 'anything']);
+            const bundleRelationsStub = Sinon.stub(RelationUtilities_1.RelationUtilities, 'bundleRelations');
+            bundleRelationsStub.returns('bundled result');
+            expect(RelationPublicApi_1.RelationPublicApi.getRelations.call(model, 'a', ['b'], 'c')).toEqual('bundled result');
             expect(stub.firstCall.calledWith('a')).toBe(true);
             expect(stub.secondCall.calledWith('b')).toBe(true);
             expect(stub.thirdCall.calledWith('c')).toBe(true);
+            expect(bundleRelationsStub.calledWith(['anything', 'anything', 'anything']));
             stub.restore();
+            bundleRelationsStub.restore();
         });
     });
     describe('.getLoadedRelations()', function () {

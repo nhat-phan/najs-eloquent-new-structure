@@ -35,6 +35,7 @@ export declare abstract class Relationship<T> implements IRelationship<T> {
     createTargetQuery(name: string | undefined): IQueryBuilder<any>;
     applyCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     getName(): string;
+    getChains(): string[];
     getRelationData(): IRelationData<T>;
     getDataBucket(): IRelationDataBucket | undefined;
     isLoaded(): boolean;

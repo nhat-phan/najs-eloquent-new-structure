@@ -43,6 +43,9 @@ class Relationship {
     getName() {
         return this.name;
     }
+    getChains() {
+        return this.chains;
+    }
     getRelationData() {
         return accessors_1.relationFeatureOf(this.rootModel).findDataByName(this.rootModel, this.name);
     }

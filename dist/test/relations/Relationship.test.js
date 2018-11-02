@@ -141,6 +141,15 @@ describe('Relation', function () {
             expect(relation.getName() === name).toBe(true);
         });
     });
+    describe('.getChains()', function () {
+        it('simply returns the "chains" property', function () {
+            const rootModel = {};
+            const relation = makeRelation(rootModel, 'test');
+            const chains = {};
+            relation['chains'] = chains;
+            expect(relation.getChains() === chains).toBe(true);
+        });
+    });
     describe('.getRelationData()', function () {
         it('calls and returns RelationFeature.findDataByName()', function () {
             const relationFeature = {

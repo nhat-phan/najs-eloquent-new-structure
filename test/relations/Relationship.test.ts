@@ -165,6 +165,16 @@ describe('Relation', function() {
     })
   })
 
+  describe('.getChains()', function() {
+    it('simply returns the "chains" property', function() {
+      const rootModel: any = {}
+      const relation = makeRelation(rootModel, 'test')
+      const chains: any = {}
+      relation['chains'] = chains
+      expect(relation.getChains() === chains).toBe(true)
+    })
+  })
+
   describe('.getRelationData()', function() {
     it('calls and returns RelationFeature.findDataByName()', function() {
       const relationFeature = {

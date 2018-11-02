@@ -35,6 +35,11 @@ namespace NajsEloquent.Relation {
     getName(): string
 
     /**
+     * Get chains relation.
+     */
+    getChains(): string[]
+
+    /**
      * Get data of the relationship.
      */
     getData(): T | undefined | null

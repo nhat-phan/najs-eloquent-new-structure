@@ -1,10 +1,28 @@
+/// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 
 import IModel = NajsEloquent.Model.IModel
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
+import IRelationship = NajsEloquent.Relation.IRelationship
 import { Relationship } from './Relationship'
 
 export const RelationUtilities = {
+  bundleRelations(relations: IRelationship<any>[]): IRelationship<any>[] {
+    return Object.values(
+      relations.reduce(
+        function(memo, relation) {
+          if (typeof memo[relation.getName()] === 'undefined') {
+            memo[relation.getName()] = relation
+          } else {
+            memo[relation.getName()].with(relation.getChains())
+          }
+          return memo
+        },
+        {} as { [key in string]: IRelationship<any> }
+      )
+    )
+  },
+
   isLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string) {
     const bucket = relationship.getDataBucket()
     if (!bucket) {

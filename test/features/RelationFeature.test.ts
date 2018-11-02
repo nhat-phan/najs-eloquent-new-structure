@@ -5,6 +5,7 @@ import { RelationFeature } from '../../lib/features/RelationFeature'
 import { RelationDataBucket } from '../../lib/relations/RelationDataBucket'
 import { RelationPublicApi } from '../../lib/features/mixin/RelationPublicApi'
 import { RelationData } from '../../lib/relations/RelationData'
+import { RelationUtilities } from '../../lib/relations/RelationUtilities'
 import { RelationshipFactory } from '../../lib/relations/RelationshipFactory'
 import { RelationNotDefinedError } from '../../lib/errors/RelationNotDefinedError'
 import { RelationDefinitionFinder } from '../../lib/relations/RelationDefinitionFinder'
@@ -307,7 +308,7 @@ describe('RelationFeature', function() {
   })
 
   describe('.getLoadedRelations()', function() {
-    it('get the definition via .getDefinitions(), then loops and returns the loaded relations only', function() {
+    it('get the definition via .getDefinitions(), then loops and returns the loaded relations only and calls RelationUtilities.bundleRelations() to group the relations', function() {
       const definitions = {
         a: {},
         b: {},
@@ -337,8 +338,13 @@ describe('RelationFeature', function() {
         }
       }
 
-      expect(feature.getLoadedRelations(model)).toEqual([loadedRelation, loadedRelation])
+      const bundleRelationsStub = Sinon.stub(RelationUtilities, 'bundleRelations')
+      bundleRelationsStub.returns('anything')
+
+      expect(feature.getLoadedRelations(model)).toEqual('anything')
+      expect(bundleRelationsStub.calledWith([loadedRelation, loadedRelation])).toBe(true)
       expect(stub.calledWith('test'))
+      bundleRelationsStub.restore()
       stub.restore()
     })
   })

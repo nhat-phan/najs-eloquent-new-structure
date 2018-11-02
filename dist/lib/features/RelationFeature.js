@@ -14,6 +14,7 @@ const RelationNotDefinedError_1 = require("../errors/RelationNotDefinedError");
 const RelationDefinitionFinder_1 = require("../relations/RelationDefinitionFinder");
 const RecordDataReader_1 = require("../drivers/RecordDataReader");
 const functions_1 = require("../util/functions");
+const RelationUtilities_1 = require("../relations/RelationUtilities");
 class RelationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return RelationPublicApi_1.RelationPublicApi;
@@ -86,13 +87,14 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
     }
     getLoadedRelations(model) {
         const definitions = this.getDefinitions(model);
-        return Object.keys(definitions).reduce((memo, name) => {
+        const loaded = Object.keys(definitions).reduce((memo, name) => {
             const relation = this.findByName(model, name);
             if (this.findByName(model, name).isLoaded()) {
                 memo.push(relation);
             }
             return memo;
         }, []);
+        return RelationUtilities_1.RelationUtilities.bundleRelations(loaded);
     }
     defineAccessor(model, accessor) {
         const prototype = Object.getPrototypeOf(model);
