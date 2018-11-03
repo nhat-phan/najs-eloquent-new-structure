@@ -51,20 +51,49 @@ namespace NajsEloquent.Model {
     isHidden(...keys: Array<string | string[]>): boolean
 
     /**
-     * Convert the model instance to a plain object, visible and hidden are applied.
+     * Convert the model data to a plain object.
+     *
+     * Visible and hidden are applied.
      */
     attributesToObject<T extends object = object>(): T
 
     /**
-     * Just an alias of .attributesToObject(), convert the model instance to a plain object,
-     * visible and hidden are applied.
+     * Convert the loaded relations to a plain object the name of relation in result is formatted like an attribute.
+     *
+     * Visible and hidden are applied.
      */
-    attributesToArray<T extends object = object>(): T
+    relationsToObject<T extends object = object>(): T
+    /**
+     * Convert the model given relations to a plain object the name of relation in result is formatted like an attribute.
+     *
+     * Visible and hidden are applied.
+     */
+    relationsToObject<T extends object = object>(...names: Array<string | string[]>): T
+    /**
+     * Convert the model given relations to a plain object with option format name like attribute or not.
+     *
+     * Visible and hidden are applied.
+     */
+    relationsToObject<T extends object = object>(formatName: boolean, ...names: Array<string | string[]>): T
 
     /**
-     * Convert the model instance to a plain object, visible and hidden are not applied.
+     * Convert the model data and model relations to a plain object.
+     *
+     * Visible and hidden are applied.
      */
     toObject<T extends object = object>(): T
+    /**
+     * Convert the model data and model given relations to a plain object.
+     *
+     * Visible and hidden are applied.
+     */
+    toObject<T extends object = object>(...relations: Array<string | string[]>): T
+    /**
+     * Convert the model data and model given relations to a plain object with option format name like attribute or not.
+     *
+     * Visible and hidden are applied.
+     */
+    toObject<T extends object = object>(formatName: boolean, ...relations: Array<string | string[]>): T
 
     /**
      * Convert the model instance to JSON string.

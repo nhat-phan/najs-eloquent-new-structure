@@ -51,6 +51,10 @@ declare namespace NajsEloquent.Feature {
          */
         getEmptyValueForRelationshipForeignKey(model: Model.IModel, key: string): any;
         /**
+         * Get an empty value for relation when it is serialized.
+         */
+        getEmptyValueForSerializedRelation(model: Model.IModel, key: string): any;
+        /**
          * Get defined relations of given model.
          *
          * @param {Model} model

@@ -97,6 +97,9 @@ describe('HasMany Relationship', function() {
       expect(post.user_id).toEqual(user.id)
     }
 
+    // const result = await User.with('posts').firstOrFail(user.id)
+    // console.log(result.toObject('posts.user'))
+
     // const posts = await Post.where('user_id', user.id).get()
     // console.log(posts.map(item => item.attributesToObject()))
 

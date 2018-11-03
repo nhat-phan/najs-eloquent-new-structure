@@ -1,12 +1,13 @@
 "use strict";
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
 const SerializationPublicApi_1 = require("./mixin/SerializationPublicApi");
 const constants_1 = require("../constants");
-// import { isModel, isCollection } from '../util/helpers'
+const helpers_1 = require("../util/helpers");
 class SerializationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return SerializationPublicApi_1.SerializationPublicApi;
@@ -35,28 +36,33 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     isHidden(model, keys) {
         return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model));
     }
-    attributesToObject(model) {
-        return this.applyVisibleAndHiddenFor(model, this.useRecordManagerOf(model).toObject(model));
+    attributesToObject(model, shouldApplyVisibleAndHidden = true) {
+        const data = this.useRecordManagerOf(model).toObject(model);
+        return shouldApplyVisibleAndHidden ? this.applyVisibleAndHiddenFor(model, data) : data;
     }
-    // relationsToObject(model: Model, names: string[], formatName: boolean): object {
-    //   const relations = model.getRelations(names)
-    //   const recordManager = this.useRecordManagerOf(model)
-    //   const relationFeature = this.useRelationFeatureOf(model)
-    //   return relations.reduce((memo, relation) => {
-    //     const name = formatName ? recordManager.formatAttributeName(model, relation.getName()) : relation.getName()
-    //     const value = relation.getData()
-    //     if (isModel(value)) {
-    //     }
-    //     memo[name] = relationFeature.getEmptyValueForRelationshipForeignKey(model, relation.getName())
-    //     return memo
-    //   }, {})
-    //   // for (const relation of relations) {
-    //   //   // relation.
-    //   // }
-    //   // const x: any = {}
-    //   // x.relationsToObject(['contracts', ''])
-    //   return {}
-    // }
+    relationDataToObject(model, data, chains, relationName, formatName) {
+        if (helpers_1.isModel(data)) {
+            return this.useSerializationFeatureOf(data).toObject(data, chains, formatName);
+        }
+        if (helpers_1.isCollection(data)) {
+            return data
+                .map((nextModel) => {
+                return this.useSerializationFeatureOf(nextModel).toObject(nextModel, chains, formatName);
+            })
+                .all();
+        }
+        return this.useRelationFeatureOf(model).getEmptyValueForSerializedRelation(model, relationName);
+    }
+    relationsToObject(model, names, formatName, shouldApplyVisibleAndHidden = true) {
+        const relations = typeof names === 'undefined' ? model.getLoadedRelations() : model.getRelations(names);
+        const data = relations.reduce((memo, relation) => {
+            const relationName = relation.getName();
+            const name = formatName ? model.formatAttributeName(relationName) : relationName;
+            memo[name] = this.relationDataToObject(model, relation.getData(), relation.getChains(), relationName, formatName);
+            return memo;
+        }, {});
+        return shouldApplyVisibleAndHidden ? this.applyVisibleAndHiddenFor(model, data) : data;
+    }
     applyVisibleAndHiddenFor(model, data) {
         const visible = this.getVisible(model), hidden = this.getHidden(model);
         const settingFeature = this.useSettingFeatureOf(model);
@@ -66,28 +72,13 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
             }
             return memo;
         }, {});
-        // if (includeRelationsData) {
-        //   const loaded = this.useRelationFeatureOf(model).getLoadedRelations(model)
-        //   for (const name of loaded) {
-        //     const relationData = this.useRelationFeatureOf(model)
-        //       .findDataByName(model, name)
-        //       .getData()
-        //     if (isModel(relationData)) {
-        //       data[name] = (relationData as Model).toJson()
-        //       continue
-        //     }
-        //     if (isCollection(relationData)) {
-        //       data[name] = (relationData as any).map((item: any) => item.toJson()).all()
-        //     }
-        //   }
-        // }
     }
-    toObject(model) {
-        // TODO: remove this logic
-        return this.useRecordManagerOf(model).toObject(model);
+    toObject(model, relations, formatName) {
+        const data = Object.assign({}, this.attributesToObject(model, false), this.relationsToObject(model, relations, formatName, false));
+        return this.applyVisibleAndHiddenFor(model, data);
     }
     toJson(model, replacer, space) {
-        return JSON.stringify(this.toObject(model), replacer, space);
+        return JSON.stringify(this.toObject(model, undefined, true), replacer, space);
     }
 }
 exports.SerializationFeature = SerializationFeature;

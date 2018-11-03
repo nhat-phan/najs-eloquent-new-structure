@@ -50,6 +50,10 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         // tslint:disable-next-line
         return null;
     }
+    getEmptyValueForSerializedRelation(model, key) {
+        // tslint:disable-next-line
+        return null;
+    }
     getDefinitions(model) {
         return this.useInternalOf(model).sharedMetadata.relationDefinitions;
     }
@@ -89,7 +93,7 @@ class RelationFeature extends FeatureBase_1.FeatureBase {
         const definitions = this.getDefinitions(model);
         const loaded = Object.keys(definitions).reduce((memo, name) => {
             const relation = this.findByName(model, name);
-            if (this.findByName(model, name).isLoaded()) {
+            if (relation.isLoaded()) {
                 memo.push(relation);
             }
             return memo;

@@ -1,4 +1,5 @@
 /// <reference path="../definitions/model/IModel.ts" />
+/// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 
 import Model = NajsEloquent.Model.IModel
@@ -7,7 +8,7 @@ import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
 import { SerializationPublicApi } from './mixin/SerializationPublicApi'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
-// import { isModel, isCollection } from '../util/helpers'
+import { isModel, isCollection } from '../util/helpers'
 
 export class SerializationFeature extends FeatureBase implements NajsEloquent.Feature.ISerializationFeature {
   getPublicApi(): object {
@@ -46,33 +47,43 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model))
   }
 
-  attributesToObject(model: Model): object {
-    return this.applyVisibleAndHiddenFor(model, this.useRecordManagerOf(model).toObject(model))
+  attributesToObject(model: Model, shouldApplyVisibleAndHidden: boolean = true): object {
+    const data = this.useRecordManagerOf(model).toObject(model)
+    return shouldApplyVisibleAndHidden ? this.applyVisibleAndHiddenFor(model, data) : data
   }
 
-  // relationsToObject(model: Model, names: string[], formatName: boolean): object {
-  //   const relations = model.getRelations(names)
-  //   const recordManager = this.useRecordManagerOf(model)
-  //   const relationFeature = this.useRelationFeatureOf(model)
-  //   return relations.reduce((memo, relation) => {
-  //     const name = formatName ? recordManager.formatAttributeName(model, relation.getName()) : relation.getName()
+  relationDataToObject(model: Model, data: any, chains: string[], relationName: string, formatName: boolean) {
+    if (isModel(data)) {
+      return this.useSerializationFeatureOf(data as Model).toObject(data as Model, chains, formatName)
+    }
 
-  //     const value = relation.getData()
-  //     if (isModel(value)) {
-  //     }
+    if (isCollection(data)) {
+      return data
+        .map((nextModel: Model) => {
+          return this.useSerializationFeatureOf(nextModel).toObject(nextModel, chains, formatName)
+        })
+        .all()
+    }
 
-  //     memo[name] = relationFeature.getEmptyValueForRelationshipForeignKey(model, relation.getName())
-  //     return memo
-  //   }, {})
-  //   // for (const relation of relations) {
-  //   //   // relation.
-  //   // }
+    return this.useRelationFeatureOf(model).getEmptyValueForSerializedRelation(model, relationName)
+  }
 
-  //   // const x: any = {}
-  //   // x.relationsToObject(['contracts', ''])
+  relationsToObject(
+    model: Model,
+    names: string[] | undefined,
+    formatName: boolean,
+    shouldApplyVisibleAndHidden: boolean = true
+  ): object {
+    const relations = typeof names === 'undefined' ? model.getLoadedRelations() : model.getRelations(names)
+    const data = relations.reduce((memo, relation) => {
+      const relationName = relation.getName()
+      const name = formatName ? model.formatAttributeName(relationName) : relationName
+      memo[name] = this.relationDataToObject(model, relation.getData(), relation.getChains(), relationName, formatName)
+      return memo
+    }, {})
 
-  //   return {}
-  // }
+    return shouldApplyVisibleAndHidden ? this.applyVisibleAndHiddenFor(model, data) : data
+  }
 
   applyVisibleAndHiddenFor(model: Model, data: object) {
     const visible = this.getVisible(model),
@@ -85,33 +96,19 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
       }
       return memo
     }, {})
-
-    // if (includeRelationsData) {
-    //   const loaded = this.useRelationFeatureOf(model).getLoadedRelations(model)
-    //   for (const name of loaded) {
-    //     const relationData = this.useRelationFeatureOf(model)
-    //       .findDataByName(model, name)
-    //       .getData()
-
-    //     if (isModel(relationData)) {
-    //       data[name] = (relationData as Model).toJson()
-    //       continue
-    //     }
-
-    //     if (isCollection(relationData)) {
-    //       data[name] = (relationData as any).map((item: any) => item.toJson()).all()
-    //     }
-    //   }
-    // }
   }
 
-  toObject(model: Model): object {
-    // TODO: remove this logic
-    return this.useRecordManagerOf(model).toObject(model)
+  toObject(model: Model, relations: string[] | undefined, formatName: boolean): object {
+    const data = Object.assign(
+      {},
+      this.attributesToObject(model, false),
+      this.relationsToObject(model, relations, formatName, false)
+    )
+    return this.applyVisibleAndHiddenFor(model, data)
   }
 
   toJson(model: Model, replacer?: (key: string, value: any) => any, space?: string | number): string {
-    return JSON.stringify(this.toObject(model), replacer, space)
+    return JSON.stringify(this.toObject(model, undefined, true), replacer, space)
   }
 }
 register(SerializationFeature, 'NajsEloquent.Feature.SerializationFeature')

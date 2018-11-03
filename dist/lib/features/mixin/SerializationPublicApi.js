@@ -1,5 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const lodash_1 = require("lodash");
+function parse_relationsToObject_arguments(args) {
+    if (args.length === 0) {
+        return { formatName: true, relations: undefined };
+    }
+    if (args.length === 1 && typeof args[0] === 'boolean') {
+        return { formatName: args[0], relations: undefined };
+    }
+    const startIndex = args.length > 0 && typeof args[0] === 'boolean' ? 1 : 0;
+    const rest = [];
+    for (let i = startIndex; i < args.length; i++) {
+        rest.push(args[i]);
+    }
+    const formatName = startIndex === 1 ? args[0] : true;
+    return {
+        formatName: formatName,
+        relations: lodash_1.flatten(rest)
+    };
+}
 exports.SerializationPublicApi = {
     getVisible() {
         return this.driver.getSerializationFeature().getVisible(this);
@@ -24,11 +43,13 @@ exports.SerializationPublicApi = {
     attributesToObject() {
         return this.driver.getSerializationFeature().attributesToObject(this);
     },
-    attributesToArray() {
-        return this.attributesToObject();
+    relationsToObject() {
+        const args = parse_relationsToObject_arguments(arguments);
+        return this.driver.getSerializationFeature().relationsToObject(this, args.relations, args.formatName);
     },
     toObject() {
-        return this.driver.getSerializationFeature().toObject(this);
+        const args = parse_relationsToObject_arguments(arguments);
+        return this.driver.getSerializationFeature().toObject(this, args.relations, args.formatName);
     },
     toJson(replacer, space) {
         return this.driver.getSerializationFeature().toJson(this, replacer, space);

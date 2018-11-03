@@ -68,6 +68,11 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     return null
   }
 
+  getEmptyValueForSerializedRelation(model: NajsEloquent.Model.IModel, key: string): any {
+    // tslint:disable-next-line
+    return null
+  }
+
   getDefinitions(model: IModel): RelationDefinitions {
     return this.useInternalOf(model).sharedMetadata.relationDefinitions
   }
@@ -122,7 +127,7 @@ export class RelationFeature extends FeatureBase implements NajsEloquent.Feature
     const loaded = Object.keys(definitions).reduce(
       (memo, name) => {
         const relation = this.findByName(model, name)
-        if (this.findByName(model, name).isLoaded()) {
+        if (relation.isLoaded()) {
           memo.push(relation)
         }
         return memo

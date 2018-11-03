@@ -111,6 +111,12 @@ describe('RelationFeature', function () {
             expect(feature.getEmptyValueForRelationshipForeignKey(model, 'test')).toBeNull();
         });
     });
+    describe('.getEmptyValueForSerializedRelation()', function () {
+        it('returns null by default', function () {
+            const model = {};
+            expect(feature.getEmptyValueForSerializedRelation(model, 'test')).toBeNull();
+        });
+    });
     describe('.getDefinitions()', function () {
         it('simply returns an property sharedMetadata."relationDefinitions" of model', function () {
             const relationDefinitions = {};

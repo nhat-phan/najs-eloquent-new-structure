@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
+const Helpers = require("../../lib/util/helpers");
 const FeatureBase_1 = require("../../lib/features/FeatureBase");
 const SerializationFeature_1 = require("../../lib/features/SerializationFeature");
 const SerializationPublicApi_1 = require("../../lib/features/mixin/SerializationPublicApi");
 const SettingFeature_1 = require("../../lib/features/SettingFeature");
+const factory_1 = require("../../lib/util/factory");
 describe('SerializationFeature', function () {
     const serializationFeature = new SerializationFeature_1.SerializationFeature();
     it('extends FeatureBase, implements Najs.Contracts.Autoload under name NajsEloquent.Feature.SerializationFeature', function () {
@@ -178,6 +180,27 @@ describe('SerializationFeature', function () {
         });
     });
     describe('.attributesToObject()', function () {
+        it('calls and returns with data from RecordManager.toObject()', function () {
+            const data = {};
+            const model = {
+                getDriver() {
+                    return {
+                        getRecordManager() {
+                            return {
+                                toObject() {
+                                    return data;
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+            const stub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            stub.returns('anything');
+            expect(serializationFeature.attributesToObject(model, false) === data).toBe(true);
+            expect(stub.called).toBe(false);
+            stub.restore();
+        });
         it('calls and returns .applyVisibleAndHiddenFor() with data from RecordManager.toObject()', function () {
             const data = {};
             const model = {
@@ -198,6 +221,219 @@ describe('SerializationFeature', function () {
             expect(serializationFeature.attributesToObject(model)).toEqual('anything');
             expect(stub.calledWith(model, data)).toBe(true);
             stub.restore();
+        });
+    });
+    describe('.relationDataToObject()', function () {
+        it('calls RelationFeature.getEmptyValueForSerializedRelation() if the data is not model or collection', function () {
+            const relationFeature = {
+                getEmptyValueForSerializedRelation() {
+                    return 'empty-value';
+                }
+            };
+            const model = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                }
+            };
+            const spy = Sinon.spy(relationFeature, 'getEmptyValueForSerializedRelation');
+            expect(serializationFeature.relationDataToObject(model, 'data', [], 'name', true)).toEqual('empty-value');
+            expect(spy.calledWith(model, 'name')).toBe(true);
+        });
+        it('calls & returns data.toObject() with data, chains and formatName options', function () {
+            const serializationFeatureNextModel = {
+                toObject() {
+                    return 'anything';
+                }
+            };
+            const model = {
+                getDriver() {
+                    return {
+                        getSerializationFeature() {
+                            return serializationFeatureNextModel;
+                        }
+                    };
+                }
+            };
+            const stub = Sinon.stub(Helpers, 'isModel');
+            stub.returns(true);
+            const spy = Sinon.spy(serializationFeatureNextModel, 'toObject');
+            expect(serializationFeature.relationDataToObject({}, model, ['chains', 'x', 'y'], 'name', false)).toEqual('anything');
+            expect(spy.calledWith(model, ['chains', 'x', 'y'], false)).toBe(true);
+            stub.restore();
+        });
+        it('maps item then calls & returns data.toObject() with data, chains and formatName options if the data is collection', function () {
+            const serializationFeatureNextModel = {
+                toObject() {
+                    return 'anything';
+                }
+            };
+            const model1 = {
+                getDriver() {
+                    return {
+                        getSerializationFeature() {
+                            return serializationFeatureNextModel;
+                        }
+                    };
+                }
+            };
+            const model2 = {
+                getDriver() {
+                    return {
+                        getSerializationFeature() {
+                            return serializationFeatureNextModel;
+                        }
+                    };
+                }
+            };
+            const spy = Sinon.spy(serializationFeatureNextModel, 'toObject');
+            expect(serializationFeature.relationDataToObject({}, factory_1.make_collection([model1, model2]), ['chains', 'x', 'y'], 'name', false)).toEqual(['anything', 'anything']);
+            expect(spy.firstCall.calledWith(model1, ['chains', 'x', 'y'], false)).toBe(true);
+            expect(spy.secondCall.calledWith(model2, ['chains', 'x', 'y'], false)).toBe(true);
+        });
+    });
+    describe('.relationsToObject()', function () {
+        it('calls model.getLoadedRelations() the reduce with .relationDataToObject() if the given names is undefined', function () {
+            const relation1 = {
+                getName() {
+                    return 'relation-1';
+                },
+                getData() {
+                    return 'relation-1-data';
+                },
+                getChains() {
+                    return 'relation-1-chains';
+                }
+            };
+            const relation2 = {
+                getName() {
+                    return 'relation-2';
+                },
+                getData() {
+                    return 'relation-2-data';
+                },
+                getChains() {
+                    return 'relation-2-chains';
+                }
+            };
+            const model = {
+                getLoadedRelations() {
+                    return [relation1, relation2];
+                },
+                formatAttributeName(name) {
+                    return 'formatted-' + name;
+                }
+            };
+            const stub = Sinon.stub(serializationFeature, 'relationDataToObject');
+            stub.returns('relation-data');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            applyVisibleAndHiddenForStub.returns('applied-result');
+            expect(serializationFeature.relationsToObject(model, undefined, false, false)).toEqual({
+                'relation-1': 'relation-data',
+                'relation-2': 'relation-data'
+            });
+            expect(stub.firstCall.calledWith(model, 'relation-1-data', 'relation-1-chains', 'relation-1', false)).toBe(true);
+            expect(stub.secondCall.calledWith(model, 'relation-2-data', 'relation-2-chains', 'relation-2', false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.called).toBe(false);
+            stub.restore();
+            applyVisibleAndHiddenForStub.restore();
+        });
+        it('calls model.getRelations() the reduce with .relationDataToObject() if the given names is not undefined. Case with option formatName = true', function () {
+            const relation1 = {
+                getName() {
+                    return 'relation-1';
+                },
+                getData() {
+                    return 'relation-1-data';
+                },
+                getChains() {
+                    return 'relation-1-chains';
+                }
+            };
+            const relation2 = {
+                getName() {
+                    return 'relation-2';
+                },
+                getData() {
+                    return 'relation-2-data';
+                },
+                getChains() {
+                    return 'relation-2-chains';
+                }
+            };
+            const model = {
+                getRelations() {
+                    return [relation1, relation2];
+                },
+                formatAttributeName(name) {
+                    return 'formatted-' + name;
+                }
+            };
+            const stub = Sinon.stub(serializationFeature, 'relationDataToObject');
+            stub.returns('relation-data');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            applyVisibleAndHiddenForStub.returns('applied-result');
+            const spy = Sinon.spy(model, 'getRelations');
+            expect(serializationFeature.relationsToObject(model, ['a', 'b'], true, false)).toEqual({
+                'formatted-relation-1': 'relation-data',
+                'formatted-relation-2': 'relation-data'
+            });
+            expect(stub.firstCall.calledWith(model, 'relation-1-data', 'relation-1-chains', 'relation-1', true)).toBe(true);
+            expect(stub.secondCall.calledWith(model, 'relation-2-data', 'relation-2-chains', 'relation-2', true)).toBe(true);
+            expect(spy.calledWith(['a', 'b'])).toBe(true);
+            expect(applyVisibleAndHiddenForStub.called).toBe(false);
+            stub.restore();
+            applyVisibleAndHiddenForStub.restore();
+        });
+        it('calls .applyVisibleAndHiddenForStub() with result if needed', function () {
+            const relation1 = {
+                getName() {
+                    return 'relation-1';
+                },
+                getData() {
+                    return 'relation-1-data';
+                },
+                getChains() {
+                    return 'relation-1-chains';
+                }
+            };
+            const relation2 = {
+                getName() {
+                    return 'relation-2';
+                },
+                getData() {
+                    return 'relation-2-data';
+                },
+                getChains() {
+                    return 'relation-2-chains';
+                }
+            };
+            const model = {
+                getRelations() {
+                    return [relation1, relation2];
+                },
+                formatAttributeName(name) {
+                    return 'formatted-' + name;
+                }
+            };
+            const stub = Sinon.stub(serializationFeature, 'relationDataToObject');
+            stub.returns('relation-data');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            applyVisibleAndHiddenForStub.returns('applied-result');
+            const spy = Sinon.spy(model, 'getRelations');
+            expect(serializationFeature.relationsToObject(model, ['a', 'b'], true)).toEqual('applied-result');
+            expect(stub.firstCall.calledWith(model, 'relation-1-data', 'relation-1-chains', 'relation-1', true)).toBe(true);
+            expect(stub.secondCall.calledWith(model, 'relation-2-data', 'relation-2-chains', 'relation-2', true)).toBe(true);
+            expect(spy.calledWith(['a', 'b'])).toBe(true);
+            expect(applyVisibleAndHiddenForStub.calledWith({
+                'formatted-relation-1': 'relation-data',
+                'formatted-relation-2': 'relation-data'
+            })).toBe(false);
+            stub.restore();
+            applyVisibleAndHiddenForStub.restore();
         });
     });
     describe('.applyVisibleAndHiddenFor()', function () {
@@ -258,22 +494,22 @@ describe('SerializationFeature', function () {
         }
     });
     describe('.toObject()', function () {
-        it('calls and returns RecordManager.toObject()', function () {
-            const result = {};
-            const model = {
-                getDriver() {
-                    return {
-                        getRecordManager() {
-                            return {
-                                toObject() {
-                                    return result;
-                                }
-                            };
-                        }
-                    };
-                }
-            };
-            expect(serializationFeature.toObject(model) === result).toBe(true);
+        it('calls .attributesToObject() & .relationsToObject() with option shouldApplyVisibleAndHidden = false then merges and ', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            applyVisibleAndHiddenForStub.returns('anything');
+            const relations = {};
+            const model = {};
+            expect(serializationFeature.toObject(model, relations, true)).toEqual('anything');
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, relations, true, false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1, b: 2 })).toBe(true);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
         });
     });
     describe('.toJson()', function () {
