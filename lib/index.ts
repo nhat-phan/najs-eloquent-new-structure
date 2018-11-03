@@ -80,6 +80,7 @@ export const Relation: NajsEloquent.Relation.IRelationshipStatic = Relationship
 
 export { Model, Model as Eloquent }
 export { PivotModel as Pivot } from './relations/relationships/pivot/PivotModel'
+export { isModel, isCollection, isObjectId } from './util/helpers'
 export { Builtin as NajsEloquent } from './builtin'
 
 export type HasOne<T extends Model> = T | undefined | null

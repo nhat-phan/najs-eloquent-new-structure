@@ -363,3 +363,4 @@ export class Model {
 }
 
 PrototypeManager.stopFindingRelationsIn(Model.prototype)
+Object.defineProperty(Model.prototype, '_isNajsEloquentModel', { value: true })

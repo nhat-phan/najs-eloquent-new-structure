@@ -1,7 +1,8 @@
 import 'jest'
 import { register } from 'najs-binding'
 import { Model } from '../../lib'
-import { isModel, isCollection, distinctModelByClassInCollection } from '../../lib/util/helpers'
+import { ObjectId } from 'bson'
+import { isModel, isCollection, isObjectId, distinctModelByClassInCollection } from '../../lib/util/helpers'
 import { make_collection } from '../../lib/util/factory'
 
 class TestModel extends Model {
@@ -11,7 +12,7 @@ class TestModel extends Model {
 }
 register(TestModel)
 
-describe('isModel', function() {
+describe('.isModel()', function() {
   it('returns true if the given value is Model instance', function() {
     expect(isModel(0)).toBe(false)
     expect(isModel('test')).toBe(false)
@@ -20,9 +21,15 @@ describe('isModel', function() {
     expect(isModel(make_collection([]))).toBe(false)
     expect(isModel(new TestModel())).toBe(true)
   })
+
+  it('returns true if the given value is object and has _isNajsEloquentModel === true', function() {
+    expect(isModel({ _isNajsEloquentModel: true })).toBe(true)
+    expect(isModel({ _isNajsEloquentModel: false })).toBe(false)
+    expect(isModel({ _isNajsEloquentModel: '1' })).toBe(false)
+  })
 })
 
-describe('isCollection', function() {
+describe('.isCollection()', function() {
   it('returns true if the given value is Collection instance', function() {
     expect(isCollection(0)).toBe(false)
     expect(isCollection('test')).toBe(false)
@@ -30,6 +37,23 @@ describe('isCollection', function() {
     expect(isCollection(new Date())).toBe(false)
     expect(isCollection(new TestModel())).toBe(false)
     expect(isCollection(make_collection([]))).toBe(true)
+  })
+})
+
+describe('.isObjectId()', function() {
+  it('returns true if the given value is ObjectId instance', function() {
+    expect(isObjectId(0)).toBe(false)
+    expect(isObjectId('test')).toBe(false)
+    expect(isObjectId({})).toBe(false)
+    expect(isObjectId(new Date())).toBe(false)
+    expect(isObjectId(new TestModel())).toBe(false)
+    expect(isObjectId(new ObjectId())).toBe(true)
+  })
+
+  it('returns true if the given value is object and has _bsontype is ObjectId or ObjectID', function() {
+    expect(isObjectId({ _bsontype: 'objectid' })).toBe(false)
+    expect(isObjectId({ _bsontype: 'ObjectId' })).toBe(true)
+    expect(isObjectId({ _bsontype: 'ObjectID' })).toBe(true)
   })
 })
 

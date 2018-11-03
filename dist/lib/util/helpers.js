@@ -2,12 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Model_1 = require("../model/Model");
 const collect_js_1 = require("collect.js");
+const bson_1 = require("bson");
 const collection = collect_js_1.default([]);
 const Collection = Object.getPrototypeOf(collection).constructor;
 function isModel(value) {
-    return value instanceof Model_1.Model;
+    return value instanceof Model_1.Model || (!!value && value._isNajsEloquentModel === true);
 }
 exports.isModel = isModel;
+function isObjectId(value) {
+    return value instanceof bson_1.ObjectId || (!!value && (value._bsontype === 'ObjectId' || value._bsontype === 'ObjectID'));
+}
+exports.isObjectId = isObjectId;
 function isCollection(value) {
     return value instanceof Collection;
 }

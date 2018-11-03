@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const najs_binding_1 = require("najs-binding");
 const lib_1 = require("../../lib");
+const bson_1 = require("bson");
 const helpers_1 = require("../../lib/util/helpers");
 const factory_1 = require("../../lib/util/factory");
 class TestModel extends lib_1.Model {
@@ -11,7 +12,7 @@ class TestModel extends lib_1.Model {
     }
 }
 najs_binding_1.register(TestModel);
-describe('isModel', function () {
+describe('.isModel()', function () {
     it('returns true if the given value is Model instance', function () {
         expect(helpers_1.isModel(0)).toBe(false);
         expect(helpers_1.isModel('test')).toBe(false);
@@ -20,8 +21,13 @@ describe('isModel', function () {
         expect(helpers_1.isModel(factory_1.make_collection([]))).toBe(false);
         expect(helpers_1.isModel(new TestModel())).toBe(true);
     });
+    it('returns true if the given value is object and has _isNajsEloquentModel === true', function () {
+        expect(helpers_1.isModel({ _isNajsEloquentModel: true })).toBe(true);
+        expect(helpers_1.isModel({ _isNajsEloquentModel: false })).toBe(false);
+        expect(helpers_1.isModel({ _isNajsEloquentModel: '1' })).toBe(false);
+    });
 });
-describe('isCollection', function () {
+describe('.isCollection()', function () {
     it('returns true if the given value is Collection instance', function () {
         expect(helpers_1.isCollection(0)).toBe(false);
         expect(helpers_1.isCollection('test')).toBe(false);
@@ -29,6 +35,21 @@ describe('isCollection', function () {
         expect(helpers_1.isCollection(new Date())).toBe(false);
         expect(helpers_1.isCollection(new TestModel())).toBe(false);
         expect(helpers_1.isCollection(factory_1.make_collection([]))).toBe(true);
+    });
+});
+describe('.isObjectId()', function () {
+    it('returns true if the given value is ObjectId instance', function () {
+        expect(helpers_1.isObjectId(0)).toBe(false);
+        expect(helpers_1.isObjectId('test')).toBe(false);
+        expect(helpers_1.isObjectId({})).toBe(false);
+        expect(helpers_1.isObjectId(new Date())).toBe(false);
+        expect(helpers_1.isObjectId(new TestModel())).toBe(false);
+        expect(helpers_1.isObjectId(new bson_1.ObjectId())).toBe(true);
+    });
+    it('returns true if the given value is object and has _bsontype is ObjectId or ObjectID', function () {
+        expect(helpers_1.isObjectId({ _bsontype: 'objectid' })).toBe(false);
+        expect(helpers_1.isObjectId({ _bsontype: 'ObjectId' })).toBe(true);
+        expect(helpers_1.isObjectId({ _bsontype: 'ObjectID' })).toBe(true);
     });
 });
 describe('.distinctModelByClassInCollection()', function () {

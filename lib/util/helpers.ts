@@ -1,11 +1,16 @@
 import { Model } from '../model/Model'
 import collect from 'collect.js'
+import { ObjectId } from 'bson'
 
 const collection = collect([])
 const Collection = Object.getPrototypeOf(collection).constructor
 
 export function isModel(value: any): boolean {
-  return value instanceof Model
+  return value instanceof Model || (!!value && value._isNajsEloquentModel === true)
+}
+
+export function isObjectId(value: any): boolean {
+  return value instanceof ObjectId || (!!value && (value._bsontype === 'ObjectId' || value._bsontype === 'ObjectID'))
 }
 
 export function isCollection(value: any): boolean {

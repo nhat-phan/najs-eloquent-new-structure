@@ -58,6 +58,7 @@ import { Model } from './model/Model';
 export declare const Relation: NajsEloquent.Relation.IRelationshipStatic;
 export { Model, Model as Eloquent };
 export { PivotModel as Pivot } from './relations/relationships/pivot/PivotModel';
+export { isModel, isCollection, isObjectId } from './util/helpers';
 export { Builtin as NajsEloquent } from './builtin';
 export declare type HasOne<T extends Model> = T | undefined | null;
 export declare type HasMany<T extends Model> = CollectJs.Collection<T> | undefined;

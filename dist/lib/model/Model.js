@@ -189,3 +189,4 @@ class Model {
 Model.Event = ModelEvent_1.ModelEvent;
 exports.Model = Model;
 PrototypeManager_1.PrototypeManager.stopFindingRelationsIn(Model.prototype);
+Object.defineProperty(Model.prototype, '_isNajsEloquentModel', { value: true });

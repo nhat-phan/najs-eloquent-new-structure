@@ -20,6 +20,10 @@ DriverProviderFacade_1.DriverProvider.register(MemoryDriver_1.MemoryDriver, 'mem
 exports.Relation = Relationship_1.Relationship;
 var PivotModel_1 = require("./relations/relationships/pivot/PivotModel");
 exports.Pivot = PivotModel_1.PivotModel;
+var helpers_1 = require("./util/helpers");
+exports.isModel = helpers_1.isModel;
+exports.isCollection = helpers_1.isCollection;
+exports.isObjectId = helpers_1.isObjectId;
 var builtin_1 = require("./builtin");
 exports.NajsEloquent = builtin_1.Builtin;
 var DriverProviderFacade_2 = require("./facades/global/DriverProviderFacade");
