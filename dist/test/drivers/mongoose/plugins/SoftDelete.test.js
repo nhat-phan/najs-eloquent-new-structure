@@ -4,7 +4,7 @@ require("jest");
 const util_1 = require("../../../util");
 const mongoose_1 = require("mongoose");
 const SoftDelete_1 = require("../../../../lib/drivers/mongoose/plugins/SoftDelete");
-const Moment = require('moment');
+const MomentProviderFacade_1 = require("../../../../lib/facades/global/MomentProviderFacade");
 const mongoose = require('mongoose');
 let count = 0;
 function create_model(options) {
@@ -25,14 +25,14 @@ function make_deletedAt_tests(Model, fieldName) {
     });
     it('defines new method called `delete()` and updates deleted_at = now', async function () {
         const now = new Date(1988, 4, 16);
-        Moment.now = () => now;
+        MomentProviderFacade_1.MomentProvider.setNow(() => now);
         const document = await Model.findOne({ name: 'test' });
         await document.delete();
         expect(document[fieldName]).toEqual(now);
     });
     it('defines new method called `restore()` and updates deleted_at = null', async function () {
         const now = new Date(2000, 0, 1);
-        Moment.now = () => now;
+        MomentProviderFacade_1.MomentProvider.setNow(() => now);
         const document = await Model.findOne({ name: 'test' });
         await document.restore();
         expect(document[fieldName]).toBeNull();

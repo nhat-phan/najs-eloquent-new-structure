@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const lodash_1 = require("lodash");
-const Moment = require("moment");
+const MomentProviderFacade_1 = require("../../../facades/global/MomentProviderFacade");
 // tslint:disable-next-line
 const NOT_DELETED_VALUE = null;
 const DEFAULT_OPTIONS = { deletedAt: 'deleted_at', overrideMethods: false };
@@ -18,7 +18,7 @@ function SoftDelete(schema, options) {
         apply_override_methods(schema, opts);
     }
     schema.methods.delete = function (...args) {
-        this[opts.deletedAt] = Moment().toDate();
+        this[opts.deletedAt] = MomentProviderFacade_1.MomentProvider.make().toDate();
         return this.save(...args);
     };
     schema.methods.restore = function (callback) {

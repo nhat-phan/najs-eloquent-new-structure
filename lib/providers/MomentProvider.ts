@@ -13,7 +13,7 @@ export class MomentProvider extends Facade implements Najs.Contracts.Eloquent.Mo
   }
 
   make(): Moment {
-    return moment()
+    return moment(...arguments)
   }
 
   isMoment(value: any): boolean {

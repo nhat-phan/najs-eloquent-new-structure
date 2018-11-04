@@ -10,7 +10,7 @@ class MomentProvider extends najs_facade_1.Facade {
         return constants_1.NajsEloquent.Provider.MomentProvider;
     }
     make() {
-        return moment();
+        return moment(...arguments);
     }
     isMoment(value) {
         return moment.isMoment(value);

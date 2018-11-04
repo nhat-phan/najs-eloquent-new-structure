@@ -7,8 +7,7 @@ import { QueryLog } from '../../../lib/facades/global/QueryLogFacade'
 import { MongodbQueryBuilder } from '../../../lib/drivers/mongodb/MongodbQueryBuilder'
 import { MongodbQueryBuilderHandler } from '../../../lib/drivers/mongodb/MongodbQueryBuilderHandler'
 import { MongodbQueryExecutor } from '../../../lib/drivers/mongodb/MongodbQueryExecutor'
-
-const Moment = require('moment')
+import { MomentProvider } from '../../../lib/facades/global/MomentProviderFacade'
 
 describe('MongodbQueryExecutor', function() {
   const dataset = [
@@ -663,7 +662,7 @@ describe('MongodbQueryExecutor', function() {
 
     it('auto add updatedAt field to $set if timestamps options is on', async function() {
       const now = new Date(1988, 4, 16)
-      Moment.now = () => now
+      MomentProvider.setNow(() => now)
 
       function makeHandler() {
         return new MongodbQueryBuilderHandler(<any>{

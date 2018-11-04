@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
-const Moment = require("moment");
+const MomentProviderFacade_1 = require("../../facades/global/MomentProviderFacade");
 class MongodbQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, collection, logger) {
         super();
@@ -52,7 +52,7 @@ class MongodbQueryExecutor extends ExecutorBase_1.ExecutorBase {
             if (typeof data['$set'] === 'undefined') {
                 data['$set'] = {};
             }
-            data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate();
+            data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = MomentProviderFacade_1.MomentProvider.make().toDate();
         }
         const result = this.shouldExecute()
             ? await this.collection.updateMany(query, data).then(function (response) {

@@ -11,7 +11,7 @@ const MongodbQueryLog_1 = require("../../../lib/drivers/mongodb/MongodbQueryLog"
 const ExecutorBase_1 = require("../../../lib/drivers/ExecutorBase");
 const RecordExecutorBase_1 = require("../../../lib/drivers/RecordExecutorBase");
 const bson_1 = require("bson");
-const Moment = require('moment');
+const MomentProviderFacade_1 = require("../../../lib/facades/global/MomentProviderFacade");
 describe('MongodbRecordExecutor', function () {
     beforeAll(async function () {
         await util_1.init_mongodb('mongodb_record_executor');
@@ -114,10 +114,8 @@ describe('MongodbRecordExecutor', function () {
             expect(record.toObject()).toEqual({});
         });
         it('fills updatedAt only if isCreate = false if has timestamp settings', function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
             const record = new Record_1.Record();
             const executor = makeExecutor(model, record);
@@ -125,10 +123,8 @@ describe('MongodbRecordExecutor', function () {
             expect(record.toObject()).toEqual({ updated_at: now.toDate() });
         });
         it('fills updatedAt/createdAt if isCreate = true if has timestamp settings', function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
             const record = new Record_1.Record();
             const executor = makeExecutor(model, record);
@@ -136,10 +132,8 @@ describe('MongodbRecordExecutor', function () {
             expect(record.toObject()).toEqual({ updated_at: now.toDate(), created_at: now.toDate() });
         });
         it('skips createdAt if it already exists', function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
             const record = new Record_1.Record({ created_at: 'anything' });
             const executor = makeExecutor(model, record);
@@ -219,10 +213,8 @@ describe('MongodbRecordExecutor', function () {
         });
         it('can create with timestamps', async function () {
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false);
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const result = await makeExecutor(model, new Record_1.Record({ test: 'data' })).create();
             expect_query_log({
                 raw: `db.test.insertOne(${JSON.stringify({
@@ -235,10 +227,8 @@ describe('MongodbRecordExecutor', function () {
         });
         it('can create with softDeletes', async function () {
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const result = await makeExecutor(model, new Record_1.Record({ test: 'data' })).create();
             expect_query_log({
                 raw: `db.test.insertOne(${JSON.stringify({
@@ -251,10 +241,8 @@ describe('MongodbRecordExecutor', function () {
         });
         it('returns an empty object if executeMode is disabled', async function () {
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const result = await makeExecutor(model, new Record_1.Record({ test: 'data' }))
                 .setExecuteMode('disabled')
                 .create();
@@ -358,10 +346,8 @@ describe('MongodbRecordExecutor', function () {
                 return 'id';
             };
             await makeExecutor(model, new Record_1.Record({ _id: id, name: 'any' })).create();
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const record = new Record_1.Record({ _id: id });
             record.setAttribute('name', 'test');
             const result = await makeExecutor(model, record).update();
@@ -420,10 +406,8 @@ describe('MongodbRecordExecutor', function () {
     });
     describe('.softDelete()', function () {
         it('sets deleted_at field then calls and returns .create() if the model is new', async function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
             model['isNew'] = function () {
                 return true;
@@ -442,10 +426,8 @@ describe('MongodbRecordExecutor', function () {
             expect(record.getAttribute('deleted_at')).toEqual(now.toDate());
         });
         it('sets deleted_at field then calls and returns .update() if the model is not new', async function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
             model['isNew'] = function () {
                 return false;
@@ -464,10 +446,8 @@ describe('MongodbRecordExecutor', function () {
             expect(record.getAttribute('deleted_at')).toEqual(now.toDate());
         });
         it('should work with expected log', async function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, { deletedAt: 'deleted_at' });
             model['isNew'] = function () {
                 return true;
@@ -536,10 +516,8 @@ describe('MongodbRecordExecutor', function () {
     });
     describe('.restore()', function () {
         it('calls .fillTimestampsData() then calls and returns .update()', async function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
             model['isNew'] = function () {
                 return true;
@@ -555,10 +533,8 @@ describe('MongodbRecordExecutor', function () {
             expect(record.getAttribute('deleted_at')).toBeNull();
         });
         it('should work with expected log', async function () {
-            const now = Moment('2018-01-01T00:00:00.000Z');
-            Moment.now = () => {
-                return now;
-            };
+            const now = MomentProviderFacade_1.MomentProvider.make('2018-01-01T00:00:00.000Z');
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             const id = new bson_1.ObjectId();
             const model = makeModel('Test', false, { deletedAt: 'deleted_at' });
             model['getPrimaryKey'] = function () {

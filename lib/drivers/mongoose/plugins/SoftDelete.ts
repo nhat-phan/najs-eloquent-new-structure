@@ -2,7 +2,7 @@
 
 import { Schema, Model } from 'mongoose'
 import { isObject } from 'lodash'
-import * as Moment from 'moment'
+import { MomentProvider } from '../../../facades/global/MomentProviderFacade'
 
 // tslint:disable-next-line
 const NOT_DELETED_VALUE = null
@@ -22,7 +22,7 @@ export function SoftDelete(schema: Schema, options: NajsEloquent.Feature.ISoftDe
   }
 
   schema.methods.delete = function(...args: any[]) {
-    this[opts.deletedAt] = Moment().toDate()
+    this[opts.deletedAt] = MomentProvider.make().toDate()
     return this.save(...args)
   }
 

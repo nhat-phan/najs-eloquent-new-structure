@@ -14,7 +14,7 @@ import { MemoryQueryLog, IUpdateRecordInfo } from './MemoryQueryLog'
 import { MemoryQueryBuilderHandler } from './MemoryQueryBuilderHandler'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
-import * as Moment from 'moment'
+import { MomentProvider } from '../../facades/global/MomentProviderFacade'
 
 export class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected queryHandler: MemoryQueryBuilderHandler
@@ -71,7 +71,7 @@ export class MemoryQueryExecutor extends ExecutorBase implements NajsEloquent.Qu
     const records = this.shouldExecute() ? await this.collectResult(collector) : []
 
     if (this.queryHandler.hasTimestamps()) {
-      data[this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate()
+      data[this.queryHandler.getTimestampsSetting().updatedAt] = MomentProvider.make().toDate()
     }
 
     if (records.length === 0) {

@@ -10,8 +10,7 @@ import { MemoryDataSourceProvider } from '../../../lib/facades/global/MemoryData
 import { MemoryQueryBuilder } from '../../../lib/drivers/memory/MemoryQueryBuilder'
 import { MemoryQueryBuilderHandler } from '../../../lib/drivers/memory/MemoryQueryBuilderHandler'
 import { MemoryQueryExecutor } from '../../../lib/drivers/memory/MemoryQueryExecutor'
-
-const Moment = require('moment')
+import { MomentProvider } from '../../../lib/facades/global/MomentProviderFacade'
 
 MemoryDataSourceProvider.register(MemoryDataSource, 'memory', true)
 
@@ -748,7 +747,7 @@ describe('MemoryQueryExecutor', function() {
 
     it('auto add updatedAt field to $set if timestamps options is on', async function() {
       const now = new Date(1988, 4, 16)
-      Moment.now = () => now
+      MomentProvider.setNow(() => now)
 
       function makeHandler() {
         return new MemoryQueryBuilderHandler(<any>{

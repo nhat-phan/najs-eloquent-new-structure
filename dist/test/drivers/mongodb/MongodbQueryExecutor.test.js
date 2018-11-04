@@ -8,7 +8,7 @@ const MongodbProviderFacade_1 = require("../../../lib/facades/global/MongodbProv
 const QueryLogFacade_1 = require("../../../lib/facades/global/QueryLogFacade");
 const MongodbQueryBuilder_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilder");
 const MongodbQueryBuilderHandler_1 = require("../../../lib/drivers/mongodb/MongodbQueryBuilderHandler");
-const Moment = require('moment');
+const MomentProviderFacade_1 = require("../../../lib/facades/global/MomentProviderFacade");
 describe('MongodbQueryExecutor', function () {
     const dataset = [
         { first_name: 'john', last_name: 'doe', age: 30 },
@@ -504,7 +504,7 @@ describe('MongodbQueryExecutor', function () {
         });
         it('auto add updatedAt field to $set if timestamps options is on', async function () {
             const now = new Date(1988, 4, 16);
-            Moment.now = () => now;
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             function makeHandler() {
                 return new MongodbQueryBuilderHandler_1.MongodbQueryBuilderHandler({
                     getDriver() {

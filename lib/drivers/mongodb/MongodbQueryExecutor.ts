@@ -7,7 +7,7 @@ import { ExecutorBase } from '../ExecutorBase'
 import { BasicQuery } from '../../query-builders/shared/BasicQuery'
 import { MongodbQueryBuilderHandler } from './MongodbQueryBuilderHandler'
 import { ExecutorUtils } from '../../query-builders/shared/ExecutorUtils'
-import * as Moment from 'moment'
+import { MomentProvider } from '../../facades/global/MomentProviderFacade'
 
 export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.QueryBuilder.IQueryExecutor {
   protected logger: MongodbQueryLog
@@ -72,7 +72,7 @@ export class MongodbQueryExecutor extends ExecutorBase implements NajsEloquent.Q
       if (typeof data['$set'] === 'undefined') {
         data['$set'] = {}
       }
-      data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate()
+      data['$set'][this.queryHandler.getTimestampsSetting().updatedAt] = MomentProvider.make().toDate()
     }
 
     const result = this.shouldExecute()

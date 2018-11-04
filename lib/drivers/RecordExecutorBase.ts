@@ -5,7 +5,7 @@ import IConvention = NajsEloquent.QueryBuilder.IConvention
 import Model = NajsEloquent.Model.IModel
 import { Record } from './Record'
 import { ExecutorBase } from './ExecutorBase'
-import * as Moment from 'moment'
+import { MomentProvider } from '../facades/global/MomentProviderFacade'
 
 export abstract class RecordExecutorBase extends ExecutorBase implements NajsEloquent.Feature.IRecordExecutor {
   protected model: NajsEloquent.Model.IModel
@@ -46,9 +46,15 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
     if (timestampFeature.hasTimestamps(this.model)) {
       const timestampSettings = timestampFeature.getTimestampsSetting(this.model)
 
-      this.record.setAttribute(this.convention.formatFieldName(timestampSettings.updatedAt), Moment().toDate())
+      this.record.setAttribute(
+        this.convention.formatFieldName(timestampSettings.updatedAt),
+        MomentProvider.make().toDate()
+      )
       if (isCreate) {
-        this.setAttributeIfNeeded(this.convention.formatFieldName(timestampSettings.createdAt), Moment().toDate())
+        this.setAttributeIfNeeded(
+          this.convention.formatFieldName(timestampSettings.createdAt),
+          MomentProvider.make().toDate()
+        )
       }
     }
   }
@@ -94,7 +100,7 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
     const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
     this.record.setAttribute(
       this.convention.formatFieldName(softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt),
-      Moment().toDate()
+      MomentProvider.make().toDate()
     )
 
     return isNew ? this.create(false, 'softDelete') : this.update(false, 'softDelete')

@@ -3,7 +3,7 @@
 /// <reference path="../definitions/query-builders/IConvention.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const ExecutorBase_1 = require("./ExecutorBase");
-const Moment = require("moment");
+const MomentProviderFacade_1 = require("../facades/global/MomentProviderFacade");
 class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
     constructor(model, record, convention) {
         super();
@@ -26,9 +26,9 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         const timestampFeature = this.model.getDriver().getTimestampsFeature();
         if (timestampFeature.hasTimestamps(this.model)) {
             const timestampSettings = timestampFeature.getTimestampsSetting(this.model);
-            this.record.setAttribute(this.convention.formatFieldName(timestampSettings.updatedAt), Moment().toDate());
+            this.record.setAttribute(this.convention.formatFieldName(timestampSettings.updatedAt), MomentProviderFacade_1.MomentProvider.make().toDate());
             if (isCreate) {
-                this.setAttributeIfNeeded(this.convention.formatFieldName(timestampSettings.createdAt), Moment().toDate());
+                this.setAttributeIfNeeded(this.convention.formatFieldName(timestampSettings.createdAt), MomentProviderFacade_1.MomentProvider.make().toDate());
             }
         }
     }
@@ -63,7 +63,7 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         const isNew = this.model.isNew();
         this.fillTimestampsData(isNew);
         const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();
-        this.record.setAttribute(this.convention.formatFieldName(softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt), Moment().toDate());
+        this.record.setAttribute(this.convention.formatFieldName(softDeletesFeature.getSoftDeletesSetting(this.model).deletedAt), MomentProviderFacade_1.MomentProvider.make().toDate());
         return isNew ? this.create(false, 'softDelete') : this.update(false, 'softDelete');
     }
     async hardDelete() {

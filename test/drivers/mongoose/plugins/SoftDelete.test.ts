@@ -2,7 +2,7 @@ import 'jest'
 import { init_mongoose, delete_collection } from '../../../util'
 import { model, Schema } from 'mongoose'
 import { SoftDelete } from '../../../../lib/drivers/mongoose/plugins/SoftDelete'
-const Moment = require('moment')
+import { MomentProvider } from '../../../../lib/facades/global/MomentProviderFacade'
 const mongoose = require('mongoose')
 
 let count = 0
@@ -29,7 +29,7 @@ function make_deletedAt_tests(Model: any, fieldName: string) {
 
   it('defines new method called `delete()` and updates deleted_at = now', async function() {
     const now = new Date(1988, 4, 16)
-    Moment.now = () => now
+    MomentProvider.setNow(() => now)
 
     const document: any = await Model.findOne({ name: 'test' })
     await document.delete()
@@ -38,7 +38,7 @@ function make_deletedAt_tests(Model: any, fieldName: string) {
 
   it('defines new method called `restore()` and updates deleted_at = null', async function() {
     const now = new Date(2000, 0, 1)
-    Moment.now = () => now
+    MomentProvider.setNow(() => now)
 
     const document: any = await Model.findOne({ name: 'test' })
     await document.restore()

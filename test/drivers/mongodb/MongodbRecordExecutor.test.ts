@@ -9,8 +9,7 @@ import { MongodbQueryLog } from '../../../lib/drivers/mongodb/MongodbQueryLog'
 import { ExecutorBase } from '../../../lib/drivers/ExecutorBase'
 import { RecordExecutorBase } from '../../../lib/drivers/RecordExecutorBase'
 import { ObjectId } from 'bson'
-
-const Moment = require('moment')
+import { MomentProvider } from '../../../lib/facades/global/MomentProviderFacade'
 
 describe('MongodbRecordExecutor', function() {
   beforeAll(async function() {
@@ -129,10 +128,8 @@ describe('MongodbRecordExecutor', function() {
     })
 
     it('fills updatedAt only if isCreate = false if has timestamp settings', function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false)
       const record = new Record()
@@ -142,10 +139,8 @@ describe('MongodbRecordExecutor', function() {
     })
 
     it('fills updatedAt/createdAt if isCreate = true if has timestamp settings', function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false)
       const record = new Record()
@@ -155,10 +150,8 @@ describe('MongodbRecordExecutor', function() {
     })
 
     it('skips createdAt if it already exists', function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false)
       const record = new Record({ created_at: 'anything' })
@@ -256,10 +249,8 @@ describe('MongodbRecordExecutor', function() {
 
     it('can create with timestamps', async function() {
       const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, false)
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const result = await makeExecutor(model, new Record({ test: 'data' })).create()
       expect_query_log(
@@ -277,10 +268,8 @@ describe('MongodbRecordExecutor', function() {
 
     it('can create with softDeletes', async function() {
       const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const result = await makeExecutor(model, new Record({ test: 'data' })).create()
       expect_query_log(
@@ -298,10 +287,8 @@ describe('MongodbRecordExecutor', function() {
 
     it('returns an empty object if executeMode is disabled', async function() {
       const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const result = await makeExecutor(model, new Record({ test: 'data' }))
         .setExecuteMode('disabled')
@@ -433,10 +420,9 @@ describe('MongodbRecordExecutor', function() {
       }
 
       await makeExecutor(model, new Record({ _id: id, name: 'any' })).create()
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
+
       const record = new Record({ _id: id })
       record.setAttribute('name', 'test')
       const result = await makeExecutor(model, record).update()
@@ -514,10 +500,8 @@ describe('MongodbRecordExecutor', function() {
 
   describe('.softDelete()', function() {
     it('sets deleted_at field then calls and returns .create() if the model is new', async function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
       model['isNew'] = function() {
@@ -539,10 +523,8 @@ describe('MongodbRecordExecutor', function() {
     })
 
     it('sets deleted_at field then calls and returns .update() if the model is not new', async function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
       model['isNew'] = function() {
@@ -564,10 +546,8 @@ describe('MongodbRecordExecutor', function() {
     })
 
     it('should work with expected log', async function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', { createdAt: 'created_at', updatedAt: 'updated_at' }, { deletedAt: 'deleted_at' })
       model['isNew'] = function() {
@@ -659,10 +639,8 @@ describe('MongodbRecordExecutor', function() {
 
   describe('.restore()', function() {
     it('calls .fillTimestampsData() then calls and returns .update()', async function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
 
       const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
       model['isNew'] = function() {
@@ -681,10 +659,9 @@ describe('MongodbRecordExecutor', function() {
     })
 
     it('should work with expected log', async function() {
-      const now = Moment('2018-01-01T00:00:00.000Z')
-      Moment.now = () => {
-        return now
-      }
+      const now = MomentProvider.make('2018-01-01T00:00:00.000Z')
+      MomentProvider.setNow(() => now)
+
       const id = new ObjectId()
       const model = makeModel('Test', false, { deletedAt: 'deleted_at' })
       model['getPrimaryKey'] = function() {

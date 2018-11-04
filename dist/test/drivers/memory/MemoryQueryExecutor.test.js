@@ -11,7 +11,7 @@ const MemoryDataSource_1 = require("../../../lib/drivers/memory/MemoryDataSource
 const MemoryDataSourceProviderFacade_1 = require("../../../lib/facades/global/MemoryDataSourceProviderFacade");
 const MemoryQueryBuilder_1 = require("../../../lib/drivers/memory/MemoryQueryBuilder");
 const MemoryQueryBuilderHandler_1 = require("../../../lib/drivers/memory/MemoryQueryBuilderHandler");
-const Moment = require('moment');
+const MomentProviderFacade_1 = require("../../../lib/facades/global/MomentProviderFacade");
 MemoryDataSourceProviderFacade_1.MemoryDataSourceProvider.register(MemoryDataSource_1.MemoryDataSource, 'memory', true);
 const User = {
     getModelName() {
@@ -579,7 +579,7 @@ describe('MemoryQueryExecutor', function () {
         });
         it('auto add updatedAt field to $set if timestamps options is on', async function () {
             const now = new Date(1988, 4, 16);
-            Moment.now = () => now;
+            MomentProviderFacade_1.MomentProvider.setNow(() => now);
             function makeHandler() {
                 return new MemoryQueryBuilderHandler_1.MemoryQueryBuilderHandler({
                     getDriver() {

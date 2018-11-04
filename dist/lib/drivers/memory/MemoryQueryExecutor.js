@@ -9,7 +9,7 @@ const RecordConditionMatcherFactory_1 = require("../RecordConditionMatcherFactor
 const BasicQueryConverter_1 = require("../../query-builders/shared/BasicQueryConverter");
 const ExecutorBase_1 = require("../ExecutorBase");
 const ExecutorUtils_1 = require("../../query-builders/shared/ExecutorUtils");
-const Moment = require("moment");
+const MomentProviderFacade_1 = require("../../facades/global/MomentProviderFacade");
 class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
     constructor(queryHandler, dataSource, logger) {
         super();
@@ -53,7 +53,7 @@ class MemoryQueryExecutor extends ExecutorBase_1.ExecutorBase {
         const collector = this.makeCollector();
         const records = this.shouldExecute() ? await this.collectResult(collector) : [];
         if (this.queryHandler.hasTimestamps()) {
-            data[this.queryHandler.getTimestampsSetting().updatedAt] = Moment().toDate();
+            data[this.queryHandler.getTimestampsSetting().updatedAt] = MomentProviderFacade_1.MomentProvider.make().toDate();
         }
         if (records.length === 0) {
             return this.logger

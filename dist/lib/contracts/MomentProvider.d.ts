@@ -3,7 +3,7 @@ declare namespace Najs.Contracts.Eloquent {
         /**
          * Make moment instance
          */
-        make(): T;
+        make(...args: any[]): T;
         /**
          * Determine that the given value is Moment or not
          */
