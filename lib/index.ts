@@ -4,6 +4,7 @@
 /// <reference path="contracts/FactoryManager.ts" />
 /// <reference path="contracts/MemoryDataSource.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.ts" />
+/// <reference path="contracts/MomentProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
 
 /// <reference path="definitions/collect.js/index.d.ts" />
@@ -107,3 +108,4 @@ export {
   MemoryDataSourceProvider,
   MemoryDataSourceProviderFacade
 } from './facades/global/MemoryDataSourceProviderFacade'
+export { MomentProvider, MomentProviderFacade } from './facades/global/MomentProviderFacade'

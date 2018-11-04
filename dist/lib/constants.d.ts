@@ -42,6 +42,7 @@ export declare const NajsEloquent: {
     Provider: {
         DriverProvider: string;
         MemoryDataSourceProvider: string;
+        MomentProvider: string;
         MongodbProvider: string;
         MongooseProvider: string;
         KnexProvider: string;

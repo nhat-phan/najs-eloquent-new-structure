@@ -5,6 +5,7 @@
 /// <reference path="contracts/FactoryManager.ts" />
 /// <reference path="contracts/MemoryDataSource.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.ts" />
+/// <reference path="contracts/MomentProvider.ts" />
 /// <reference path="contracts/QueryLog.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const MemoryDataSourceProviderFacade_1 = require("./facades/global/MemoryDataSourceProviderFacade");
@@ -43,3 +44,6 @@ exports.QueryLogFacade = QueryLogFacade_1.QueryLogFacade;
 var MemoryDataSourceProviderFacade_2 = require("./facades/global/MemoryDataSourceProviderFacade");
 exports.MemoryDataSourceProvider = MemoryDataSourceProviderFacade_2.MemoryDataSourceProvider;
 exports.MemoryDataSourceProviderFacade = MemoryDataSourceProviderFacade_2.MemoryDataSourceProviderFacade;
+var MomentProviderFacade_1 = require("./facades/global/MomentProviderFacade");
+exports.MomentProvider = MomentProviderFacade_1.MomentProvider;
+exports.MomentProviderFacade = MomentProviderFacade_1.MomentProviderFacade;

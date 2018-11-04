@@ -4,6 +4,7 @@
 /// <reference path="contracts/FactoryManager.d.ts" />
 /// <reference path="contracts/MemoryDataSource.d.ts" />
 /// <reference path="contracts/MemoryDataSourceProvider.d.ts" />
+/// <reference path="contracts/MomentProvider.d.ts" />
 /// <reference path="contracts/QueryLog.d.ts" />
 /// <reference path="../../lib/definitions/collect.js/index.d.ts" />
 /// <reference path="definitions/data/IDataBuffer.d.ts" />
@@ -71,3 +72,4 @@ export { DriverProvider, DriverProvider as ModelDriverProvider, DriverProvider a
 export { factory, Factory, FactoryFacade } from './facades/global/FactoryFacade';
 export { QueryLog, QueryLogFacade } from './facades/global/QueryLogFacade';
 export { MemoryDataSourceProvider, MemoryDataSourceProviderFacade } from './facades/global/MemoryDataSourceProviderFacade';
+export { MomentProvider, MomentProviderFacade } from './facades/global/MomentProviderFacade';
