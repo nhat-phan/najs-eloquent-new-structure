@@ -11,27 +11,12 @@ namespace NajsEloquent.Feature {
     getFillable(model: Model.IModel): string[]
 
     /**
-     * Get the guarded attributes for the model.
-     *
-     * @param {Model} model
-     */
-    getGuarded(model: Model.IModel): string[]
-
-    /**
-     * Add temporary fillable attributes for current instance.
+     * Add temporary fillable attributes for the model.
      *
      * @param {Model} model
      * @param {Array<string|string[]>} keys
      */
-    markFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
-
-    /**
-     * Add temporary guarded attributes for current instance.
-     *
-     * @param {Model} model
-     * @param {Array<string|string[]>} keys
-     */
-    markGuarded(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
+    addFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
 
     /**
      * Determine if the given attribute may be mass assigned.
@@ -40,6 +25,21 @@ namespace NajsEloquent.Feature {
      * @param {Array<string|string[]>} key
      */
     isFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
+
+    /**
+     * Get the guarded attributes for the model.
+     *
+     * @param {Model} model
+     */
+    getGuarded(model: Model.IModel): string[]
+
+    /**
+     * Add temporary guarded attributes for the model.
+     *
+     * @param {Model} model
+     * @param {Array<string|string[]>} keys
+     */
+    addGuarded(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
 
     /**
      * Determine if the given key is guarded.

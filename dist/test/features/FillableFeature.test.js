@@ -70,7 +70,7 @@ describe('FillableFeature', function () {
             expect(stub.calledWith(model, 'guarded', ['*'])).toBe(true);
         });
     });
-    describe('.markFillable()', function () {
+    describe('.addFillable()', function () {
         it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "fillable" and passed param', function () {
             const settingFeature = {
                 pushToUniqueArraySetting() {
@@ -89,11 +89,11 @@ describe('FillableFeature', function () {
             const stub = Sinon.stub(settingFeature, 'pushToUniqueArraySetting');
             stub.returns('anything');
             const keys = ['a', ['b', 'c']];
-            expect(fillableFeature.markFillable(model, keys)).toEqual('anything');
+            expect(fillableFeature.addFillable(model, keys)).toEqual('anything');
             expect(stub.calledWith(model, 'fillable', keys)).toBe(true);
         });
     });
-    describe('.markGuarded()', function () {
+    describe('.addGuarded()', function () {
         it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "guarded" and passed param', function () {
             const settingFeature = {
                 pushToUniqueArraySetting() {
@@ -112,7 +112,7 @@ describe('FillableFeature', function () {
             const stub = Sinon.stub(settingFeature, 'pushToUniqueArraySetting');
             stub.returns('anything');
             const keys = ['a', ['b', 'c']];
-            expect(fillableFeature.markGuarded(model, keys)).toEqual('anything');
+            expect(fillableFeature.addGuarded(model, keys)).toEqual('anything');
             expect(stub.calledWith(model, 'guarded', keys)).toBe(true);
         });
     });

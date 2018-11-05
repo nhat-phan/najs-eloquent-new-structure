@@ -11,27 +11,12 @@ namespace NajsEloquent.Feature {
     getVisible(model: Model.IModel): string[]
 
     /**
-     * Get the hidden attributes for the model.
-     *
-     * @param {Model} model
-     */
-    getHidden(model: Model.IModel): string[]
-
-    /**
-     * Add temporary visible attributes for current instance.
+     * Add temporary visible attributes for the model.
      *
      * @param {Model} model
      * @param {string|string[]} keys
      */
-    markVisible(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
-
-    /**
-     * Add temporary hidden attributes for current instance.
-     *
-     * @param {Model} model
-     * @param {string|string[]} keys
-     */
-    markHidden(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
+    addVisible(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
 
     /**
      * Determine if the given attribute may be included in JSON.
@@ -40,6 +25,21 @@ namespace NajsEloquent.Feature {
      * @param {string} key
      */
     isVisible(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean
+
+    /**
+     * Get the hidden attributes for the model.
+     *
+     * @param {Model} model
+     */
+    getHidden(model: Model.IModel): string[]
+
+    /**
+     * Add temporary hidden attributes for the model.
+     *
+     * @param {Model} model
+     * @param {string|string[]} keys
+     */
+    addHidden(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void
 
     /**
      * Determine if the given key hidden in JSON.

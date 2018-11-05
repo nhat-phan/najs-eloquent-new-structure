@@ -18,23 +18,11 @@ namespace NajsEloquent.Model {
     getFillable(): string[]
 
     /**
-     * Get the guarded attributes for the model.
-     */
-    getGuarded(): string[]
-
-    /**
-     * Add temporary fillable attributes for current instance.
+     * Add temporary fillable attributes for the model.
      *
      * @param {string|string[]} keys
      */
-    markFillable(...keys: Array<string | string[]>): this
-
-    /**
-     * Add temporary guarded attributes for current instance.
-     *
-     * @param {string|string[]} keys
-     */
-    markGuarded(...keys: Array<string | string[]>): this
+    addFillable(...keys: Array<string | string[]>): this
 
     /**
      * Determine if the given attribute may be mass assigned.
@@ -42,6 +30,18 @@ namespace NajsEloquent.Model {
      * @param {string} key
      */
     isFillable(...keys: Array<string | string[]>): boolean
+
+    /**
+     * Get the guarded attributes for the model.
+     */
+    getGuarded(): string[]
+
+    /**
+     * Add temporary guarded attributes for the model.
+     *
+     * @param {string|string[]} keys
+     */
+    addGuarded(...keys: Array<string | string[]>): this
 
     /**
      * Determine if the given key is guarded.

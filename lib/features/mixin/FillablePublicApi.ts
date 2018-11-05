@@ -11,20 +11,20 @@ export const FillablePublicApi: NajsEloquent.Model.IModelFillable = {
     return this.driver.getFillableFeature().getGuarded(this)
   },
 
-  markFillable(this: Model) {
-    this.driver.getFillableFeature().markFillable(this, arguments)
-
-    return this
-  },
-
-  markGuarded(this: Model) {
-    this.driver.getFillableFeature().markGuarded(this, arguments)
-
-    return this
-  },
-
   isFillable(this: Model) {
     return this.driver.getFillableFeature().isFillable(this, arguments)
+  },
+
+  addFillable(this: Model) {
+    this.driver.getFillableFeature().addFillable(this, arguments)
+
+    return this
+  },
+
+  addGuarded(this: Model) {
+    this.driver.getFillableFeature().addGuarded(this, arguments)
+
+    return this
   },
 
   isGuarded(this: Model) {

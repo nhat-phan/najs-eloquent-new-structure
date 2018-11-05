@@ -21,17 +21,17 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     getVisible(model) {
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'visible', []);
     }
-    getHidden(model) {
-        return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'hidden', []);
-    }
-    markVisible(model, keys) {
+    addVisible(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'visible', keys);
-    }
-    markHidden(model, keys) {
-        return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys);
     }
     isVisible(model, keys) {
         return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getVisible(model), this.getHidden(model));
+    }
+    getHidden(model) {
+        return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'hidden', []);
+    }
+    addHidden(model, keys) {
+        return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys);
     }
     isHidden(model, keys) {
         return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model));

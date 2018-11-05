@@ -27,20 +27,20 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'visible', [])
   }
 
-  getHidden(model: Model): string[] {
-    return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'hidden', [])
-  }
-
-  markVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
+  addVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
     return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'visible', keys)
-  }
-
-  markHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
-    return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys)
   }
 
   isVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean {
     return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getVisible(model), this.getHidden(model))
+  }
+
+  getHidden(model: Model): string[] {
+    return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'hidden', [])
+  }
+
+  addHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
+    return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys)
   }
 
   isHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean {

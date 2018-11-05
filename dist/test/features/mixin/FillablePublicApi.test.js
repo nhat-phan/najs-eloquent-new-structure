@@ -8,17 +8,17 @@ describe('FillablePublicApi', function () {
         getFillable() {
             return 'getFillable-result';
         },
-        getGuarded() {
-            return 'getGuarded-result';
-        },
-        markFillable() {
-            return 'markFillable-result';
-        },
-        markGuarded() {
-            return 'markGuarded-result';
+        addFillable() {
+            return 'addFillable-result';
         },
         isFillable() {
             return 'isFillable-result';
+        },
+        getGuarded() {
+            return 'getGuarded-result';
+        },
+        addGuarded() {
+            return 'addGuarded-result';
         },
         isGuarded() {
             return 'isGuarded-result';
@@ -55,22 +55,22 @@ describe('FillablePublicApi', function () {
             stub.restore();
         });
     });
-    describe('.markFillable()', function () {
-        it('is chainable, calls FillableFeature.markFillable()', function () {
-            const stub = Sinon.stub(fillableFeature, 'markFillable');
+    describe('.addFillable()', function () {
+        it('is chainable, calls FillableFeature.addFillable()', function () {
+            const stub = Sinon.stub(fillableFeature, 'addFillable');
             stub.returns('anything');
-            expect(FillablePublicApi_1.FillablePublicApi.markFillable.call(model, 'a', 'b') === model).toBe(true);
+            expect(FillablePublicApi_1.FillablePublicApi.addFillable.call(model, 'a', 'b') === model).toBe(true);
             expect(stub.calledWith(model)).toBe(true);
             expect(stub.lastCall.args[1][0]).toEqual('a');
             expect(stub.lastCall.args[1][1]).toEqual('b');
             stub.restore();
         });
     });
-    describe('.markGuarded()', function () {
-        it('is chainable, calls FillableFeature.markGuarded()', function () {
-            const stub = Sinon.stub(fillableFeature, 'markGuarded');
+    describe('.addGuarded()', function () {
+        it('is chainable, calls FillableFeature.addGuarded()', function () {
+            const stub = Sinon.stub(fillableFeature, 'addGuarded');
             stub.returns('anything');
-            expect(FillablePublicApi_1.FillablePublicApi.markGuarded.call(model, 'a', 'b') === model).toBe(true);
+            expect(FillablePublicApi_1.FillablePublicApi.addGuarded.call(model, 'a', 'b') === model).toBe(true);
             expect(stub.calledWith(model)).toBe(true);
             expect(stub.lastCall.args[1][0]).toEqual('a');
             expect(stub.lastCall.args[1][1]).toEqual('b');

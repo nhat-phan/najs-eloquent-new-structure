@@ -20,17 +20,17 @@ class FillableFeature extends FeatureBase_1.FeatureBase {
     getFillable(model) {
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'fillable', []);
     }
-    getGuarded(model) {
-        return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'guarded', ['*']);
-    }
-    markFillable(model, keys) {
+    addFillable(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'fillable', keys);
-    }
-    markGuarded(model, keys) {
-        return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'guarded', keys);
     }
     isFillable(model, keys) {
         return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getFillable(model), this.getGuarded(model));
+    }
+    getGuarded(model) {
+        return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'guarded', ['*']);
+    }
+    addGuarded(model, keys) {
+        return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'guarded', keys);
     }
     isGuarded(model, keys) {
         return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getGuarded(model));

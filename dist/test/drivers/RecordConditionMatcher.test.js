@@ -4,7 +4,21 @@ require("jest");
 const Sinon = require("sinon");
 const Lodash = require("lodash");
 const RecordConditionMatcher_1 = require("../../lib/drivers/RecordConditionMatcher");
+const DataConditionMatcher_1 = require("../../lib/data/DataConditionMatcher");
+const RecordDataReader_1 = require("../../lib/drivers/RecordDataReader");
 describe('RecordConditionMatcher', function () {
+    it('extends DataConditionMatcher with reader = RecordDataReader', function () {
+        const matcher = new RecordConditionMatcher_1.RecordConditionMatcher('test', '=', 'compared');
+        expect(matcher).toBeInstanceOf(DataConditionMatcher_1.DataConditionMatcher);
+        expect(matcher['reader'] === RecordDataReader_1.RecordDataReader).toBe(true);
+    });
+    describe('.toJSON()', function () {
+        it('returns an plain object contains field, operator, value only', function () {
+            const matcher = new RecordConditionMatcher_1.RecordConditionMatcher('test', '=', 'compared');
+            expect(matcher.toJSON()).toEqual({ field: 'test', operator: '=', value: 'compared' });
+            expect(JSON.stringify(matcher)).toEqual('{"field":"test","operator":"=","value":"compared"}');
+        });
+    });
     describe('.isMatch', function () {
         const dataset = [
             { operator: '=', calls: 'isEqual', inverse: false },

@@ -7,16 +7,16 @@ exports.FillablePublicApi = {
     getGuarded() {
         return this.driver.getFillableFeature().getGuarded(this);
     },
-    markFillable() {
-        this.driver.getFillableFeature().markFillable(this, arguments);
-        return this;
-    },
-    markGuarded() {
-        this.driver.getFillableFeature().markGuarded(this, arguments);
-        return this;
-    },
     isFillable() {
         return this.driver.getFillableFeature().isFillable(this, arguments);
+    },
+    addFillable() {
+        this.driver.getFillableFeature().addFillable(this, arguments);
+        return this;
+    },
+    addGuarded() {
+        this.driver.getFillableFeature().addGuarded(this, arguments);
+        return this;
     },
     isGuarded() {
         return this.driver.getFillableFeature().isGuarded(this, arguments);

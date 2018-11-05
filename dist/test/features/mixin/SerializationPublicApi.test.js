@@ -11,11 +11,11 @@ describe('SerializationPublicApi', function () {
         getHidden() {
             return 'getHidden-result';
         },
-        markVisible() {
-            return 'markVisible-result';
+        addVisible() {
+            return 'addVisible-result';
         },
-        markHidden() {
-            return 'markHidden-result';
+        addHidden() {
+            return 'addHidden-result';
         },
         isVisible() {
             return 'isVisible-result';
@@ -61,22 +61,22 @@ describe('SerializationPublicApi', function () {
             stub.restore();
         });
     });
-    describe('.markVisible()', function () {
-        it('is chainable, calls SerializationFeature.markVisible()', function () {
-            const stub = Sinon.stub(serializationFeature, 'markVisible');
+    describe('.addVisible()', function () {
+        it('is chainable, calls SerializationFeature.addVisible()', function () {
+            const stub = Sinon.stub(serializationFeature, 'addVisible');
             stub.returns('anything');
-            expect(SerializationPublicApi_1.SerializationPublicApi.markVisible.call(model, 'a', 'b') === model).toBe(true);
+            expect(SerializationPublicApi_1.SerializationPublicApi.addVisible.call(model, 'a', 'b') === model).toBe(true);
             expect(stub.calledWith(model)).toBe(true);
             expect(stub.lastCall.args[1][0]).toEqual('a');
             expect(stub.lastCall.args[1][1]).toEqual('b');
             stub.restore();
         });
     });
-    describe('.markHidden()', function () {
-        it('is chainable, calls SerializationFeature.markHidden()', function () {
-            const stub = Sinon.stub(serializationFeature, 'markHidden');
+    describe('.addHidden()', function () {
+        it('is chainable, calls SerializationFeature.addHidden()', function () {
+            const stub = Sinon.stub(serializationFeature, 'addHidden');
             stub.returns('anything');
-            expect(SerializationPublicApi_1.SerializationPublicApi.markHidden.call(model, 'a', 'b') === model).toBe(true);
+            expect(SerializationPublicApi_1.SerializationPublicApi.addHidden.call(model, 'a', 'b') === model).toBe(true);
             expect(stub.calledWith(model)).toBe(true);
             expect(stub.lastCall.args[1][0]).toEqual('a');
             expect(stub.lastCall.args[1][1]).toEqual('b');

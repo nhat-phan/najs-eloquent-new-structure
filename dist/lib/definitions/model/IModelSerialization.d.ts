@@ -15,27 +15,27 @@ declare namespace NajsEloquent.Model {
          */
         getVisible(): string[];
         /**
-         * Get the hidden attributes for the model.
-         */
-        getHidden(): string[];
-        /**
-         * Add temporary visible attributes for current instance.
+         * Add temporary visible attributes for the model.
          *
          * @param {string|string[]} keys
          */
-        markVisible(...keys: Array<string | string[]>): this;
-        /**
-         * Add temporary hidden attributes for current instance.
-         *
-         * @param {string|string[]} keys
-         */
-        markHidden(...keys: Array<string | string[]>): this;
+        addVisible(...keys: Array<string | string[]>): this;
         /**
          * Determine if the given attribute may be included in JSON.
          *
          * @param {string} key
          */
         isVisible(...keys: Array<string | string[]>): boolean;
+        /**
+         * Get the hidden attributes for the model.
+         */
+        getHidden(): string[];
+        /**
+         * Add temporary hidden attributes for the model.
+         *
+         * @param {string|string[]} keys
+         */
+        addHidden(...keys: Array<string | string[]>): this;
         /**
          * Determine if the given key hidden in JSON.
          *

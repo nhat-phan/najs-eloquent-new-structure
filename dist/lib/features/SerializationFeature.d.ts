@@ -8,10 +8,10 @@ export declare class SerializationFeature extends FeatureBase implements NajsElo
     getFeatureName(): string;
     getClassName(): string;
     getVisible(model: Model): string[];
-    getHidden(model: Model): string[];
-    markVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): void;
-    markHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void;
+    addVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): void;
     isVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean;
+    getHidden(model: Model): string[];
+    addHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void;
     isHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean;
     attributesToObject(model: Model, shouldApplyVisibleAndHidden?: boolean): object;
     relationDataToObject(model: Model, data: any, chains: string[], relationName: string, formatName: boolean): any;

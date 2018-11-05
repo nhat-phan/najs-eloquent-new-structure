@@ -23,19 +23,19 @@ exports.SerializationPublicApi = {
     getVisible() {
         return this.driver.getSerializationFeature().getVisible(this);
     },
-    getHidden() {
-        return this.driver.getSerializationFeature().getHidden(this);
-    },
-    markVisible() {
-        this.driver.getSerializationFeature().markVisible(this, arguments);
-        return this;
-    },
-    markHidden() {
-        this.driver.getSerializationFeature().markHidden(this, arguments);
+    addVisible() {
+        this.driver.getSerializationFeature().addVisible(this, arguments);
         return this;
     },
     isVisible() {
         return this.driver.getSerializationFeature().isVisible(this, arguments);
+    },
+    getHidden() {
+        return this.driver.getSerializationFeature().getHidden(this);
+    },
+    addHidden() {
+        this.driver.getSerializationFeature().addHidden(this, arguments);
+        return this;
     },
     isHidden() {
         return this.driver.getSerializationFeature().isHidden(this, arguments);

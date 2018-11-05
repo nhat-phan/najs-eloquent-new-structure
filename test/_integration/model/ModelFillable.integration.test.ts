@@ -26,10 +26,10 @@ describe('Model Fillable Feature', function() {
       expect(model.toObject()).toEqual({})
     })
 
-    it('could add config fillable programmatically via .markFillable()', function() {
+    it('could add config fillable programmatically via .addFillable()', function() {
       const model = new ModelFillableNoSetting()
 
-      model.markFillable('a', ['b', 'c']).fill({
+      model.addFillable('a', ['b', 'c']).fill({
         a: 1,
         b: 2,
         _test: 3
@@ -38,10 +38,10 @@ describe('Model Fillable Feature', function() {
       expect(model.toObject()).toEqual({ a: 1, b: 2 })
     })
 
-    it('could add config guarded programmatically via .markGuarded()', function() {
+    it('could add config guarded programmatically via .addGuarded()', function() {
       const model = new ModelFillableNoSetting()
 
-      model.markGuarded('a', ['c']).fill({
+      model.addGuarded('a', ['c']).fill({
         a: 1,
         b: 2,
         _test: 3

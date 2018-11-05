@@ -72,7 +72,7 @@ describe('SerializationFeature', function () {
             expect(stub.calledWith(model, 'hidden', [])).toBe(true);
         });
     });
-    describe('.markVisible()', function () {
+    describe('.addVisible()', function () {
         it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "visible" and passed param', function () {
             const settingFeature = {
                 pushToUniqueArraySetting() {
@@ -91,11 +91,11 @@ describe('SerializationFeature', function () {
             const stub = Sinon.stub(settingFeature, 'pushToUniqueArraySetting');
             stub.returns('anything');
             const keys = ['a', ['b', 'c']];
-            expect(serializationFeature.markVisible(model, keys)).toEqual('anything');
+            expect(serializationFeature.addVisible(model, keys)).toEqual('anything');
             expect(stub.calledWith(model, 'visible', keys)).toBe(true);
         });
     });
-    describe('.markHidden()', function () {
+    describe('.addHidden()', function () {
         it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "hidden" and passed param', function () {
             const settingFeature = {
                 pushToUniqueArraySetting() {
@@ -114,7 +114,7 @@ describe('SerializationFeature', function () {
             const stub = Sinon.stub(settingFeature, 'pushToUniqueArraySetting');
             stub.returns('anything');
             const keys = ['a', ['b', 'c']];
-            expect(serializationFeature.markHidden(model, keys)).toEqual('anything');
+            expect(serializationFeature.addHidden(model, keys)).toEqual('anything');
             expect(stub.calledWith(model, 'hidden', keys)).toBe(true);
         });
     });
