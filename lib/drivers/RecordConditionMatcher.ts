@@ -2,78 +2,20 @@
 
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher
 
-import * as Lodash from 'lodash'
 import { Record } from './Record'
+import { DataConditionMatcher } from '../data/DataConditionMatcher'
+import { RecordDataReader } from './RecordDataReader'
 
-export class RecordConditionMatcher implements IConditionMatcher<Record> {
-  protected field: string
-  protected operator: string
-  protected value: any
-
+export class RecordConditionMatcher extends DataConditionMatcher<Record> implements IConditionMatcher<Record> {
   constructor(field: string, operator: string, value: any) {
-    this.field = field
-    this.operator = operator
-    this.value = value
+    super(field, operator, value, RecordDataReader)
   }
 
-  isEqual(record: Record): boolean {
-    return Lodash.isEqual(record.getAttribute(this.field), this.value)
-  }
-
-  isLessThan(record: Record): boolean {
-    return Lodash.lt(record.getAttribute(this.field), this.value)
-  }
-
-  isLessThanOrEqual(record: Record): boolean {
-    return Lodash.lte(record.getAttribute(this.field), this.value)
-  }
-
-  isGreaterThan(record: Record): boolean {
-    return Lodash.gt(record.getAttribute(this.field), this.value)
-  }
-
-  isGreaterThanOrEqual(record: Record): boolean {
-    return Lodash.gte(record.getAttribute(this.field), this.value)
-  }
-
-  isInArray(record: Record): boolean {
-    // console.log(record)
-    // console.log(this.value)
-    return Lodash.includes(this.value, record.getAttribute(this.field))
-  }
-
-  isMatch(record: Record): boolean {
-    switch (this.operator) {
-      case '=':
-      case '==':
-        return this.isEqual(record)
-
-      case '!=':
-      case '<>':
-        return !this.isEqual(record)
-
-      case '<':
-        return this.isLessThan(record)
-
-      case '<=':
-      case '=<':
-        return this.isLessThanOrEqual(record)
-
-      case '>':
-        return this.isGreaterThan(record)
-
-      case '>=':
-      case '=>':
-        return this.isGreaterThanOrEqual(record)
-
-      case 'in':
-        return this.isInArray(record)
-
-      case 'not-in':
-        return !this.isInArray(record)
-
-      default:
-        return false
+  toJSON(): object {
+    return {
+      field: this.field,
+      operator: this.operator,
+      value: this.value
     }
   }
 }

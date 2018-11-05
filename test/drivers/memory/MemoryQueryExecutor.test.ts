@@ -11,6 +11,7 @@ import { MemoryQueryBuilder } from '../../../lib/drivers/memory/MemoryQueryBuild
 import { MemoryQueryBuilderHandler } from '../../../lib/drivers/memory/MemoryQueryBuilderHandler'
 import { MemoryQueryExecutor } from '../../../lib/drivers/memory/MemoryQueryExecutor'
 import { MomentProvider } from '../../../lib/facades/global/MomentProviderFacade'
+import { RecordDataReader } from '../../../lib/drivers/RecordDataReader'
 
 MemoryDataSourceProvider.register(MemoryDataSource, 'memory', true)
 
@@ -1253,7 +1254,10 @@ describe('MemoryQueryExecutor', function() {
 
       const collector = executor.makeCollector()
       expect(collector['conditions']).toEqual({
-        $or: [{ field: 'a', operator: '=', value: 1 }, { field: 'b', operator: '=', value: 2 }]
+        $or: [
+          { field: 'a', operator: '=', value: 1, reader: RecordDataReader },
+          { field: 'b', operator: '=', value: 2, reader: RecordDataReader }
+        ]
       })
     })
   })
@@ -1279,7 +1283,10 @@ describe('MemoryQueryExecutor', function() {
       const conditions = executor.getFilterConditions()
 
       expect(conditions).toEqual({
-        $and: [{ field: 'a', operator: '=', value: 1 }, { field: 'b', operator: '=', value: 2 }]
+        $and: [
+          { field: 'a', operator: '=', value: 1, reader: RecordDataReader },
+          { field: 'b', operator: '=', value: 2, reader: RecordDataReader }
+        ]
       })
     })
   })

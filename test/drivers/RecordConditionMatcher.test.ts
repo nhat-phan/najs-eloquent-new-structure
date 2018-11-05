@@ -2,6 +2,8 @@ import 'jest'
 import * as Sinon from 'sinon'
 import * as Lodash from 'lodash'
 import { RecordConditionMatcher } from '../../lib/drivers/RecordConditionMatcher'
+import { DataConditionMatcher } from '../../lib/data/DataConditionMatcher'
+import { RecordDataReader } from '../../lib/drivers/RecordDataReader'
 
 interface MatchTestData {
   a: any
@@ -11,6 +13,20 @@ interface MatchTestData {
 }
 
 describe('RecordConditionMatcher', function() {
+  it('extends DataConditionMatcher with reader = RecordDataReader', function() {
+    const matcher = new RecordConditionMatcher('test', '=', 'compared')
+    expect(matcher).toBeInstanceOf(DataConditionMatcher)
+    expect(matcher['reader'] === RecordDataReader).toBe(true)
+  })
+
+  describe('.toJSON()', function() {
+    it('returns an plain object contains field, operator, value only', function() {
+      const matcher = new RecordConditionMatcher('test', '=', 'compared')
+      expect(matcher.toJSON()).toEqual({ field: 'test', operator: '=', value: 'compared' })
+      expect(JSON.stringify(matcher)).toEqual('{"field":"test","operator":"=","value":"compared"}')
+    })
+  })
+
   describe('.isMatch', function() {
     const dataset = [
       { operator: '=', calls: 'isEqual', inverse: false },

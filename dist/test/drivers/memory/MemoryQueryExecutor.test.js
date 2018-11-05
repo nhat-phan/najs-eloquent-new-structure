@@ -12,6 +12,7 @@ const MemoryDataSourceProviderFacade_1 = require("../../../lib/facades/global/Me
 const MemoryQueryBuilder_1 = require("../../../lib/drivers/memory/MemoryQueryBuilder");
 const MemoryQueryBuilderHandler_1 = require("../../../lib/drivers/memory/MemoryQueryBuilderHandler");
 const MomentProviderFacade_1 = require("../../../lib/facades/global/MomentProviderFacade");
+const RecordDataReader_1 = require("../../../lib/drivers/RecordDataReader");
 MemoryDataSourceProviderFacade_1.MemoryDataSourceProvider.register(MemoryDataSource_1.MemoryDataSource, 'memory', true);
 const User = {
     getModelName() {
@@ -991,7 +992,10 @@ describe('MemoryQueryExecutor', function () {
             const executor = handler.getQueryExecutor();
             const collector = executor.makeCollector();
             expect(collector['conditions']).toEqual({
-                $or: [{ field: 'a', operator: '=', value: 1 }, { field: 'b', operator: '=', value: 2 }]
+                $or: [
+                    { field: 'a', operator: '=', value: 1, reader: RecordDataReader_1.RecordDataReader },
+                    { field: 'b', operator: '=', value: 2, reader: RecordDataReader_1.RecordDataReader }
+                ]
             });
         });
     });
@@ -1012,7 +1016,10 @@ describe('MemoryQueryExecutor', function () {
             const executor = handler.getQueryExecutor();
             const conditions = executor.getFilterConditions();
             expect(conditions).toEqual({
-                $and: [{ field: 'a', operator: '=', value: 1 }, { field: 'b', operator: '=', value: 2 }]
+                $and: [
+                    { field: 'a', operator: '=', value: 1, reader: RecordDataReader_1.RecordDataReader },
+                    { field: 'b', operator: '=', value: 2, reader: RecordDataReader_1.RecordDataReader }
+                ]
             });
         });
     });
