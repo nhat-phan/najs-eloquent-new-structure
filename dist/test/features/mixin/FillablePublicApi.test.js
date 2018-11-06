@@ -8,6 +8,9 @@ describe('FillablePublicApi', function () {
         getFillable() {
             return 'getFillable-result';
         },
+        setFillable() {
+            return 'setFillable-result';
+        },
         addFillable() {
             return 'addFillable-result';
         },
@@ -16,6 +19,9 @@ describe('FillablePublicApi', function () {
         },
         getGuarded() {
             return 'getGuarded-result';
+        },
+        setGuarded() {
+            return 'setGuarded-result';
         },
         addGuarded() {
             return 'addGuarded-result';
@@ -46,12 +52,32 @@ describe('FillablePublicApi', function () {
             stub.restore();
         });
     });
+    describe('.setFillable()', function () {
+        it('calls and returns FillableFeature.setFillable()', function () {
+            const stub = Sinon.stub(fillableFeature, 'setFillable');
+            stub.returns('anything');
+            const value = ['a', 'b'];
+            expect(FillablePublicApi_1.FillablePublicApi.setFillable.call(model, value) === model).toBe(true);
+            expect(stub.calledWith(model, value)).toBe(true);
+            stub.restore();
+        });
+    });
     describe('.getGuarded()', function () {
         it('calls and returns FillableFeature.getGuarded()', function () {
             const stub = Sinon.stub(fillableFeature, 'getGuarded');
             stub.returns('anything');
             expect(FillablePublicApi_1.FillablePublicApi.getGuarded.call(model)).toEqual('anything');
             expect(stub.calledWith(model)).toBe(true);
+            stub.restore();
+        });
+    });
+    describe('.setGuarded()', function () {
+        it('calls and returns FillableFeature.setGuarded()', function () {
+            const stub = Sinon.stub(fillableFeature, 'setGuarded');
+            stub.returns('anything');
+            const value = ['a', 'b'];
+            expect(FillablePublicApi_1.FillablePublicApi.setGuarded.call(model, value) === model).toBe(true);
+            expect(stub.calledWith(model, value)).toBe(true);
             stub.restore();
         });
     });

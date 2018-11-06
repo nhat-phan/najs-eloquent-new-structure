@@ -18,7 +18,19 @@ class FillableFeature extends FeatureBase_1.FeatureBase {
         return constants_1.NajsEloquent.Feature.FillableFeature;
     }
     getFillable(model) {
+        const iModel = this.useInternalOf(model);
+        if (typeof iModel.internalData.overridden !== 'undefined' && iModel.internalData.overridden.fillable) {
+            return model['fillable'];
+        }
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'fillable', []);
+    }
+    setFillable(model, fillable) {
+        const iModel = this.useInternalOf(model);
+        if (typeof iModel.internalData.overridden === 'undefined') {
+            iModel.internalData.overridden = {};
+        }
+        iModel.internalData.overridden.fillable = true;
+        model['fillable'] = fillable;
     }
     addFillable(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'fillable', keys);
@@ -27,7 +39,19 @@ class FillableFeature extends FeatureBase_1.FeatureBase {
         return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getFillable(model), this.getGuarded(model));
     }
     getGuarded(model) {
+        const iModel = this.useInternalOf(model);
+        if (typeof iModel.internalData.overridden !== 'undefined' && iModel.internalData.overridden.guarded) {
+            return model['guarded'];
+        }
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'guarded', ['*']);
+    }
+    setGuarded(model, guarded) {
+        const iModel = this.useInternalOf(model);
+        if (typeof iModel.internalData.overridden === 'undefined') {
+            iModel.internalData.overridden = {};
+        }
+        iModel.internalData.overridden.guarded = true;
+        model['guarded'] = guarded;
     }
     addGuarded(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'guarded', keys);

@@ -18,6 +18,11 @@ namespace NajsEloquent.Model {
     getFillable(): string[]
 
     /**
+     * Set the fillable attributes for the model. Warning: this function reset all fillable setting included static.
+     */
+    setFillable(fillable: string[]): this
+
+    /**
      * Add temporary fillable attributes for the model.
      *
      * @param {string|string[]} keys
@@ -35,6 +40,11 @@ namespace NajsEloquent.Model {
      * Get the guarded attributes for the model.
      */
     getGuarded(): string[]
+
+    /**
+     * Set the guarded attributes for the model. Warning: this function reset all guarded setting included static.
+     */
+    setGuarded(guarded: string[]): this
 
     /**
      * Add temporary guarded attributes for the model.

@@ -15,6 +15,10 @@ declare namespace NajsEloquent.Model {
          */
         getVisible(): string[];
         /**
+         * Set the visible attributes for the model. Warning: this function reset all visible setting included static.
+         */
+        setVisible(visible: string[]): this;
+        /**
          * Add temporary visible attributes for the model.
          *
          * @param {string|string[]} keys
@@ -30,6 +34,10 @@ declare namespace NajsEloquent.Model {
          * Get the hidden attributes for the model.
          */
         getHidden(): string[];
+        /**
+         * Set the hidden attributes for the model. Warning: this function reset all hidden setting included static.
+         */
+        setHidden(hidden: string[]): this;
         /**
          * Add temporary hidden attributes for the model.
          *

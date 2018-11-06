@@ -7,8 +7,14 @@ describe('SerializationPublicApi', function() {
     getVisible() {
       return 'getVisible-result'
     },
+    setVisible() {
+      return 'setVisible-result'
+    },
     getHidden() {
       return 'getHidden-result'
+    },
+    setHidden() {
+      return 'setHidden-result'
     },
     addVisible() {
       return 'addVisible-result'
@@ -55,6 +61,18 @@ describe('SerializationPublicApi', function() {
     })
   })
 
+  describe('.setVisible()', function() {
+    it('calls and returns FillableFeature.setVisible()', function() {
+      const stub = Sinon.stub(serializationFeature, 'setVisible')
+      stub.returns('anything')
+
+      const value = ['a', 'b']
+      expect(SerializationPublicApi.setVisible.call(model, value) === model).toBe(true)
+      expect(stub.calledWith(model, value)).toBe(true)
+      stub.restore()
+    })
+  })
+
   describe('.getHidden()', function() {
     it('calls and returns SerializationFeature.getHidden()', function() {
       const stub = Sinon.stub(serializationFeature, 'getHidden')
@@ -62,6 +80,18 @@ describe('SerializationPublicApi', function() {
 
       expect(SerializationPublicApi.getHidden.call(model)).toEqual('anything')
       expect(stub.calledWith(model)).toBe(true)
+      stub.restore()
+    })
+  })
+
+  describe('.setHidden()', function() {
+    it('calls and returns FillableFeature.setHidden()', function() {
+      const stub = Sinon.stub(serializationFeature, 'setHidden')
+      stub.returns('anything')
+
+      const value = ['a', 'b']
+      expect(SerializationPublicApi.setHidden.call(model, value) === model).toBe(true)
+      expect(stub.calledWith(model, value)).toBe(true)
       stub.restore()
     })
   })

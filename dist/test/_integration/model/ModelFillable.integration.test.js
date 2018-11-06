@@ -44,4 +44,27 @@ describe('Model Fillable Feature', function () {
             expect(model.toObject()).toEqual({ b: 2 });
         });
     });
+    describe('Static Setting', function () {
+        class ModelStaticSetting extends Model_1.Model {
+            getClassName() {
+                return 'ModelStaticSetting';
+            }
+        }
+        ModelStaticSetting.fillable = ['a'];
+        Model_1.Model.register(ModelStaticSetting);
+        it('should work with static fillable', function () {
+            const model = new ModelStaticSetting();
+            expect(model.getFillable()).toEqual(['a']);
+        });
+        it('can be extended programmatically via .addFillable()', function () {
+            const model = new ModelStaticSetting();
+            model.addFillable('b');
+            expect(model.getFillable()).toEqual(['a', 'b']);
+        });
+        it('can be reset programmatically via .setFillable()', function () {
+            const model = new ModelStaticSetting();
+            model.setFillable(['replaced']);
+            expect(model.getFillable()).toEqual(['replaced']);
+        });
+    });
 });

@@ -24,7 +24,20 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
   }
 
   getVisible(model: Model): string[] {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden !== 'undefined' && iModel.internalData.overridden.visible) {
+      return model['visible']!
+    }
     return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'visible', [])
+  }
+
+  setVisible(model: NajsEloquent.Model.IModel, visible: string[]): void {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden === 'undefined') {
+      iModel.internalData.overridden = {}
+    }
+    iModel.internalData.overridden.visible = true
+    model['visible'] = visible
   }
 
   addVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
@@ -36,7 +49,20 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
   }
 
   getHidden(model: Model): string[] {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden !== 'undefined' && iModel.internalData.overridden.hidden) {
+      return model['hidden']!
+    }
     return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'hidden', [])
+  }
+
+  setHidden(model: NajsEloquent.Model.IModel, hidden: string[]): void {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden === 'undefined') {
+      iModel.internalData.overridden = {}
+    }
+    iModel.internalData.overridden.hidden = true
+    model['hidden'] = hidden
   }
 
   addHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void {

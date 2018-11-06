@@ -31,9 +31,13 @@ export const SerializationPublicApi: NajsEloquent.Model.IModelSerialization = {
     return this.driver.getSerializationFeature().getVisible(this)
   },
 
+  setVisible(this: Model, visible: string[]) {
+    this.driver.getSerializationFeature().setVisible(this, visible)
+    return this
+  },
+
   addVisible(this: Model) {
     this.driver.getSerializationFeature().addVisible(this, arguments)
-
     return this
   },
 
@@ -43,6 +47,11 @@ export const SerializationPublicApi: NajsEloquent.Model.IModelSerialization = {
 
   getHidden(this: Model) {
     return this.driver.getSerializationFeature().getHidden(this)
+  },
+
+  setHidden(this: Model, hidden: string[]) {
+    this.driver.getSerializationFeature().setHidden(this, hidden)
+    return this
   },
 
   addHidden(this: Model) {

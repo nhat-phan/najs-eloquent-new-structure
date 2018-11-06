@@ -40,6 +40,15 @@ declare namespace NajsEloquent.Model {
         relations: {
             [name in string]: NajsEloquent.Relation.IRelationData<any>;
         };
+        /**
+         * The model's overridden data.
+         */
+        overridden?: {
+            fillable?: boolean;
+            guarded?: boolean;
+            visible?: boolean;
+            hidden?: boolean;
+        };
     }
     class IModel {
         /**

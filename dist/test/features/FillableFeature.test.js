@@ -27,6 +27,13 @@ describe('FillableFeature', function () {
         });
     });
     describe('.getFillable()', function () {
+        it('returns "fillable" property if the overridden.fillable flag is true', function () {
+            const model = {
+                fillable: 'overridden-value',
+                internalData: { overridden: { fillable: true } }
+            };
+            expect(fillableFeature.getFillable(model)).toEqual('overridden-value');
+        });
         it('calls and returns SettingFeature.getArrayUniqueSetting() with property "fillable", default value []', function () {
             const settingFeature = {
                 getArrayUniqueSetting() {
@@ -34,6 +41,7 @@ describe('FillableFeature', function () {
                 }
             };
             const model = {
+                internalData: {},
                 getDriver() {
                     return {
                         getSettingFeature() {
@@ -48,7 +56,33 @@ describe('FillableFeature', function () {
             expect(stub.calledWith(model, 'fillable', [])).toBe(true);
         });
     });
+    describe('.setFillable()', function () {
+        it('simply init internalData.overridden if needed, then fillable = true and assigns given value to "fillable"', function () {
+            const modelOne = {
+                internalData: {}
+            };
+            const value = ['a', 'b', 'c'];
+            fillableFeature.setFillable(modelOne, value);
+            expect(modelOne['internalData']['overridden']['fillable']).toBe(true);
+            expect(modelOne['fillable'] === value).toBe(true);
+            const modelTwo = {
+                internalData: {
+                    overridden: { fillable: false }
+                }
+            };
+            fillableFeature.setFillable(modelTwo, value);
+            expect(modelTwo['internalData']['overridden']['fillable']).toBe(true);
+            expect(modelTwo['fillable'] === value).toBe(true);
+        });
+    });
     describe('.getGuarded()', function () {
+        it('returns "guarded" property if the overridden.guarded flag is true', function () {
+            const model = {
+                guarded: 'overridden-value',
+                internalData: { overridden: { guarded: true } }
+            };
+            expect(fillableFeature.getGuarded(model)).toEqual('overridden-value');
+        });
         it('calls and returns SettingFeature.getArrayUniqueSetting() with property "guarded", default value ["*"]', function () {
             const settingFeature = {
                 getArrayUniqueSetting() {
@@ -56,6 +90,7 @@ describe('FillableFeature', function () {
                 }
             };
             const model = {
+                internalData: {},
                 getDriver() {
                     return {
                         getSettingFeature() {
@@ -68,6 +103,25 @@ describe('FillableFeature', function () {
             stub.returns('anything');
             expect(fillableFeature.getGuarded(model)).toEqual('anything');
             expect(stub.calledWith(model, 'guarded', ['*'])).toBe(true);
+        });
+    });
+    describe('.setGuarded()', function () {
+        it('simply init internalData.overridden if needed, then guarded = true and assigns given value to "guarded"', function () {
+            const modelOne = {
+                internalData: {}
+            };
+            const value = ['a', 'b', 'c'];
+            fillableFeature.setGuarded(modelOne, value);
+            expect(modelOne['internalData']['overridden']['guarded']).toBe(true);
+            expect(modelOne['guarded'] === value).toBe(true);
+            const modelTwo = {
+                internalData: {
+                    overridden: { guarded: false }
+                }
+            };
+            fillableFeature.setGuarded(modelTwo, value);
+            expect(modelTwo['internalData']['overridden']['guarded']).toBe(true);
+            expect(modelTwo['guarded'] === value).toBe(true);
         });
     });
     describe('.addFillable()', function () {

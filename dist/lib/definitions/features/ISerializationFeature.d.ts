@@ -9,6 +9,12 @@ declare namespace NajsEloquent.Feature {
          */
         getVisible(model: Model.IModel): string[];
         /**
+         * Set visible attributes for the model. Warning: this function reset all visible setting included static.
+         *
+         * @param {Model} model
+         */
+        setVisible(model: Model.IModel, visible: string[]): void;
+        /**
          * Add temporary visible attributes for the model.
          *
          * @param {Model} model
@@ -28,6 +34,12 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          */
         getHidden(model: Model.IModel): string[];
+        /**
+         * Set hidden attributes for the model. Warning: this function reset all hidden setting included static.
+         *
+         * @param {Model} model
+         */
+        setHidden(model: Model.IModel, hidden: string[]): void;
         /**
          * Add temporary hidden attributes for the model.
          *

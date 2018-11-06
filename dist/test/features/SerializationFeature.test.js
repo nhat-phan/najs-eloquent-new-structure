@@ -29,6 +29,13 @@ describe('SerializationFeature', function () {
         });
     });
     describe('.getVisible()', function () {
+        it('returns "visible" property if the overridden.visible flag is true', function () {
+            const model = {
+                visible: 'overridden-value',
+                internalData: { overridden: { visible: true } }
+            };
+            expect(serializationFeature.getVisible(model)).toEqual('overridden-value');
+        });
         it('calls and returns SettingFeature.getArrayUniqueSetting() with property "visible", default value []', function () {
             const settingFeature = {
                 getArrayUniqueSetting() {
@@ -36,6 +43,7 @@ describe('SerializationFeature', function () {
                 }
             };
             const model = {
+                internalData: {},
                 getDriver() {
                     return {
                         getSettingFeature() {
@@ -50,7 +58,33 @@ describe('SerializationFeature', function () {
             expect(stub.calledWith(model, 'visible', [])).toBe(true);
         });
     });
+    describe('.setVisible()', function () {
+        it('simply init internalData.overridden if needed, then visible = true and assigns given value to "visible"', function () {
+            const modelOne = {
+                internalData: {}
+            };
+            const value = ['a', 'b', 'c'];
+            serializationFeature.setVisible(modelOne, value);
+            expect(modelOne['internalData']['overridden']['visible']).toBe(true);
+            expect(modelOne['visible'] === value).toBe(true);
+            const modelTwo = {
+                internalData: {
+                    overridden: { visible: false }
+                }
+            };
+            serializationFeature.setVisible(modelTwo, value);
+            expect(modelTwo['internalData']['overridden']['visible']).toBe(true);
+            expect(modelTwo['visible'] === value).toBe(true);
+        });
+    });
     describe('.getHidden()', function () {
+        it('returns "hidden" property if the overridden.hidden flag is true', function () {
+            const model = {
+                hidden: 'overridden-value',
+                internalData: { overridden: { hidden: true } }
+            };
+            expect(serializationFeature.getHidden(model)).toEqual('overridden-value');
+        });
         it('calls and returns SettingFeature.getArrayUniqueSetting() with property "hidden", default value []', function () {
             const settingFeature = {
                 getArrayUniqueSetting() {
@@ -58,6 +92,7 @@ describe('SerializationFeature', function () {
                 }
             };
             const model = {
+                internalData: {},
                 getDriver() {
                     return {
                         getSettingFeature() {
@@ -70,6 +105,25 @@ describe('SerializationFeature', function () {
             stub.returns('anything');
             expect(serializationFeature.getHidden(model)).toEqual('anything');
             expect(stub.calledWith(model, 'hidden', [])).toBe(true);
+        });
+    });
+    describe('.setHidden()', function () {
+        it('simply init internalData.overridden if needed, then hidden = true and assigns given value to "hidden"', function () {
+            const modelOne = {
+                internalData: {}
+            };
+            const value = ['a', 'b', 'c'];
+            serializationFeature.setHidden(modelOne, value);
+            expect(modelOne['internalData']['overridden']['hidden']).toBe(true);
+            expect(modelOne['hidden'] === value).toBe(true);
+            const modelTwo = {
+                internalData: {
+                    overridden: { hidden: false }
+                }
+            };
+            serializationFeature.setHidden(modelTwo, value);
+            expect(modelTwo['internalData']['overridden']['hidden']).toBe(true);
+            expect(modelTwo['hidden'] === value).toBe(true);
         });
     });
     describe('.addVisible()', function () {

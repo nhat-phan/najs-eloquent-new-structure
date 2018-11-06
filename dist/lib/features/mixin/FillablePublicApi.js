@@ -4,8 +4,16 @@ exports.FillablePublicApi = {
     getFillable() {
         return this.driver.getFillableFeature().getFillable(this);
     },
+    setFillable(fillable) {
+        this.driver.getFillableFeature().setFillable(this, fillable);
+        return this;
+    },
     getGuarded() {
         return this.driver.getFillableFeature().getGuarded(this);
+    },
+    setGuarded(guarded) {
+        this.driver.getFillableFeature().setGuarded(this, guarded);
+        return this;
     },
     isFillable() {
         return this.driver.getFillableFeature().isFillable(this, arguments);

@@ -9,6 +9,12 @@ declare namespace NajsEloquent.Feature {
          */
         getFillable(model: Model.IModel): string[];
         /**
+         * Set fillable attributes for the model. Warning: this function reset all fillable setting included static.
+         *
+         * @param {Model} model
+         */
+        setFillable(model: Model.IModel, fillable: string[]): void;
+        /**
          * Add temporary fillable attributes for the model.
          *
          * @param {Model} model
@@ -28,6 +34,12 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          */
         getGuarded(model: Model.IModel): string[];
+        /**
+         * Set guarded attributes for the model. Warning: this function reset all guarded setting included static.
+         *
+         * @param {Model} model
+         */
+        setGuarded(model: Model.IModel, guarded: string[]): void;
         /**
          * Add temporary guarded attributes for the model.
          *

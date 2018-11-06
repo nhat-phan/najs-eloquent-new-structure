@@ -21,7 +21,20 @@ export class FillableFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   getFillable(model: NajsEloquent.Model.IModel): string[] {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden !== 'undefined' && iModel.internalData.overridden.fillable) {
+      return model['fillable']!
+    }
     return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'fillable', [])
+  }
+
+  setFillable(model: NajsEloquent.Model.IModel, fillable: string[]): void {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden === 'undefined') {
+      iModel.internalData.overridden = {}
+    }
+    iModel.internalData.overridden.fillable = true
+    model['fillable'] = fillable
   }
 
   addFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void {
@@ -33,7 +46,20 @@ export class FillableFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   getGuarded(model: NajsEloquent.Model.IModel): string[] {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden !== 'undefined' && iModel.internalData.overridden.guarded) {
+      return model['guarded']!
+    }
     return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'guarded', ['*'])
+  }
+
+  setGuarded(model: NajsEloquent.Model.IModel, guarded: string[]): void {
+    const iModel = this.useInternalOf(model)
+    if (typeof iModel.internalData.overridden === 'undefined') {
+      iModel.internalData.overridden = {}
+    }
+    iModel.internalData.overridden.guarded = true
+    model['guarded'] = guarded
   }
 
   addGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void {
