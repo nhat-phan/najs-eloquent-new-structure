@@ -14,6 +14,9 @@ const reader = {
     },
     pick(data, fields) {
         return data;
+    },
+    toComparable(value) {
+        return value;
     }
 };
 describe('HasOneOrMany', function () {

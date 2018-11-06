@@ -1,5 +1,6 @@
 import 'jest'
 import { Model, HasMany, BelongsTo, Factory, factory } from '../../../lib'
+import { ObjectID } from 'bson'
 
 class Post extends Model {
   user: BelongsTo<User>
@@ -112,6 +113,21 @@ describe('HasMany Relationship', function() {
     // for (const log of QueryLog.pull()) {
     //   console.log(log)
     // }
+  })
+
+  it('should work with ObjectId', async function() {
+    const user = new User()
+    user.id = new ObjectID()
+    await user.save()
+
+    const post = new Post()
+    post.id = new ObjectID()
+    post.user_id = user.id.toString()
+    post.title = 'test'
+    await post.save()
+
+    const result = await User.with('posts').findOrFail(user.id)
+    expect(result.posts!.first().id.toHexString()).toEqual(post.id.toHexString())
   })
 
   it('could be loaded via chain', async function() {

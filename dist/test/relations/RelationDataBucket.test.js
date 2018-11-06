@@ -13,6 +13,9 @@ const reader = {
     },
     pick(data, fields) {
         return lodash_1.pick(data, fields);
+    },
+    toComparable(value) {
+        return value;
     }
 };
 describe('RelationDataBucket', function () {

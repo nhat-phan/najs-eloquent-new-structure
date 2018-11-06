@@ -22,7 +22,11 @@ describe('MorphOneExecutor', function() {
       const filterBySpy = Sinon.spy(collector, 'filterBy')
 
       const conditions: any[] = ['a', 'b', 'c']
-      const reader: any = {}
+      const reader: any = {
+        toComparable(value: any) {
+          return value
+        }
+      }
 
       const executor = new MorphOneExecutor(dataBucket, targetModel, 'test', 'Test')
       expect(executor.setCollector(collector, conditions, reader) === executor).toBe(true)

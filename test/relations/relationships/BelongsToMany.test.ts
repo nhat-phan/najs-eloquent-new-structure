@@ -16,6 +16,10 @@ const reader = {
 
   pick(data: object, fields: string[]) {
     return data
+  },
+
+  toComparable(value: any) {
+    return value
   }
 }
 

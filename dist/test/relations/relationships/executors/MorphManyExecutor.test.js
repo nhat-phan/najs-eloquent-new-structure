@@ -20,7 +20,11 @@ describe('MorphManyExecutor', function () {
             };
             const filterBySpy = Sinon.spy(collector, 'filterBy');
             const conditions = ['a', 'b', 'c'];
-            const reader = {};
+            const reader = {
+                toComparable(value) {
+                    return value;
+                }
+            };
             const executor = new MorphManyExecutor_1.MorphManyExecutor(dataBucket, targetModel, 'test', 'Test');
             expect(executor.setCollector(collector, conditions, reader) === executor).toBe(true);
             const filterConditions = filterBySpy.lastCall.args[0];

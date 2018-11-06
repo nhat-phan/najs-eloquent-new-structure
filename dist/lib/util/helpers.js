@@ -10,7 +10,13 @@ function isModel(value) {
 }
 exports.isModel = isModel;
 function isObjectId(value) {
-    return value instanceof bson_1.ObjectId || (!!value && (value._bsontype === 'ObjectId' || value._bsontype === 'ObjectID'));
+    if (value instanceof bson_1.ObjectId) {
+        return true;
+    }
+    if (!value || typeof value !== 'object') {
+        return false;
+    }
+    return typeof value.toHexString === 'function' || value._bsontype === 'ObjectId' || value._bsontype === 'ObjectID';
 }
 exports.isObjectId = isObjectId;
 function isCollection(value) {

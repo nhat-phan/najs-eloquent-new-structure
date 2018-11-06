@@ -10,9 +10,35 @@ const reader = {
     },
     pick(data, fields) {
         return data;
+    },
+    toComparable(value) {
+        return value;
     }
 };
 describe('DataConditionMatcher', function () {
+    describe('constructor()', function () {
+        it('calls reader.toComparable() and assigns to value, but does not assigned to originalValue if the value and comparable value are the same', function () {
+            const matcher = new DataConditionMatcher_1.DataConditionMatcher('test', '=', 'compared', reader);
+            expect(matcher['value']).toEqual('compared');
+            expect(matcher['originalValue']).toBeUndefined();
+        });
+        it('calls reader.toComparable() and assigns to value, given value will be assigned to originalValue', function () {
+            const customReader = {
+                getAttribute(data, field) {
+                    return data[field];
+                },
+                pick(data, fields) {
+                    return data;
+                },
+                toComparable(value) {
+                    return 'comparable-' + value;
+                }
+            };
+            const matcher = new DataConditionMatcher_1.DataConditionMatcher('test', '=', 'compared', customReader);
+            expect(matcher['value']).toEqual('comparable-compared');
+            expect(matcher['originalValue']).toEqual('compared');
+        });
+    });
     describe('.isMatch', function () {
         const dataset = [
             { operator: '=', calls: 'isEqual', inverse: false },

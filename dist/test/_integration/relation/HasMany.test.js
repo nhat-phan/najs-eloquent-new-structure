@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const lib_1 = require("../../../lib");
+const bson_1 = require("bson");
 class Post extends lib_1.Model {
     getClassName() {
         return 'Post';
@@ -76,6 +77,18 @@ describe('HasMany Relationship', function () {
         // for (const log of QueryLog.pull()) {
         //   console.log(log)
         // }
+    });
+    it('should work with ObjectId', async function () {
+        const user = new User();
+        user.id = new bson_1.ObjectID();
+        await user.save();
+        const post = new Post();
+        post.id = new bson_1.ObjectID();
+        post.user_id = user.id.toString();
+        post.title = 'test';
+        await post.save();
+        const result = await User.with('posts').findOrFail(user.id);
+        expect(result.posts.first().id.toHexString()).toEqual(post.id.toHexString());
     });
     it('could be loaded via chain', async function () {
         const user = await lib_1.factory(User).create();

@@ -7,7 +7,10 @@ class DataConditionMatcher {
     constructor(field, operator, value, reader) {
         this.field = field;
         this.operator = operator;
-        this.value = value;
+        this.value = reader.toComparable(value);
+        if (this.value !== value) {
+            this.originalValue = value;
+        }
         this.reader = reader;
     }
     isEqual(record) {

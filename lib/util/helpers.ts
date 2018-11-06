@@ -10,7 +10,15 @@ export function isModel(value: any): boolean {
 }
 
 export function isObjectId(value: any): boolean {
-  return value instanceof ObjectId || (!!value && (value._bsontype === 'ObjectId' || value._bsontype === 'ObjectID'))
+  if (value instanceof ObjectId) {
+    return true
+  }
+
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  return typeof value.toHexString === 'function' || value._bsontype === 'ObjectId' || value._bsontype === 'ObjectID'
 }
 
 export function isCollection(value: any): boolean {

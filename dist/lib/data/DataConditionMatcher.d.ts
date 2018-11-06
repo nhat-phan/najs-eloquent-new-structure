@@ -3,6 +3,7 @@
 export declare class DataConditionMatcher<T extends object> implements NajsEloquent.QueryBuilder.IConditionMatcher<T> {
     protected field: string;
     protected operator: string;
+    protected originalValue: any;
     protected value: any;
     protected reader: NajsEloquent.Data.IDataReader<T>;
     constructor(field: string, operator: string, value: any, reader: NajsEloquent.Data.IDataReader<T>);

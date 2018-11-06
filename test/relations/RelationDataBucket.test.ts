@@ -13,6 +13,10 @@ const reader = {
 
   pick(data: object, fields: string[]) {
     return pick(data, fields)
+  },
+
+  toComparable(value: any) {
+    return value
   }
 }
 describe('RelationDataBucket', function() {

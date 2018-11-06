@@ -45,9 +45,21 @@ describe('.isObjectId()', function() {
     expect(isObjectId(0)).toBe(false)
     expect(isObjectId('test')).toBe(false)
     expect(isObjectId({})).toBe(false)
+    // tslint:disable-next-line
+    expect(isObjectId(null)).toBe(false)
+    expect(isObjectId(undefined)).toBe(false)
     expect(isObjectId(new Date())).toBe(false)
     expect(isObjectId(new TestModel())).toBe(false)
     expect(isObjectId(new ObjectId())).toBe(true)
+  })
+
+  it('returns true if the given value is object and has .toHexString is function', function() {
+    expect(isObjectId({ toHexString: 'value' })).toBe(false)
+    expect(isObjectId({ toHexString: 1 })).toBe(false)
+    expect(isObjectId({ toHexString: undefined })).toBe(false)
+    expect(isObjectId({ toHexString: new Date() })).toBe(false)
+    expect(isObjectId({ toHexString: 'value' })).toBe(false)
+    expect(isObjectId({ toHexString: function() {} })).toBe(true)
   })
 
   it('returns true if the given value is object and has _bsontype is ObjectId or ObjectID', function() {
