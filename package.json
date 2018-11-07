@@ -7,11 +7,7 @@
     "coverage": "npm run build && jest ./dist/test/**/*.js ./dist/test/**/**/*.js ./dist/test/**/**/**/*.js --coverage --forceExit",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "prepublishOnly": "tsc -d -p ./ --outDir dist",
-    "integration": "npm run integration-build && npm run integration-lint && npm run integration-test",
-    "integration-build": "npm run build && cd ./integration && tsc -d && cd ..",
-    "integration-lint": "cd ./integration && tslint -c tslint.json -p tsconfig.json && cd ..",
-    "integration-test": "jest ./integration/test --forceExit",
-    "test": "npm run coverage && npm run integration"
+    "test": "npm run coverage"
   },
   "jest": {
     "globals": {
@@ -59,13 +55,11 @@
     "chance": "^1.0.13",
     "collect.js": "^4.0.11",
     "kerberos": "^1.0.0",
-    "knex": "^0.14.4",
     "lodash": "^4.17.4",
     "moment": "^2.21.0",
     "mongodb": "^3.1.4",
     "mongoose": "^5.0.11",
     "mongoose-timestamps-moment": "^1.0.0",
-    "mysql": "^2.15.0",
     "najs-event": "^0.2.0",
     "najs-facade": "^1.1.1",
     "pluralize": "^7.0.0"
@@ -74,7 +68,6 @@
     "@types/bson": "^1.0.11",
     "@types/chance": "^1.0.0",
     "@types/jest": "^21.1.8",
-    "@types/knex": "^0.14.9",
     "@types/lodash": "^4.14.91",
     "@types/mongodb": "^3.1.4",
     "@types/mongoose": "^4.7.31",
