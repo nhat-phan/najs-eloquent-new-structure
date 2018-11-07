@@ -11,11 +11,17 @@ describe('SerializationPublicApi', function () {
         setVisible() {
             return 'setVisible-result';
         },
+        makeVisible() {
+            return 'makeVisible-result';
+        },
         getHidden() {
             return 'getHidden-result';
         },
         setHidden() {
             return 'setHidden-result';
+        },
+        makeHidden() {
+            return 'makeHidden-result';
         },
         addVisible() {
             return 'addVisible-result';
@@ -68,6 +74,17 @@ describe('SerializationPublicApi', function () {
             stub.restore();
         });
     });
+    describe('.makeVisible()', function () {
+        it('is chainable, calls SerializationFeature.makeVisible()', function () {
+            const stub = Sinon.stub(serializationFeature, 'makeVisible');
+            stub.returns('anything');
+            expect(SerializationPublicApi_1.SerializationPublicApi.makeVisible.call(model, 'a', 'b') === model).toBe(true);
+            expect(stub.calledWith(model)).toBe(true);
+            expect(stub.lastCall.args[1][0]).toEqual('a');
+            expect(stub.lastCall.args[1][1]).toEqual('b');
+            stub.restore();
+        });
+    });
     describe('.getHidden()', function () {
         it('calls and returns SerializationFeature.getHidden()', function () {
             const stub = Sinon.stub(serializationFeature, 'getHidden');
@@ -103,6 +120,17 @@ describe('SerializationPublicApi', function () {
             const stub = Sinon.stub(serializationFeature, 'addHidden');
             stub.returns('anything');
             expect(SerializationPublicApi_1.SerializationPublicApi.addHidden.call(model, 'a', 'b') === model).toBe(true);
+            expect(stub.calledWith(model)).toBe(true);
+            expect(stub.lastCall.args[1][0]).toEqual('a');
+            expect(stub.lastCall.args[1][1]).toEqual('b');
+            stub.restore();
+        });
+    });
+    describe('.makeHidden()', function () {
+        it('is chainable, calls SerializationFeature.makeHidden()', function () {
+            const stub = Sinon.stub(serializationFeature, 'makeHidden');
+            stub.returns('anything');
+            expect(SerializationPublicApi_1.SerializationPublicApi.makeHidden.call(model, 'a', 'b') === model).toBe(true);
             expect(stub.calledWith(model)).toBe(true);
             expect(stub.lastCall.args[1][0]).toEqual('a');
             expect(stub.lastCall.args[1][1]).toEqual('b');

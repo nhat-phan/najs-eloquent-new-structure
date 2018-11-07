@@ -38,10 +38,19 @@ describe('RecordManager', function() {
 
     it('creates new Record instance which wrap data if data is a raw object and isGuarded is false', function() {
       const data = {}
-      const model: any = {
+      const fillableFeature = {
         fill() {}
       }
-      const spy = Sinon.stub(model, 'fill')
+      const model: any = {
+        getDriver() {
+          return {
+            getFillableFeature() {
+              return fillableFeature
+            }
+          }
+        }
+      }
+      const spy = Sinon.stub(fillableFeature, 'fill')
 
       recordManager.initialize(model, false, data)
       expect(model.attributes).toBeInstanceOf(Record)
@@ -49,12 +58,21 @@ describe('RecordManager', function() {
       expect(spy.called).toBe(false)
     })
 
-    it('creates new Record instance and use model.fill() if data is raw object and isGuarded is true', function() {
+    it('creates new Record instance and use FillableFeature.fill() if data is raw object and isGuarded is true', function() {
       const data = {}
-      const model: any = {
+      const fillableFeature = {
         fill() {}
       }
-      const spy = Sinon.stub(model, 'fill')
+      const model: any = {
+        getDriver() {
+          return {
+            getFillableFeature() {
+              return fillableFeature
+            }
+          }
+        }
+      }
+      const spy = Sinon.stub(fillableFeature, 'fill')
 
       recordManager.initialize(model, true, data)
       expect(model.attributes).toBeInstanceOf(Record)

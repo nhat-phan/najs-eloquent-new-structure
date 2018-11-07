@@ -29,7 +29,10 @@ export class RecordManager<T extends Record> extends RecordManagerBase<T> {
     }
 
     model.attributes = new Record()
-    model.fill(data)
+    model
+      .getDriver()
+      .getFillableFeature()
+      .fill(model, data)
   }
 
   getAttribute(model: NajsEloquent.Model.ModelInternal<Record>, key: string): any {

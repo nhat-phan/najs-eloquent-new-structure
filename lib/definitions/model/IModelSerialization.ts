@@ -30,6 +30,14 @@ namespace NajsEloquent.Model {
     addVisible(...keys: Array<string | string[]>): this
 
     /**
+     * Make the given, typically hidden, attributes visible.
+     *
+     * @param {Model} model
+     * @param {Array<string|string[]>} keys
+     */
+    makeVisible(...keys: Array<string | string[]>): this
+
+    /**
      * Determine if the given attribute may be included in JSON.
      *
      * @param {string} key
@@ -52,6 +60,14 @@ namespace NajsEloquent.Model {
      * @param {string|string[]} keys
      */
     addHidden(...keys: Array<string | string[]>): this
+
+    /**
+     * Make the given, typically visible, attributes hidden.
+     *
+     * @param {Model} model
+     * @param {Array<string|string[]>} keys
+     */
+    makeHidden(...keys: Array<string | string[]>): this
 
     /**
      * Determine if the given key hidden in JSON.

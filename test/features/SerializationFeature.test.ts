@@ -90,6 +90,95 @@ describe('SerializationFeature', function() {
     })
   })
 
+  describe('.makeVisible()', function() {
+    it('gets hidden and does nothing if the hidden is empty and visible is empty', function() {
+      const getHiddenStub = Sinon.stub(serializationFeature, 'getHidden')
+      const getVisibleStub = Sinon.stub(serializationFeature, 'getVisible')
+      const setHiddenStub = Sinon.stub(serializationFeature, 'setHidden')
+      const addVisibleStub = Sinon.stub(serializationFeature, 'addVisible')
+
+      getHiddenStub.returns([])
+      getVisibleStub.returns([])
+
+      const model: any = {}
+      serializationFeature.makeVisible(model, ['a', ['b'], 'c'])
+      expect(setHiddenStub.called).toBe(false)
+      expect(addVisibleStub.called).toBe(false)
+
+      getHiddenStub.restore()
+      getVisibleStub.restore()
+      setHiddenStub.restore()
+      addVisibleStub.restore()
+    })
+
+    it('gets hidden and remove given keys in hidden, then calls .setHidden() with filtered values', function() {
+      const getHiddenStub = Sinon.stub(serializationFeature, 'getHidden')
+      const getVisibleStub = Sinon.stub(serializationFeature, 'getVisible')
+      const setHiddenStub = Sinon.stub(serializationFeature, 'setHidden')
+      const addVisibleStub = Sinon.stub(serializationFeature, 'addVisible')
+
+      getHiddenStub.returns(['a', 'b', 'c', 'd', 'e', 'f'])
+      getVisibleStub.returns([])
+
+      const model: any = {}
+      serializationFeature.makeVisible(model, ['a', 'c', ['b', 'a'], 'c'])
+
+      expect(setHiddenStub.calledWith(model, ['d', 'e', 'f'])).toBe(true)
+      expect(addVisibleStub.called).toBe(false)
+
+      getHiddenStub.restore()
+      getVisibleStub.restore()
+      setHiddenStub.restore()
+      addVisibleStub.restore()
+    })
+
+    it('calls .addVisible() with given keys in case the visible has value', function() {
+      const getHiddenStub = Sinon.stub(serializationFeature, 'getHidden')
+      const getVisibleStub = Sinon.stub(serializationFeature, 'getVisible')
+      const setHiddenStub = Sinon.stub(serializationFeature, 'setHidden')
+      const addVisibleStub = Sinon.stub(serializationFeature, 'addVisible')
+
+      getHiddenStub.returns([])
+      getVisibleStub.returns(['test'])
+
+      const model: any = {}
+      serializationFeature.makeVisible(model, ['a', 'c', ['b', 'a'], 'c'])
+
+      expect(setHiddenStub.called).toBe(false)
+      expect(addVisibleStub.calledWith(model, ['a', 'c', ['b', 'a'], 'c'])).toBe(true)
+
+      getHiddenStub.restore()
+      getVisibleStub.restore()
+      setHiddenStub.restore()
+      addVisibleStub.restore()
+    })
+  })
+
+  describe('.addVisible()', function() {
+    it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "visible" and passed param', function() {
+      const settingFeature = {
+        pushToUniqueArraySetting() {
+          return 'result'
+        }
+      }
+      const model: any = {
+        getDriver() {
+          return {
+            getSettingFeature() {
+              return settingFeature
+            }
+          }
+        }
+      }
+      const stub = Sinon.stub(settingFeature, 'pushToUniqueArraySetting')
+      stub.returns('anything')
+
+      const keys: any = ['a', ['b', 'c']]
+      expect(serializationFeature.addVisible(model, keys)).toEqual('anything')
+      expect(stub.calledWith(model, 'visible', keys)).toBe(true)
+    })
+  })
+
   describe('.getHidden()', function() {
     it('returns "hidden" property if the overridden.hidden flag is true', function() {
       const model: any = {
@@ -148,31 +237,6 @@ describe('SerializationFeature', function() {
     })
   })
 
-  describe('.addVisible()', function() {
-    it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "visible" and passed param', function() {
-      const settingFeature = {
-        pushToUniqueArraySetting() {
-          return 'result'
-        }
-      }
-      const model: any = {
-        getDriver() {
-          return {
-            getSettingFeature() {
-              return settingFeature
-            }
-          }
-        }
-      }
-      const stub = Sinon.stub(settingFeature, 'pushToUniqueArraySetting')
-      stub.returns('anything')
-
-      const keys: any = ['a', ['b', 'c']]
-      expect(serializationFeature.addVisible(model, keys)).toEqual('anything')
-      expect(stub.calledWith(model, 'visible', keys)).toBe(true)
-    })
-  })
-
   describe('.addHidden()', function() {
     it('calls and returns SettingFeature.pushToUniqueArraySetting() with property "hidden" and passed param', function() {
       const settingFeature = {
@@ -195,6 +259,42 @@ describe('SerializationFeature', function() {
       const keys: any = ['a', ['b', 'c']]
       expect(serializationFeature.addHidden(model, keys)).toEqual('anything')
       expect(stub.calledWith(model, 'hidden', keys)).toBe(true)
+    })
+  })
+
+  describe('.makeHidden()', function() {
+    it('gets visible and not setVisible() if the visible is empty, but it always calls .addHidden() with given keys', function() {
+      const getVisibleStub = Sinon.stub(serializationFeature, 'getVisible')
+      const setVisibleStub = Sinon.stub(serializationFeature, 'setVisible')
+      const addHiddenStub = Sinon.stub(serializationFeature, 'addHidden')
+
+      getVisibleStub.returns([])
+
+      const model: any = {}
+      serializationFeature.makeHidden(model, ['a', ['b'], 'c'])
+      expect(setVisibleStub.called).toBe(false)
+      expect(addHiddenStub.calledWith(model, ['a', ['b'], 'c'])).toBe(true)
+
+      getVisibleStub.restore()
+      setVisibleStub.restore()
+      addHiddenStub.restore()
+    })
+
+    it('removes the given keys out of visible, then calls .setVisible() to update new one', function() {
+      const getVisibleStub = Sinon.stub(serializationFeature, 'getVisible')
+      const setVisibleStub = Sinon.stub(serializationFeature, 'setVisible')
+      const addHiddenStub = Sinon.stub(serializationFeature, 'addHidden')
+
+      getVisibleStub.returns(['a', 'b', 'c', 'd', 'e', 'f'])
+
+      const model: any = {}
+      serializationFeature.makeHidden(model, ['a', ['b'], 'c'])
+      expect(setVisibleStub.calledWith(model, ['d', 'e', 'f'])).toBe(true)
+      expect(addHiddenStub.calledWith(model, ['a', ['b'], 'c'])).toBe(true)
+
+      getVisibleStub.restore()
+      setVisibleStub.restore()
+      addHiddenStub.restore()
     })
   })
 

@@ -37,11 +37,11 @@ export class FillableFeature extends FeatureBase implements NajsEloquent.Feature
     model['fillable'] = fillable
   }
 
-  addFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void {
+  addFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<string | string[]>): void {
     return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'fillable', keys)
   }
 
-  isFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean {
+  isFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<string | string[]>): boolean {
     return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getFillable(model), this.getGuarded(model))
   }
 
@@ -62,11 +62,11 @@ export class FillableFeature extends FeatureBase implements NajsEloquent.Feature
     model['guarded'] = guarded
   }
 
-  addGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): void {
+  addGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<string | string[]>): void {
     return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'guarded', keys)
   }
 
-  isGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean {
+  isGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<string | string[]>): boolean {
     return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getGuarded(model))
   }
 

@@ -20,14 +20,21 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {string|string[]} keys
          */
-        addVisible(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void;
+        addVisible(model: Model.IModel, keys: ArrayLike<string | string[]>): void;
+        /**
+         * Make the given, typically hidden, attributes visible.
+         *
+         * @param {Model} model
+         * @param {Array<string|string[]>} keys
+         */
+        makeVisible(model: Model.IModel, keys: ArrayLike<string | string[]>): void;
         /**
          * Determine if the given attribute may be included in JSON.
          *
          * @param {Model} model
          * @param {string} key
          */
-        isVisible(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean;
+        isVisible(model: Model.IModel, keys: ArrayLike<string | string[]>): boolean;
         /**
          * Get the hidden attributes for the model.
          *
@@ -46,14 +53,21 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {string|string[]} keys
          */
-        addHidden(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void;
+        addHidden(model: Model.IModel, keys: ArrayLike<string | string[]>): void;
+        /**
+         * Make the given, typically visible, attributes hidden.
+         *
+         * @param {Model} model
+         * @param {Array<string|string[]>} keys
+         */
+        makeHidden(model: Model.IModel, keys: ArrayLike<string | string[]>): void;
         /**
          * Determine if the given key hidden in JSON.
          *
          * @param {Model} model
          * @param {string} key
          */
-        isHidden(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean;
+        isHidden(model: Model.IModel, keys: ArrayLike<string | string[]>): boolean;
         /**
          * Convert the model instance to a plain object, visible and hidden are applied.
          *

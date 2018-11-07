@@ -4,11 +4,13 @@
 
 import Model = NajsEloquent.Model.IModel
 
+import { flatten } from 'lodash'
 import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
 import { SerializationPublicApi } from './mixin/SerializationPublicApi'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
 import { isModel, isCollection } from '../util/helpers'
+import { array_unique } from '../util/functions'
 
 export class SerializationFeature extends FeatureBase implements NajsEloquent.Feature.ISerializationFeature {
   getPublicApi(): object {
@@ -40,11 +42,30 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     model['visible'] = visible
   }
 
-  addVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
+  addVisible(model: Model, keys: ArrayLike<string | string[]>): void {
     return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'visible', keys)
   }
 
-  isVisible(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean {
+  makeVisible(model: Model, keys: ArrayLike<string | string[]>): void {
+    const hidden = this.getHidden(model)
+    if (hidden.length > 0) {
+      const names: string[] = array_unique(flatten(keys))
+      this.setHidden(
+        model,
+        hidden.filter(function(item) {
+          return names.indexOf(item) === -1
+        })
+      )
+    }
+
+    const visible = this.getVisible(model)
+    if (visible.length !== 0) {
+      this.addVisible(model, keys)
+      return
+    }
+  }
+
+  isVisible(model: Model, keys: ArrayLike<string | string[]>): boolean {
     return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getVisible(model), this.getHidden(model))
   }
 
@@ -65,11 +86,26 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
     model['hidden'] = hidden
   }
 
-  addHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): void {
+  addHidden(model: Model, keys: ArrayLike<string | string[]>): void {
     return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys)
   }
 
-  isHidden(model: Model, keys: ArrayLike<Array<string | string[]>>): boolean {
+  makeHidden(model: Model, keys: ArrayLike<string | string[]>): void {
+    const visible = this.getVisible(model)
+    if (visible.length > 0) {
+      const names: string[] = array_unique(flatten(keys as any))
+      this.setVisible(
+        model,
+        visible.filter(function(item) {
+          return names.indexOf(item) === -1
+        })
+      )
+    }
+
+    this.addHidden(model, keys)
+  }
+
+  isHidden(model: Model, keys: ArrayLike<string | string[]>): boolean {
     return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model))
   }
 

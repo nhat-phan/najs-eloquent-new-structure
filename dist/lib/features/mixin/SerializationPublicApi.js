@@ -31,6 +31,10 @@ exports.SerializationPublicApi = {
         this.driver.getSerializationFeature().addVisible(this, arguments);
         return this;
     },
+    makeVisible() {
+        this.driver.getSerializationFeature().makeVisible(this, arguments);
+        return this;
+    },
     isVisible() {
         return this.driver.getSerializationFeature().isVisible(this, arguments);
     },
@@ -43,6 +47,10 @@ exports.SerializationPublicApi = {
     },
     addHidden() {
         this.driver.getSerializationFeature().addHidden(this, arguments);
+        return this;
+    },
+    makeHidden() {
+        this.driver.getSerializationFeature().makeHidden(this, arguments);
         return this;
     },
     isHidden() {

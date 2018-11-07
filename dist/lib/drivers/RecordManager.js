@@ -25,7 +25,10 @@ class RecordManager extends RecordManagerBase_1.RecordManagerBase {
             return;
         }
         model.attributes = new Record_1.Record();
-        model.fill(data);
+        model
+            .getDriver()
+            .getFillableFeature()
+            .fill(model, data);
     }
     getAttribute(model, key) {
         return model.attributes.getAttribute(key);

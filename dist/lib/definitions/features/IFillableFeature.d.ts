@@ -20,14 +20,14 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {Array<string|string[]>} keys
          */
-        addFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void;
+        addFillable(model: Model.IModel, keys: ArrayLike<string | string[]>): void;
         /**
          * Determine if the given attribute may be mass assigned.
          *
          * @param {Model} model
          * @param {Array<string|string[]>} key
          */
-        isFillable(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean;
+        isFillable(model: Model.IModel, keys: ArrayLike<string | string[]>): boolean;
         /**
          * Get the guarded attributes for the model.
          *
@@ -46,14 +46,14 @@ declare namespace NajsEloquent.Feature {
          * @param {Model} model
          * @param {Array<string|string[]>} keys
          */
-        addGuarded(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): void;
+        addGuarded(model: Model.IModel, keys: ArrayLike<string | string[]>): void;
         /**
          * Determine if the given key is guarded.
          *
          * @param {Model} model
          * @param {string} key
          */
-        isGuarded(model: Model.IModel, keys: ArrayLike<Array<string | string[]>>): boolean;
+        isGuarded(model: Model.IModel, keys: ArrayLike<string | string[]>): boolean;
         /**
          * Fill the model with an array of attributes.
          *

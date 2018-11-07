@@ -3,11 +3,13 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/features/ISerializationFeature.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const lodash_1 = require("lodash");
 const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
 const SerializationPublicApi_1 = require("./mixin/SerializationPublicApi");
 const constants_1 = require("../constants");
 const helpers_1 = require("../util/helpers");
+const functions_1 = require("../util/functions");
 class SerializationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return SerializationPublicApi_1.SerializationPublicApi;
@@ -36,6 +38,20 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     addVisible(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'visible', keys);
     }
+    makeVisible(model, keys) {
+        const hidden = this.getHidden(model);
+        if (hidden.length > 0) {
+            const names = functions_1.array_unique(lodash_1.flatten(keys));
+            this.setHidden(model, hidden.filter(function (item) {
+                return names.indexOf(item) === -1;
+            }));
+        }
+        const visible = this.getVisible(model);
+        if (visible.length !== 0) {
+            this.addVisible(model, keys);
+            return;
+        }
+    }
     isVisible(model, keys) {
         return this.useSettingFeatureOf(model).isInWhiteList(model, keys, this.getVisible(model), this.getHidden(model));
     }
@@ -56,6 +72,16 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     }
     addHidden(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys);
+    }
+    makeHidden(model, keys) {
+        const visible = this.getVisible(model);
+        if (visible.length > 0) {
+            const names = functions_1.array_unique(lodash_1.flatten(keys));
+            this.setVisible(model, visible.filter(function (item) {
+                return names.indexOf(item) === -1;
+            }));
+        }
+        this.addHidden(model, keys);
     }
     isHidden(model, keys) {
         return this.useSettingFeatureOf(model).isInBlackList(model, keys, this.getHidden(model));
