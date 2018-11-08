@@ -1,6 +1,4 @@
-import { make } from 'najs-binding'
 import { QueryBuilderHandlerBase } from '../QueryBuilderHandlerBase'
-import { MongodbConditionConverter } from '../../drivers/mongodb/MongodbConditionConverter'
 
 export class ExecutorUtils {
   static addSoftDeleteConditionIfNeeded(handler: QueryBuilderHandlerBase) {
@@ -9,9 +7,5 @@ export class ExecutorUtils {
       handler.getConditionQuery().whereNull(settings.deletedAt)
       handler.markSoftDeleteState('added')
     }
-  }
-
-  static convertConditionsToMongodbQuery(conditions: object[]): object {
-    return make<MongodbConditionConverter>(MongodbConditionConverter.className, [conditions]).convert()
   }
 }

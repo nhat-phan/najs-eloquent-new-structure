@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const Sinon = require("sinon");
-const NajsBinding = require("najs-binding");
 const ExecutorUtils_1 = require("../../../lib/query-builders/shared/ExecutorUtils");
 describe('ExecutorUtils', function () {
     describe('addSoftDeleteConditionIfNeeded', function () {
@@ -53,19 +52,6 @@ describe('ExecutorUtils', function () {
             ExecutorUtils_1.ExecutorUtils.addSoftDeleteConditionIfNeeded(handler);
             expect(whereNullSpy.called).toBe(false);
             expect(markSpy.called).toBe(false);
-        });
-    });
-    describe('.convertConditionsToMongodbQuery()', function () {
-        it('makes a MongodbConditionConverter instance with conditions then calls .convert()', function () {
-            const makeStub = Sinon.stub(NajsBinding, 'make');
-            makeStub.returns({
-                convert() {
-                    return 'data';
-                }
-            });
-            const conditions = [];
-            expect(ExecutorUtils_1.ExecutorUtils.convertConditionsToMongodbQuery(conditions)).toEqual('data');
-            expect(makeStub.calledWith('NajsEloquent.QueryBuilder.MongodbConditionConverter')).toBe(true);
         });
     });
 });

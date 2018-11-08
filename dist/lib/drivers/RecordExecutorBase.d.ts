@@ -13,14 +13,14 @@ export declare abstract class RecordExecutorBase extends ExecutorBase implements
     abstract updateRecord<T>(action: string): Promise<T>;
     abstract hardDeleteRecord<T>(): Promise<T>;
     fillData(isCreate: boolean): void;
-    fillSoftDeletesData(): void;
     fillTimestampsData(isCreate: boolean): void;
+    fillSoftDeletesData(): void;
     setAttributeIfNeeded(attribute: string, value: any): void;
     create<R = any>(shouldFillData?: boolean, action?: string): Promise<R>;
     update<R = any>(shouldFillData?: boolean, action?: string): Promise<R>;
     softDelete<R = any>(): Promise<R>;
     hardDelete<R = any>(): Promise<R>;
     restore<R = any>(): Promise<R>;
-    hasFilter(): boolean;
+    hasPrimaryKey(): boolean;
     hasModifiedData(): boolean;
 }

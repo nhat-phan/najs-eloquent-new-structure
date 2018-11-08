@@ -54,10 +54,8 @@
     "bson": "^3.0.2",
     "chance": "^1.0.13",
     "collect.js": "^4.0.11",
-    "kerberos": "^1.0.0",
     "lodash": "^4.17.4",
     "moment": "^2.21.0",
-    "mongodb": "^3.1.4",
     "najs-event": "^0.2.0",
     "najs-facade": "^1.1.1",
     "pluralize": "^7.0.0"
@@ -67,7 +65,6 @@
     "@types/chance": "^1.0.0",
     "@types/jest": "^21.1.8",
     "@types/lodash": "^4.14.91",
-    "@types/mongodb": "^3.1.4",
     "@types/pluralize": "^0.0.28",
     "@types/sinon": "^4.1.2",
     "@types/validator": "^9.4.1",

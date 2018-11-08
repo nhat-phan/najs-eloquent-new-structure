@@ -15,13 +15,6 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         this.fillTimestampsData(isCreate);
         this.fillSoftDeletesData();
     }
-    fillSoftDeletesData() {
-        const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();
-        if (softDeletesFeature.hasSoftDeletes(this.model)) {
-            const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model);
-            this.setAttributeIfNeeded(this.convention.formatFieldName(softDeleteSettings.deletedAt), this.convention.getNullValueFor(softDeleteSettings.deletedAt));
-        }
-    }
     fillTimestampsData(isCreate) {
         const timestampFeature = this.model.getDriver().getTimestampsFeature();
         if (timestampFeature.hasTimestamps(this.model)) {
@@ -30,6 +23,13 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
             if (isCreate) {
                 this.setAttributeIfNeeded(this.convention.formatFieldName(timestampSettings.createdAt), MomentProviderFacade_1.MomentProvider.make().toDate());
             }
+        }
+    }
+    fillSoftDeletesData() {
+        const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature();
+        if (softDeletesFeature.hasSoftDeletes(this.model)) {
+            const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model);
+            this.setAttributeIfNeeded(this.convention.formatFieldName(softDeleteSettings.deletedAt), this.convention.getNullValueFor(softDeleteSettings.deletedAt));
         }
     }
     setAttributeIfNeeded(attribute, value) {
@@ -46,7 +46,7 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         return result;
     }
     async update(shouldFillData = true, action = 'update') {
-        if (!this.hasFilter()) {
+        if (!this.hasPrimaryKey()) {
             return false;
         }
         if (shouldFillData) {
@@ -67,7 +67,7 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         return isNew ? this.create(false, 'softDelete') : this.update(false, 'softDelete');
     }
     async hardDelete() {
-        if (!this.hasFilter()) {
+        if (!this.hasPrimaryKey()) {
             return false;
         }
         const result = this.hardDeleteRecord();
@@ -81,7 +81,7 @@ class RecordExecutorBase extends ExecutorBase_1.ExecutorBase {
         this.record.setAttribute(this.convention.formatFieldName(fieldName), this.convention.getNullValueFor(fieldName));
         return this.update(false, 'restore');
     }
-    hasFilter() {
+    hasPrimaryKey() {
         const primaryKeyValue = this.model.getPrimaryKey();
         if (!primaryKeyValue) {
             return false;

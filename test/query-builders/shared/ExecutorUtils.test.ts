@@ -1,6 +1,5 @@
 import 'jest'
 import * as Sinon from 'sinon'
-import * as NajsBinding from 'najs-binding'
 import { ExecutorUtils } from '../../../lib/query-builders/shared/ExecutorUtils'
 
 describe('ExecutorUtils', function() {
@@ -57,21 +56,6 @@ describe('ExecutorUtils', function() {
       ExecutorUtils.addSoftDeleteConditionIfNeeded(handler as any)
       expect(whereNullSpy.called).toBe(false)
       expect(markSpy.called).toBe(false)
-    })
-  })
-
-  describe('.convertConditionsToMongodbQuery()', function() {
-    it('makes a MongodbConditionConverter instance with conditions then calls .convert()', function() {
-      const makeStub = Sinon.stub(NajsBinding, 'make')
-      makeStub.returns({
-        convert() {
-          return 'data'
-        }
-      })
-
-      const conditions: any[] = []
-      expect(ExecutorUtils.convertConditionsToMongodbQuery(conditions)).toEqual('data')
-      expect(makeStub.calledWith('NajsEloquent.QueryBuilder.MongodbConditionConverter')).toBe(true)
     })
   })
 })

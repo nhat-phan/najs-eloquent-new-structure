@@ -28,18 +28,6 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
     this.fillSoftDeletesData()
   }
 
-  fillSoftDeletesData() {
-    const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
-
-    if (softDeletesFeature.hasSoftDeletes(this.model)) {
-      const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model)
-      this.setAttributeIfNeeded(
-        this.convention.formatFieldName(softDeleteSettings.deletedAt),
-        this.convention.getNullValueFor(softDeleteSettings.deletedAt)
-      )
-    }
-  }
-
   fillTimestampsData(isCreate: boolean) {
     const timestampFeature = this.model.getDriver().getTimestampsFeature()
 
@@ -56,6 +44,18 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
           MomentProvider.make().toDate()
         )
       }
+    }
+  }
+
+  fillSoftDeletesData() {
+    const softDeletesFeature = this.model.getDriver().getSoftDeletesFeature()
+
+    if (softDeletesFeature.hasSoftDeletes(this.model)) {
+      const softDeleteSettings = softDeletesFeature.getSoftDeletesSetting(this.model)
+      this.setAttributeIfNeeded(
+        this.convention.formatFieldName(softDeleteSettings.deletedAt),
+        this.convention.getNullValueFor(softDeleteSettings.deletedAt)
+      )
     }
   }
 
@@ -76,7 +76,7 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
   }
 
   async update<R = any>(shouldFillData: boolean = true, action: string = 'update'): Promise<R> {
-    if (!this.hasFilter()) {
+    if (!this.hasPrimaryKey()) {
       return false as any
     }
 
@@ -107,7 +107,7 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
   }
 
   async hardDelete<R = any>(): Promise<R> {
-    if (!this.hasFilter()) {
+    if (!this.hasPrimaryKey()) {
       return false as any
     }
 
@@ -125,7 +125,7 @@ export abstract class RecordExecutorBase extends ExecutorBase implements NajsElo
     return this.update(false, 'restore')
   }
 
-  hasFilter(): boolean {
+  hasPrimaryKey(): boolean {
     const primaryKeyValue = this.model.getPrimaryKey()
     if (!primaryKeyValue) {
       return false
