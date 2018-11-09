@@ -2,6 +2,7 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const ModelEvent_1 = require("./../model/ModelEvent");
 exports.RelationUtilities = {
     bundleRelations(relations) {
         return Object.values(relations.reduce(function (memo, relation) {
@@ -32,5 +33,20 @@ exports.RelationUtilities = {
         const dataBuffer = dataBucket.getDataOf(model);
         const reader = dataBuffer.getDataReader();
         return dataBuffer.map(item => reader.getAttribute(item, attribute));
+    },
+    associateOne(model, rootModel, rootKeyName, setTargetAttributes) {
+        // root provides primary key for target, whenever the root get saved target should be updated as well
+        const primaryKey = rootModel.getAttribute(rootKeyName);
+        if (!primaryKey) {
+            rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+                setTargetAttributes(model);
+                await model.save();
+            });
+            return;
+        }
+        setTargetAttributes(model);
+        rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+            await model.save();
+        });
     }
 };

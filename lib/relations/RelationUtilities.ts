@@ -1,10 +1,11 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 
-import IModel = NajsEloquent.Model.IModel
+import Model = NajsEloquent.Model.IModel
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationship = NajsEloquent.Relation.IRelationship
 import { Relationship } from './Relationship'
+import { ModelEvent } from './../model/ModelEvent'
 
 export const RelationUtilities = {
   bundleRelations(relations: IRelationship<any>[]): IRelationship<any>[] {
@@ -23,7 +24,7 @@ export const RelationUtilities = {
     )
   },
 
-  isLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string) {
+  isLoadedInDataBucket<T>(relationship: Relationship<T>, model: Model, name: string) {
     const bucket = relationship.getDataBucket()
     if (!bucket) {
       return false
@@ -32,7 +33,7 @@ export const RelationUtilities = {
     return bucket.getMetadataOf(model).loaded.indexOf(name) !== -1
   },
 
-  markLoadedInDataBucket<T>(relationship: Relationship<T>, model: IModel, name: string) {
+  markLoadedInDataBucket<T>(relationship: Relationship<T>, model: Model, name: string) {
     const bucket = relationship.getDataBucket()
     if (!bucket) {
       return
@@ -41,9 +42,26 @@ export const RelationUtilities = {
     bucket.getMetadataOf(model).loaded.push(name)
   },
 
-  getAttributeListInDataBucket(dataBucket: IRelationDataBucket, model: IModel, attribute: string) {
+  getAttributeListInDataBucket(dataBucket: IRelationDataBucket, model: Model, attribute: string) {
     const dataBuffer = dataBucket.getDataOf(model)
     const reader = dataBuffer.getDataReader()
     return dataBuffer.map(item => reader.getAttribute(item, attribute))
+  },
+
+  associateOne(model: Model, rootModel: Model, rootKeyName: string, setTargetAttributes: (model: Model) => void) {
+    // root provides primary key for target, whenever the root get saved target should be updated as well
+    const primaryKey = rootModel.getAttribute(rootKeyName)
+    if (!primaryKey) {
+      rootModel.once(ModelEvent.Saved, async () => {
+        setTargetAttributes(model)
+        await model.save()
+      })
+      return
+    }
+
+    setTargetAttributes(model)
+    rootModel.once(ModelEvent.Saved, async () => {
+      await model.save()
+    })
   }
 }

@@ -7,6 +7,7 @@ const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMan
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
 const HasOneExecutor_1 = require("../../../lib/relations/relationships/executors/HasOneExecutor");
+const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 describe('HasOne', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.HasOne"', function () {
         const rootModel = {};
@@ -34,35 +35,13 @@ describe('HasOne', function () {
         });
     });
     describe('.associate()', function () {
-        it('is NOT chainable, sets targetKeyName with key get from root model, then save the model when root model get saved', async function () {
+        it('calls RelationUtilities.associateOne() with a setTargetAttributes which sets targetKeyName to target model', function () {
             const rootModel = {
                 getAttribute() {
                     return 'anything';
                 },
-                once() { }
-            };
-            const model = {
-                setAttribute() { },
-                save() {
-                    return Promise.resolve(true);
-                }
-            };
-            const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
-            const setAttributeSpy = Sinon.spy(model, 'setAttribute');
-            const onceSpy = Sinon.spy(rootModel, 'once');
-            const saveSpy = Sinon.spy(model, 'save');
-            expect(hasOne.associate(model)).toBeUndefined();
-            expect(setAttributeSpy.calledWith('target_id', 'anything')).toBe(true);
-            expect(onceSpy.calledWith('saved')).toBe(true);
-            expect(saveSpy.called).toBe(false);
-            const handler = onceSpy.lastCall.args[1];
-            handler();
-            expect(saveSpy.called).toBe(true);
-        });
-        it('is NOT chainable, sets targetKeyName after root model get saved if the key in rootModel is not found', function () {
-            const rootModel = {
-                getAttribute() {
-                    return undefined;
+                getModelName() {
+                    return 'ModelName';
                 },
                 once() { }
             };
@@ -74,16 +53,11 @@ describe('HasOne', function () {
             };
             const hasOne = new HasOne_1.HasOne(rootModel, 'test', 'Target', 'target_id', 'id');
             const setAttributeSpy = Sinon.spy(model, 'setAttribute');
-            const onceSpy = Sinon.spy(rootModel, 'once');
-            const saveSpy = Sinon.spy(model, 'save');
-            expect(hasOne.associate(model)).toBeUndefined();
-            expect(setAttributeSpy.called).toBe(false);
-            expect(onceSpy.calledWith('saved')).toBe(true);
-            expect(saveSpy.called).toBe(false);
-            const handler = onceSpy.lastCall.args[1];
-            handler();
-            expect(saveSpy.called).toBe(true);
-            expect(setAttributeSpy.called).toBe(true);
+            const spy = Sinon.spy(RelationUtilities_1.RelationUtilities, 'associateOne');
+            hasOne.associate(model);
+            expect(spy.calledWith(model, rootModel, 'id')).toBe(true);
+            expect(setAttributeSpy.calledOnce).toBe(true);
+            expect(setAttributeSpy.calledWith('target_id', 'anything')).toBe(true);
         });
     });
 });

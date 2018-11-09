@@ -13,8 +13,9 @@ import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { MorphOneExecutor } from './executors/MorphOneExecutor'
+import { RelationUtilities } from '../RelationUtilities'
 
-export class MorphOne<T> extends HasOneOrMany<T> implements IMorphOneRelationship<T> {
+export class MorphOne<T extends Model> extends HasOneOrMany<T> implements IMorphOneRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.MorphOne
   protected targetMorphTypeName: string
   protected executor: MorphOneExecutor<T>
@@ -49,6 +50,13 @@ export class MorphOne<T> extends HasOneOrMany<T> implements IMorphOneRelationshi
       )
     }
     return this.executor
+  }
+
+  associate(model: T) {
+    RelationUtilities.associateOne(model, this.rootModel, this.rootKeyName, target => {
+      target.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))
+      target.setAttribute(this.targetMorphTypeName, MorphOne.findMorphType(this.rootModel.getModelName()))
+    })
   }
 }
 register(MorphOne, NajsEloquentClasses.Relation.Relationship.MorphOne)

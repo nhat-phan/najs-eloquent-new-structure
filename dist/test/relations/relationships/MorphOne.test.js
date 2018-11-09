@@ -8,6 +8,7 @@ const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMan
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
 const MorphOneExecutor_1 = require("../../../lib/relations/relationships/executors/MorphOneExecutor");
+const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 describe('MorphOne', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.MorphOne"', function () {
         const rootModel = {};
@@ -44,6 +45,37 @@ describe('MorphOne', function () {
             expect(findMorphTypeSpy.calledWith(rootModel)).toBe(true);
             findMorphTypeSpy.restore();
             isModelStub.restore();
+        });
+    });
+    describe('.associate()', function () {
+        it('calls RelationUtilities.associateOne() with a setTargetAttributes which sets targetKeyName and targetMorphTypeName to target model', function () {
+            const stub = Sinon.stub(MorphOne_1.MorphOne, 'findMorphType');
+            stub.returns('MorphType');
+            const rootModel = {
+                getAttribute() {
+                    return 'anything';
+                },
+                getModelName() {
+                    return 'ModelName';
+                },
+                once() { }
+            };
+            const model = {
+                setAttribute() { },
+                save() {
+                    return Promise.resolve(true);
+                }
+            };
+            const morphOne = new MorphOne_1.MorphOne(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id');
+            const setAttributeSpy = Sinon.spy(model, 'setAttribute');
+            const spy = Sinon.spy(RelationUtilities_1.RelationUtilities, 'associateOne');
+            morphOne.associate(model);
+            expect(spy.calledWith(model, rootModel, 'id')).toBe(true);
+            expect(setAttributeSpy.calledTwice).toBe(true);
+            expect(setAttributeSpy.firstCall.calledWith('target_id', 'anything')).toBe(true);
+            expect(setAttributeSpy.secondCall.calledWith('target_type', 'MorphType')).toBe(true);
+            expect(stub.calledWith('ModelName')).toBe(true);
+            stub.restore();
         });
     });
 });

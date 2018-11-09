@@ -1,6 +1,22 @@
 import 'jest'
+import * as Sinon from 'sinon'
 import { Relationship } from './../../lib/relations/Relationship'
 import { RelationUtilities } from './../../lib/relations/RelationUtilities'
+import { DataBuffer } from '../../lib/data/DataBuffer'
+
+const reader = {
+  getAttribute(data: object, field: string) {
+    return data[field]
+  },
+
+  pick(data: object, fields: string[]) {
+    return data
+  },
+
+  toComparable(value: any) {
+    return value
+  }
+}
 
 describe('RelationUtilities', function() {
   describe('.bundleRelations()', function() {
@@ -124,6 +140,86 @@ describe('RelationUtilities', function() {
         RelationUtilities.markLoadedInDataBucket(relation, model, item.name)
         expect(item.before).toEqual(item.after)
       }
+    })
+  })
+
+  describe('.getAttributeListInDataBucket()', function() {
+    it('simply maps the dataBuffer with reader.getAttribute()', function() {
+      const dataBuffer = new DataBuffer('id', reader)
+      dataBuffer.add({ id: 1, a: 1, b: 2, c: 3 })
+      dataBuffer.add({ id: 2, a: 2, b: 4, c: 6 })
+      dataBuffer.add({ id: 3, a: 3, b: 6, c: 9 })
+      const dataBucket: any = {
+        getDataOf() {
+          return dataBuffer
+        }
+      }
+      expect(RelationUtilities.getAttributeListInDataBucket(dataBucket, {} as any, 'a')).toEqual([1, 2, 3])
+      expect(RelationUtilities.getAttributeListInDataBucket(dataBucket, {} as any, 'b')).toEqual([2, 4, 6])
+      expect(RelationUtilities.getAttributeListInDataBucket(dataBucket, {} as any, 'c')).toEqual([3, 6, 9])
+    })
+  })
+
+  describe('.associateOne()', function() {
+    it('calls given setTargetAttributes() then save the model when root model get saved', async function() {
+      const rootModel: any = {
+        getAttribute() {
+          return 'anything'
+        },
+
+        once() {}
+      }
+
+      const model: any = {
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+
+      function setTargetAttributes() {}
+      const setTargetAttributesSpy = Sinon.spy(setTargetAttributes)
+      const onceSpy = Sinon.spy(rootModel, 'once')
+      const saveSpy = Sinon.spy(model, 'save')
+
+      expect(RelationUtilities.associateOne(model, rootModel, 'id', setTargetAttributesSpy)).toBeUndefined()
+      expect(setTargetAttributesSpy.calledWith(model)).toBe(true)
+      expect(onceSpy.calledWith('saved')).toBe(true)
+
+      expect(saveSpy.called).toBe(false)
+      const handler = onceSpy.lastCall.args[1]
+      handler()
+      expect(saveSpy.called).toBe(true)
+    })
+
+    it('calls given setTargetAttributes() after root model get saved if the key in rootModel is not found', function() {
+      const rootModel: any = {
+        getAttribute() {
+          return undefined
+        },
+
+        once() {}
+      }
+
+      const model: any = {
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+
+      function setTargetAttributes() {}
+      const setTargetAttributesSpy = Sinon.spy(setTargetAttributes)
+      const onceSpy = Sinon.spy(rootModel, 'once')
+      const saveSpy = Sinon.spy(model, 'save')
+
+      expect(RelationUtilities.associateOne(model, rootModel, 'id', setTargetAttributesSpy)).toBeUndefined()
+      expect(setTargetAttributesSpy.called).toBe(false)
+      expect(onceSpy.calledWith('saved')).toBe(true)
+
+      expect(saveSpy.called).toBe(false)
+      const handler = onceSpy.lastCall.args[1]
+      handler()
+      expect(saveSpy.called).toBe(true)
+      expect(setTargetAttributesSpy.called).toBe(true)
     })
   })
 })

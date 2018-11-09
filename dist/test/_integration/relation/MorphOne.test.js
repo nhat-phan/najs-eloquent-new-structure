@@ -56,4 +56,38 @@ describe('MorphOne', function () {
         await result.load('image');
         expect(result.image.attributesToObject()).toEqual(userImage.attributesToObject());
     });
+    describe('.associate()', function () {
+        it('should work with not saved model', async function () {
+            const user = new User();
+            const image = new Image();
+            user.imageRelation.associate(image);
+            await user.save();
+            await user.load('image');
+            expect(user.toObject()).toEqual({
+                id: user.id,
+                image: {
+                    imageable_id: user.id,
+                    imageable_type: user.getModelName(),
+                    id: image.id
+                }
+            });
+        });
+        it('should work with saved model', async function () {
+            const user = new User();
+            await user.save();
+            const image = new Image();
+            await image.save();
+            user.imageRelation.associate(image);
+            await user.save();
+            await user.load('image');
+            expect(user.toObject()).toEqual({
+                id: user.id,
+                image: {
+                    imageable_id: user.id,
+                    imageable_type: user.getModelName(),
+                    id: image.id
+                }
+            });
+        });
+    });
 });
