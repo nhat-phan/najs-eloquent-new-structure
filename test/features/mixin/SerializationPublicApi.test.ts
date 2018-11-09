@@ -242,51 +242,33 @@ describe('SerializationPublicApi', function() {
   })
 
   describe('.toObject()', function() {
-    it('calls and returns SerializationFeature.toObject() with relations=undefined, format=true if there is no params', function() {
+    it('calls and returns SerializationFeature.toObject()', function() {
       const stub = Sinon.stub(serializationFeature, 'toObject')
       stub.returns('anything')
 
       expect(SerializationPublicApi.toObject.call(model)).toEqual('anything')
-      expect(stub.calledWith(model, undefined, true)).toBe(true)
+      expect(stub.calledWith(model, undefined)).toBe(true)
+      stub.resetHistory()
+
+      const options = {}
+      expect(SerializationPublicApi.toObject.call(model, options)).toEqual('anything')
+      expect(stub.calledWith(model, options)).toBe(true)
       stub.restore()
     })
+  })
 
-    it('calls and returns SerializationFeature.toObject() with relations=undefined, format=true/false if first param is boolean', function() {
+  describe('.toJSON()', function() {
+    it('calls and returns SerializationFeature.toObject()', function() {
       const stub = Sinon.stub(serializationFeature, 'toObject')
       stub.returns('anything')
 
-      expect(SerializationPublicApi.toObject.call(model, true)).toEqual('anything')
-      expect(stub.calledWith(model, undefined, true)).toBe(true)
+      expect(SerializationPublicApi.toJSON.call(model)).toEqual('anything')
+      expect(stub.calledWith(model, undefined)).toBe(true)
       stub.resetHistory()
 
-      expect(SerializationPublicApi.toObject.call(model, false)).toEqual('anything')
-      expect(stub.calledWith(model, undefined, false)).toBe(true)
-      stub.restore()
-    })
-
-    it('calls and returns SerializationFeature.toObject() with relations=[], format=true if first param is string or array', function() {
-      const stub = Sinon.stub(serializationFeature, 'toObject')
-      stub.returns('anything')
-
-      expect(SerializationPublicApi.toObject.call(model, '')).toEqual('anything')
-      expect(stub.calledWith(model, [''], true)).toBe(true)
-      stub.resetHistory()
-
-      expect(SerializationPublicApi.toObject.call(model, [])).toEqual('anything')
-      expect(stub.calledWith(model, [], true)).toBe(true)
-      stub.restore()
-    })
-
-    it('calls and returns SerializationFeature.toObject() with 3rd overridden form', function() {
-      const stub = Sinon.stub(serializationFeature, 'toObject')
-      stub.returns('anything')
-
-      expect(SerializationPublicApi.toObject.call(model, true, 'a', 'b')).toEqual('anything')
-      expect(stub.calledWith(model, ['a', 'b'], true)).toBe(true)
-      stub.resetHistory()
-
-      expect(SerializationPublicApi.toObject.call(model, false, 'x', ['y'], 'z')).toEqual('anything')
-      expect(stub.calledWith(model, ['x', 'y', 'z'], false)).toBe(true)
+      const options = {}
+      expect(SerializationPublicApi.toJSON.call(model, options)).toEqual('anything')
+      expect(stub.calledWith(model, options)).toBe(true)
       stub.restore()
     })
   })

@@ -394,7 +394,7 @@ describe('SerializationFeature', function () {
             stub.returns(true);
             const spy = Sinon.spy(serializationFeatureNextModel, 'toObject');
             expect(serializationFeature.relationDataToObject({}, model, ['chains', 'x', 'y'], 'name', false)).toEqual('anything');
-            expect(spy.calledWith(model, ['chains', 'x', 'y'], false)).toBe(true);
+            expect(spy.calledWith(model, { relations: ['chains', 'x', 'y'], formatRelationName: false })).toBe(true);
             stub.restore();
         });
         it('maps item then calls & returns data.toObject() with data, chains and formatName options if the data is collection', function () {
@@ -423,8 +423,8 @@ describe('SerializationFeature', function () {
             };
             const spy = Sinon.spy(serializationFeatureNextModel, 'toObject');
             expect(serializationFeature.relationDataToObject({}, factory_1.make_collection([model1, model2]), ['chains', 'x', 'y'], 'name', false)).toEqual(['anything', 'anything']);
-            expect(spy.firstCall.calledWith(model1, ['chains', 'x', 'y'], false)).toBe(true);
-            expect(spy.secondCall.calledWith(model2, ['chains', 'x', 'y'], false)).toBe(true);
+            expect(spy.firstCall.calledWith(model1, { relations: ['chains', 'x', 'y'], formatRelationName: false })).toBe(true);
+            expect(spy.secondCall.calledWith(model2, { relations: ['chains', 'x', 'y'], formatRelationName: false })).toBe(true);
         });
     });
     describe('.relationsToObject()', function () {
@@ -626,35 +626,191 @@ describe('SerializationFeature', function () {
         }
     });
     describe('.toObject()', function () {
-        it('calls .attributesToObject() & .relationsToObject() with option shouldApplyVisibleAndHidden = false then merges and ', function () {
+        it('calls .attributesToObject() & .relationsToObject() with option shouldApplyVisibleAndHidden = false then merges together', function () {
             const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
             const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
             const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
             attributesToObjectStub.returns({ a: 1 });
             relationsToObjectStub.returns({ b: 2 });
             applyVisibleAndHiddenForStub.returns('anything');
-            const relations = {};
             const model = {};
-            expect(serializationFeature.toObject(model, relations, true)).toEqual('anything');
+            expect(serializationFeature.toObject(model)).toEqual('anything');
             expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
-            expect(relationsToObjectStub.calledWith(model, relations, true, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, undefined, true, false)).toBe(true);
             expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1, b: 2 })).toBe(true);
+            expect(makeHiddenForStub.called).toBe(false);
+            expect(makeVisibleForStub.called).toBe(false);
             attributesToObjectStub.restore();
             relationsToObjectStub.restore();
             applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
+        });
+        it('does the same behavior as default options if "relations" = true', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            const options = {
+                relations: true
+            };
+            applyVisibleAndHiddenForStub.returns('anything');
+            const model = {};
+            expect(serializationFeature.toObject(model, options)).toEqual('anything');
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, undefined, true, false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1, b: 2 })).toBe(true);
+            expect(makeHiddenForStub.called).toBe(false);
+            expect(makeVisibleForStub.called).toBe(false);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
+        });
+        it('passes option "formatRelationName" to relationsToObject()', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            const options = {
+                relations: ['a', 'b'],
+                formatRelationName: false
+            };
+            applyVisibleAndHiddenForStub.returns('anything');
+            const model = {};
+            expect(serializationFeature.toObject(model, options)).toEqual('anything');
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, ['a', 'b'], false, false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1, b: 2 })).toBe(true);
+            expect(makeHiddenForStub.called).toBe(false);
+            expect(makeVisibleForStub.called).toBe(false);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
+        });
+        it('does not calls .relationsToObject() if options "relations" = false', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            applyVisibleAndHiddenForStub.returns('anything');
+            const options = {
+                relations: false
+            };
+            const model = {};
+            expect(serializationFeature.toObject(model, options)).toEqual('anything');
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.called).toBe(false);
+            expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1 })).toBe(true);
+            expect(makeHiddenForStub.called).toBe(false);
+            expect(makeVisibleForStub.called).toBe(false);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
+        });
+        it('does not calls .applyVisibleAndHiddenFor() if options "applyVisibleAndHidden" = false', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            applyVisibleAndHiddenForStub.returns('anything');
+            const options = {
+                applyVisibleAndHidden: false
+            };
+            const model = {};
+            expect(serializationFeature.toObject(model, options)).toEqual({ a: 1, b: 2 });
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, undefined, true, false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.called).toBe(false);
+            expect(makeHiddenForStub.called).toBe(false);
+            expect(makeVisibleForStub.called).toBe(false);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
+        });
+        it('calls .makeHidden() and pass option "hidden" if exists', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            const options = {
+                hidden: ['a', 'b']
+            };
+            applyVisibleAndHiddenForStub.returns('anything');
+            const model = {};
+            expect(serializationFeature.toObject(model, options)).toEqual('anything');
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, undefined, true, false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1, b: 2 })).toBe(true);
+            expect(makeHiddenForStub.calledWith(model, ['a', 'b'])).toBe(true);
+            expect(makeVisibleForStub.called).toBe(false);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
+        });
+        it('calls .makeVisible() and pass option "visible" if exists', function () {
+            const attributesToObjectStub = Sinon.stub(serializationFeature, 'attributesToObject');
+            const relationsToObjectStub = Sinon.stub(serializationFeature, 'relationsToObject');
+            const applyVisibleAndHiddenForStub = Sinon.stub(serializationFeature, 'applyVisibleAndHiddenFor');
+            const makeHiddenForStub = Sinon.stub(serializationFeature, 'makeHidden');
+            const makeVisibleForStub = Sinon.stub(serializationFeature, 'makeVisible');
+            attributesToObjectStub.returns({ a: 1 });
+            relationsToObjectStub.returns({ b: 2 });
+            const options = {
+                visible: ['a', 'b']
+            };
+            applyVisibleAndHiddenForStub.returns('anything');
+            const model = {};
+            expect(serializationFeature.toObject(model, options)).toEqual('anything');
+            expect(attributesToObjectStub.calledWith(model, false)).toBe(true);
+            expect(relationsToObjectStub.calledWith(model, undefined, true, false)).toBe(true);
+            expect(applyVisibleAndHiddenForStub.calledWith(model, { a: 1, b: 2 })).toBe(true);
+            expect(makeHiddenForStub.called).toBe(false);
+            expect(makeVisibleForStub.calledWith(model, ['a', 'b'])).toBe(true);
+            attributesToObjectStub.restore();
+            relationsToObjectStub.restore();
+            applyVisibleAndHiddenForStub.restore();
+            makeHiddenForStub.restore();
+            makeVisibleForStub.restore();
         });
     });
     describe('.toJson()', function () {
-        it('simply calls JSON.stringify() with data provided from .toObject()', function () {
+        it('simply calls JSON.stringify() with the given model instance', function () {
             const stub = Sinon.stub(JSON, 'stringify');
             stub.returns('anything');
-            const toObjectStub = Sinon.stub(serializationFeature, 'toObject');
-            toObjectStub.returns('object');
-            const model = {};
+            const model = {
+                toJSON() {
+                    return 'test';
+                }
+            };
             expect(serializationFeature.toJson(model, 'replacer', 'space')).toEqual('anything');
-            expect(toObjectStub.calledWith(model)).toBe(true);
-            expect(stub.calledWith('object', 'replacer', 'space')).toBe(true);
-            toObjectStub.restore();
+            expect(stub.calledWith(model, 'replacer', 'space')).toBe(true);
             stub.restore();
         });
     });

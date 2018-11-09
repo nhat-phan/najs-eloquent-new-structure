@@ -109,17 +109,18 @@ namespace NajsEloquent.Model {
      */
     toObject<T extends object = object>(): T
     /**
-     * Convert the model data and model given relations to a plain object.
-     *
-     * Visible and hidden are applied.
+     * Convert the model data and model given relations to a plain object with custom options.
      */
-    toObject<T extends object = object>(...relations: Array<string | string[]>): T
+    toObject<T extends object = object>(options: Feature.ToObjectOptions): T
+
     /**
-     * Convert the model data and model given relations to a plain object with option format name like attribute or not.
-     *
-     * Visible and hidden are applied.
+     * Convert model data and relations to a plain object which used for JSON.stringify()
      */
-    toObject<T extends object = object>(formatName: boolean, ...relations: Array<string | string[]>): T
+    toJSON<T extends object = object>(): T
+    /**
+     * Convert the model data and model given relations to a plain object with custom options.
+     */
+    toJSON<T extends object = object>(options: Feature.ToObjectOptions): T
 
     /**
      * Convert the model instance to JSON string.

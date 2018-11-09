@@ -10,6 +10,11 @@ const SerializationPublicApi_1 = require("./mixin/SerializationPublicApi");
 const constants_1 = require("../constants");
 const helpers_1 = require("../util/helpers");
 const functions_1 = require("../util/functions");
+const DEFAULT_TO_OBJECT_OPTIONS = {
+    relations: true,
+    formatRelationName: true,
+    applyVisibleAndHidden: true
+};
 class SerializationFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return SerializationPublicApi_1.SerializationPublicApi;
@@ -92,12 +97,18 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
     }
     relationDataToObject(model, data, chains, relationName, formatName) {
         if (helpers_1.isModel(data)) {
-            return this.useSerializationFeatureOf(data).toObject(data, chains, formatName);
+            return this.useSerializationFeatureOf(data).toObject(data, {
+                relations: chains,
+                formatRelationName: formatName
+            });
         }
         if (helpers_1.isCollection(data)) {
             return data
                 .map((nextModel) => {
-                return this.useSerializationFeatureOf(nextModel).toObject(nextModel, chains, formatName);
+                return this.useSerializationFeatureOf(nextModel).toObject(nextModel, {
+                    relations: chains,
+                    formatRelationName: formatName
+                });
             })
                 .all();
         }
@@ -123,12 +134,26 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
             return memo;
         }, {});
     }
-    toObject(model, relations, formatName) {
-        const data = Object.assign({}, this.attributesToObject(model, false), this.relationsToObject(model, relations, formatName, false));
-        return this.applyVisibleAndHiddenFor(model, data);
+    toObject(model, options) {
+        const opts = Object.assign({}, DEFAULT_TO_OBJECT_OPTIONS, options);
+        let relationData = {};
+        if (opts.relations === true || typeof opts.relations === 'undefined') {
+            relationData = this.relationsToObject(model, undefined, !!opts.formatRelationName, false);
+        }
+        if (Array.isArray(opts.relations)) {
+            relationData = this.relationsToObject(model, opts.relations, !!opts.formatRelationName, false);
+        }
+        const data = Object.assign({}, this.attributesToObject(model, false), relationData);
+        if (typeof opts.hidden !== 'undefined' && opts.hidden.length > 0) {
+            this.makeHidden(model, opts.hidden);
+        }
+        if (typeof opts.visible !== 'undefined' && opts.visible.length > 0) {
+            this.makeVisible(model, opts.visible);
+        }
+        return opts.applyVisibleAndHidden ? this.applyVisibleAndHiddenFor(model, data) : data;
     }
     toJson(model, replacer, space) {
-        return JSON.stringify(this.toObject(model, undefined, true), replacer, space);
+        return JSON.stringify(model, replacer, space);
     }
 }
 exports.SerializationFeature = SerializationFeature;

@@ -63,9 +63,11 @@ exports.SerializationPublicApi = {
         const args = parse_relationsToObject_arguments(arguments);
         return this.driver.getSerializationFeature().relationsToObject(this, args.relations, args.formatName);
     },
-    toObject() {
-        const args = parse_relationsToObject_arguments(arguments);
-        return this.driver.getSerializationFeature().toObject(this, args.relations, args.formatName);
+    toObject(options) {
+        return this.driver.getSerializationFeature().toObject(this, options);
+    },
+    toJSON(options) {
+        return this.driver.getSerializationFeature().toObject(this, options);
     },
     toJson(replacer, space) {
         return this.driver.getSerializationFeature().toJson(this, replacer, space);

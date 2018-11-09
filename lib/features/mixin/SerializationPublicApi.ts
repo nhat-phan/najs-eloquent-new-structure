@@ -83,9 +83,12 @@ export const SerializationPublicApi: NajsEloquent.Model.IModelSerialization = {
     return this.driver.getSerializationFeature().relationsToObject(this, args.relations, args.formatName) as T
   },
 
-  toObject<T extends object = object>(this: Model): T {
-    const args = parse_relationsToObject_arguments(arguments)
-    return this.driver.getSerializationFeature().toObject(this, args.relations, args.formatName) as T
+  toObject<T extends object = object>(this: Model, options?: object): T {
+    return this.driver.getSerializationFeature().toObject(this, options) as T
+  },
+
+  toJSON<T extends object = object>(this: Model, options?: object): T {
+    return this.driver.getSerializationFeature().toObject(this, options) as T
   },
 
   toJson(this: Model, replacer?: (key: string, value: any) => any, space?: string | number): string {

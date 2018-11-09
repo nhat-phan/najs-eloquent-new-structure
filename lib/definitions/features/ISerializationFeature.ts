@@ -2,6 +2,14 @@
 /// <reference path="../model/IModel.ts" />
 
 namespace NajsEloquent.Feature {
+  export type ToObjectOptions = {
+    relations?: string[] | boolean
+    formatRelationName?: boolean
+    applyVisibleAndHidden?: boolean
+    visible?: string[]
+    hidden?: string[]
+  }
+
   export interface ISerializationFeature extends IFeature {
     /**
      * Get the visible attributes for the model.
@@ -96,16 +104,15 @@ namespace NajsEloquent.Feature {
     relationsToObject(model: Model.IModel, relations: string[] | undefined, formatName: boolean): object
 
     /**
-     * Convert the model instance to a plain object, visible and hidden are not applied.
+     * Convert the model instance to a plain object.
      *
      * @param {Model} model
-     * @param {string[]} relations
-     * @param {boolean} formatName
+     * @param {object} options
      */
-    toObject(model: Model.IModel, relations: string[] | undefined, formatName: boolean): object
+    toObject(model: Model.IModel, options?: ToObjectOptions): object
 
     /**
-     * Convert the model instance to JSON string, visible and hidden are applied.
+     * Convert the model instance to JSON string.
      *
      * @param {Model} model
      */
