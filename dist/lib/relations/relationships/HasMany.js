@@ -6,7 +6,6 @@ const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const HasManyExecutor_1 = require("./executors/HasManyExecutor");
-const ModelEvent_1 = require("../../model/ModelEvent");
 const accessors_1 = require("../../util/accessors");
 class HasMany extends HasOneOrMany_1.HasOneOrMany {
     getClassName() {
@@ -28,12 +27,8 @@ class HasMany extends HasOneOrMany_1.HasOneOrMany {
         return this;
     }
     dissociate(...models) {
-        const dissociatedModels = RelationUtilities_1.RelationUtilities.flattenModels(models);
-        dissociatedModels.forEach(model => {
-            model.setAttribute(this.targetKeyName, accessors_1.relationFeatureOf(model).getEmptyValueForRelationshipForeignKey(model, this.targetKeyName));
-        });
-        this.rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
-            await Promise.all(dissociatedModels.map(model => model.save()));
+        RelationUtilities_1.RelationUtilities.dissociateMany(models, this.rootModel, this.rootKeyName, target => {
+            target.setAttribute(this.targetKeyName, accessors_1.relationFeatureOf(target).getEmptyValueForRelationshipForeignKey(target, this.targetKeyName));
         });
         return this;
     }

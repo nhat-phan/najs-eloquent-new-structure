@@ -165,4 +165,51 @@ describe('MorphMany', function() {
       })
     })
   })
+
+  describe('.dissociate()', function() {
+    it('should work with .save() in between .associate() & .dissociate()', async function() {
+      const user = new User()
+      const image1 = new Image()
+      const image2 = new Image()
+
+      user.imagesRelation.associate(image1, image2)
+      await user.save()
+
+      user.imagesRelation.dissociate(image2)
+
+      await user.save()
+      await user.load('images')
+      expect(user.toObject()).toEqual({
+        id: user.id,
+        images: [
+          {
+            imageable_id: user.id,
+            imageable_type: user.getModelName(),
+            id: image1.id
+          }
+        ]
+      })
+    })
+
+    it('should work with .save() after .associate().dissociate()', async function() {
+      const user = new User()
+      const image1 = new Image()
+      const image2 = new Image()
+
+      user.imagesRelation.associate(image1, image2).dissociate(image2)
+
+      await user.save()
+      await user.load('images')
+      expect(user.toObject()).toEqual({
+        id: user.id,
+        images: [
+          {
+            imageable_id: user.id,
+            imageable_type: user.getModelName(),
+            id: image1.id
+          }
+        ]
+      })
+    })
+  })
 })

@@ -85,13 +85,13 @@ describe('MorphMany', function () {
                     return Promise.resolve(true);
                 }
             };
-            const hasMany = new MorphMany_1.MorphMany(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id');
+            const morphMany = new MorphMany_1.MorphMany(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id');
             const setAttribute1Spy = Sinon.spy(model1, 'setAttribute');
             const setAttribute2Spy = Sinon.spy(model2, 'setAttribute');
             const setAttribute3Spy = Sinon.spy(model3, 'setAttribute');
             const setAttribute4Spy = Sinon.spy(model4, 'setAttribute');
             const spy = Sinon.spy(RelationUtilities_1.RelationUtilities, 'associateMany');
-            expect(hasMany.associate(model1, [model2], factory_1.make_collection([model3, model4])) === hasMany).toBe(true);
+            expect(morphMany.associate(model1, [model2], factory_1.make_collection([model3, model4])) === morphMany).toBe(true);
             expect(stub.calledWith('ModelName')).toBe(true);
             expect(spy.calledWith([model1, [model2], factory_1.make_collection([model3, model4])], rootModel, 'id')).toBe(true);
             expect(setAttribute1Spy.firstCall.calledWith('target_id', 'anything')).toBe(true);
@@ -103,6 +103,61 @@ describe('MorphMany', function () {
             expect(setAttribute4Spy.firstCall.calledWith('target_id', 'anything')).toBe(true);
             expect(setAttribute4Spy.secondCall.calledWith('target_type', 'MorphType')).toBe(true);
             stub.restore();
+        });
+    });
+    describe('.dissociate()', function () {
+        it('is chainable, calls RelationUtilities.dissociateMany() with setTargetAttributes which sets the targetKeyName/targetMorphTypeName to EmptyValue via RelationFeature.getEmptyValueForRelationshipForeignKey()', async function () {
+            const relationFeature = {
+                getEmptyValueForRelationshipForeignKey() {
+                    return 'anything';
+                }
+            };
+            const model1 = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                },
+                setAttribute() {
+                    return undefined;
+                }
+            };
+            const model2 = {
+                getDriver() {
+                    return {
+                        getRelationFeature() {
+                            return relationFeature;
+                        }
+                    };
+                },
+                setAttribute() {
+                    return undefined;
+                }
+            };
+            const getEmptyValueForRelationshipForeignKeySpy = Sinon.spy(relationFeature, 'getEmptyValueForRelationshipForeignKey');
+            const setAttribute1Spy = Sinon.spy(model1, 'setAttribute');
+            const setAttribute2Spy = Sinon.spy(model2, 'setAttribute');
+            const rootModel = {
+                getAttribute() {
+                    return 'id-value';
+                },
+                once() { }
+            };
+            const morphMany = new MorphMany_1.MorphMany(rootModel, 'test', 'Target', 'target_type', 'target_id', 'id');
+            const spy = Sinon.spy(RelationUtilities_1.RelationUtilities, 'dissociateMany');
+            expect(morphMany.dissociate(model1, [model2]) === morphMany).toBe(true);
+            expect(spy.calledWith([model1, [model2]], rootModel)).toBe(true);
+            expect(getEmptyValueForRelationshipForeignKeySpy.callCount).toEqual(4);
+            expect(getEmptyValueForRelationshipForeignKeySpy.getCall(0).calledWith(model1, 'target_id')).toBe(true);
+            expect(getEmptyValueForRelationshipForeignKeySpy.getCall(1).calledWith(model1, 'target_type')).toBe(true);
+            expect(getEmptyValueForRelationshipForeignKeySpy.getCall(2).calledWith(model2, 'target_id')).toBe(true);
+            expect(getEmptyValueForRelationshipForeignKeySpy.getCall(3).calledWith(model2, 'target_type')).toBe(true);
+            expect(setAttribute1Spy.firstCall.calledWith('target_id', 'anything')).toBe(true);
+            expect(setAttribute1Spy.secondCall.calledWith('target_type', 'anything')).toBe(true);
+            expect(setAttribute2Spy.firstCall.calledWith('target_id', 'anything')).toBe(true);
+            expect(setAttribute2Spy.secondCall.calledWith('target_type', 'anything')).toBe(true);
         });
     });
 });

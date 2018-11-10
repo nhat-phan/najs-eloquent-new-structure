@@ -313,4 +313,69 @@ describe('RelationUtilities', function () {
             expect(setTargetAttributesSpy.getCall(2).calledWith(model3)).toBe(true);
         });
     });
+    describe('.dissociateMany()', function () {
+        it('flattens given models with .flattenModels() calls given setTargetAttributes() and calls model.save() when root model get saved if there is root primary key', async function () {
+            const model1 = { async save() { } };
+            const model2 = { async save() { } };
+            const model3 = { async save() { } };
+            const rootModel = {
+                getAttribute() {
+                    return 'id';
+                },
+                once() { }
+            };
+            function setTargetAttributes() { }
+            const setTargetAttributesSpy = Sinon.spy(setTargetAttributes);
+            const onceSpy = Sinon.spy(rootModel, 'once');
+            const save1Spy = Sinon.spy(model1, 'save');
+            const save2Spy = Sinon.spy(model2, 'save');
+            const save3Spy = Sinon.spy(model3, 'save');
+            RelationUtilities_1.RelationUtilities.dissociateMany([model1, [model2], factory_1.make_collection([model3])], rootModel, 'id', setTargetAttributesSpy);
+            expect(setTargetAttributesSpy.calledThrice).toBe(true);
+            expect(setTargetAttributesSpy.firstCall.calledWith(model1)).toBe(true);
+            expect(setTargetAttributesSpy.secondCall.calledWith(model2)).toBe(true);
+            expect(setTargetAttributesSpy.thirdCall.calledWith(model3)).toBe(true);
+            expect(onceSpy.calledWith('saved')).toBe(true);
+            expect(save1Spy.called).toBe(false);
+            expect(save2Spy.called).toBe(false);
+            expect(save3Spy.called).toBe(false);
+            const handler = onceSpy.firstCall.args[1];
+            await handler();
+            expect(save1Spy.called).toBe(true);
+            expect(save2Spy.called).toBe(true);
+            expect(save3Spy.called).toBe(true);
+        });
+        it('flattens given models with .flattenModels() calls given setTargetAttributes() and calls model.save() when root model get saved if there is no root primary key', async function () {
+            const model1 = { async save() { } };
+            const model2 = { async save() { } };
+            const model3 = { async save() { } };
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                },
+                once() { }
+            };
+            function setTargetAttributes() { }
+            const setTargetAttributesSpy = Sinon.spy(setTargetAttributes);
+            const onceSpy = Sinon.spy(rootModel, 'once');
+            const save1Spy = Sinon.spy(model1, 'save');
+            const save2Spy = Sinon.spy(model2, 'save');
+            const save3Spy = Sinon.spy(model3, 'save');
+            RelationUtilities_1.RelationUtilities.dissociateMany([model1, [model2], factory_1.make_collection([model3])], rootModel, 'id', setTargetAttributesSpy);
+            expect(setTargetAttributesSpy.calledThrice).toBe(false);
+            expect(onceSpy.calledWith('saved')).toBe(true);
+            expect(save1Spy.called).toBe(false);
+            expect(save2Spy.called).toBe(false);
+            expect(save3Spy.called).toBe(false);
+            const handler = onceSpy.firstCall.args[1];
+            await handler();
+            expect(setTargetAttributesSpy.calledThrice).toBe(true);
+            expect(setTargetAttributesSpy.firstCall.calledWith(model1)).toBe(true);
+            expect(setTargetAttributesSpy.secondCall.calledWith(model2)).toBe(true);
+            expect(setTargetAttributesSpy.thirdCall.calledWith(model3)).toBe(true);
+            expect(save1Spy.called).toBe(true);
+            expect(save2Spy.called).toBe(true);
+            expect(save3Spy.called).toBe(true);
+        });
+    });
 });

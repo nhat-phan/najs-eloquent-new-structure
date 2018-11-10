@@ -19,4 +19,5 @@ export declare class MorphMany<T extends Model> extends HasOneOrMany<Collection<
     getType(): string;
     getExecutor(): MorphManyExecutor<T>;
     associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
+    dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
 }

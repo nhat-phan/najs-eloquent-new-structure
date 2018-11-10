@@ -13,7 +13,6 @@ import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { HasManyExecutor } from './executors/HasManyExecutor'
-import { ModelEvent } from '../../model/ModelEvent'
 import { relationFeatureOf } from '../../util/accessors'
 
 export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IHasManyRelationship<T> {
@@ -43,18 +42,12 @@ export class HasMany<T extends Model> extends HasOneOrMany<Collection<T>> implem
   }
 
   dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
-    const dissociatedModels: T[] = RelationUtilities.flattenModels(models) as any[]
-
-    dissociatedModels.forEach(model => {
-      model.setAttribute(
+    RelationUtilities.dissociateMany(models, this.rootModel, this.rootKeyName, target => {
+      target.setAttribute(
         this.targetKeyName,
-        relationFeatureOf(model).getEmptyValueForRelationshipForeignKey(model, this.targetKeyName)
+        relationFeatureOf(target).getEmptyValueForRelationshipForeignKey(target, this.targetKeyName)
       )
     })
-    this.rootModel.once(ModelEvent.Saved, async () => {
-      await Promise.all(dissociatedModels.map(model => model.save()))
-    })
-
     return this
   }
 }

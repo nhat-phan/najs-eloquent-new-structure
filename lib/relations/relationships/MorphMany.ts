@@ -16,6 +16,7 @@ import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { MorphManyExecutor } from './executors/MorphManyExecutor'
 import { RelationUtilities } from '../RelationUtilities'
+import { relationFeatureOf } from '../../util/accessors'
 
 export class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.MorphMany
@@ -58,6 +59,21 @@ export class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> impl
     RelationUtilities.associateMany(models, this.rootModel, this.rootKeyName, target => {
       target.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))
       target.setAttribute(this.targetMorphTypeName, MorphMany.findMorphType(this.rootModel.getModelName()))
+    })
+    return this
+  }
+
+  dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
+    RelationUtilities.dissociateMany(models, this.rootModel, this.rootKeyName, target => {
+      const relationFeature = relationFeatureOf(target)
+      target.setAttribute(
+        this.targetKeyName,
+        relationFeature.getEmptyValueForRelationshipForeignKey(target, this.targetKeyName)
+      )
+      target.setAttribute(
+        this.targetMorphTypeName,
+        relationFeature.getEmptyValueForRelationshipForeignKey(target, this.targetMorphTypeName)
+      )
     })
     return this
   }

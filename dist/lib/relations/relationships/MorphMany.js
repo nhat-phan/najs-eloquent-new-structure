@@ -12,6 +12,7 @@ const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const MorphManyExecutor_1 = require("./executors/MorphManyExecutor");
 const RelationUtilities_1 = require("../RelationUtilities");
+const accessors_1 = require("../../util/accessors");
 class MorphMany extends HasOneOrMany_1.HasOneOrMany {
     constructor(root, relationName, target, targetType, targetKey, rootKey) {
         super(root, relationName, target, targetKey, rootKey);
@@ -33,6 +34,14 @@ class MorphMany extends HasOneOrMany_1.HasOneOrMany {
         RelationUtilities_1.RelationUtilities.associateMany(models, this.rootModel, this.rootKeyName, target => {
             target.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName));
             target.setAttribute(this.targetMorphTypeName, MorphMany.findMorphType(this.rootModel.getModelName()));
+        });
+        return this;
+    }
+    dissociate(...models) {
+        RelationUtilities_1.RelationUtilities.dissociateMany(models, this.rootModel, this.rootKeyName, target => {
+            const relationFeature = accessors_1.relationFeatureOf(target);
+            target.setAttribute(this.targetKeyName, relationFeature.getEmptyValueForRelationshipForeignKey(target, this.targetKeyName));
+            target.setAttribute(this.targetMorphTypeName, relationFeature.getEmptyValueForRelationshipForeignKey(target, this.targetMorphTypeName));
         });
         return this;
     }

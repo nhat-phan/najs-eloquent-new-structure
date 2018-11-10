@@ -73,5 +73,20 @@ exports.RelationUtilities = {
         rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
             await Promise.all(associatedModels.map(model => model.save()));
         });
+    },
+    dissociateMany(models, rootModel, rootKeyName, setTargetAttributes) {
+        const dissociatedModels = exports.RelationUtilities.flattenModels(models);
+        const primaryKey = rootModel.getAttribute(rootKeyName);
+        if (!primaryKey) {
+            rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+                dissociatedModels.forEach(setTargetAttributes);
+                await Promise.all(dissociatedModels.map(model => model.save()));
+            });
+            return;
+        }
+        dissociatedModels.forEach(setTargetAttributes);
+        rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+            await Promise.all(dissociatedModels.map(model => model.save()));
+        });
     }
 };

@@ -8,7 +8,7 @@ import { HasManyExecutor } from '../../../lib/relations/relationships/executors/
 import { make_collection } from '../../../lib/util/factory'
 import { RelationUtilities } from '../../../lib/relations/RelationUtilities'
 
-describe('HasOne', function() {
+describe('HasMany', function() {
   it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.HasMany"', function() {
     const rootModel: any = {}
     const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
@@ -91,7 +91,7 @@ describe('HasOne', function() {
   })
 
   describe('.dissociate()', function() {
-    it('is chainable, flattens given models then set the targetKeyName to EmptyValue via RelationFeature.getEmptyValueForRelationshipForeignKey()', async function() {
+    it('is chainable, calls RelationUtilities.dissociateMany() with setTargetAttributes which sets the targetKeyName to EmptyValue via RelationFeature.getEmptyValueForRelationshipForeignKey()', async function() {
       const relationFeature: any = {
         getEmptyValueForRelationshipForeignKey() {
           return 'anything'
@@ -131,61 +131,22 @@ describe('HasOne', function() {
       const setAttribute2Spy = Sinon.spy(model2, 'setAttribute')
 
       const rootModel: any = {
+        getAttribute() {
+          return 'id-value'
+        },
         once() {}
       }
       const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
+
+      const spy = Sinon.spy(RelationUtilities, 'dissociateMany')
+
       expect(hasMany.dissociate(model1, [model2]) === hasMany).toBe(true)
+      expect(spy.calledWith([model1, [model2]], rootModel)).toBe(true)
       expect(getEmptyValueForRelationshipForeignKeySpy.calledTwice).toBe(true)
       expect(getEmptyValueForRelationshipForeignKeySpy.firstCall.calledWith(model1, 'target_id')).toBe(true)
       expect(getEmptyValueForRelationshipForeignKeySpy.secondCall.calledWith(model2, 'target_id')).toBe(true)
       expect(setAttribute1Spy.calledWith('target_id', 'anything')).toBe(true)
       expect(setAttribute2Spy.calledWith('target_id', 'anything')).toBe(true)
-    })
-
-    it('also calls given models.save() whenever the rootModel get saved', async function() {
-      const relationFeature: any = {
-        getEmptyValueForRelationshipForeignKey() {
-          return 'anything'
-        }
-      }
-      const model1: any = {
-        getDriver() {
-          return {
-            getRelationFeature() {
-              return relationFeature
-            }
-          }
-        },
-        setAttribute() {
-          return undefined
-        },
-        async save() {
-          return true
-        }
-      }
-      const getEmptyValueForRelationshipForeignKeySpy = Sinon.spy(
-        relationFeature,
-        'getEmptyValueForRelationshipForeignKey'
-      )
-      const setAttribute1Spy = Sinon.spy(model1, 'setAttribute')
-
-      const rootModel: any = {
-        once() {}
-      }
-
-      const onceSpy = Sinon.spy(rootModel, 'once')
-
-      const hasMany = new HasMany(rootModel, 'test', 'Target', 'target_id', 'id')
-      expect(hasMany.dissociate(model1) === hasMany).toBe(true)
-      expect(getEmptyValueForRelationshipForeignKeySpy.calledWith(model1, 'target_id')).toBe(true)
-      expect(setAttribute1Spy.calledWith('target_id', 'anything')).toBe(true)
-
-      expect(onceSpy.calledWith('saved')).toBe(true)
-      const handler: any = onceSpy.firstCall.args[1]
-      const saveSpy = Sinon.spy(model1, 'save')
-      expect(saveSpy.called).toBe(false)
-      await handler()
-      expect(saveSpy.called).toBe(true)
     })
   })
 })
