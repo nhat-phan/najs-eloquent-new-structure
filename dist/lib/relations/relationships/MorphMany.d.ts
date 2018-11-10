@@ -10,7 +10,7 @@ import IMorphManyRelationship = NajsEloquent.Relation.IMorphManyRelationship;
 import Collection = CollectJs.Collection;
 import { HasOneOrMany } from './HasOneOrMany';
 import { MorphManyExecutor } from './executors/MorphManyExecutor';
-export declare class MorphMany<T> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
+export declare class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
     static className: string;
     protected targetMorphTypeName: string;
     protected executor: MorphManyExecutor<T>;
@@ -18,4 +18,5 @@ export declare class MorphMany<T> extends HasOneOrMany<Collection<T>> implements
     getClassName(): string;
     getType(): string;
     getExecutor(): MorphManyExecutor<T>;
+    associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
 }

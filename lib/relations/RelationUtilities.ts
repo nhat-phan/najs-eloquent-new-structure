@@ -4,8 +4,11 @@
 import Model = NajsEloquent.Model.IModel
 import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 import IRelationship = NajsEloquent.Relation.IRelationship
+
+import { flatten } from 'lodash'
 import { Relationship } from './Relationship'
 import { ModelEvent } from './../model/ModelEvent'
+import { isCollection } from '../util/helpers'
 
 export const RelationUtilities = {
   bundleRelations(relations: IRelationship<any>[]): IRelationship<any>[] {
@@ -62,6 +65,42 @@ export const RelationUtilities = {
     setTargetAttributes(model)
     rootModel.once(ModelEvent.Saved, async () => {
       await model.save()
+    })
+  },
+
+  flattenModels(models: Array<Model | Model[] | CollectJs.Collection<Model>>): Model[] {
+    return flatten(
+      models.map(item => {
+        return isCollection(item) ? (item as CollectJs.Collection<Model>).all() : (item as Model | Model[])
+      })
+    )
+  },
+
+  associateMany(
+    models: Array<Model | Model[] | CollectJs.Collection<Model>>,
+    rootModel: Model,
+    rootKeyName: string,
+    setTargetAttributes: (model: Model) => void
+  ) {
+    // root provides primary key for target, whenever the root get saved target should be updated as well
+    const associatedModels: Model[] = this.flattenModels(models)
+
+    const primaryKey = rootModel.getAttribute(rootKeyName)
+    if (!primaryKey) {
+      rootModel.once(ModelEvent.Saved, async () => {
+        await Promise.all(
+          associatedModels.map(function(model) {
+            setTargetAttributes(model)
+            return model.save()
+          })
+        )
+      })
+      return
+    }
+
+    associatedModels.forEach(setTargetAttributes)
+    rootModel.once(ModelEvent.Saved, async () => {
+      await Promise.all(associatedModels.map(model => model.save()))
     })
   }
 }

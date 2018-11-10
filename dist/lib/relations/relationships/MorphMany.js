@@ -11,6 +11,7 @@ const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
 const MorphManyExecutor_1 = require("./executors/MorphManyExecutor");
+const RelationUtilities_1 = require("../RelationUtilities");
 class MorphMany extends HasOneOrMany_1.HasOneOrMany {
     constructor(root, relationName, target, targetType, targetKey, rootKey) {
         super(root, relationName, target, targetKey, rootKey);
@@ -27,6 +28,13 @@ class MorphMany extends HasOneOrMany_1.HasOneOrMany {
             this.executor = new MorphManyExecutor_1.MorphManyExecutor(this.getDataBucket(), this.targetModel, this.targetMorphTypeName, HasOneOrMany_1.HasOneOrMany.findMorphType(this.rootModel));
         }
         return this.executor;
+    }
+    associate(...models) {
+        RelationUtilities_1.RelationUtilities.associateMany(models, this.rootModel, this.rootKeyName, target => {
+            target.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName));
+            target.setAttribute(this.targetMorphTypeName, MorphMany.findMorphType(this.rootModel.getModelName()));
+        });
+        return this;
     }
 }
 MorphMany.className = constants_1.NajsEloquent.Relation.Relationship.MorphMany;

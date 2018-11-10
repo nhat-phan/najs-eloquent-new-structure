@@ -15,8 +15,9 @@ import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
 import { MorphManyExecutor } from './executors/MorphManyExecutor'
+import { RelationUtilities } from '../RelationUtilities'
 
-export class MorphMany<T> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
+export class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.MorphMany
   protected targetMorphTypeName: string
   protected executor: MorphManyExecutor<T>
@@ -51,6 +52,14 @@ export class MorphMany<T> extends HasOneOrMany<Collection<T>> implements IMorphM
       )
     }
     return this.executor
+  }
+
+  associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this {
+    RelationUtilities.associateMany(models, this.rootModel, this.rootKeyName, target => {
+      target.setAttribute(this.targetKeyName, this.rootModel.getAttribute(this.rootKeyName))
+      target.setAttribute(this.targetMorphTypeName, MorphMany.findMorphType(this.rootModel.getModelName()))
+    })
+    return this
   }
 }
 register(MorphMany, NajsEloquentClasses.Relation.Relationship.MorphMany)

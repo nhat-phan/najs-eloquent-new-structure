@@ -10,4 +10,6 @@ export declare const RelationUtilities: {
     markLoadedInDataBucket<T>(relationship: Relationship<T>, model: Model, name: string): void;
     getAttributeListInDataBucket(dataBucket: IRelationDataBucket, model: Model, attribute: string): {}[];
     associateOne(model: Model, rootModel: Model, rootKeyName: string, setTargetAttributes: (model: Model) => void): void;
+    flattenModels(models: (Model | CollectJs.Collection<Model> | Model[])[]): Model[];
+    associateMany(models: (Model | CollectJs.Collection<Model> | Model[])[], rootModel: Model, rootKeyName: string, setTargetAttributes: (model: Model) => void): void;
 };

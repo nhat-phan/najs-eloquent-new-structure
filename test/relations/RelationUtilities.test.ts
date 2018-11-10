@@ -3,6 +3,7 @@ import * as Sinon from 'sinon'
 import { Relationship } from './../../lib/relations/Relationship'
 import { RelationUtilities } from './../../lib/relations/RelationUtilities'
 import { DataBuffer } from '../../lib/data/DataBuffer'
+import { make_collection } from '../../lib/util/factory'
 
 const reader = {
   getAttribute(data: object, field: string) {
@@ -220,6 +221,151 @@ describe('RelationUtilities', function() {
       handler()
       expect(saveSpy.called).toBe(true)
       expect(setTargetAttributesSpy.called).toBe(true)
+    })
+  })
+
+  describe('.flattenModels()', function() {
+    it('flattens given arguments, if the item is collection it calls item.all()', function() {
+      const input: any[] = ['a', ['b', 'c'], 'd', make_collection(['e']), 'f']
+      expect(RelationUtilities.flattenModels(input)).toEqual(['a', 'b', 'c', 'd', 'e', 'f'])
+    })
+  })
+
+  describe('.associateMany()', function() {
+    it('calls .flattenModels() with given models, calls given setTargetAttributes() then save the models when root get saved', function() {
+      const rootModel: any = {
+        getAttribute() {
+          return 'anything'
+        },
+
+        once() {}
+      }
+
+      const model1: any = {
+        setAttribute() {},
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+      const model2: any = {
+        setAttribute() {},
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+      const model3: any = {
+        setAttribute() {},
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+      const model4: any = {
+        setAttribute() {},
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+
+      function setTargetAttributes() {}
+      const setTargetAttributesSpy = Sinon.spy(setTargetAttributes)
+
+      const onceSpy = Sinon.spy(rootModel, 'once')
+
+      const save1Spy = Sinon.spy(model1, 'save')
+      const save2Spy = Sinon.spy(model2, 'save')
+      const save3Spy = Sinon.spy(model3, 'save')
+      const save4Spy = Sinon.spy(model4, 'save')
+
+      RelationUtilities.associateMany(
+        [model1, [model2], make_collection<any>([model3, model4])],
+        rootModel,
+        'id',
+        setTargetAttributesSpy
+      )
+
+      expect(setTargetAttributesSpy.callCount).toEqual(4)
+      expect(setTargetAttributesSpy.getCall(0).calledWith(model1)).toBe(true)
+      expect(setTargetAttributesSpy.getCall(1).calledWith(model2)).toBe(true)
+      expect(setTargetAttributesSpy.getCall(2).calledWith(model3)).toBe(true)
+      expect(setTargetAttributesSpy.getCall(3).calledWith(model4)).toBe(true)
+      expect(onceSpy.calledWith('saved')).toBe(true)
+
+      expect(save1Spy.called).toBe(false)
+      expect(save2Spy.called).toBe(false)
+      expect(save3Spy.called).toBe(false)
+      expect(save4Spy.called).toBe(false)
+      const handler = onceSpy.lastCall.args[1]
+      handler()
+      expect(save1Spy.called).toBe(true)
+      expect(save2Spy.called).toBe(true)
+      expect(save3Spy.called).toBe(true)
+      expect(save4Spy.called).toBe(true)
+    })
+
+    it('calls .flattenModels() with given models, calls given setTargetAttributes() after root model get saved if the key in rootModel is not found', function() {
+      const rootModel: any = {
+        getAttribute() {
+          return undefined
+        },
+        once() {}
+      }
+
+      const model1: any = {
+        setAttribute() {
+          return this
+        },
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+      const model2: any = {
+        setAttribute() {
+          return this
+        },
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+      const model3: any = {
+        setAttribute() {
+          return this
+        },
+        save() {
+          return Promise.resolve(true)
+        }
+      }
+
+      function setTargetAttributes() {}
+      const setTargetAttributesSpy = Sinon.spy(setTargetAttributes)
+
+      const onceSpy = Sinon.spy(rootModel, 'once')
+
+      const save1Spy = Sinon.spy(model1, 'save')
+      const save2Spy = Sinon.spy(model2, 'save')
+      const save3Spy = Sinon.spy(model3, 'save')
+
+      RelationUtilities.associateMany(
+        [model1, [model2], make_collection<any>([model3])],
+        rootModel,
+        'id',
+        setTargetAttributesSpy
+      )
+
+      expect(setTargetAttributesSpy.callCount).toEqual(0)
+      expect(onceSpy.calledWith('saved')).toBe(true)
+
+      expect(save1Spy.called).toBe(false)
+      expect(save2Spy.called).toBe(false)
+      expect(save3Spy.called).toBe(false)
+      const handler = onceSpy.lastCall.args[1]
+      handler()
+      expect(save1Spy.called).toBe(true)
+      expect(save2Spy.called).toBe(true)
+      expect(save3Spy.called).toBe(true)
+      expect(setTargetAttributesSpy.callCount).toEqual(3)
+      expect(setTargetAttributesSpy.getCall(0).calledWith(model1)).toBe(true)
+      expect(setTargetAttributesSpy.getCall(1).calledWith(model2)).toBe(true)
+      expect(setTargetAttributesSpy.getCall(2).calledWith(model3)).toBe(true)
     })
   })
 })

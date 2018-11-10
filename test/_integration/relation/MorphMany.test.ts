@@ -26,7 +26,7 @@ class User extends Model {
     return 'User'
   }
 
-  get imageRelation() {
+  get imagesRelation() {
     return this.defineRelation('images').morphMany(Image, 'imageable')
   }
 }
@@ -39,7 +39,7 @@ class Post extends Model {
     return 'Post'
   }
 
-  get imageRelation() {
+  get imagesRelation() {
     return this.defineRelation('images').morphMany(Image, 'imageable')
   }
 }
@@ -106,5 +106,63 @@ describe('MorphMany', function() {
     for (const image of images) {
       expect(image.imageable).toBeInstanceOf(Model)
     }
+  })
+
+  describe('.associate()', function() {
+    it('should work with not saved model', async function() {
+      const user = new User()
+      const image1 = new Image()
+      const image2 = new Image()
+      user.imagesRelation.associate(image1, image2)
+
+      await user.save()
+      await user.load('images')
+      expect(user.toObject()).toEqual({
+        id: user.id,
+        images: [
+          {
+            imageable_id: user.id,
+            imageable_type: user.getModelName(),
+            id: image1.id
+          },
+          {
+            imageable_id: user.id,
+            imageable_type: user.getModelName(),
+            id: image2.id
+          }
+        ]
+      })
+    })
+
+    it('should work with saved model', async function() {
+      const user = new User()
+      await user.save()
+
+      const image1 = new Image()
+      await image1.save()
+
+      const image2 = new Image()
+      await image2.save()
+
+      user.imagesRelation.associate(image1, image2)
+
+      await user.save()
+      await user.load('images')
+      expect(user.toObject()).toEqual({
+        id: user.id,
+        images: [
+          {
+            imageable_id: user.id,
+            imageable_type: user.getModelName(),
+            id: image1.id
+          },
+          {
+            imageable_id: user.id,
+            imageable_type: user.getModelName(),
+            id: image2.id
+          }
+        ]
+      })
+    })
   })
 })

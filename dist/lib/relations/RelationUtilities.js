@@ -2,7 +2,9 @@
 /// <reference path="../definitions/relations/IRelationship.ts" />
 /// <reference path="../definitions/relations/IRelationDataBucket.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
+const lodash_1 = require("lodash");
 const ModelEvent_1 = require("./../model/ModelEvent");
+const helpers_1 = require("../util/helpers");
 exports.RelationUtilities = {
     bundleRelations(relations) {
         return Object.values(relations.reduce(function (memo, relation) {
@@ -47,6 +49,29 @@ exports.RelationUtilities = {
         setTargetAttributes(model);
         rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
             await model.save();
+        });
+    },
+    flattenModels(models) {
+        return lodash_1.flatten(models.map(item => {
+            return helpers_1.isCollection(item) ? item.all() : item;
+        }));
+    },
+    associateMany(models, rootModel, rootKeyName, setTargetAttributes) {
+        // root provides primary key for target, whenever the root get saved target should be updated as well
+        const associatedModels = this.flattenModels(models);
+        const primaryKey = rootModel.getAttribute(rootKeyName);
+        if (!primaryKey) {
+            rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+                await Promise.all(associatedModels.map(function (model) {
+                    setTargetAttributes(model);
+                    return model.save();
+                }));
+            });
+            return;
+        }
+        associatedModels.forEach(setTargetAttributes);
+        rootModel.once(ModelEvent_1.ModelEvent.Saved, async () => {
+            await Promise.all(associatedModels.map(model => model.save()));
         });
     }
 };
