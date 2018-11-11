@@ -34,6 +34,9 @@ class ManyToMany extends Relationship_1.Relationship {
         }
         return this.pivotModelInstance;
     }
+    getPivotAccessor() {
+        return this.pivotAccessor || 'pivot';
+    }
     newPivot(data, isGuarded) {
         if (typeof this.pivot === 'string') {
             if (najs_binding_1.ClassRegistry.has(this.pivot)) {
@@ -76,6 +79,10 @@ class ManyToMany extends Relationship_1.Relationship {
         else {
             this.pivotOptions.fields = functions_1.array_unique(this.pivotOptions.fields.concat(input));
         }
+        return this;
+    }
+    as(accessor) {
+        this.pivotAccessor = accessor;
         return this;
     }
     queryPivot(cb) {

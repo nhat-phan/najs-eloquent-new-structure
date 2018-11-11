@@ -28,6 +28,7 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
   protected pivotDefinition: typeof PivotModel
   protected pivotTargetKeyName: string
   protected pivotRootKeyName: string
+  protected pivotAccessor?: string
   protected pivotOptions: IPivotOptions
 
   protected pivotCustomQueryFn: IRelationshipQuery<T> | undefined
@@ -71,6 +72,10 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
       this.pivotModelInstance = this.newPivot()
     }
     return this.pivotModelInstance
+  }
+
+  protected getPivotAccessor(): string {
+    return this.pivotAccessor || 'pivot'
   }
 
   newPivot(data?: object, isGuarded?: boolean): Model {
@@ -121,6 +126,12 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
     } else {
       this.pivotOptions.fields = array_unique(this.pivotOptions.fields.concat(input))
     }
+
+    return this
+  }
+
+  as(accessor: string): this {
+    this.pivotAccessor = accessor
 
     return this
   }

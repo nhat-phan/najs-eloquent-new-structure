@@ -57,14 +57,12 @@
 /// <reference path="definitions/relations/IHasOneRelationship.ts" />
 /// <reference path="definitions/relations/IHasManyRelationship.ts" />
 /// <reference path="definitions/relations/IBelongsToManyRelationship.ts" />
-/// <reference path="definitions/relations/IModelWithPivot.ts" />
 /// <reference path="definitions/relations/IPivotOptions.ts" />
 /// <reference path="definitions/relations/IRelationData.ts" />
 /// <reference path="definitions/relations/IRelationData.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.ts" />
 /// <reference path="definitions/relations/IRelationship.ts" />
 /// <reference path="definitions/relations/IRelationshipFactory.ts" />
-import IModelWithPivot = NajsEloquent.Relation.IModelWithPivot
 
 import { MemoryDataSourceProvider } from './facades/global/MemoryDataSourceProviderFacade'
 import { MemoryDataSource } from './drivers/memory/MemoryDataSource'
@@ -88,7 +86,9 @@ export type HasOne<T extends Model> = T | undefined | null
 export type HasMany<T extends Model> = CollectJs.Collection<T> | undefined
 export type BelongsTo<T extends Model> = T | undefined | null
 
-export type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IModelWithPivot<R>> | undefined
+// prettier-ignore
+export type BelongsToMany<T extends Model, R extends Model = Model, K extends keyof any = 'pivot'> =
+  CollectJs.Collection<T & { readonly [P in K]: R }> | undefined
 
 export type MorphOne<T extends Model> = T | undefined | null
 export type MorphMany<T extends Model> = CollectJs.Collection<T> | undefined

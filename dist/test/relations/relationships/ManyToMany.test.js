@@ -236,6 +236,28 @@ describe('ManyToMany', function () {
             expect(relation.getPivotOptions().fields).toEqual(['a', 'b', 'c', 'x', 'y']);
         });
     });
+    describe('protected .getPivotAccessor()', function () {
+        it('returns property "pivotAccessor" if has value, otherwise will return literally string "pivot"', function () {
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation['getPivotAccessor']()).toEqual('pivot');
+            relation.as('test');
+            expect(relation['getPivotAccessor']()).toEqual('test');
+            relation.as('');
+            expect(relation['getPivotAccessor']()).toEqual('pivot');
+        });
+    });
+    describe('.as()', function () {
+        it('simply assigns given attribute to property "pivotAccessor"', function () {
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation['pivotAccessor']).toBeUndefined();
+            relation.as('test');
+            expect(relation['pivotAccessor']).toEqual('test');
+            relation.as('');
+            expect(relation['pivotAccessor']).toEqual('');
+        });
+    });
     describe('.queryPivot()', function () {
         it('is chainable, simply assigns the callback to property "pivotCustomQueryFn"', function () {
             const rootModel = {};

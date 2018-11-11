@@ -20,6 +20,7 @@ export declare abstract class ManyToMany<T extends Model> extends Relationship<C
     protected pivotDefinition: typeof PivotModel;
     protected pivotTargetKeyName: string;
     protected pivotRootKeyName: string;
+    protected pivotAccessor?: string;
     protected pivotOptions: IPivotOptions;
     protected pivotCustomQueryFn: IRelationshipQuery<T> | undefined;
     constructor(root: Model, relationName: string, target: ModelDefinition, pivot: ModelDefinition, pivotTargetKeyName: string, pivotRootKeyName: string, targetKeyName: string, rootKeyName: string);
@@ -29,10 +30,12 @@ export declare abstract class ManyToMany<T extends Model> extends Relationship<C
     abstract fetchPivotData(type: RelationshipFetchType): Promise<CollectJs.Collection<Model>>;
     isInverseOf<K>(relation: NajsEloquent.Relation.IRelationship<K>): boolean;
     protected readonly pivotModel: Model;
+    protected getPivotAccessor(): string;
     newPivot(data?: object, isGuarded?: boolean): Model;
     newPivotQuery(name?: string, raw?: boolean): IQueryBuilder<Model>;
     applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     withPivot(...fields: Array<string | string[]>): this;
+    as(accessor: string): this;
     queryPivot(cb: IRelationshipQuery<T>): this;
     getPivotOptions(name?: string): IPivotOptions;
     setPivotDefinition(definition: typeof PivotModel): void;

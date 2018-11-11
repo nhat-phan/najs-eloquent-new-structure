@@ -82,7 +82,11 @@ export class BelongsToMany<T extends Model> extends ManyToMany<T> implements IBe
     return make_collection(collector.exec(), item => {
       const instance = dataBucket.makeModel(this.targetModel, item)
       const targetPrimaryKey = (reader.getAttribute(item, this.targetKeyName) as any).toString()
-      instance['pivot'] = dataBucket.makeModel(pivotModel, pivotData[targetPrimaryKey])
+
+      const pivotAccessor = this.getPivotAccessor()
+      instance[pivotAccessor] = dataBucket.makeModel(pivotModel, pivotData[targetPrimaryKey])
+      instance.makeHidden(pivotAccessor)
+
       return instance
     }) as any
   }

@@ -42,6 +42,11 @@ namespace NajsEloquent.Relation {
     withPivot(...fields: Array<string | string[]>): this
 
     /**
+     * Specify the custom pivot accessor to use for the relationship.
+     */
+    as(accessor: string): this
+
+    /**
      * Add custom query to relationship.
      */
     queryPivot(cb: IRelationshipQuery<T>): this

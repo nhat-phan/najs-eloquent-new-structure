@@ -118,12 +118,15 @@ describe('BelongsToMany', function() {
       dataBuffer.add({ id: 'x' })
       dataBuffer.add({ id: 'y' })
       dataBuffer.add({ id: 'z' })
+
+      function makeHidden() {}
+
       const dataBucket: any = {
         getDataOf() {
           return dataBuffer
         },
         makeModel(model: any, data: any) {
-          return { model: model.getModelName(), data: data }
+          return { model: model.getModelName(), data: data, makeHidden: makeHidden }
         }
       }
 
@@ -159,12 +162,76 @@ describe('BelongsToMany', function() {
         {
           data: { id: 'x' },
           model: 'Target',
-          pivot: { data: { id: '2', root_id: 2, target_id: 'x' }, model: 'Pivot' }
+          pivot: { data: { id: '2', root_id: 2, target_id: 'x' }, model: 'Pivot', makeHidden: makeHidden },
+          makeHidden: makeHidden
         },
         {
           data: { id: 'y' },
           model: 'Target',
-          pivot: { data: { id: '4', root_id: 2, target_id: 'y' }, model: 'Pivot' }
+          pivot: { data: { id: '4', root_id: 2, target_id: 'y' }, model: 'Pivot', makeHidden: makeHidden },
+          makeHidden: makeHidden
+        }
+      ])
+    })
+
+    it('assigns pivot instance to property provided by getPivotAccessor.(), the property also made hidden via instance.makeHidden', function() {
+      const dataBuffer = new DataBuffer('id', reader)
+      dataBuffer.add({ id: 'x' })
+      dataBuffer.add({ id: 'y' })
+      dataBuffer.add({ id: 'z' })
+
+      function makeHidden() {}
+
+      const dataBucket: any = {
+        getDataOf() {
+          return dataBuffer
+        },
+        makeModel(model: any, data: any) {
+          return { model: model.getModelName(), data: data, makeHidden: makeHidden }
+        }
+      }
+
+      const pivotModel: any = {
+        getModelName() {
+          return 'Pivot'
+        }
+      }
+      const targetModel: any = {
+        getModelName() {
+          return 'Target'
+        }
+      }
+      const rootModel: any = {
+        getAttribute() {
+          return 2
+        }
+      }
+      const relation = new BelongsToMany(rootModel, 'name', 'Target', 'pivot', 'target_id', 'root_id', 'id', 'id')
+      relation['pivotModelInstance'] = pivotModel
+      relation['targetModelInstance'] = targetModel
+
+      const dataBucketStub = Sinon.stub(relation, 'getDataBucket')
+      dataBucketStub.returns(dataBucket)
+
+      const collectPivotDataStub = Sinon.stub(relation, 'collectPivotData')
+      collectPivotDataStub.returns({
+        x: { id: '2', root_id: 2, target_id: 'x' },
+        y: { id: '4', root_id: 2, target_id: 'y' }
+      })
+
+      relation.as('test')
+      expect(relation.collectData()!.all()).toEqual([
+        {
+          data: { id: 'x' },
+          model: 'Target',
+          test: { data: { id: '2', root_id: 2, target_id: 'x' }, model: 'Pivot', makeHidden: makeHidden },
+          makeHidden: makeHidden
+        },
+        {
+          data: { id: 'y' },
+          model: 'Target',
+          test: { data: { id: '4', root_id: 2, target_id: 'y' }, model: 'Pivot', makeHidden: makeHidden },
+          makeHidden: makeHidden
         }
       ])
     })

@@ -48,13 +48,11 @@
 /// <reference path="definitions/relations/IHasOneRelationship.d.ts" />
 /// <reference path="definitions/relations/IHasManyRelationship.d.ts" />
 /// <reference path="definitions/relations/IBelongsToManyRelationship.d.ts" />
-/// <reference path="definitions/relations/IModelWithPivot.d.ts" />
 /// <reference path="definitions/relations/IPivotOptions.d.ts" />
 /// <reference path="definitions/relations/IRelationData.d.ts" />
 /// <reference path="definitions/relations/IRelationDataBucket.d.ts" />
 /// <reference path="definitions/relations/IRelationship.d.ts" />
 /// <reference path="definitions/relations/IRelationshipFactory.d.ts" />
-import IModelWithPivot = NajsEloquent.Relation.IModelWithPivot;
 import { Model } from './model/Model';
 export declare const Relation: NajsEloquent.Relation.IRelationshipStatic;
 export { Model, Model as Eloquent };
@@ -64,7 +62,9 @@ export { Builtin as NajsEloquent } from './builtin';
 export declare type HasOne<T extends Model> = T | undefined | null;
 export declare type HasMany<T extends Model> = CollectJs.Collection<T> | undefined;
 export declare type BelongsTo<T extends Model> = T | undefined | null;
-export declare type BelongsToMany<T extends Model, R = {}> = CollectJs.Collection<T & IModelWithPivot<R>> | undefined;
+export declare type BelongsToMany<T extends Model, R extends Model = Model, K extends keyof any = 'pivot'> = CollectJs.Collection<T & {
+    readonly [P in K]: R;
+}> | undefined;
 export declare type MorphOne<T extends Model> = T | undefined | null;
 export declare type MorphMany<T extends Model> = CollectJs.Collection<T> | undefined;
 export declare type MorphTo<T extends Model> = T | undefined | null;
