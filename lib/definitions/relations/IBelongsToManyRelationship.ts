@@ -38,18 +38,18 @@ namespace NajsEloquent.Relation {
      */
     attach(data: { [key in string]: object }): Promise<this>
 
-    // /**
-    //  * Detach an model to relation with model's id.
-    //  *
-    //  * @param {string} id
-    //  */
-    // detach(id: string): Promise<this>
-    // /**
-    //  * Detach models to relation with models' id.
-    //  *
-    //  * @param {string} ids
-    //  */
-    // detach(ids: string[]): Promise<this>
+    /**
+     * Detach an model to relation with model's id.
+     *
+     * @param {string} id
+     */
+    detach(id: string): Promise<this>
+    /**
+     * Detach models to relation with models' id.
+     *
+     * @param {string} ids
+     */
+    detach(ids: string[]): Promise<this>
 
     // /**
     //  * Sync models to relation with model id in key and pivot data is value

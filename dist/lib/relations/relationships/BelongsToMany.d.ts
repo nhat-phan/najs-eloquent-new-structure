@@ -29,4 +29,5 @@ export declare class BelongsToMany<T extends Model> extends ManyToMany<T> implem
     attach(arg1: string | string[] | object, arg2?: object): Promise<this>;
     parseAttachArguments(arg1: string | string[] | object, arg2?: object): object;
     attachModel(targetId: string, data?: object): Promise<any> | undefined;
+    detach(targetIds: string | string[]): Promise<this>;
 }

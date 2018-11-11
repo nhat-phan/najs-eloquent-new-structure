@@ -170,5 +170,23 @@ export class BelongsToMany<T extends Model> extends ManyToMany<T> implements IBe
     })
     return undefined
   }
+
+  async detach(targetIds: string | string[]): Promise<this> {
+    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
+    if (!rootPrimaryKey) {
+      console.warn('Relation: Could not use .detach() with new Model.')
+      return this
+    }
+
+    const ids: string[] = Array.isArray(targetIds) ? targetIds : [targetIds]
+    await Promise.all(
+      ids.map((targetId: string) => {
+        return this.newPivotQuery()
+          .where(this.pivotTargetKeyName, targetId)
+          .delete()
+      })
+    )
+    return this
+  }
 }
 register(BelongsToMany, NajsEloquentClasses.Relation.Relationship.BelongsToMany)

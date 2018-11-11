@@ -129,6 +129,20 @@ class BelongsToMany extends ManyToMany_1.ManyToMany {
         });
         return undefined;
     }
+    async detach(targetIds) {
+        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
+        if (!rootPrimaryKey) {
+            console.warn('Relation: Could not use .detach() with new Model.');
+            return this;
+        }
+        const ids = Array.isArray(targetIds) ? targetIds : [targetIds];
+        await Promise.all(ids.map((targetId) => {
+            return this.newPivotQuery()
+                .where(this.pivotTargetKeyName, targetId)
+                .delete();
+        }));
+        return this;
+    }
 }
 BelongsToMany.className = constants_1.NajsEloquent.Relation.Relationship.BelongsToMany;
 exports.BelongsToMany = BelongsToMany;

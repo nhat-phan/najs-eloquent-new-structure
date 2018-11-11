@@ -38,5 +38,17 @@ declare namespace NajsEloquent.Relation {
         attach(data: {
             [key in string]: object;
         }): Promise<this>;
+        /**
+         * Detach an model to relation with model's id.
+         *
+         * @param {string} id
+         */
+        detach(id: string): Promise<this>;
+        /**
+         * Detach models to relation with models' id.
+         *
+         * @param {string} ids
+         */
+        detach(ids: string[]): Promise<this>;
     }
 }

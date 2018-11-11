@@ -502,4 +502,49 @@ describe('BelongsToMany', function () {
             expect(saveSpy.called).toBe(true);
         });
     });
+    describe('.detach()', function () {
+        it('does nothing and print a warning message if the root model has no primary key', async function () {
+            const stub = Sinon.stub(console, 'warn');
+            stub.returns('anything');
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect((await relation.detach('test')) === relation).toBe(true);
+            expect(stub.calledWith('Relation: Could not use .detach() with new Model.')).toBe(true);
+            stub.restore();
+        });
+        it('loops and creates pivot query with 2 keys, pivotRootKey and pivotTargetKey then .delete()', async function () {
+            const query = {
+                where() {
+                    return this;
+                },
+                delete() {
+                    return Promise.resolve(true);
+                }
+            };
+            const rootModel = {
+                getAttribute() {
+                    return 'id';
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'pivot_target_id', 'pivot_root_id', 'id', 'id');
+            const stub = Sinon.stub(relation, 'newPivotQuery');
+            stub.returns(query);
+            const whereSpy = Sinon.spy(query, 'where');
+            const deleteSpy = Sinon.spy(query, 'delete');
+            expect((await relation.detach('test')) === relation).toBe(true);
+            expect(whereSpy.calledWith('pivot_target_id', 'test')).toBe(true);
+            expect(deleteSpy.called).toBe(true);
+            whereSpy.resetHistory();
+            deleteSpy.resetHistory();
+            expect((await relation.detach(['a', 'b'])) === relation).toBe(true);
+            expect(whereSpy.callCount).toEqual(2);
+            expect(whereSpy.firstCall.calledWith('pivot_target_id', 'a')).toBe(true);
+            expect(whereSpy.secondCall.calledWith('pivot_target_id', 'b')).toBe(true);
+            expect(deleteSpy.callCount).toEqual(2);
+        });
+    });
 });

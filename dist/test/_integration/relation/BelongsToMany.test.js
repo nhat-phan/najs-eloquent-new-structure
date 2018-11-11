@@ -108,4 +108,33 @@ describe('BelongsToManyRelationship', function () {
             [roleB.id]: user.id
         });
     });
+    describe('.attach()', function () {
+        it('should work', async function () {
+            const user = new User();
+            const role1 = await lib_1.factory(Role).create();
+            const role2 = await lib_1.factory(Role).create();
+            user.rolesRelation.attach([role1.id, role2.id]);
+            await user.save();
+            const result = await User.with('roles').findOrFail(user.id);
+            expect(result.toObject()).toEqual(Object.assign({}, {
+                id: user.id,
+                roles: [role1.toObject(), role2.toObject()]
+            }));
+        });
+    });
+    describe('.detach()', function () {
+        it('should work', async function () {
+            const user = new User();
+            const role1 = await lib_1.factory(Role).create();
+            const role2 = await lib_1.factory(Role).create();
+            user.rolesRelation.attach([role1.id, role2.id]);
+            await user.save();
+            await user.rolesRelation.detach(role2.id);
+            const result = await User.with('roles').findOrFail(user.id);
+            expect(result.toObject()).toEqual(Object.assign({}, {
+                id: user.id,
+                roles: [role1.toObject()]
+            }));
+        });
+    });
 });
