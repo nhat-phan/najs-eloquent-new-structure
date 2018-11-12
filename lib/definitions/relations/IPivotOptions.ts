@@ -7,5 +7,7 @@ namespace NajsEloquent.Relation {
     name?: string
 
     fields?: Array<string>
+
+    timestamps?: Feature.ITimestampsSetting
   }
 }

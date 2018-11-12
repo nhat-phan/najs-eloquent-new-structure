@@ -4,5 +4,6 @@ declare namespace NajsEloquent.Relation {
         foreignKeys: [PivotForeignKey, PivotForeignKey];
         name?: string;
         fields?: Array<string>;
+        timestamps?: Feature.ITimestampsSetting;
     }
 }

@@ -21,6 +21,7 @@ import { Relationship } from '../Relationship'
 import { PivotModel } from './pivot/PivotModel'
 import { isModel } from '../../util/helpers'
 import { array_unique } from '../../util/functions'
+import { TimestampsFeature } from '../../features/TimestampsFeature'
 
 export abstract class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
   protected pivot: ModelDefinition
@@ -136,6 +137,15 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
     return this
   }
 
+  withTimestamps(createdAt?: string, updatedAt?: string): this {
+    this.pivotOptions.timestamps =
+      typeof createdAt !== 'undefined' && typeof updatedAt !== 'undefined'
+        ? { createdAt: createdAt, updatedAt: updatedAt }
+        : TimestampsFeature.DefaultSetting
+
+    return this
+  }
+
   queryPivot(cb: IRelationshipQuery<T>): this {
     this.pivotCustomQueryFn = cb
 
@@ -153,14 +163,30 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
     const options = this.getPivotOptions()
     this.pivotDefinition = definition
     this.pivotDefinition['options'] = options
-    if (typeof options.fields !== 'undefined') {
-      if (typeof this.pivotDefinition['fillable'] === 'undefined') {
-        this.pivotDefinition['fillable'] = ([] as string[]).concat(options.foreignKeys, options.fields)
-      } else {
-        this.pivotDefinition['fillable'] = array_unique(
-          ([] as string[]).concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields)
-        )
-      }
+
+    this.setFillableToPivotDefinitionIfNeeded(options)
+    this.setTimestampsToPivotDefinitionIfNeeded(options)
+  }
+
+  private setFillableToPivotDefinitionIfNeeded(options: IPivotOptions) {
+    if (typeof options.fields === 'undefined') {
+      return
     }
+
+    if (typeof this.pivotDefinition['fillable'] === 'undefined') {
+      this.pivotDefinition['fillable'] = array_unique(([] as string[]).concat(options.foreignKeys, options.fields))
+      return
+    }
+
+    this.pivotDefinition['fillable'] = array_unique(
+      ([] as string[]).concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields)
+    )
+  }
+
+  private setTimestampsToPivotDefinitionIfNeeded(options: IPivotOptions) {
+    if (typeof options.timestamps === 'undefined') {
+      return
+    }
+    this.pivotDefinition['timestamps'] = options.timestamps
   }
 }

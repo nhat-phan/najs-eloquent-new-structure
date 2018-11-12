@@ -47,6 +47,18 @@ namespace NajsEloquent.Relation {
     as(accessor: string): this
 
     /**
+     * Specify that the pivot table has creation and update timestamps.
+     */
+    withTimestamps(): this
+    /**
+     * Specify that the pivot table has creation and update timestamps.
+     *
+     * @param {string} createdAt
+     * @param {string} updatedAt
+     */
+    withTimestamps(createdAt: string, updatedAt: string): this
+
+    /**
      * Add custom query to relationship.
      */
     queryPivot(cb: IRelationshipQuery<T>): this

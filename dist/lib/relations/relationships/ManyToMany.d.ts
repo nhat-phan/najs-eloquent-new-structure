@@ -36,7 +36,10 @@ export declare abstract class ManyToMany<T extends Model> extends Relationship<C
     applyPivotCustomQuery(queryBuilder: IQueryBuilder<any>): IQueryBuilder<any>;
     withPivot(...fields: Array<string | string[]>): this;
     as(accessor: string): this;
+    withTimestamps(createdAt?: string, updatedAt?: string): this;
     queryPivot(cb: IRelationshipQuery<T>): this;
     getPivotOptions(name?: string): IPivotOptions;
     setPivotDefinition(definition: typeof PivotModel): void;
+    private setFillableToPivotDefinitionIfNeeded;
+    private setTimestampsToPivotDefinitionIfNeeded;
 }

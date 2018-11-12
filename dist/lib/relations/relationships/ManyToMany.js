@@ -12,6 +12,7 @@ const Relationship_1 = require("../Relationship");
 const PivotModel_1 = require("./pivot/PivotModel");
 const helpers_1 = require("../../util/helpers");
 const functions_1 = require("../../util/functions");
+const TimestampsFeature_1 = require("../../features/TimestampsFeature");
 class ManyToMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, pivot, pivotTargetKeyName, pivotRootKeyName, targetKeyName, rootKeyName) {
         super(root, relationName);
@@ -85,6 +86,13 @@ class ManyToMany extends Relationship_1.Relationship {
         this.pivotAccessor = accessor;
         return this;
     }
+    withTimestamps(createdAt, updatedAt) {
+        this.pivotOptions.timestamps =
+            typeof createdAt !== 'undefined' && typeof updatedAt !== 'undefined'
+                ? { createdAt: createdAt, updatedAt: updatedAt }
+                : TimestampsFeature_1.TimestampsFeature.DefaultSetting;
+        return this;
+    }
     queryPivot(cb) {
         this.pivotCustomQueryFn = cb;
         return this;
@@ -99,14 +107,24 @@ class ManyToMany extends Relationship_1.Relationship {
         const options = this.getPivotOptions();
         this.pivotDefinition = definition;
         this.pivotDefinition['options'] = options;
-        if (typeof options.fields !== 'undefined') {
-            if (typeof this.pivotDefinition['fillable'] === 'undefined') {
-                this.pivotDefinition['fillable'] = [].concat(options.foreignKeys, options.fields);
-            }
-            else {
-                this.pivotDefinition['fillable'] = functions_1.array_unique([].concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields));
-            }
+        this.setFillableToPivotDefinitionIfNeeded(options);
+        this.setTimestampsToPivotDefinitionIfNeeded(options);
+    }
+    setFillableToPivotDefinitionIfNeeded(options) {
+        if (typeof options.fields === 'undefined') {
+            return;
         }
+        if (typeof this.pivotDefinition['fillable'] === 'undefined') {
+            this.pivotDefinition['fillable'] = functions_1.array_unique([].concat(options.foreignKeys, options.fields));
+            return;
+        }
+        this.pivotDefinition['fillable'] = functions_1.array_unique([].concat(this.pivotDefinition['fillable'], options.foreignKeys, options.fields));
+    }
+    setTimestampsToPivotDefinitionIfNeeded(options) {
+        if (typeof options.timestamps === 'undefined') {
+            return;
+        }
+        this.pivotDefinition['timestamps'] = options.timestamps;
     }
 }
 exports.ManyToMany = ManyToMany;

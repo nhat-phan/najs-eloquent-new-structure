@@ -6,6 +6,7 @@ const najs_binding_1 = require("najs-binding");
 const Helpers = require("../../../lib/util/helpers");
 const BelongsToMany_1 = require("../../../lib/relations/relationships/BelongsToMany");
 const PivotModel_1 = require("../../../lib/relations/relationships/pivot/PivotModel");
+const TimestampsFeature_1 = require("../../../lib/features/TimestampsFeature");
 describe('ManyToMany', function () {
     describe('constructor()', function () {
         it('assigns params to respective attributes', function () {
@@ -258,6 +259,22 @@ describe('ManyToMany', function () {
             expect(relation['pivotAccessor']).toEqual('');
         });
     });
+    describe('.as()', function () {
+        it('assigns TimestampsFeature.DefaultSetting to "pivotOptions"."timestamps" if there is no arguments', function () {
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation['pivotOptions']['timestamps']).toBeUndefined();
+            expect(relation.withTimestamps() === relation).toBe(true);
+            expect(relation['pivotOptions']['timestamps'] === TimestampsFeature_1.TimestampsFeature.DefaultSetting).toBe(true);
+        });
+        it('converts and assigns provided arguments to "pivotOptions"."timestamps"', function () {
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation['pivotOptions']['timestamps']).toBeUndefined();
+            expect(relation.withTimestamps('created', 'updated') === relation).toBe(true);
+            expect(relation['pivotOptions']['timestamps']).toEqual({ createdAt: 'created', updatedAt: 'updated' });
+        });
+    });
     describe('.queryPivot()', function () {
         it('is chainable, simply assigns the callback to property "pivotCustomQueryFn"', function () {
             const rootModel = {};
@@ -287,6 +304,59 @@ describe('ManyToMany', function () {
             expect(relation.applyPivotCustomQuery(queryBuilder) === queryBuilder).toBe(true);
             expect(spy.calledWith(queryBuilder)).toBe(true);
             expect(spy.lastCall.thisValue === queryBuilder).toBe(true);
+        });
+    });
+    describe('.setPivotDefinition()', function () {
+        it('calls .getPivotOptions() to get filled options then pass to pivotDefinition', function () {
+            const options = {};
+            const definition = {};
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const stub = Sinon.stub(relation, 'getPivotOptions');
+            stub.returns(options);
+            relation.setPivotDefinition(definition);
+            expect(relation['pivotDefinition'] === definition).toBe(true);
+            expect(definition['options'] === options).toBe(true);
+        });
+        it('merges options.foreignKeys and options.fields to "pivotDefinition"."fillable" options.fields is exists and no "fillable" in "pivotDefinition"', function () {
+            const options = {
+                foreignKeys: ['a', 'b'],
+                fields: ['x', 'y', 'a']
+            };
+            const definition = {};
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const stub = Sinon.stub(relation, 'getPivotOptions');
+            stub.returns(options);
+            relation.setPivotDefinition(definition);
+            expect(definition['fillable']).toEqual(['a', 'b', 'x', 'y']);
+        });
+        it('merges options.foreignKeys and options.fields to current "pivotDefinition"."fillable" options.fields is exists', function () {
+            const options = {
+                foreignKeys: ['a', 'b'],
+                fields: ['x', 'y', 'a']
+            };
+            const definition = {
+                fillable: ['any']
+            };
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const stub = Sinon.stub(relation, 'getPivotOptions');
+            stub.returns(options);
+            relation.setPivotDefinition(definition);
+            expect(definition['fillable']).toEqual(['any', 'a', 'b', 'x', 'y']);
+        });
+        it('assigns timestamps to "pivotDefinition"."timestamps" if there is a timestamps setting in pivotOptions', function () {
+            const options = {
+                timestamps: 'anything'
+            };
+            const definition = {};
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const stub = Sinon.stub(relation, 'getPivotOptions');
+            stub.returns(options);
+            relation.setPivotDefinition(definition);
+            expect(definition['timestamps']).toEqual('anything');
         });
     });
 });
