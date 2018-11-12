@@ -30,4 +30,10 @@ export declare class BelongsToMany<T extends Model> extends ManyToMany<T> implem
     parseAttachArguments(arg1: string | string[] | object, arg2?: object): object;
     attachModel(targetId: string, data?: object): Promise<any> | undefined;
     detach(targetIds: string | string[]): Promise<this>;
+    private parseSyncArg2AndArg3;
+    parseSyncArguments(arg1: string | string[] | object, arg2?: object | boolean, arg3?: boolean): {
+        data: object;
+        detaching: boolean;
+    };
+    sync(arg1: string | string[] | object, arg2?: object | boolean, arg3?: boolean): Promise<this>;
 }

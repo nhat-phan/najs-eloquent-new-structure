@@ -136,11 +136,59 @@ class BelongsToMany extends ManyToMany_1.ManyToMany {
             return this;
         }
         const ids = Array.isArray(targetIds) ? targetIds : [targetIds];
+        if (ids.length === 0) {
+            return this;
+        }
         await Promise.all(ids.map((targetId) => {
             return this.newPivotQuery()
                 .where(this.pivotTargetKeyName, targetId)
                 .delete();
         }));
+        return this;
+    }
+    parseSyncArg2AndArg3(result, id, arg2, arg3) {
+        if (typeof arg2 === 'object') {
+            result.data[id] = arg2;
+            result.detaching = typeof arg3 === 'boolean' ? arg3 : true;
+            return result;
+        }
+        result.data[id] = undefined;
+        result.detaching = typeof arg2 === 'boolean' ? arg2 : true;
+        return result;
+    }
+    parseSyncArguments(arg1, arg2, arg3) {
+        const result = {
+            data: {},
+            detaching: true
+        };
+        if (typeof arg1 === 'string') {
+            return this.parseSyncArg2AndArg3(result, arg1, arg2, arg3);
+        }
+        if (Array.isArray(arg1)) {
+            return arg1.reduce((memo, item) => {
+                return this.parseSyncArg2AndArg3(memo, item, arg2, arg3);
+            }, result);
+        }
+        result.data = arg1;
+        result.detaching = typeof arg2 === 'boolean' ? arg2 : true;
+        return result;
+    }
+    async sync(arg1, arg2, arg3) {
+        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
+        if (!rootPrimaryKey) {
+            console.warn('Relation: Could not use .sync() with new Model.');
+            return this;
+        }
+        // const args = this.parseSyncArguments(arg1, arg2, arg3)
+        // const pivots = (await this.newPivotQuery().get()).keyBy(this.pivotTargetKeyName)
+        // const syncKeys = Object.keys(args.data)
+        // const pivotTargetKeys = pivots.keys().all()
+        // if (args.detaching) {
+        //   const detachKeys = pivotTargetKeys.filter(function(targetId) {
+        //     return syncKeys.indexOf(targetId) !== -1
+        //   })
+        //   await this.detach(detachKeys)
+        // }
         return this;
     }
 }

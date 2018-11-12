@@ -516,6 +516,29 @@ describe('BelongsToMany', function () {
             expect(stub.calledWith('Relation: Could not use .detach() with new Model.')).toBe(true);
             stub.restore();
         });
+        it('skips and does nothing if given ids is empty', async function () {
+            const query = {
+                where() {
+                    return this;
+                },
+                delete() {
+                    return Promise.resolve(true);
+                }
+            };
+            const rootModel = {
+                getAttribute() {
+                    return 'id';
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'pivot_target_id', 'pivot_root_id', 'id', 'id');
+            const stub = Sinon.stub(relation, 'newPivotQuery');
+            stub.returns(query);
+            const whereSpy = Sinon.spy(query, 'where');
+            const deleteSpy = Sinon.spy(query, 'delete');
+            expect((await relation.detach([])) === relation).toBe(true);
+            expect(whereSpy.called).toBe(false);
+            expect(deleteSpy.called).toBe(false);
+        });
         it('loops and creates pivot query with 2 keys, pivotRootKey and pivotTargetKey then .delete()', async function () {
             const query = {
                 where() {
@@ -545,6 +568,116 @@ describe('BelongsToMany', function () {
             expect(whereSpy.firstCall.calledWith('pivot_target_id', 'a')).toBe(true);
             expect(whereSpy.secondCall.calledWith('pivot_target_id', 'b')).toBe(true);
             expect(deleteSpy.callCount).toEqual(2);
+        });
+    });
+    describe('.parseSyncArguments()', function () {
+        const dataset = [
+            {
+                case: 'case 1: (id: string)',
+                input: ['test'],
+                output: { data: { test: undefined }, detaching: true }
+            },
+            {
+                case: 'case 2a: (id: string, detaching: boolean)',
+                input: ['test', true],
+                output: { data: { test: undefined }, detaching: true }
+            },
+            {
+                case: 'case 2b: (id: string, detaching: boolean)',
+                input: ['test', false],
+                output: { data: { test: undefined }, detaching: false }
+            },
+            {
+                case: 'case 3: (id: string, data: object)',
+                input: ['test', { a: 1 }],
+                output: { data: { test: { a: 1 } }, detaching: true }
+            },
+            {
+                case: 'case 4a: (id: string, data: object, detaching: boolean)',
+                input: ['test', { a: 1 }, true],
+                output: { data: { test: { a: 1 } }, detaching: true }
+            },
+            {
+                case: 'case 4b: (id: string, data: object, detaching: boolean)',
+                input: ['test', { a: 1 }, false],
+                output: { data: { test: { a: 1 } }, detaching: false }
+            },
+            {
+                case: 'case 5: (ids: string[])',
+                input: [['a', 'b']],
+                output: { data: { a: undefined, b: undefined }, detaching: true }
+            },
+            {
+                case: 'case 6a: (ids: string[], detaching: boolean)',
+                input: [['a', 'b'], true],
+                output: { data: { a: undefined, b: undefined }, detaching: true }
+            },
+            {
+                case: 'case 6b: (ids: string[], detaching: boolean)',
+                input: [['a', 'b'], false],
+                output: { data: { a: undefined, b: undefined }, detaching: false }
+            },
+            {
+                case: 'case 7: (ids: string[], data: object)',
+                input: [['a', 'b'], { a: 1 }],
+                output: { data: { a: { a: 1 }, b: { a: 1 } }, detaching: true }
+            },
+            {
+                case: 'case 8a: (ids: string[], data: object, detaching: boolean)',
+                input: [['a', 'b'], { a: 1 }, true],
+                output: { data: { a: { a: 1 }, b: { a: 1 } }, detaching: true }
+            },
+            {
+                case: 'case 8b: (ids: string[], data: object, detaching: boolean)',
+                input: [['a', 'b'], { a: 1 }, false],
+                output: { data: { a: { a: 1 }, b: { a: 1 } }, detaching: false }
+            },
+            {
+                case: 'case 9: (data: object)',
+                input: [{ test: { a: 1 } }],
+                output: { data: { test: { a: 1 } }, detaching: true }
+            },
+            {
+                case: 'case 10a: (data: object, detaching: boolean)',
+                input: [{ test: { a: 1 } }, true],
+                output: { data: { test: { a: 1 } }, detaching: true }
+            },
+            {
+                case: 'case 10b: (data: object, detaching: boolean)',
+                input: [{ test: { a: 1 } }, false],
+                output: { data: { test: { a: 1 } }, detaching: false }
+            }
+        ];
+        for (const data of dataset) {
+            it(`parses the arguments of sync(), ${data.case}`, function () {
+                const relation = new BelongsToMany_1.BelongsToMany({}, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+                expect(relation.parseSyncArguments.apply(relation, data.input)).toEqual(data.output);
+            });
+        }
+    });
+    describe('.sync()', function () {
+        it('does nothing and print a warning message if the root model has no primary key', async function () {
+            const stub = Sinon.stub(console, 'warn');
+            stub.returns('anything');
+            const rootModel = {
+                getAttribute() {
+                    return undefined;
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect((await relation.sync('test')) === relation).toBe(true);
+            expect(stub.calledWith('Relation: Could not use .sync() with new Model.')).toBe(true);
+            stub.restore();
+        });
+        // TODO: test the rest of sync
+        it('the rest of sync', async function () {
+            const rootModel = {
+                getAttribute() {
+                    return 'id';
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect((await relation.sync('test')) === relation).toBe(true);
         });
     });
 });
