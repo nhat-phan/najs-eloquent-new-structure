@@ -7,6 +7,7 @@ const Helpers = require("../../../lib/util/helpers");
 const BelongsToMany_1 = require("../../../lib/relations/relationships/BelongsToMany");
 const PivotModel_1 = require("../../../lib/relations/relationships/pivot/PivotModel");
 const TimestampsFeature_1 = require("../../../lib/features/TimestampsFeature");
+const SoftDeletesFeature_1 = require("../../../lib/features/SoftDeletesFeature");
 describe('ManyToMany', function () {
     describe('constructor()', function () {
         it('assigns params to respective attributes', function () {
@@ -259,7 +260,7 @@ describe('ManyToMany', function () {
             expect(relation['pivotAccessor']).toEqual('');
         });
     });
-    describe('.as()', function () {
+    describe('.withTimestamps()', function () {
         it('assigns TimestampsFeature.DefaultSetting to "pivotOptions"."timestamps" if there is no arguments', function () {
             const rootModel = {};
             const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
@@ -273,6 +274,22 @@ describe('ManyToMany', function () {
             expect(relation['pivotOptions']['timestamps']).toBeUndefined();
             expect(relation.withTimestamps('created', 'updated') === relation).toBe(true);
             expect(relation['pivotOptions']['timestamps']).toEqual({ createdAt: 'created', updatedAt: 'updated' });
+        });
+    });
+    describe('.withSoftDeletes()', function () {
+        it('assigns SoftDeletesFeature.DefaultSetting to "pivotOptions"."softDeletes" if there is no arguments', function () {
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation['pivotOptions']['softDeletes']).toBeUndefined();
+            expect(relation.withSoftDeletes() === relation).toBe(true);
+            expect(relation['pivotOptions']['softDeletes'] === SoftDeletesFeature_1.SoftDeletesFeature.DefaultSetting).toBe(true);
+        });
+        it('converts and assigns provided arguments to "pivotOptions"."softDeletes"', function () {
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            expect(relation['pivotOptions']['softDeletes']).toBeUndefined();
+            expect(relation.withSoftDeletes('deleted') === relation).toBe(true);
+            expect(relation['pivotOptions']['softDeletes']).toEqual({ deletedAt: 'deleted', overrideMethods: false });
         });
     });
     describe('.queryPivot()', function () {
@@ -357,6 +374,18 @@ describe('ManyToMany', function () {
             stub.returns(options);
             relation.setPivotDefinition(definition);
             expect(definition['timestamps']).toEqual('anything');
+        });
+        it('assigns softDeletes to "pivotDefinition"."softDeletes" if there is a softDeletes setting in pivotOptions', function () {
+            const options = {
+                softDeletes: 'anything'
+            };
+            const definition = {};
+            const rootModel = {};
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
+            const stub = Sinon.stub(relation, 'getPivotOptions');
+            stub.returns(options);
+            relation.setPivotDefinition(definition);
+            expect(definition['softDeletes']).toEqual('anything');
         });
     });
 });

@@ -5,6 +5,7 @@ import * as Helpers from '../../../lib/util/helpers'
 import { BelongsToMany } from '../../../lib/relations/relationships/BelongsToMany'
 import { PivotModel } from '../../../lib/relations/relationships/pivot/PivotModel'
 import { TimestampsFeature } from '../../../lib/features/TimestampsFeature'
+import { SoftDeletesFeature } from '../../../lib/features/SoftDeletesFeature'
 
 describe('ManyToMany', function() {
   describe('constructor()', function() {
@@ -305,7 +306,7 @@ describe('ManyToMany', function() {
     })
   })
 
-  describe('.as()', function() {
+  describe('.withTimestamps()', function() {
     it('assigns TimestampsFeature.DefaultSetting to "pivotOptions"."timestamps" if there is no arguments', function() {
       const rootModel: any = {}
       const relation = new BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
@@ -320,6 +321,24 @@ describe('ManyToMany', function() {
       expect(relation['pivotOptions']['timestamps']).toBeUndefined()
       expect(relation.withTimestamps('created', 'updated') === relation).toBe(true)
       expect(relation['pivotOptions']['timestamps']).toEqual({ createdAt: 'created', updatedAt: 'updated' })
+    })
+  })
+
+  describe('.withSoftDeletes()', function() {
+    it('assigns SoftDeletesFeature.DefaultSetting to "pivotOptions"."softDeletes" if there is no arguments', function() {
+      const rootModel: any = {}
+      const relation = new BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
+      expect(relation['pivotOptions']['softDeletes']).toBeUndefined()
+      expect(relation.withSoftDeletes() === relation).toBe(true)
+      expect(relation['pivotOptions']['softDeletes'] === SoftDeletesFeature.DefaultSetting).toBe(true)
+    })
+
+    it('converts and assigns provided arguments to "pivotOptions"."softDeletes"', function() {
+      const rootModel: any = {}
+      const relation = new BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
+      expect(relation['pivotOptions']['softDeletes']).toBeUndefined()
+      expect(relation.withSoftDeletes('deleted') === relation).toBe(true)
+      expect(relation['pivotOptions']['softDeletes']).toEqual({ deletedAt: 'deleted', overrideMethods: false })
     })
   })
 
@@ -418,6 +437,20 @@ describe('ManyToMany', function() {
 
       relation.setPivotDefinition(definition)
       expect(definition['timestamps']).toEqual('anything')
+    })
+
+    it('assigns softDeletes to "pivotDefinition"."softDeletes" if there is a softDeletes setting in pivotOptions', function() {
+      const options: any = {
+        softDeletes: 'anything'
+      }
+      const definition: any = {}
+      const rootModel: any = {}
+      const relation = new BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g')
+      const stub = Sinon.stub(relation, 'getPivotOptions')
+      stub.returns(options)
+
+      relation.setPivotDefinition(definition)
+      expect(definition['softDeletes']).toEqual('anything')
     })
   })
 })

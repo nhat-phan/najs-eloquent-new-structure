@@ -22,6 +22,7 @@ import { PivotModel } from './pivot/PivotModel'
 import { isModel } from '../../util/helpers'
 import { array_unique } from '../../util/functions'
 import { TimestampsFeature } from '../../features/TimestampsFeature'
+import { SoftDeletesFeature } from '../../features/SoftDeletesFeature'
 
 export abstract class ManyToMany<T extends Model> extends Relationship<Collection<T>> implements IManyToMany<T> {
   protected pivot: ModelDefinition
@@ -146,6 +147,15 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
     return this
   }
 
+  withSoftDeletes(deletedAt?: string): this {
+    this.pivotOptions.softDeletes =
+      typeof deletedAt !== 'undefined'
+        ? Object.assign({}, SoftDeletesFeature.DefaultSetting, { deletedAt: deletedAt })
+        : SoftDeletesFeature.DefaultSetting
+
+    return this
+  }
+
   queryPivot(cb: IRelationshipQuery<T>): this {
     this.pivotCustomQueryFn = cb
 
@@ -166,6 +176,7 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
 
     this.setFillableToPivotDefinitionIfNeeded(options)
     this.setTimestampsToPivotDefinitionIfNeeded(options)
+    this.setSoftDeletesToPivotDefinitionIfNeeded(options)
   }
 
   private setFillableToPivotDefinitionIfNeeded(options: IPivotOptions) {
@@ -188,5 +199,12 @@ export abstract class ManyToMany<T extends Model> extends Relationship<Collectio
       return
     }
     this.pivotDefinition['timestamps'] = options.timestamps
+  }
+
+  private setSoftDeletesToPivotDefinitionIfNeeded(options: IPivotOptions) {
+    if (typeof options.softDeletes === 'undefined') {
+      return
+    }
+    this.pivotDefinition['softDeletes'] = options.softDeletes
   }
 }

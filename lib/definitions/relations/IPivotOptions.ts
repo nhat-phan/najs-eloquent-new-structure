@@ -9,5 +9,7 @@ namespace NajsEloquent.Relation {
     fields?: Array<string>
 
     timestamps?: Feature.ITimestampsSetting
+
+    softDeletes?: Feature.ISoftDeletesSetting
   }
 }

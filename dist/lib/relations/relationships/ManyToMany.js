@@ -13,6 +13,7 @@ const PivotModel_1 = require("./pivot/PivotModel");
 const helpers_1 = require("../../util/helpers");
 const functions_1 = require("../../util/functions");
 const TimestampsFeature_1 = require("../../features/TimestampsFeature");
+const SoftDeletesFeature_1 = require("../../features/SoftDeletesFeature");
 class ManyToMany extends Relationship_1.Relationship {
     constructor(root, relationName, target, pivot, pivotTargetKeyName, pivotRootKeyName, targetKeyName, rootKeyName) {
         super(root, relationName);
@@ -93,6 +94,13 @@ class ManyToMany extends Relationship_1.Relationship {
                 : TimestampsFeature_1.TimestampsFeature.DefaultSetting;
         return this;
     }
+    withSoftDeletes(deletedAt) {
+        this.pivotOptions.softDeletes =
+            typeof deletedAt !== 'undefined'
+                ? Object.assign({}, SoftDeletesFeature_1.SoftDeletesFeature.DefaultSetting, { deletedAt: deletedAt })
+                : SoftDeletesFeature_1.SoftDeletesFeature.DefaultSetting;
+        return this;
+    }
     queryPivot(cb) {
         this.pivotCustomQueryFn = cb;
         return this;
@@ -109,6 +117,7 @@ class ManyToMany extends Relationship_1.Relationship {
         this.pivotDefinition['options'] = options;
         this.setFillableToPivotDefinitionIfNeeded(options);
         this.setTimestampsToPivotDefinitionIfNeeded(options);
+        this.setSoftDeletesToPivotDefinitionIfNeeded(options);
     }
     setFillableToPivotDefinitionIfNeeded(options) {
         if (typeof options.fields === 'undefined') {
@@ -125,6 +134,12 @@ class ManyToMany extends Relationship_1.Relationship {
             return;
         }
         this.pivotDefinition['timestamps'] = options.timestamps;
+    }
+    setSoftDeletesToPivotDefinitionIfNeeded(options) {
+        if (typeof options.softDeletes === 'undefined') {
+            return;
+        }
+        this.pivotDefinition['softDeletes'] = options.softDeletes;
     }
 }
 exports.ManyToMany = ManyToMany;

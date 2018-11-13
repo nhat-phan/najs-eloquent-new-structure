@@ -53,6 +53,16 @@ declare namespace NajsEloquent.Relation {
          */
         withTimestamps(createdAt: string, updatedAt: string): this;
         /**
+         * Specify that the pivot table has soft deletes feature.
+         */
+        withSoftDeletes(): this;
+        /**
+         * Specify that the pivot table has soft deletes feature.
+         *
+         * @param {string} deletedAt
+         */
+        withSoftDeletes(deletedAt: string): this;
+        /**
          * Add custom query to relationship.
          */
         queryPivot(cb: IRelationshipQuery<T>): this;
