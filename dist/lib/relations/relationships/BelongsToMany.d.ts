@@ -36,4 +36,5 @@ export declare class BelongsToMany<T extends Model> extends ManyToMany<T> implem
         detaching: boolean;
     };
     sync(arg1: string | string[] | object, arg2?: object | boolean, arg3?: boolean): Promise<this>;
+    protected hasRootPrimaryKey(func: string): boolean;
 }

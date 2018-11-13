@@ -8,6 +8,7 @@ interface IUserRolePivot extends Model {
 }
 
 class Role extends Model {
+  name: string
   users: BelongsToMany<User, IUserRolePivot>
 
   getClassName() {
@@ -187,6 +188,38 @@ describe('BelongsToManyRelationship', function() {
           }
         )
       )
+    })
+  })
+
+  describe('.sync()', function() {
+    it('should work with detaching = true', async function() {
+      const user = await factory(User).create()
+      const role1 = await factory(Role).create({ name: 'one' })
+      const role2 = await factory(Role).create({ name: 'two' })
+      const role3 = await factory(Role).create({ name: 'three' })
+      const role4 = await factory(Role).create({ name: 'four' })
+      const role5 = await factory(Role).create({ name: 'five' })
+
+      await user.rolesRelation.attach([role1.id, role2.id, role3.id])
+      await user.rolesRelation.sync([role3.id, role4.id, role5.id])
+
+      const result = await User.with('roles').findOrFail(user.id)
+      expect(result.roles!.pluck('name').all()).toEqual(['three', 'four', 'five'])
+    })
+
+    it('should work with detaching = false', async function() {
+      const user = await factory(User).create()
+      const role1 = await factory(Role).create({ name: 'one' })
+      const role2 = await factory(Role).create({ name: 'two' })
+      const role3 = await factory(Role).create({ name: 'three' })
+      const role4 = await factory(Role).create({ name: 'four' })
+      const role5 = await factory(Role).create({ name: 'five' })
+
+      await user.rolesRelation.attach([role1.id, role2.id, role3.id])
+      await user.rolesRelation.sync([role3.id, role4.id, role5.id], false)
+
+      const result = await User.with('roles').findOrFail(user.id)
+      expect(result.roles!.pluck('name').all()).toEqual(['one', 'two', 'three', 'four', 'five'])
     })
   })
 })

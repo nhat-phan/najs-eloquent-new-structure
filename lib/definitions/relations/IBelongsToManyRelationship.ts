@@ -129,7 +129,5 @@ namespace NajsEloquent.Relation {
      * @param {boolean} detaching
      */
     sync(data: object, detaching: boolean): Promise<this>
-
-    // updateExistingPivot(id: string, attributes?: object): Promise<this>
   }
 }

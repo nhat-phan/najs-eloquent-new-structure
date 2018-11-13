@@ -172,9 +172,7 @@ export class BelongsToMany<T extends Model> extends ManyToMany<T> implements IBe
   }
 
   async detach(targetIds: string | string[]): Promise<this> {
-    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
-    if (!rootPrimaryKey) {
-      console.warn('Relation: Could not use .detach() with new Model.')
+    if (!this.hasRootPrimaryKey('detach')) {
       return this
     }
 
@@ -232,25 +230,44 @@ export class BelongsToMany<T extends Model> extends ManyToMany<T> implements IBe
   }
 
   async sync(arg1: string | string[] | object, arg2?: object | boolean, arg3?: boolean): Promise<this> {
-    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
-    if (!rootPrimaryKey) {
-      console.warn('Relation: Could not use .sync() with new Model.')
+    if (!this.hasRootPrimaryKey('sync')) {
       return this
     }
 
-    // const args = this.parseSyncArguments(arg1, arg2, arg3)
-    // const pivots = (await this.newPivotQuery().get()).keyBy(this.pivotTargetKeyName)
+    const args = this.parseSyncArguments(arg1, arg2, arg3)
+    const pivots = (await this.newPivotQuery().get()).keyBy(this.pivotTargetKeyName)
 
-    // const syncKeys = Object.keys(args.data)
-    // const pivotTargetKeys = pivots.keys().all()
-    // if (args.detaching) {
-    //   const detachKeys = pivotTargetKeys.filter(function(targetId) {
-    //     return syncKeys.indexOf(targetId) !== -1
-    //   })
-    //   await this.detach(detachKeys)
-    // }
+    const syncKeys = Object.keys(args.data)
+    if (args.detaching) {
+      await this.detach(
+        // prettier-ignore
+        pivots.keys().all().filter(function(targetId) {
+          return syncKeys.indexOf(targetId) === -1
+        })
+      )
+    }
+
+    await Promise.all(
+      syncKeys.map((targetId: string) => {
+        if (pivots.has(targetId)) {
+          return this.newPivotQuery()
+            .where(this.pivotTargetKeyName, targetId)
+            .update(args.data[targetId] || {})
+        }
+        return this.attachModel(targetId, args.data[targetId])
+      })
+    )
 
     return this
+  }
+
+  protected hasRootPrimaryKey(func: string) {
+    const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName)
+    if (!rootPrimaryKey) {
+      console.warn(`Relation: Could not use .${func}() with new Model.`)
+      return false
+    }
+    return true
   }
 }
 register(BelongsToMany, NajsEloquentClasses.Relation.Relationship.BelongsToMany)

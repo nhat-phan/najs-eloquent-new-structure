@@ -130,9 +130,7 @@ class BelongsToMany extends ManyToMany_1.ManyToMany {
         return undefined;
     }
     async detach(targetIds) {
-        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
-        if (!rootPrimaryKey) {
-            console.warn('Relation: Could not use .detach() with new Model.');
+        if (!this.hasRootPrimaryKey('detach')) {
             return this;
         }
         const ids = Array.isArray(targetIds) ? targetIds : [targetIds];
@@ -174,22 +172,36 @@ class BelongsToMany extends ManyToMany_1.ManyToMany {
         return result;
     }
     async sync(arg1, arg2, arg3) {
-        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
-        if (!rootPrimaryKey) {
-            console.warn('Relation: Could not use .sync() with new Model.');
+        if (!this.hasRootPrimaryKey('sync')) {
             return this;
         }
-        // const args = this.parseSyncArguments(arg1, arg2, arg3)
-        // const pivots = (await this.newPivotQuery().get()).keyBy(this.pivotTargetKeyName)
-        // const syncKeys = Object.keys(args.data)
-        // const pivotTargetKeys = pivots.keys().all()
-        // if (args.detaching) {
-        //   const detachKeys = pivotTargetKeys.filter(function(targetId) {
-        //     return syncKeys.indexOf(targetId) !== -1
-        //   })
-        //   await this.detach(detachKeys)
-        // }
+        const args = this.parseSyncArguments(arg1, arg2, arg3);
+        const pivots = (await this.newPivotQuery().get()).keyBy(this.pivotTargetKeyName);
+        const syncKeys = Object.keys(args.data);
+        if (args.detaching) {
+            await this.detach(
+            // prettier-ignore
+            pivots.keys().all().filter(function (targetId) {
+                return syncKeys.indexOf(targetId) === -1;
+            }));
+        }
+        await Promise.all(syncKeys.map((targetId) => {
+            if (pivots.has(targetId)) {
+                return this.newPivotQuery()
+                    .where(this.pivotTargetKeyName, targetId)
+                    .update(args.data[targetId] || {});
+            }
+            return this.attachModel(targetId, args.data[targetId]);
+        }));
         return this;
+    }
+    hasRootPrimaryKey(func) {
+        const rootPrimaryKey = this.rootModel.getAttribute(this.rootKeyName);
+        if (!rootPrimaryKey) {
+            console.warn(`Relation: Could not use .${func}() with new Model.`);
+            return false;
+        }
+        return true;
     }
 }
 BelongsToMany.className = constants_1.NajsEloquent.Relation.Relationship.BelongsToMany;

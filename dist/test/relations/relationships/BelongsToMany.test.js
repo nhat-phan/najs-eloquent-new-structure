@@ -669,15 +669,117 @@ describe('BelongsToMany', function () {
             expect(stub.calledWith('Relation: Could not use .sync() with new Model.')).toBe(true);
             stub.restore();
         });
-        // TODO: test the rest of sync
-        it('the rest of sync', async function () {
+        it('gets current pivots data, then find key which are not in arguments then calls .detach() if the detaching param is true', async function () {
+            const pivotQuery = {
+                get() {
+                    return Promise.resolve(factory_1.make_collection([
+                        { id: 1, root_id: 'a', target_id: 1 },
+                        { id: 2, root_id: 'a', target_id: 2 },
+                        { id: 3, root_id: 'a', target_id: 3 },
+                        { id: 4, root_id: 'a', target_id: 4 },
+                        { id: 5, root_id: 'a', target_id: 5 }
+                    ]));
+                }
+            };
             const rootModel = {
                 getAttribute() {
                     return 'id';
                 }
             };
-            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'd', 'e', 'f', 'g');
-            expect((await relation.sync('test')) === relation).toBe(true);
+            const updatePivotQuery = {
+                where() {
+                    return this;
+                },
+                update() {
+                    return Promise.resolve('updated');
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'target_id', 'root_id', 'id', 'id');
+            const newPivotQueryStub = Sinon.stub(relation, 'newPivotQuery');
+            let newPivotQueryCall = 0;
+            newPivotQueryStub.callsFake(function () {
+                if (newPivotQueryCall === 0) {
+                    newPivotQueryCall++;
+                    return pivotQuery;
+                }
+                return updatePivotQuery;
+            });
+            const attachModelStub = Sinon.stub(relation, 'attachModel');
+            attachModelStub.returns(Promise.resolve('attached'));
+            const detachStub = Sinon.stub(relation, 'detach');
+            detachStub.returns(Promise.resolve('detach'));
+            const whereSpy = Sinon.spy(updatePivotQuery, 'where');
+            const updateSpy = Sinon.spy(updatePivotQuery, 'update');
+            expect((await relation.sync([3, 4, 5, 6, 7])) === relation).toBe(true);
+            expect(detachStub.calledWith(['1', '2'])).toBe(true);
+            expect(attachModelStub.callCount).toEqual(2);
+            expect(attachModelStub.firstCall.calledWith('6', undefined)).toBe(true);
+            expect(attachModelStub.secondCall.calledWith('7', undefined)).toBe(true);
+            expect(newPivotQueryStub.callCount).toEqual(4);
+            expect(whereSpy.callCount).toEqual(3);
+            expect(whereSpy.firstCall.calledWith('target_id', '3')).toBe(true);
+            expect(whereSpy.secondCall.calledWith('target_id', '4')).toBe(true);
+            expect(whereSpy.thirdCall.calledWith('target_id', '5')).toBe(true);
+            expect(updateSpy.callCount).toEqual(3);
+            expect(updateSpy.firstCall.calledWith({})).toBe(true);
+            expect(updateSpy.secondCall.calledWith({})).toBe(true);
+            expect(updateSpy.secondCall.calledWith({})).toBe(true);
+        });
+        it('skips .detach() if detaching = false, calls newPivotQuery.update() for updating and .attachModel() for creating', async function () {
+            const pivotQuery = {
+                get() {
+                    return Promise.resolve(factory_1.make_collection([
+                        { id: 1, root_id: 'a', target_id: 1 },
+                        { id: 2, root_id: 'a', target_id: 2 },
+                        { id: 3, root_id: 'a', target_id: 3 },
+                        { id: 4, root_id: 'a', target_id: 4 },
+                        { id: 5, root_id: 'a', target_id: 5 }
+                    ]));
+                }
+            };
+            const rootModel = {
+                getAttribute() {
+                    return 'id';
+                }
+            };
+            const updatePivotQuery = {
+                where() {
+                    return this;
+                },
+                update() {
+                    return Promise.resolve('updated');
+                }
+            };
+            const relation = new BelongsToMany_1.BelongsToMany(rootModel, 'a', 'b', 'c', 'target_id', 'root_id', 'id', 'id');
+            const newPivotQueryStub = Sinon.stub(relation, 'newPivotQuery');
+            let newPivotQueryCall = 0;
+            newPivotQueryStub.callsFake(function () {
+                if (newPivotQueryCall === 0) {
+                    newPivotQueryCall++;
+                    return pivotQuery;
+                }
+                return updatePivotQuery;
+            });
+            const attachModelStub = Sinon.stub(relation, 'attachModel');
+            attachModelStub.returns(Promise.resolve('attached'));
+            const detachStub = Sinon.stub(relation, 'detach');
+            detachStub.returns(Promise.resolve('detach'));
+            const whereSpy = Sinon.spy(updatePivotQuery, 'where');
+            const updateSpy = Sinon.spy(updatePivotQuery, 'update');
+            expect((await relation.sync([3, 4, 5, 6, 7], { a: 1 }, false)) === relation).toBe(true);
+            expect(detachStub.called).toBe(false);
+            expect(attachModelStub.callCount).toEqual(2);
+            expect(attachModelStub.firstCall.calledWith('6', { a: 1 })).toBe(true);
+            expect(attachModelStub.secondCall.calledWith('7', { a: 1 })).toBe(true);
+            expect(newPivotQueryStub.callCount).toEqual(4);
+            expect(whereSpy.callCount).toEqual(3);
+            expect(whereSpy.firstCall.calledWith('target_id', '3')).toBe(true);
+            expect(whereSpy.secondCall.calledWith('target_id', '4')).toBe(true);
+            expect(whereSpy.thirdCall.calledWith('target_id', '5')).toBe(true);
+            expect(updateSpy.callCount).toEqual(3);
+            expect(updateSpy.firstCall.calledWith({ a: 1 })).toBe(true);
+            expect(updateSpy.secondCall.calledWith({ a: 1 })).toBe(true);
+            expect(updateSpy.secondCall.calledWith({ a: 1 })).toBe(true);
         });
     });
 });
