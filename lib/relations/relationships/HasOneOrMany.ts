@@ -11,7 +11,7 @@ import { Relationship } from '../Relationship'
 import { RelationshipType } from '../RelationshipType'
 import { DataConditionMatcher } from '../../data/DataConditionMatcher'
 import { RelationUtilities } from '../RelationUtilities'
-import { HasOneOrManyExecutor } from './executors/HasOneOrManyExecutor'
+import { IHasOneOrManyExecutor } from './executors/HasOneOrManyExecutor'
 
 export abstract class HasOneOrMany<T> extends Relationship<T> {
   constructor(root: Model, relationName: string, target: ModelDefinition, targetKey: string, rootKey: string) {
@@ -25,7 +25,7 @@ export abstract class HasOneOrMany<T> extends Relationship<T> {
 
   abstract getType(): string
 
-  abstract getExecutor(): HasOneOrManyExecutor<T>
+  abstract getExecutor(): IHasOneOrManyExecutor<T>
 
   collectData(): T | undefined | null {
     const dataBucket = this.getDataBucket()

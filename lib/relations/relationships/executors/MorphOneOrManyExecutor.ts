@@ -7,17 +7,17 @@ import IDataCollector = NajsEloquent.Data.IDataCollector
 import IDataReader = NajsEloquent.Data.IDataReader
 import IConditionMatcher = NajsEloquent.QueryBuilder.IConditionMatcher
 import IQueryBuilder = NajsEloquent.QueryBuilder.IQueryBuilder
-import IRelationDataBucket = NajsEloquent.Relation.IRelationDataBucket
 
-import { DataConditionMatcher } from './../../../data/DataConditionMatcher'
-import { HasOneExecutor } from './HasOneExecutor'
+import { DataConditionMatcher } from '../../../data/DataConditionMatcher'
+import { IHasOneOrManyExecutor } from './HasOneOrManyExecutor'
 
-export class MorphOneExecutor<T> extends HasOneExecutor<T> {
+export class MorphOneOrManyExecutor<T> implements IHasOneOrManyExecutor<T> {
   protected morphTypeValue: string
   protected targetMorphTypeName: string
+  protected executor: IHasOneOrManyExecutor<T>
 
-  constructor(dataBucket: IRelationDataBucket, targetModel: IModel, targetMorphTypeName: string, typeValue: string) {
-    super(dataBucket, targetModel)
+  constructor(executor: IHasOneOrManyExecutor<T>, targetMorphTypeName: string, typeValue: string) {
+    this.executor = executor
     this.morphTypeValue = typeValue
     this.targetMorphTypeName = targetMorphTypeName
   }
@@ -25,12 +25,26 @@ export class MorphOneExecutor<T> extends HasOneExecutor<T> {
   setCollector(collector: IDataCollector<any>, conditions: IConditionMatcher<any>[], reader: IDataReader<any>): this {
     conditions.unshift(new DataConditionMatcher(this.targetMorphTypeName, '=', this.morphTypeValue, reader))
 
-    return super.setCollector(collector, conditions, reader)
+    this.executor.setCollector(collector, conditions, reader)
+    return this
   }
 
   setQuery(query: IQueryBuilder<any>): this {
     query.where(this.targetMorphTypeName, this.morphTypeValue)
 
-    return super.setQuery(query)
+    this.executor.setQuery(query)
+    return this
+  }
+
+  executeCollector(): T | undefined | null {
+    return this.executor.executeCollector()
+  }
+
+  getEmptyValue(): T | undefined {
+    return this.executor.getEmptyValue()
+  }
+
+  executeQuery(): Promise<T | undefined | null> {
+    return this.executor.executeQuery()
   }
 }

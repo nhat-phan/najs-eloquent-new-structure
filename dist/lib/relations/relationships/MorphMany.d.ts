@@ -9,15 +9,15 @@ import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IMorphManyRelationship = NajsEloquent.Relation.IMorphManyRelationship;
 import Collection = CollectJs.Collection;
 import { HasOneOrMany } from './HasOneOrMany';
-import { MorphManyExecutor } from './executors/MorphManyExecutor';
+import { MorphOneOrManyExecutor } from './executors/MorphOneOrManyExecutor';
 export declare class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
     static className: string;
     protected targetMorphTypeName: string;
-    protected executor: MorphManyExecutor<T>;
+    protected executor: MorphOneOrManyExecutor<Collection<T>>;
     constructor(root: Model, relationName: string, target: ModelDefinition, targetType: string, targetKey: string, rootKey: string);
     getClassName(): string;
     getType(): string;
-    getExecutor(): MorphManyExecutor<T>;
+    getExecutor(): MorphOneOrManyExecutor<Collection<T>>;
     associate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
     dissociate(...models: Array<T | T[] | CollectJs.Collection<T>>): this;
 }

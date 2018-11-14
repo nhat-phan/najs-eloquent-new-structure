@@ -12,13 +12,14 @@ import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
-import { MorphOneExecutor } from './executors/MorphOneExecutor'
+import { HasOneExecutor } from './executors/HasOneExecutor'
+import { MorphOneOrManyExecutor } from './executors/MorphOneOrManyExecutor'
 import { RelationUtilities } from '../RelationUtilities'
 
 export class MorphOne<T extends Model> extends HasOneOrMany<T> implements IMorphOneRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.MorphOne
   protected targetMorphTypeName: string
-  protected executor: MorphOneExecutor<T>
+  protected executor: MorphOneOrManyExecutor<T>
 
   constructor(
     root: Model,
@@ -40,11 +41,10 @@ export class MorphOne<T extends Model> extends HasOneOrMany<T> implements IMorph
     return RelationshipType.MorphOne
   }
 
-  getExecutor(): MorphOneExecutor<T> {
+  getExecutor(): MorphOneOrManyExecutor<T> {
     if (!this.executor) {
-      this.executor = new MorphOneExecutor(
-        this.getDataBucket()!,
-        this.targetModel,
+      this.executor = new MorphOneOrManyExecutor<T>(
+        new HasOneExecutor<T>(this.getDataBucket()!, this.targetModel),
         this.targetMorphTypeName,
         HasOneOrMany.findMorphType(this.rootModel)
       )

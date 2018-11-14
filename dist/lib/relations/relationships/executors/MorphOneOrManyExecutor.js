@@ -5,20 +5,30 @@
 /// <reference path="../../../definitions/query-builders/IQueryBuilder.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const DataConditionMatcher_1 = require("../../../data/DataConditionMatcher");
-const HasManyExecutor_1 = require("./HasManyExecutor");
-class MorphManyExecutor extends HasManyExecutor_1.HasManyExecutor {
-    constructor(dataBucket, targetModel, targetMorphTypeName, typeValue) {
-        super(dataBucket, targetModel);
+class MorphOneOrManyExecutor {
+    constructor(executor, targetMorphTypeName, typeValue) {
+        this.executor = executor;
         this.morphTypeValue = typeValue;
         this.targetMorphTypeName = targetMorphTypeName;
     }
     setCollector(collector, conditions, reader) {
         conditions.unshift(new DataConditionMatcher_1.DataConditionMatcher(this.targetMorphTypeName, '=', this.morphTypeValue, reader));
-        return super.setCollector(collector, conditions, reader);
+        this.executor.setCollector(collector, conditions, reader);
+        return this;
     }
     setQuery(query) {
         query.where(this.targetMorphTypeName, this.morphTypeValue);
-        return super.setQuery(query);
+        this.executor.setQuery(query);
+        return this;
+    }
+    executeCollector() {
+        return this.executor.executeCollector();
+    }
+    getEmptyValue() {
+        return this.executor.getEmptyValue();
+    }
+    executeQuery() {
+        return this.executor.executeQuery();
     }
 }
-exports.MorphManyExecutor = MorphManyExecutor;
+exports.MorphOneOrManyExecutor = MorphOneOrManyExecutor;

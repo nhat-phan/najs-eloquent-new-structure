@@ -9,7 +9,8 @@ const najs_binding_1 = require("najs-binding");
 const HasOneOrMany_1 = require("./HasOneOrMany");
 const RelationshipType_1 = require("../RelationshipType");
 const constants_1 = require("../../constants");
-const MorphOneExecutor_1 = require("./executors/MorphOneExecutor");
+const HasOneExecutor_1 = require("./executors/HasOneExecutor");
+const MorphOneOrManyExecutor_1 = require("./executors/MorphOneOrManyExecutor");
 const RelationUtilities_1 = require("../RelationUtilities");
 class MorphOne extends HasOneOrMany_1.HasOneOrMany {
     constructor(root, relationName, target, targetType, targetKey, rootKey) {
@@ -24,7 +25,7 @@ class MorphOne extends HasOneOrMany_1.HasOneOrMany {
     }
     getExecutor() {
         if (!this.executor) {
-            this.executor = new MorphOneExecutor_1.MorphOneExecutor(this.getDataBucket(), this.targetModel, this.targetMorphTypeName, HasOneOrMany_1.HasOneOrMany.findMorphType(this.rootModel));
+            this.executor = new MorphOneOrManyExecutor_1.MorphOneOrManyExecutor(new HasOneExecutor_1.HasOneExecutor(this.getDataBucket(), this.targetModel), this.targetMorphTypeName, HasOneOrMany_1.HasOneOrMany.findMorphType(this.rootModel));
         }
         return this.executor;
     }

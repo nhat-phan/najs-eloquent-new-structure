@@ -7,7 +7,8 @@ const MorphOne_1 = require("../../../lib/relations/relationships/MorphOne");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
-const MorphOneExecutor_1 = require("../../../lib/relations/relationships/executors/MorphOneExecutor");
+const MorphOneOrManyExecutor_1 = require("../../../lib/relations/relationships/executors/MorphOneOrManyExecutor");
+const HasOneExecutor_1 = require("../../../lib/relations/relationships/executors/HasOneExecutor");
 const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 describe('MorphOne', function () {
     it('extends HasOneOrMany and implements Autoload under name "NajsEloquent.Relation.Relationship.MorphOne"', function () {
@@ -25,7 +26,7 @@ describe('MorphOne', function () {
         });
     });
     describe('.getExecutor()', function () {
-        it('returns an cached instance of MorphOneExecutor in property "executor"', function () {
+        it('returns an cached instance of MorphOneOrManyExecutor which wrap HasOneExecutor in property "executor"', function () {
             const isModelStub = Sinon.stub(Helpers, 'isModel');
             const findMorphTypeSpy = Sinon.spy(Relationship_1.Relationship, 'findMorphType');
             isModelStub.returns(true);
@@ -38,7 +39,8 @@ describe('MorphOne', function () {
             morphOne['targetModelInstance'] = {};
             const getDataBucketStub = Sinon.stub(morphOne, 'getDataBucket');
             getDataBucketStub.returns({});
-            expect(morphOne.getExecutor()).toBeInstanceOf(MorphOneExecutor_1.MorphOneExecutor);
+            expect(morphOne.getExecutor()).toBeInstanceOf(MorphOneOrManyExecutor_1.MorphOneOrManyExecutor);
+            expect(morphOne.getExecutor()['executor']).toBeInstanceOf(HasOneExecutor_1.HasOneExecutor);
             expect(morphOne.getExecutor()['targetMorphTypeName']).toEqual('target_type');
             expect(morphOne.getExecutor()['morphTypeValue']).toEqual('Root');
             expect(morphOne.getExecutor() === morphOne['executor']).toBe(true);

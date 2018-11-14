@@ -14,14 +14,15 @@ import { register } from 'najs-binding'
 import { HasOneOrMany } from './HasOneOrMany'
 import { RelationshipType } from '../RelationshipType'
 import { NajsEloquent as NajsEloquentClasses } from '../../constants'
-import { MorphManyExecutor } from './executors/MorphManyExecutor'
+import { HasManyExecutor } from './executors/HasManyExecutor'
+import { MorphOneOrManyExecutor } from './executors/MorphOneOrManyExecutor'
 import { RelationUtilities } from '../RelationUtilities'
 import { relationFeatureOf } from '../../util/accessors'
 
 export class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> implements IMorphManyRelationship<T> {
   static className: string = NajsEloquentClasses.Relation.Relationship.MorphMany
   protected targetMorphTypeName: string
-  protected executor: MorphManyExecutor<T>
+  protected executor: MorphOneOrManyExecutor<Collection<T>>
 
   constructor(
     root: Model,
@@ -43,11 +44,10 @@ export class MorphMany<T extends Model> extends HasOneOrMany<Collection<T>> impl
     return RelationshipType.MorphMany
   }
 
-  getExecutor(): MorphManyExecutor<T> {
+  getExecutor(): MorphOneOrManyExecutor<Collection<T>> {
     if (!this.executor) {
-      this.executor = new MorphManyExecutor(
-        this.getDataBucket()!,
-        this.targetModel,
+      this.executor = new MorphOneOrManyExecutor(
+        new HasManyExecutor<T>(this.getDataBucket()!, this.targetModel),
         this.targetMorphTypeName,
         HasOneOrMany.findMorphType(this.rootModel)
       )

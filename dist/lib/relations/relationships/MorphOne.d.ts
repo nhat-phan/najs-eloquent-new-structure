@@ -7,14 +7,14 @@ import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import IMorphOneRelationship = NajsEloquent.Relation.IMorphOneRelationship;
 import { HasOneOrMany } from './HasOneOrMany';
-import { MorphOneExecutor } from './executors/MorphOneExecutor';
+import { MorphOneOrManyExecutor } from './executors/MorphOneOrManyExecutor';
 export declare class MorphOne<T extends Model> extends HasOneOrMany<T> implements IMorphOneRelationship<T> {
     static className: string;
     protected targetMorphTypeName: string;
-    protected executor: MorphOneExecutor<T>;
+    protected executor: MorphOneOrManyExecutor<T>;
     constructor(root: Model, relationName: string, target: ModelDefinition, targetType: string, targetKey: string, rootKey: string);
     getClassName(): string;
     getType(): string;
-    getExecutor(): MorphOneExecutor<T>;
+    getExecutor(): MorphOneOrManyExecutor<T>;
     associate(model: T): void;
 }

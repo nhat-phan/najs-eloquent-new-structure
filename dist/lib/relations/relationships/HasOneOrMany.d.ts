@@ -6,12 +6,12 @@ import Model = NajsEloquent.Model.IModel;
 import ModelDefinition = NajsEloquent.Model.ModelDefinition;
 import RelationshipFetchType = NajsEloquent.Relation.RelationshipFetchType;
 import { Relationship } from '../Relationship';
-import { HasOneOrManyExecutor } from './executors/HasOneOrManyExecutor';
+import { IHasOneOrManyExecutor } from './executors/HasOneOrManyExecutor';
 export declare abstract class HasOneOrMany<T> extends Relationship<T> {
     constructor(root: Model, relationName: string, target: ModelDefinition, targetKey: string, rootKey: string);
     abstract getClassName(): string;
     abstract getType(): string;
-    abstract getExecutor(): HasOneOrManyExecutor<T>;
+    abstract getExecutor(): IHasOneOrManyExecutor<T>;
     collectData(): T | undefined | null;
     fetchData(type: RelationshipFetchType): Promise<T | undefined | null>;
     isInverseOf<K>(relationship: NajsEloquent.Relation.IRelationship<K>): boolean;

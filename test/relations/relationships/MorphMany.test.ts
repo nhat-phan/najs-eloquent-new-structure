@@ -5,7 +5,8 @@ import { MorphMany } from '../../../lib/relations/relationships/MorphMany'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
 import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
-import { MorphManyExecutor } from '../../../lib/relations/relationships/executors/MorphManyExecutor'
+import { MorphOneOrManyExecutor } from '../../../lib/relations/relationships/executors/MorphOneOrManyExecutor'
+import { HasManyExecutor } from '../../../lib/relations/relationships/executors/HasManyExecutor'
 import { make_collection } from '../../../lib/util/factory'
 import { RelationUtilities } from '../../../lib/relations/RelationUtilities'
 
@@ -27,7 +28,7 @@ describe('MorphMany', function() {
   })
 
   describe('.getExecutor()', function() {
-    it('returns an cached instance of MorphManyExecutor in property "executor"', function() {
+    it('returns an cached instance of MorphOneOrManyExecutor which wrap HasManyExecutor in property "executor"', function() {
       const isModelStub = Sinon.stub(Helpers, 'isModel')
       const findMorphTypeSpy = Sinon.spy(Relationship, 'findMorphType')
       isModelStub.returns(true)
@@ -41,7 +42,8 @@ describe('MorphMany', function() {
       const getDataBucketStub = Sinon.stub(morphMany, 'getDataBucket')
       getDataBucketStub.returns({})
 
-      expect(morphMany.getExecutor()).toBeInstanceOf(MorphManyExecutor)
+      expect(morphMany.getExecutor()).toBeInstanceOf(MorphOneOrManyExecutor)
+      expect(morphMany.getExecutor()['executor']).toBeInstanceOf(HasManyExecutor)
       expect(morphMany.getExecutor()['targetMorphTypeName']).toEqual('target_type')
       expect(morphMany.getExecutor()['morphTypeValue']).toEqual('Root')
       expect(morphMany.getExecutor() === morphMany['executor']).toBe(true)

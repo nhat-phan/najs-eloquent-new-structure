@@ -7,7 +7,8 @@ const MorphMany_1 = require("../../../lib/relations/relationships/MorphMany");
 const HasOneOrMany_1 = require("../../../lib/relations/relationships/HasOneOrMany");
 const Relationship_1 = require("../../../lib/relations/Relationship");
 const RelationshipType_1 = require("../../../lib/relations/RelationshipType");
-const MorphManyExecutor_1 = require("../../../lib/relations/relationships/executors/MorphManyExecutor");
+const MorphOneOrManyExecutor_1 = require("../../../lib/relations/relationships/executors/MorphOneOrManyExecutor");
+const HasManyExecutor_1 = require("../../../lib/relations/relationships/executors/HasManyExecutor");
 const factory_1 = require("../../../lib/util/factory");
 const RelationUtilities_1 = require("../../../lib/relations/RelationUtilities");
 describe('MorphMany', function () {
@@ -26,7 +27,7 @@ describe('MorphMany', function () {
         });
     });
     describe('.getExecutor()', function () {
-        it('returns an cached instance of MorphManyExecutor in property "executor"', function () {
+        it('returns an cached instance of MorphOneOrManyExecutor which wrap HasManyExecutor in property "executor"', function () {
             const isModelStub = Sinon.stub(Helpers, 'isModel');
             const findMorphTypeSpy = Sinon.spy(Relationship_1.Relationship, 'findMorphType');
             isModelStub.returns(true);
@@ -39,7 +40,8 @@ describe('MorphMany', function () {
             morphMany['targetModelInstance'] = {};
             const getDataBucketStub = Sinon.stub(morphMany, 'getDataBucket');
             getDataBucketStub.returns({});
-            expect(morphMany.getExecutor()).toBeInstanceOf(MorphManyExecutor_1.MorphManyExecutor);
+            expect(morphMany.getExecutor()).toBeInstanceOf(MorphOneOrManyExecutor_1.MorphOneOrManyExecutor);
+            expect(morphMany.getExecutor()['executor']).toBeInstanceOf(HasManyExecutor_1.HasManyExecutor);
             expect(morphMany.getExecutor()['targetMorphTypeName']).toEqual('target_type');
             expect(morphMany.getExecutor()['morphTypeValue']).toEqual('Root');
             expect(morphMany.getExecutor() === morphMany['executor']).toBe(true);

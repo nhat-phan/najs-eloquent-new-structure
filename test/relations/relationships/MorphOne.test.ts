@@ -5,7 +5,8 @@ import { MorphOne } from '../../../lib/relations/relationships/MorphOne'
 import { HasOneOrMany } from '../../../lib/relations/relationships/HasOneOrMany'
 import { Relationship } from '../../../lib/relations/Relationship'
 import { RelationshipType } from '../../../lib/relations/RelationshipType'
-import { MorphOneExecutor } from '../../../lib/relations/relationships/executors/MorphOneExecutor'
+import { MorphOneOrManyExecutor } from '../../../lib/relations/relationships/executors/MorphOneOrManyExecutor'
+import { HasOneExecutor } from '../../../lib/relations/relationships/executors/HasOneExecutor'
 import { RelationUtilities } from '../../../lib/relations/RelationUtilities'
 
 describe('MorphOne', function() {
@@ -26,7 +27,7 @@ describe('MorphOne', function() {
   })
 
   describe('.getExecutor()', function() {
-    it('returns an cached instance of MorphOneExecutor in property "executor"', function() {
+    it('returns an cached instance of MorphOneOrManyExecutor which wrap HasOneExecutor in property "executor"', function() {
       const isModelStub = Sinon.stub(Helpers, 'isModel')
       const findMorphTypeSpy = Sinon.spy(Relationship, 'findMorphType')
       isModelStub.returns(true)
@@ -40,7 +41,8 @@ describe('MorphOne', function() {
       const getDataBucketStub = Sinon.stub(morphOne, 'getDataBucket')
       getDataBucketStub.returns({})
 
-      expect(morphOne.getExecutor()).toBeInstanceOf(MorphOneExecutor)
+      expect(morphOne.getExecutor()).toBeInstanceOf(MorphOneOrManyExecutor)
+      expect(morphOne.getExecutor()['executor']).toBeInstanceOf(HasOneExecutor)
       expect(morphOne.getExecutor()['targetMorphTypeName']).toEqual('target_type')
       expect(morphOne.getExecutor()['morphTypeValue']).toEqual('Root')
       expect(morphOne.getExecutor() === morphOne['executor']).toBe(true)
