@@ -55,6 +55,7 @@ exclude_patterns:
   - 'script/'
   - '**/spec/'
   - '**/test/'
+  - '**/errors'
   - '**/integration/'
   - '**/definitions/'
   - '**/mixin/'

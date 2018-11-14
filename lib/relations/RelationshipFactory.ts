@@ -58,24 +58,20 @@ export class RelationshipFactory implements IRelationshipFactory {
     return referencing.formatAttributeName(referencedNameParts.last + '_id')
   }
 
-  protected findHasOneOrHasManyKeys(target: ModelDefinition<any>, targetKey?: string, localKey?: string) {
+  protected makeHasOneOrMany(className: string, target: ModelDefinition<any>, targetKey?: string, localKey?: string) {
     const targetKeyName =
       typeof targetKey === 'undefined' ? this.findForeignKeyName(make<IModel>(target), this.rootModel) : targetKey
     const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey
 
-    return { targetKeyName, rootKeyName }
+    return this.make(className, [target, targetKeyName, rootKeyName])
   }
 
   hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOne<T> {
-    const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey)
-
-    return this.make<HasOne<T>>(HasOne.className, [target, keys.targetKeyName, keys.rootKeyName])
+    return this.makeHasOneOrMany(HasOne.className, target, targetKey, localKey) as HasOne<T>
   }
 
   hasMany<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasMany<T> {
-    const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey)
-
-    return this.make<HasMany<T>>(HasMany.className, [target, keys.targetKeyName, keys.rootKeyName])
+    return this.makeHasOneOrMany(HasMany.className, target, targetKey, localKey) as HasMany<T>
   }
 
   belongsTo<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IBelongsTo<T> {
@@ -152,7 +148,8 @@ export class RelationshipFactory implements IRelationshipFactory {
     ])
   }
 
-  protected findMorphOneOrMorphManyKeys(
+  protected makeMorphOneOrMany(
+    className: string,
     target: Definition<any>,
     targetType: string,
     targetKey?: string,
@@ -170,27 +167,20 @@ export class RelationshipFactory implements IRelationshipFactory {
       localKey = this.rootModel.getPrimaryKeyName()
     }
 
-    return { targetType, targetKey, localKey }
+    return this.make(className, [target, targetType, targetKey, localKey])
   }
 
-  morphOne<T extends IModel>(
-    target: Definition<T>,
-    targetType: string,
-    targetKey?: string,
-    localKey?: string
-  ): IMorphOne<T> {
-    const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey)
-    return this.make<MorphOne<T>>(MorphOne.className, [target, keys.targetType, keys.targetKey, keys.localKey])
+  morphOne<T extends IModel>(target: Definition<T>, name: string, targetKey?: string, localKey?: string): IMorphOne<T> {
+    return this.makeMorphOneOrMany(MorphOne.className, target, name, targetKey, localKey) as MorphOne<T>
   }
 
   morphMany<T extends IModel>(
     target: Definition<T>,
-    targetType: string,
+    name: string,
     targetKey?: string,
     localKey?: string
   ): IMorphMany<T> {
-    const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey)
-    return this.make<MorphMany<T>>(MorphMany.className, [target, keys.targetType, keys.targetKey, keys.localKey])
+    return this.makeMorphOneOrMany(MorphMany.className, target, name, targetKey, localKey) as MorphMany<T>
   }
 
   morphTo<T extends IModel>(

@@ -6,6 +6,7 @@ import { register } from 'najs-binding'
 import { FeatureBase } from './FeatureBase'
 import { FillablePublicApi } from './mixin/FillablePublicApi'
 import { NajsEloquent } from '../constants'
+import { override_setting_property_of_model } from '../util/functions'
 
 export class FillableFeature extends FeatureBase implements NajsEloquent.Feature.IFillableFeature {
   getPublicApi(): object {
@@ -29,12 +30,7 @@ export class FillableFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   setFillable(model: NajsEloquent.Model.IModel, fillable: string[]): void {
-    const iModel = this.useInternalOf(model)
-    if (typeof iModel.internalData.overridden === 'undefined') {
-      iModel.internalData.overridden = {}
-    }
-    iModel.internalData.overridden.fillable = true
-    model['fillable'] = fillable
+    override_setting_property_of_model(model, 'fillable', fillable)
   }
 
   addFillable(model: NajsEloquent.Model.IModel, keys: ArrayLike<string | string[]>): void {
@@ -54,12 +50,7 @@ export class FillableFeature extends FeatureBase implements NajsEloquent.Feature
   }
 
   setGuarded(model: NajsEloquent.Model.IModel, guarded: string[]): void {
-    const iModel = this.useInternalOf(model)
-    if (typeof iModel.internalData.overridden === 'undefined') {
-      iModel.internalData.overridden = {}
-    }
-    iModel.internalData.overridden.guarded = true
-    model['guarded'] = guarded
+    override_setting_property_of_model(model, 'guarded', guarded)
   }
 
   addGuarded(model: NajsEloquent.Model.IModel, keys: ArrayLike<string | string[]>): void {

@@ -33,12 +33,7 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'visible', []);
     }
     setVisible(model, visible) {
-        const iModel = this.useInternalOf(model);
-        if (typeof iModel.internalData.overridden === 'undefined') {
-            iModel.internalData.overridden = {};
-        }
-        iModel.internalData.overridden.visible = true;
-        model['visible'] = visible;
+        functions_1.override_setting_property_of_model(model, 'visible', visible);
     }
     addVisible(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'visible', keys);
@@ -68,12 +63,7 @@ class SerializationFeature extends FeatureBase_1.FeatureBase {
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'hidden', []);
     }
     setHidden(model, hidden) {
-        const iModel = this.useInternalOf(model);
-        if (typeof iModel.internalData.overridden === 'undefined') {
-            iModel.internalData.overridden = {};
-        }
-        iModel.internalData.overridden.hidden = true;
-        model['hidden'] = hidden;
+        functions_1.override_setting_property_of_model(model, 'hidden', hidden);
     }
     addHidden(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'hidden', keys);

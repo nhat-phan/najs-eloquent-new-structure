@@ -11,7 +11,7 @@ import { FeatureBase } from './FeatureBase'
 import { SerializationPublicApi } from './mixin/SerializationPublicApi'
 import { NajsEloquent as NajsEloquentClasses } from '../constants'
 import { isModel, isCollection } from '../util/helpers'
-import { array_unique } from '../util/functions'
+import { array_unique, override_setting_property_of_model } from '../util/functions'
 
 const DEFAULT_TO_OBJECT_OPTIONS: Options = {
   relations: true,
@@ -41,12 +41,7 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
   }
 
   setVisible(model: NajsEloquent.Model.IModel, visible: string[]): void {
-    const iModel = this.useInternalOf(model)
-    if (typeof iModel.internalData.overridden === 'undefined') {
-      iModel.internalData.overridden = {}
-    }
-    iModel.internalData.overridden.visible = true
-    model['visible'] = visible
+    override_setting_property_of_model(model, 'visible', visible)
   }
 
   addVisible(model: Model, keys: ArrayLike<string | string[]>): void {
@@ -85,12 +80,7 @@ export class SerializationFeature extends FeatureBase implements NajsEloquent.Fe
   }
 
   setHidden(model: NajsEloquent.Model.IModel, hidden: string[]): void {
-    const iModel = this.useInternalOf(model)
-    if (typeof iModel.internalData.overridden === 'undefined') {
-      iModel.internalData.overridden = {}
-    }
-    iModel.internalData.overridden.hidden = true
-    model['hidden'] = hidden
+    override_setting_property_of_model(model, 'hidden', hidden)
   }
 
   addHidden(model: Model, keys: ArrayLike<string | string[]>): void {

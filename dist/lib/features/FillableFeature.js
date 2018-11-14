@@ -7,6 +7,7 @@ const najs_binding_1 = require("najs-binding");
 const FeatureBase_1 = require("./FeatureBase");
 const FillablePublicApi_1 = require("./mixin/FillablePublicApi");
 const constants_1 = require("../constants");
+const functions_1 = require("../util/functions");
 class FillableFeature extends FeatureBase_1.FeatureBase {
     getPublicApi() {
         return FillablePublicApi_1.FillablePublicApi;
@@ -25,12 +26,7 @@ class FillableFeature extends FeatureBase_1.FeatureBase {
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'fillable', []);
     }
     setFillable(model, fillable) {
-        const iModel = this.useInternalOf(model);
-        if (typeof iModel.internalData.overridden === 'undefined') {
-            iModel.internalData.overridden = {};
-        }
-        iModel.internalData.overridden.fillable = true;
-        model['fillable'] = fillable;
+        functions_1.override_setting_property_of_model(model, 'fillable', fillable);
     }
     addFillable(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'fillable', keys);
@@ -46,12 +42,7 @@ class FillableFeature extends FeatureBase_1.FeatureBase {
         return this.useSettingFeatureOf(model).getArrayUniqueSetting(model, 'guarded', ['*']);
     }
     setGuarded(model, guarded) {
-        const iModel = this.useInternalOf(model);
-        if (typeof iModel.internalData.overridden === 'undefined') {
-            iModel.internalData.overridden = {};
-        }
-        iModel.internalData.overridden.guarded = true;
-        model['guarded'] = guarded;
+        functions_1.override_setting_property_of_model(model, 'guarded', guarded);
     }
     addGuarded(model, keys) {
         return this.useSettingFeatureOf(model).pushToUniqueArraySetting(model, 'guarded', keys);

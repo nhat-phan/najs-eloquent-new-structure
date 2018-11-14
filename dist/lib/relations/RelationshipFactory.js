@@ -36,18 +36,16 @@ class RelationshipFactory {
         const referencedNameParts = functions_1.parse_string_with_dot_notation(referenced.getModelName());
         return referencing.formatAttributeName(referencedNameParts.last + '_id');
     }
-    findHasOneOrHasManyKeys(target, targetKey, localKey) {
+    makeHasOneOrMany(className, target, targetKey, localKey) {
         const targetKeyName = typeof targetKey === 'undefined' ? this.findForeignKeyName(najs_binding_1.make(target), this.rootModel) : targetKey;
         const rootKeyName = typeof localKey === 'undefined' ? this.rootModel.getPrimaryKeyName() : localKey;
-        return { targetKeyName, rootKeyName };
+        return this.make(className, [target, targetKeyName, rootKeyName]);
     }
     hasOne(target, targetKey, localKey) {
-        const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey);
-        return this.make(HasOne_1.HasOne.className, [target, keys.targetKeyName, keys.rootKeyName]);
+        return this.makeHasOneOrMany(HasOne_1.HasOne.className, target, targetKey, localKey);
     }
     hasMany(target, targetKey, localKey) {
-        const keys = this.findHasOneOrHasManyKeys(target, targetKey, localKey);
-        return this.make(HasMany_1.HasMany.className, [target, keys.targetKeyName, keys.rootKeyName]);
+        return this.makeHasOneOrMany(HasMany_1.HasMany.className, target, targetKey, localKey);
     }
     belongsTo(target, targetKey, localKey) {
         const targetModel = najs_binding_1.make(target);
@@ -101,7 +99,7 @@ class RelationshipFactory {
             rootKeyName
         ]);
     }
-    findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey) {
+    makeMorphOneOrMany(className, target, targetType, targetKey, localKey) {
         const targetModel = najs_binding_1.make(target);
         const prefix = targetType;
         if (typeof targetKey === 'undefined') {
@@ -111,15 +109,13 @@ class RelationshipFactory {
         if (typeof localKey === 'undefined') {
             localKey = this.rootModel.getPrimaryKeyName();
         }
-        return { targetType, targetKey, localKey };
+        return this.make(className, [target, targetType, targetKey, localKey]);
     }
-    morphOne(target, targetType, targetKey, localKey) {
-        const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey);
-        return this.make(MorphOne_1.MorphOne.className, [target, keys.targetType, keys.targetKey, keys.localKey]);
+    morphOne(target, name, targetKey, localKey) {
+        return this.makeMorphOneOrMany(MorphOne_1.MorphOne.className, target, name, targetKey, localKey);
     }
-    morphMany(target, targetType, targetKey, localKey) {
-        const keys = this.findMorphOneOrMorphManyKeys(target, targetType, targetKey, localKey);
-        return this.make(MorphMany_1.MorphMany.className, [target, keys.targetType, keys.targetKey, keys.localKey]);
+    morphMany(target, name, targetKey, localKey) {
+        return this.makeMorphOneOrMany(MorphMany_1.MorphMany.className, target, name, targetKey, localKey);
     }
     morphTo(rootType, rootKey, targetKeyMap) {
         if (typeof rootType === 'undefined' && typeof rootKey === 'undefined') {

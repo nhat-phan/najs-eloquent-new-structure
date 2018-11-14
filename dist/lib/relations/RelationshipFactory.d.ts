@@ -24,23 +24,16 @@ export declare class RelationshipFactory implements IRelationshipFactory {
     constructor(rootModel: IModel, name: string);
     make<T extends IRelationship<any>>(className: string, params: any[], modifier?: (relation: T) => void): T;
     findForeignKeyName(referencing: IModel, referenced: IModel): string;
-    protected findHasOneOrHasManyKeys(target: ModelDefinition<any>, targetKey?: string, localKey?: string): {
-        targetKeyName: string;
-        rootKeyName: string;
-    };
+    protected makeHasOneOrMany(className: string, target: ModelDefinition<any>, targetKey?: string, localKey?: string): IRelationship<any>;
     hasOne<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasOne<T>;
     hasMany<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IHasMany<T>;
     belongsTo<T extends IModel>(target: ModelDefinition<any>, targetKey?: string, localKey?: string): IBelongsTo<T>;
     findPivotTableName(a: IModel, b: IModel): string;
     findPivotReferenceName(model: IModel): string;
     belongsToMany<T extends IModel>(target: Definition<T>, pivot?: Definition<any>, pivotTargetKeyName?: string, pivotRootKeyName?: string, targetKeyName?: string, rootKeyName?: string): IBelongsToMany<T>;
-    protected findMorphOneOrMorphManyKeys(target: Definition<any>, targetType: string, targetKey?: string, localKey?: string): {
-        targetType: string;
-        targetKey: string;
-        localKey: string;
-    };
-    morphOne<T extends IModel>(target: Definition<T>, targetType: string, targetKey?: string, localKey?: string): IMorphOne<T>;
-    morphMany<T extends IModel>(target: Definition<T>, targetType: string, targetKey?: string, localKey?: string): IMorphMany<T>;
+    protected makeMorphOneOrMany(className: string, target: Definition<any>, targetType: string, targetKey?: string, localKey?: string): IRelationship<any>;
+    morphOne<T extends IModel>(target: Definition<T>, name: string, targetKey?: string, localKey?: string): IMorphOne<T>;
+    morphMany<T extends IModel>(target: Definition<T>, name: string, targetKey?: string, localKey?: string): IMorphMany<T>;
     morphTo<T extends IModel>(rootType?: string, rootKey?: string, targetKeyMap?: {
         [name in string]: string;
     }): IMorphTo<T>;
